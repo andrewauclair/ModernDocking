@@ -20,11 +20,8 @@ public class RootDockingPanel extends DockingPanel implements AncestorListener, 
 	}
 
 	public void setPanel(DockingPanel panel) {
-		boolean repaint = false;
-		if (this.panel != null) {
-			remove(this.panel);
-			repaint = true;
-		}
+		boolean repaint = removeExistingPanel();
+
 		this.panel = panel;
 		add(panel, BorderLayout.CENTER);
 
@@ -32,6 +29,14 @@ public class RootDockingPanel extends DockingPanel implements AncestorListener, 
 			revalidate();
 			repaint();
 		}
+	}
+
+	private boolean removeExistingPanel() {
+		if (this.panel != null) {
+			remove(this.panel);
+			return true;
+		}
+		return false;
 	}
 
 	@Override

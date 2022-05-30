@@ -45,4 +45,12 @@ public class DockedTabbedPanel extends DockingPanel {
 		}
 		return false;
 	}
+
+	public int getPanelCount() {
+		return panels.size();
+	}
+
+	public DockableWrapper getPanel(int i) {
+		return panels.get(i);
+	}
 }

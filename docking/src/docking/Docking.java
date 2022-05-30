@@ -80,6 +80,15 @@ public class Docking {
 					rootPanels.remove(frame);
 					frame.dispose();
 				}
+				else if (root.getPanel() instanceof DockedTabbedPanel) {
+					DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) root.getPanel();
+
+					// no longer need tabs, switch back to DockedSimplePanel
+					if (tabbedPanel.getPanelCount() == 1) {
+						root.setPanel(new DockedSimplePanel(tabbedPanel.getPanel(0)));
+					}
+
+				}
 				return;
 			}
 		}
