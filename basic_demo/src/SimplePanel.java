@@ -35,8 +35,6 @@ public class SimplePanel extends JPanel implements Dockable {
 		gbc.fill = GridBagConstraints.BOTH;
 
 		JPanel panel = new JPanel();
-		Random rand = new Random();
-		panel.setBackground(new Color(rand.nextInt(255),rand.nextInt(255),rand.nextInt(255)));
 
 		add(panel, gbc);
 	}

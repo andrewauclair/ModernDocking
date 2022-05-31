@@ -112,6 +112,7 @@ public class FloatListener extends MouseAdapter implements AWTEventListener {
 			removeListeners();
 
 			if (frame != null) {
+				// TODO figure out a region, center 65% and outer 35%
 				Docking.dock(frame, dockable.getDockable());
 			}
 			else {

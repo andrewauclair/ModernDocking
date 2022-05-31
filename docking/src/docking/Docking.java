@@ -64,10 +64,14 @@ public class Docking {
 	}
 
 	public static void dock(JFrame frame, Dockable dockable) {
+		dock(frame, dockable, DockingRegion.CENTER);
+	}
+
+	public static void dock(JFrame frame, Dockable dockable, DockingRegion region) {
 		// TODO throw exception if this frame doesn't have a root
 		RootDockingPanel root = rootPanels.get(frame);
 
-		appendDockable(root, dockable);
+		appendDockable(root, dockable, region);
 	}
 
 	public static void undock(Dockable dockable) {
@@ -94,18 +98,37 @@ public class Docking {
 		}
 	}
 
-	private static void appendDockable(RootDockingPanel root, Dockable dockable) {
+	private static void appendDockable(RootDockingPanel root, Dockable dockable, DockingRegion region) {
 		if (root.getPanel() == null) {
 			root.setPanel(new DockedSimplePanel(new DockableWrapper(dockable)));
 		}
 		else if (root.getPanel() instanceof DockedSimplePanel) {
 			DockedSimplePanel first = (DockedSimplePanel) root.getPanel();
 
-			DockedTabbedPanel tabbedPanel = new DockedTabbedPanel();
-			tabbedPanel.addPanel(first.getDockable());
-			tabbedPanel.addPanel(new DockableWrapper(dockable));
+			if (region == DockingRegion.CENTER) {
 
-			root.setPanel(tabbedPanel);
+				DockedTabbedPanel tabbedPanel = new DockedTabbedPanel();
+				tabbedPanel.addPanel(first.getDockable());
+				tabbedPanel.addPanel(new DockableWrapper(dockable));
+
+				root.setPanel(tabbedPanel);
+			}
+			else {
+				DockedSplitPanel split = new DockedSplitPanel();
+
+				if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
+					split.setLeft(first.getDockable());
+					split.setRight(new DockableWrapper(dockable));
+				}
+				else {
+					split.setLeft(new DockableWrapper(dockable));
+					split.setRight(first.getDockable());
+				}
+
+				split.setOrientation((region == DockingRegion.EAST || region == DockingRegion.WEST) ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT);
+
+				root.setPanel(split);
+			}
 		}
 		else if (root.getPanel() instanceof DockedTabbedPanel) {
 			DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) root.getPanel();
