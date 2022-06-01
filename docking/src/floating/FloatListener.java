@@ -1,14 +1,16 @@
-package docking.listener;
+package floating;
 
-import docking.*;
+import docking.Dockable;
+import docking.DockableWrapper;
+import docking.Docking;
+import docking.FloatingFrame;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.AWTEventListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class FloatListener extends MouseAdapter implements AWTEventListener {
+public class FloatListener extends MouseAdapter {
 	private final DockableWrapper dockable;
 
 	private boolean mouseDown = false;
@@ -20,20 +22,19 @@ public class FloatListener extends MouseAdapter implements AWTEventListener {
 	private Point dragOffset = new Point(0, 0);
 	private TempFloatingFrame floatingFrame;
 
+	private static final DockingHandlesFrame dockingHandles = new DockingHandlesFrame();
+	private static final DockingOverlayFrame dockingOverlay = new DockingOverlayFrame();
+
 	public FloatListener(DockableWrapper dockable) {
 		this.dockable = dockable;
 
-		// TODO need to remove these somewhere I think
 		this.dockable.getDockable().dragSource().addMouseListener(this);
 		this.dockable.getDockable().dragSource().addMouseMotionListener(this);
-
-		Toolkit.getDefaultToolkit().addAWTEventListener(this, AWTEvent.MOUSE_EVENT_MASK);
 	}
 
 	private void removeListeners() {
 		dockable.getDockable().dragSource().removeMouseListener(this);
 		dockable.getDockable().dragSource().removeMouseMotionListener(this);
-		Toolkit.getDefaultToolkit().removeAWTEventListener(this);
 
 		dockable.removedListeners();
 	}
@@ -46,10 +47,6 @@ public class FloatListener extends MouseAdapter implements AWTEventListener {
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		mouseDown = false;
-		mouseDragging = false;
-		floating = false;
-
-//		dropFloatingPanel();
 	}
 
 	@Override
@@ -59,11 +56,18 @@ public class FloatListener extends MouseAdapter implements AWTEventListener {
 			// update the position of the floating frame every 30ms
 			floatMouseTimer = new Timer(30, e1 -> {
 				if (floating) {
-					Point point = MouseInfo.getPointerInfo().getLocation();
-					point.x -= dragOffset.x;
-					point.y -= dragOffset.y;
+					Point mousePos = MouseInfo.getPointerInfo().getLocation();
 
-					floatingFrame.setLocation(point);
+					Point framePos = MouseInfo.getPointerInfo().getLocation();
+					framePos.x -= dragOffset.x;
+					framePos.y -= dragOffset.y;
+
+					floatingFrame.setLocation(framePos);
+
+					Dockable dockable = Docking.findDockableAtScreenPos(mousePos);
+
+					dockingOverlay.setTarget(dockable);
+					dockingOverlay.update(mousePos);
 				}
 			});
 			floatMouseTimer.start();
@@ -76,6 +80,11 @@ public class FloatListener extends MouseAdapter implements AWTEventListener {
 			dragOffset = e.getPoint();
 
 			floatingFrame = new TempFloatingFrame(dockable.getDockable(), dockable.getDockable().dragSource(), e.getPoint());
+
+			dockingOverlay.setFloating(dockable.getDockable());
+
+			dockingHandles.setVisible(true);
+			dockingOverlay.setVisible(true);
 
 			Docking.undock(dockable.getDockable());
 
@@ -121,14 +130,11 @@ public class FloatListener extends MouseAdapter implements AWTEventListener {
 
 			floatingFrame.dispose();
 			floatingFrame = null;
-		}
-	}
 
-	@Override
-	public void eventDispatched(AWTEvent event) {
-		if (event.getID() == MouseEvent.MOUSE_RELEASED) {
-			System.out.println("mouse released");
-			dropFloatingPanel();
+			SwingUtilities.invokeLater(() -> {
+				dockingHandles.setVisible(false);
+				dockingOverlay.setVisible(false);
+			});
 		}
 	}
 }

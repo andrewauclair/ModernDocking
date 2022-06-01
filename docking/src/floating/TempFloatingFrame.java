@@ -1,4 +1,6 @@
-package docking;
+package floating;
+
+import docking.Dockable;
 
 import javax.swing.*;
 import java.awt.*;

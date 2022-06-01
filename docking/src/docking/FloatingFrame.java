@@ -1,5 +1,7 @@
 package docking;
 
+import floating.TempFloatingFrame;
+
 import javax.swing.*;
 import java.awt.*;
 

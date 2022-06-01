@@ -63,6 +63,42 @@ public class Docking {
 		return null;
 	}
 
+	public static RootDockingPanel rootForFrame(JFrame frame) {
+		if (rootPanels.containsKey(frame)) {
+			return rootPanels.get(frame);
+		}
+		return null;
+	}
+
+	public static Dockable findDockableAtScreenPos(Point screenPos) {
+		JFrame frame = findRootAtScreenPos(screenPos);
+
+		// no frame found at the location, return null
+		if (frame == null) {
+			return null;
+		}
+
+		Point framePoint = new Point(screenPos);
+		SwingUtilities.convertPointFromScreen(framePoint, frame);
+
+		Component component = SwingUtilities.getDeepestComponentAt(frame, framePoint.x, framePoint.y);
+
+		// no component found at the position, return null
+		if (component == null) {
+			return null;
+		}
+
+		while (!(component instanceof Dockable) && component.getParent() != null) {
+			component = component.getParent();
+		}
+
+		// didn't find a Dockable, return null
+		if (!(component instanceof Dockable)) {
+			return null;
+		}
+		return (Dockable) component;
+	}
+
 	public static void dock(JFrame frame, Dockable dockable) {
 		dock(frame, dockable, DockingRegion.CENTER);
 	}

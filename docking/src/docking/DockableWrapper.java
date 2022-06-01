@@ -1,6 +1,6 @@
 package docking;
 
-import docking.listener.FloatListener;
+import floating.FloatListener;
 public class DockableWrapper {
 	private final Dockable dockable;
 

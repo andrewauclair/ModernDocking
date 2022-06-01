@@ -3,7 +3,6 @@ import docking.Docking;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Random;
 
 public class SimplePanel extends JPanel implements Dockable {
 	private final JPanel titlePanel = new JPanel();
