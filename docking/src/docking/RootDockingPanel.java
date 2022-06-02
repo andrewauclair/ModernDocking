@@ -61,7 +61,7 @@ public class RootDockingPanel extends DockingPanel implements AncestorListener, 
 	@Override
 	public void ancestorAdded(AncestorEvent event) {
 		JFrame frame = (JFrame) SwingUtilities.getRoot(this);
-		Docking.registerDockingPanel(this, frame);
+//		Docking.registerDockingPanel(this, frame);
 	}
 
 	@Override

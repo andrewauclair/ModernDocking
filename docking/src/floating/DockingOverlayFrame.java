@@ -35,18 +35,30 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 		setVisible(target != null);
 	}
 
-	public void update(Point position) {
+	public void update(Point screenPos) {
 		if (target == null) {
 			return;
 		}
+
 		JComponent component = (JComponent) target;
 
+		Point framePoint = new Point(screenPos);
+		SwingUtilities.convertPointFromScreen(framePoint, component);
+
 		Point point = (component).getLocation();
+		Dimension size = component.getSize();
+
+		double horizontalPct = (framePoint.x - point.x) / (double) size.width;
+		double verticalPct = (framePoint.y - point.y) / (double) size.height;
+
+		if (horizontalPct < 0.25) {
+			size = new Dimension(size.width / 2, size.height);
+		}
 
 		SwingUtilities.convertPointToScreen(point, component);
 
 		setLocation(point);
-		setSize((component).getSize());
+		setSize(size);
 	}
 
 	// we don't want to use the mouse events in this overlay frame because that would break the app

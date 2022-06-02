@@ -13,10 +13,10 @@ public class SimplePanel extends JPanel implements Dockable {
 	public SimplePanel(String title, String persistentID) {
 		super(new GridBagLayout());
 
-		Docking.registerDockable(this);
-
 		this.title = title;
 		this.persistentID = persistentID;
+
+		Docking.registerDockable(this);
 
 		GridBagConstraints gbc = new GridBagConstraints();
 
