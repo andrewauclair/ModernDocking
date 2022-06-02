@@ -14,6 +14,8 @@ public class Docking {
 
 	private static final Map<JFrame, RootDockingPanel> rootPanels = new HashMap<>();
 
+	private static JFrame frameToDispose = null;
+
 	public static void registerDockable(Dockable dockable) {
 		// TODO register this dockable in a static map, check if it already exists
 		if (dockables.containsKey(dockable.persistentID())) {
@@ -47,16 +49,34 @@ public class Docking {
 		rootPanels.put(parent, panel);
 	}
 
+	// TODO add a possible listener for this. I'd like a way to listen for panels being auto undocked and being able to redock them somewhere else depending on what they are
 	static void deregisterDockingPanel(JFrame parent) {
+		if (rootPanels.containsKey(parent)) {
+			RootDockingPanel root = rootPanels.get(parent);
+
+			undockComponents(root);
+		}
+
 		rootPanels.remove(parent);
 	}
 
+	private static void undockComponents(Container container) {
+		for (Component component : container.getComponents()) {
+			if (component instanceof Container) {
+				undockComponents((Container) component);
+			}
+			else if (component instanceof Dockable) {
+				undock((Dockable) component);
+			}
+		}
+	}
 	public static JFrame findRootAtScreenPos(Point screenPos) {
 		for (JFrame frame : rootPanels.keySet()) {
 			Point point = new Point(frame.getLocation());
-			Rectangle bounds = new Rectangle(point.x, point.y, point.x + frame.getWidth(), point.y + frame.getHeight());
+			Rectangle bounds = new Rectangle(point.x, point.y, frame.getWidth(), frame.getHeight());
 
 			if (bounds.contains(screenPos)) {
+				System.out.println("Found frame: " + bounds + ", " + screenPos);
 				return frame;
 			}
 		}
@@ -104,6 +124,10 @@ public class Docking {
 	}
 
 	public static void dock(JFrame frame, Dockable dockable, DockingRegion region) {
+		if (frameToDispose != null) {
+			frameToDispose.dispose();
+			frameToDispose = null;
+		}
 		// TODO throw exception if this frame doesn't have a root
 		RootDockingPanel root = rootPanels.get(frame);
 
@@ -118,7 +142,10 @@ public class Docking {
 			if (root.undock(dockable)) {
 				if (root.getPanel() instanceof DockedSimplePanel) {
 					rootPanels.remove(frame);
-					frame.dispose();
+
+					// don't dispose it here or it'll mess up the mouseMove for FloatListener
+					frameToDispose = frame;
+					frame.setVisible(false);
 				}
 				else if (root.getPanel() instanceof DockedTabbedPanel) {
 					DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) root.getPanel();

@@ -13,7 +13,6 @@ import java.awt.event.MouseEvent;
 public class FloatListener extends MouseAdapter {
 	private final DockableWrapper dockable;
 
-	private boolean mouseDown = false;
 	private boolean mouseDragging = false;
 	private boolean floating = false;
 
@@ -41,12 +40,10 @@ public class FloatListener extends MouseAdapter {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		mouseDown = true;
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		mouseDown = false;
 	}
 
 	@Override
@@ -90,11 +87,14 @@ public class FloatListener extends MouseAdapter {
 
 			floating = true;
 		}
-		else {
-			Point newPoint = e.getPoint();
-			SwingUtilities.convertPointToScreen(newPoint, dockable.getDockable().dragSource());
-			floatingFrame.setLocation(newPoint);
-		}
+//		else {
+//			Point newPoint = e.getPoint();
+//			SwingUtilities.convertPointToScreen(newPoint, dockable.getDockable().dragSource());
+//
+//			System.out.println("event: " + e + ", new point: " + newPoint);
+//
+//			floatingFrame.setLocation(newPoint);
+//		}
 		mouseDragging = true;
 	}
 
@@ -112,7 +112,6 @@ public class FloatListener extends MouseAdapter {
 		if (floating) {
 			floating = false;
 			mouseDragging = false;
-			mouseDown = false;
 
 			Point point = MouseInfo.getPointerInfo().getLocation();
 			JFrame frame = Docking.findRootAtScreenPos(point);

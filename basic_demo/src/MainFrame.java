@@ -1,11 +1,8 @@
-import docking.DockedSimplePanel;
 import docking.Docking;
-import docking.DockingPanel;
 import docking.RootDockingPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.AWTEventListener;
 import java.util.Random;
 
 public class MainFrame extends JFrame {
@@ -14,23 +11,7 @@ public class MainFrame extends JFrame {
 
 		setSize(800, 600);
 
-		long eventMask = AWTEvent.MOUSE_MOTION_EVENT_MASK + AWTEvent.MOUSE_EVENT_MASK;
-
-//		Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
-//			public void eventDispatched(AWTEvent e) {
-//				int id = e.getID();
-//
-//				switch (id) {
-//					case 501 -> System.out.println("MOUSE_DOWN");
-//					case 502 -> System.out.println("MOUSE_UP");
-//					case 503 -> System.out.println("MOUSE_MOVE");
-//					case 504 -> System.out.println("MOUSE_ENTER");
-//					case 505 -> System.out.println("MOUSE_EXIT");
-//					case 506 -> System.out.println("MOUSE_DRAG");
-//					default -> System.out.println(id);
-//				}
-//			}
-//		}, eventMask);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		SimplePanel one = new SimplePanel("one", "one");
 		SimplePanel two = new SimplePanel("two", "two");

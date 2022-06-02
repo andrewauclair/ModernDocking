@@ -10,6 +10,8 @@ public class FloatingFrame extends JFrame {
 		setLayout(new BorderLayout());
 		setSize(((JComponent) dockable).getSize());
 
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
 		Point location = floatingFrame.getLocation();
 		location.x -= Docking.frameBorderSize.width;
 		location.y -= Docking.frameBorderSize.height;
@@ -24,5 +26,13 @@ public class FloatingFrame extends JFrame {
 		Docking.dock(this, dockable);
 
 		setVisible(true);
+	}
+
+	@Override
+	public void dispose() {
+		// deregister the root panel now that we're disposing this frame
+		Docking.deregisterDockingPanel(this);
+
+		super.dispose();
 	}
 }
