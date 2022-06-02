@@ -1,5 +1,7 @@
 package docking;
 
+import exception.DockableRegistrationFailureException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
@@ -17,9 +19,8 @@ public class Docking {
 	private static JFrame frameToDispose = null;
 
 	public static void registerDockable(Dockable dockable) {
-		// TODO register this dockable in a static map, check if it already exists
 		if (dockables.containsKey(dockable.persistentID())) {
-			// TODO registration failed
+			throw new DockableRegistrationFailureException("Registration for Dockable failed. Persistent ID " + dockable.persistentID() + " already exists.");
 		}
 		dockables.put(dockable.persistentID(), dockable);
 	}
@@ -44,7 +45,7 @@ public class Docking {
 		}
 
 		if (rootPanels.containsKey(parent)) {
-			// TODO throw an exception, we only allow one root docking panel per frame
+			throw new DockableRegistrationFailureException("RootDockingPanel already registered for frame: " + parent);
 		}
 		rootPanels.put(parent, panel);
 	}
@@ -128,8 +129,12 @@ public class Docking {
 			frameToDispose.dispose();
 			frameToDispose = null;
 		}
-		// TODO throw exception if this frame doesn't have a root
+
 		RootDockingPanel root = rootPanels.get(frame);
+
+		if (root == null) {
+			throw new DockableRegistrationFailureException("Frame does not have a RootDockingPanel: " + frame);
+		}
 
 		appendDockable(root, dockable, region);
 	}

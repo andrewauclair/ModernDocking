@@ -14,6 +14,6 @@ public interface Dockable {
 
 	// provide the tab text to the docking framework
 	// the tab text to be displayed when Dockable is in a tabbed pane. Does not need to be unique
+	// NOTE: this text should be static. If it needs to change, then the Dockable needs to be undocked and docked again.
 	String tabText();
-	// TODO should we have a way to update the tab text if it changes?
 }
