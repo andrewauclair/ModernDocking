@@ -113,6 +113,8 @@ public class FloatListener extends MouseAdapter {
 			floating = false;
 			mouseDragging = false;
 
+			Point mousePos = MouseInfo.getPointerInfo().getLocation();
+
 			Point point = MouseInfo.getPointerInfo().getLocation();
 			JFrame frame = Docking.findRootAtScreenPos(point);
 
@@ -120,8 +122,7 @@ public class FloatListener extends MouseAdapter {
 			removeListeners();
 
 			if (frame != null) {
-				// TODO figure out a region, center 65% and outer 35%
-				Docking.dock(frame, dockable.getDockable());
+				Docking.dock(frame, dockable.getDockable(), dockingOverlay.getRegion(mousePos));
 			}
 			else {
 				new FloatingFrame(dockable.getDockable(), floatingFrame);

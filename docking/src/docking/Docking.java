@@ -152,6 +152,19 @@ public class Docking {
 					frameToDispose = frame;
 					frame.setVisible(false);
 				}
+				else if (root.getPanel() instanceof DockedSplitPanel) {
+					DockedSplitPanel splitPanel = (DockedSplitPanel) root.getPanel();
+
+					// no longer need the split, get the panel that's still left and turn it into a simple panel
+					if (!splitPanel.hasDockables()) {
+						if (splitPanel.getLeft() != null) {
+							root.setPanel(new DockedSimplePanel(splitPanel.getLeft()));
+						}
+						else if (splitPanel.getRight() != null) {
+							root.setPanel(new DockedSimplePanel(splitPanel.getRight()));
+						}
+					}
+				}
 				else if (root.getPanel() instanceof DockedTabbedPanel) {
 					DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) root.getPanel();
 
