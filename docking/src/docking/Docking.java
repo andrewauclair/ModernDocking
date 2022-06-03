@@ -77,7 +77,6 @@ public class Docking {
 			Rectangle bounds = new Rectangle(point.x, point.y, frame.getWidth(), frame.getHeight());
 
 			if (bounds.contains(screenPos)) {
-				System.out.println("Found frame: " + bounds + ", " + screenPos);
 				return frame;
 			}
 		}
@@ -120,6 +119,8 @@ public class Docking {
 		return (Dockable) component;
 	}
 
+	// TODO support docking to non-CENTER of tabbed group
+	// TODO properly set the divider location
 	public static void dock(JFrame frame, Dockable dockable) {
 		dock(frame, dockable, DockingRegion.CENTER);
 	}
