@@ -14,6 +14,7 @@ public class DockedSplitPanel extends DockingPanel {
 		setLayout(new BorderLayout());
 
 		splitPane.setContinuousLayout(true);
+		splitPane.setResizeWeight(0.5);
 
 		add(splitPane, BorderLayout.CENTER);
 	}
@@ -25,7 +26,6 @@ public class DockedSplitPanel extends DockingPanel {
 	public void setLeft(DockableWrapper panel) {
 		left = panel;
 		splitPane.setLeftComponent((JComponent) panel.getDockable());
-		splitPane.setDividerLocation(0.5);
 	}
 
 	public DockableWrapper getRight() {
@@ -35,7 +35,6 @@ public class DockedSplitPanel extends DockingPanel {
 	public void setRight(DockableWrapper panel) {
 		right = panel;
 		splitPane.setRightComponent((JComponent) panel.getDockable());
-		splitPane.setDividerLocation(0.5);
 	}
 
 	public void setOrientation(int orientation) {

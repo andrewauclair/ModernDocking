@@ -120,7 +120,6 @@ public class Docking {
 	}
 
 	// TODO support docking to non-CENTER of tabbed group
-	// TODO properly set the divider location
 	public static void dock(JFrame frame, Dockable dockable) {
 		dock(frame, dockable, DockingRegion.CENTER);
 	}
@@ -198,6 +197,8 @@ public class Docking {
 			else {
 				DockedSplitPanel split = new DockedSplitPanel();
 
+				Rectangle bounds = ((Component) first.getDockable().getDockable()).getBounds();
+
 				if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
 					split.setLeft(first.getDockable());
 					split.setRight(new DockableWrapper(dockable));
@@ -207,7 +208,12 @@ public class Docking {
 					split.setRight(first.getDockable());
 				}
 
-				split.setOrientation((region == DockingRegion.EAST || region == DockingRegion.WEST) ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT);
+				if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
+					split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+				}
+				else {
+					split.setOrientation(JSplitPane.VERTICAL_SPLIT);
+				}
 
 				root.setPanel(split);
 			}
