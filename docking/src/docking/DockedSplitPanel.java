@@ -5,8 +5,8 @@ import java.awt.*;
 
 // DockingPanel that has a split pane with 2 dockables, split can be vertical or horizontal
 public class DockedSplitPanel extends DockingPanel {
-	private DockableWrapper left = null;
-	private DockableWrapper right = null;
+	private DockingPanel left = null;
+	private DockingPanel right = null;
 
 	private final JSplitPane splitPane = new JSplitPane();
 
@@ -19,22 +19,22 @@ public class DockedSplitPanel extends DockingPanel {
 		add(splitPane, BorderLayout.CENTER);
 	}
 
-	public DockableWrapper getLeft() {
+	public DockingPanel getLeft() {
 		return left;
 	}
 
-	public void setLeft(DockableWrapper panel) {
+	public void setLeft(DockingPanel panel) {
 		left = panel;
-		splitPane.setLeftComponent((JComponent) panel.getDockable());
+		splitPane.setLeftComponent(panel);
 	}
 
-	public DockableWrapper getRight() {
+	public DockingPanel getRight() {
 		return right;
 	}
 
-	public void setRight(DockableWrapper panel) {
+	public void setRight(DockingPanel panel) {
 		right = panel;
-		splitPane.setRightComponent((JComponent) panel.getDockable());
+		splitPane.setRightComponent(panel);
 	}
 
 	public void setOrientation(int orientation) {
@@ -47,13 +47,13 @@ public class DockedSplitPanel extends DockingPanel {
 
 	@Override
 	public boolean undock(Dockable dockable) {
-		if (left != null && dockable == left.getDockable()) {
-			remove((Component) left.getDockable());
+		if (left != null && left.undock(dockable)) {
+			remove(left);
 			left = null;
 			return true;
 		}
-		else if (right != null && dockable == right.getDockable()) {
-			remove((Component) left.getDockable());
+		else if (right != null && right.undock(dockable)) {
+			remove(right);
 			right = null;
 			return true;
 		}

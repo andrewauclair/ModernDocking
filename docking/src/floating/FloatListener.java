@@ -1,9 +1,6 @@
 package floating;
 
-import docking.Dockable;
-import docking.DockableWrapper;
-import docking.Docking;
-import docking.FloatingFrame;
+import docking.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -61,7 +58,14 @@ public class FloatListener extends MouseAdapter {
 
 					floatingFrame.setLocation(framePos);
 
+					JFrame frame = Docking.findRootAtScreenPos(mousePos);
+					RootDockingPanel root = Docking.rootForFrame(frame);
+
 					Dockable dockable = Docking.findDockableAtScreenPos(mousePos);
+
+					dockingHandles.setRoot(frame, root);
+					dockingHandles.setTarget(dockable);
+					dockingHandles.update(mousePos);
 
 					dockingOverlay.setTarget(dockable);
 					dockingOverlay.update(mousePos);
@@ -87,14 +91,7 @@ public class FloatListener extends MouseAdapter {
 
 			floating = true;
 		}
-//		else {
-//			Point newPoint = e.getPoint();
-//			SwingUtilities.convertPointToScreen(newPoint, dockable.getDockable().dragSource());
-//
-//			System.out.println("event: " + e + ", new point: " + newPoint);
-//
-//			floatingFrame.setLocation(newPoint);
-//		}
+
 		mouseDragging = true;
 	}
 
