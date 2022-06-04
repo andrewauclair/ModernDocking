@@ -118,11 +118,15 @@ public class FloatListener extends MouseAdapter {
 			Point point = MouseInfo.getPointerInfo().getLocation();
 			JFrame frame = Docking.findRootAtScreenPos(point);
 
+			DockingPanel dockingPanel = Docking.findDockingPanelAtScreenPos(point);
+
 			// Docking will add new listeners, we must remove ours here
 			removeListeners();
 
-			if (frame != null) {
-				Docking.dock(frame, dockable.getDockable(), dockingOverlay.getRegion(mousePos));
+			if (frame != null && dockingPanel != null) {
+//				Docking.dock(frame, dockable.getDockable(), dockingOverlay.getRegion(mousePos));
+
+				dockingPanel.dock(dockable.getDockable(), dockingOverlay.getRegion(mousePos));
 			}
 			else {
 				new FloatingFrame(dockable.getDockable(), floatingFrame);

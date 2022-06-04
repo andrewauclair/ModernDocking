@@ -89,7 +89,59 @@ public class RootDockingPanel extends DockingPanel implements AncestorListener, 
 	}
 
 	@Override
+	public void dock(Dockable dockable, DockingRegion region) {
+		if (panel == null) {
+			panel = new DockedSimplePanel(this, new DockableWrapper(dockable));
+		}
+		else if (panel instanceof DockedSimplePanel) {
+			DockedSimplePanel first = (DockedSimplePanel) panel;
+
+			if (region == DockingRegion.CENTER) {
+				DockedTabbedPanel tabbedPanel = new DockedTabbedPanel(this);
+
+				tabbedPanel.addPanel(first.getDockable());
+				tabbedPanel.addPanel(new DockableWrapper(dockable));
+
+				panel = tabbedPanel;
+			}
+			else {
+				DockedSplitPanel split = new DockedSplitPanel();
+
+				if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
+					split.setLeft(first);
+					split.setRight(new DockedSimplePanel(split, new DockableWrapper(dockable)));
+				}
+				else {
+					split.setLeft(new DockedSimplePanel(split, new DockableWrapper(dockable)));
+					split.setRight(first);
+				}
+
+				if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
+					split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+				}
+				else {
+					split.setOrientation(JSplitPane.VERTICAL_SPLIT);
+				}
+
+				panel = split;
+			}
+		}
+		else if (panel instanceof DockedTabbedPanel) {
+			DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) panel;
+
+			tabbedPanel.addPanel(new DockableWrapper(dockable));
+		}
+	}
+
+	@Override
 	public boolean undock(Dockable dockable) {
 		return panel.undock(dockable);
+	}
+
+	@Override
+	public void replaceChild(DockingPanel child, DockingPanel newChild) {
+		if (panel == child) {
+			setPanel(newChild);
+		}
 	}
 }

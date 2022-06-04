@@ -121,6 +121,35 @@ public class Docking {
 		return (Dockable) component;
 	}
 
+	public static DockingPanel findDockingPanelAtScreenPos(Point screenPos) {
+		JFrame frame = findRootAtScreenPos(screenPos);
+
+		// no frame found at the location, return null
+		if (frame == null) {
+			return null;
+		}
+
+		Point framePoint = new Point(screenPos);
+		SwingUtilities.convertPointFromScreen(framePoint, frame);
+
+		Component component = SwingUtilities.getDeepestComponentAt(frame, framePoint.x, framePoint.y);
+
+		// no component found at the position, return null
+		if (component == null) {
+			return null;
+		}
+
+		while (!(component instanceof DockingPanel) && component.getParent() != null) {
+			component = component.getParent();
+		}
+
+		// didn't find a Dockable, return null
+		if (!(component instanceof DockingPanel)) {
+			return null;
+		}
+		return (DockingPanel) component;
+	}
+
 	// TODO support docking to non-CENTER of tabbed group
 	// TODO allow setting the split weight somehow
 	public static void dock(JFrame frame, Dockable dockable) {
@@ -177,7 +206,7 @@ public class Docking {
 
 					// no longer need tabs, switch back to DockedSimplePanel
 					if (tabbedPanel.getPanelCount() == 1) {
-						root.setPanel(new DockedSimplePanel(tabbedPanel.getPanel(0)));
+						root.setPanel(new DockedSimplePanel(root, tabbedPanel.getPanel(0)));
 					}
 
 				}
@@ -188,13 +217,13 @@ public class Docking {
 
 	private static void appendDockable(RootDockingPanel root, Dockable dockable, DockingRegion region) {
 		if (root.getPanel() == null) {
-			root.setPanel(new DockedSimplePanel(new DockableWrapper(dockable)));
+			root.setPanel(new DockedSimplePanel(root, new DockableWrapper(dockable)));
 		}
 		else if (root.getPanel() instanceof DockedSimplePanel) {
 			DockedSimplePanel first = (DockedSimplePanel) root.getPanel();
 
 			if (region == DockingRegion.CENTER) {
-				DockedTabbedPanel tabbedPanel = new DockedTabbedPanel();
+				DockedTabbedPanel tabbedPanel = new DockedTabbedPanel(root);
 
 				tabbedPanel.addPanel(first.getDockable());
 				tabbedPanel.addPanel(new DockableWrapper(dockable));
@@ -206,10 +235,10 @@ public class Docking {
 
 				if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
 					split.setLeft(first);
-					split.setRight(new DockedSimplePanel(new DockableWrapper(dockable)));
+					split.setRight(new DockedSimplePanel(split, new DockableWrapper(dockable)));
 				}
 				else {
-					split.setLeft(new DockedSimplePanel(new DockableWrapper(dockable)));
+					split.setLeft(new DockedSimplePanel(split, new DockableWrapper(dockable)));
 					split.setRight(first);
 				}
 

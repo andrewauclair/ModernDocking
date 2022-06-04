@@ -10,8 +10,10 @@ public class DockedTabbedPanel extends DockingPanel {
 	private final List<DockableWrapper> panels = new ArrayList<>();
 
 	private final JTabbedPane tabs = new JTabbedPane();
+	private DockingPanel parent;
 
-	public DockedTabbedPanel() {
+	public DockedTabbedPanel(DockingPanel parent) {
+		this.parent = parent;
 		setLayout(new BorderLayout());
 
 		tabs.setTabPlacement(JTabbedPane.BOTTOM);
@@ -36,6 +38,35 @@ public class DockedTabbedPanel extends DockingPanel {
 	}
 
 	@Override
+	public void dock(Dockable dockable, DockingRegion region) {
+		if (region == DockingRegion.CENTER) {
+			addPanel(new DockableWrapper(dockable));
+		}
+		else {
+			DockedSplitPanel split = new DockedSplitPanel();
+
+			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
+				split.setLeft(this);
+				split.setRight(new DockedSimplePanel(split, new DockableWrapper(dockable)));
+			}
+			else {
+				split.setLeft(new DockedSimplePanel(split, new DockableWrapper(dockable)));
+				split.setRight(this);
+			}
+
+			if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
+				split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+			}
+			else {
+				split.setOrientation(JSplitPane.VERTICAL_SPLIT);
+			}
+
+			parent.replaceChild(this, split);
+			parent = split;
+		}
+	}
+
+	@Override
 	public boolean undock(Dockable dockable) {
 		for (DockableWrapper panel : panels) {
 			if (panel.getDockable() == dockable) {
@@ -44,6 +75,11 @@ public class DockedTabbedPanel extends DockingPanel {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public void replaceChild(DockingPanel child, DockingPanel newChild) {
+
 	}
 
 	public int getPanelCount() {

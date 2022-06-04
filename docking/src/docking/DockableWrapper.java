@@ -1,6 +1,9 @@
 package docking;
 
 import floating.FloatListener;
+
+import javax.swing.*;
+
 public class DockableWrapper {
 	private final Dockable dockable;
 
@@ -30,4 +33,6 @@ public class DockableWrapper {
 	public void removedListeners() {
 		floatListener = null;
 	}
+
+
 }

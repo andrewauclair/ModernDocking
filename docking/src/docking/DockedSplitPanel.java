@@ -46,6 +46,52 @@ public class DockedSplitPanel extends DockingPanel {
 	}
 
 	@Override
+	public void dock(Dockable dockable, DockingRegion region) {
+		throw new RuntimeException("Implement docking to split panel if needed");
+//		if (root.getPanel() == null) {
+//			root.setPanel(new DockedSimplePanel(new DockableWrapper(dockable)));
+//		}
+//		else if (root.getPanel() instanceof DockedSimplePanel) {
+//			DockedSimplePanel first = (DockedSimplePanel) root.getPanel();
+//
+//			if (region == DockingRegion.CENTER) {
+//				DockedTabbedPanel tabbedPanel = new DockedTabbedPanel();
+//
+//				tabbedPanel.addPanel(first.getDockable());
+//				tabbedPanel.addPanel(new DockableWrapper(dockable));
+//
+//				root.setPanel(tabbedPanel);
+//			}
+//			else {
+//				DockedSplitPanel split = new DockedSplitPanel();
+//
+//				if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
+//					split.setLeft(first);
+//					split.setRight(new DockedSimplePanel(new DockableWrapper(dockable)));
+//				}
+//				else {
+//					split.setLeft(new DockedSimplePanel(new DockableWrapper(dockable)));
+//					split.setRight(first);
+//				}
+//
+//				if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
+//					split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+//				}
+//				else {
+//					split.setOrientation(JSplitPane.VERTICAL_SPLIT);
+//				}
+//
+//				root.setPanel(split);
+//			}
+//		}
+//		else if (root.getPanel() instanceof DockedTabbedPanel) {
+//			DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) root.getPanel();
+//
+//			tabbedPanel.addPanel(new DockableWrapper(dockable));
+//		}
+	}
+
+	@Override
 	public boolean undock(Dockable dockable) {
 		if (left != null && left.undock(dockable)) {
 			remove(left);
@@ -58,5 +104,15 @@ public class DockedSplitPanel extends DockingPanel {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void replaceChild(DockingPanel child, DockingPanel newChild) {
+		if (left == child) {
+			setLeft(newChild);
+		}
+		else if (right == child) {
+			setRight(newChild);
+		}
 	}
 }
