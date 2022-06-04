@@ -67,7 +67,10 @@ public class FloatListener extends MouseAdapter {
 					dockingHandles.setTarget(dockable);
 					dockingHandles.update(mousePos);
 
-					dockingOverlay.setTarget(dockable);
+					dockingOverlay.setRoot(root);
+					dockingOverlay.setTargetDockable(dockable);
+					dockingOverlay.setTargetRootRegion(dockingHandles.getRootRegion());
+					dockingOverlay.setTargetDockableRegion(dockingHandles.getDockableRegion());
 					dockingOverlay.update(mousePos);
 				}
 			});
@@ -127,6 +130,9 @@ public class FloatListener extends MouseAdapter {
 
 			floatingFrame.dispose();
 			floatingFrame = null;
+
+			dockingHandles.dockingComplete();
+			dockingOverlay.dockingComplete();
 
 			SwingUtilities.invokeLater(() -> {
 				dockingHandles.setVisible(false);

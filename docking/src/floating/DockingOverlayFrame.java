@@ -2,6 +2,7 @@ package floating;
 
 import docking.Dockable;
 import docking.DockingRegion;
+import docking.RootDockingPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,13 +14,16 @@ import java.awt.event.MouseMotionListener;
 public class DockingOverlayFrame extends JFrame implements MouseMotionListener, MouseListener {
 	private static final double REGION_SENSITIVITY = 0.35;
 
-	private Dockable target;
+	private RootDockingPanel rootPanel;
+	private Dockable targetDockable;
 	private Dockable floating;
+	private DockingRegion dockableRegion;
+	private DockingRegion rootRegion;
 
 	public DockingOverlayFrame() {
 		setUndecorated(true);
 
-		setBackground(new Color(0, 0, 100, 30));
+		setBackground(new Color(0, 0, 0, 50));
 
 		setSize(1, 1);
 
@@ -27,66 +31,126 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 		addMouseMotionListener(this);
 	}
 
+	public void dockingComplete() {
+		rootPanel = null;
+		targetDockable = null;
+		floating = null;
+		dockableRegion = null;
+		rootRegion = null;
+
+		setSize(1, 1);
+	}
+
+	public void setRoot(RootDockingPanel panel) {
+		rootPanel = panel;
+
+		setVisible(targetDockable != null || rootPanel != null);
+	}
+
 	public void setFloating(Dockable dockable) {
 		floating = dockable;
 	}
 
-	public void setTarget(Dockable dockable) {
-		target = dockable;
+	public void setTargetDockable(Dockable dockable) {
+		targetDockable = dockable;
 
-		setVisible(target != null);
+		setVisible(targetDockable != null || rootPanel != null);
 	}
 
 	public void update(Point screenPos) {
-		if (target == null) {
-			return;
+		if (rootPanel != null && rootRegion != null) {
+			Point point = rootPanel.getLocation();
+			Dimension size = rootPanel.getSize();
+
+			switch (rootRegion) {
+				case WEST -> size = new Dimension(size.width / 2, size.height);
+				case NORTH -> size = new Dimension(size.width, size.height / 2);
+				case EAST -> {
+					point.x += size.width / 2;
+					size = new Dimension(size.width / 2, size.height);
+				}
+				case SOUTH -> {
+					point.y += size.height / 2;
+					size = new Dimension(size.width, size.height / 2);
+				}
+			}
+
+			SwingUtilities.convertPointToScreen(point, rootPanel);
+
+			setLocation(point);
+			setSize(size);
 		}
+		else if (targetDockable != null && dockableRegion != null) {
+			JComponent component = (JComponent) targetDockable;
 
-		JComponent component = (JComponent) target;
+			Point point = component.getLocation();
+			Dimension size = component.getSize();
 
-		Point framePoint = new Point(screenPos);
-		SwingUtilities.convertPointFromScreen(framePoint, component);
-
-		Point point = (component).getLocation();
-		Dimension size = component.getSize();
-
-		double horizontalPct = (framePoint.x - point.x) / (double) size.width;
-		double verticalPct = (framePoint.y - point.y) / (double) size.height;
-
-		double horizontalEdgeDist = horizontalPct > 0.5 ? 1.0 - horizontalPct : horizontalPct;
-		double verticalEdgeDist = verticalPct > 0.5 ? 1.0 - verticalPct : verticalPct;
-
-		if (horizontalEdgeDist < verticalEdgeDist) {
-			if (horizontalPct < REGION_SENSITIVITY) {
-				size = new Dimension(size.width / 2, size.height);
+			switch (dockableRegion) {
+				case WEST -> size = new Dimension(size.width / 2, size.height);
+				case NORTH -> size = new Dimension(size.width, size.height / 2);
+				case EAST -> {
+					point.x += size.width / 2;
+					size = new Dimension(size.width / 2, size.height);
+				}
+				case SOUTH -> {
+					point.y += size.height / 2;
+					size = new Dimension(size.width, size.height / 2);
+				}
 			}
-			else if (horizontalPct > (1.0 - REGION_SENSITIVITY)) {
-				point.x += size.width / 2;
-				size = new Dimension(size.width / 2, size.height);
-			}
+
+			SwingUtilities.convertPointToScreen(point, component);
+
+			setLocation(point);
+			setSize(size);
 		}
-		else {
-			if (verticalPct < REGION_SENSITIVITY) {
-				size = new Dimension(size.width, size.height / 2);
+		else if (targetDockable != null) {
+			JComponent component = (JComponent) targetDockable;
+
+			Point framePoint = new Point(screenPos);
+			SwingUtilities.convertPointFromScreen(framePoint, component);
+
+			Point point = (component).getLocation();
+			Dimension size = component.getSize();
+
+			double horizontalPct = (framePoint.x - point.x) / (double) size.width;
+			double verticalPct = (framePoint.y - point.y) / (double) size.height;
+
+			double horizontalEdgeDist = horizontalPct > 0.5 ? 1.0 - horizontalPct : horizontalPct;
+			double verticalEdgeDist = verticalPct > 0.5 ? 1.0 - verticalPct : verticalPct;
+
+			if (horizontalEdgeDist < verticalEdgeDist) {
+				if (horizontalPct < REGION_SENSITIVITY) {
+					size = new Dimension(size.width / 2, size.height);
+				}
+				else if (horizontalPct > (1.0 - REGION_SENSITIVITY)) {
+					point.x += size.width / 2;
+					size = new Dimension(size.width / 2, size.height);
+				}
 			}
-			else if (verticalPct > (1.0 - REGION_SENSITIVITY)) {
-				point.y += size.height / 2;
-				size = new Dimension(size.width, size.height / 2);
+			else {
+				if (verticalPct < REGION_SENSITIVITY) {
+					size = new Dimension(size.width, size.height / 2);
+				}
+				else if (verticalPct > (1.0 - REGION_SENSITIVITY)) {
+					point.y += size.height / 2;
+					size = new Dimension(size.width, size.height / 2);
+				}
 			}
+
+			SwingUtilities.convertPointToScreen(point, component);
+
+			setLocation(point);
+			setSize(size);
 		}
-
-		SwingUtilities.convertPointToScreen(point, component);
-
-		setLocation(point);
-		setSize(size);
 	}
 
 	public DockingRegion getRegion(Point screenPos) {
-		if (target == null) {
+		if (targetDockable == null) {
 			return DockingRegion.CENTER;
 		}
 
-		JComponent component = (JComponent) target;
+		JComponent component = (JComponent) targetDockable;
 
 		Point framePoint = new Point(screenPos);
 		SwingUtilities.convertPointFromScreen(framePoint, component);
@@ -99,6 +163,14 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 
 		double horizontalEdgeDist = horizontalPct > 0.5 ? 1.0 - horizontalPct : horizontalPct;
 		double verticalEdgeDist = verticalPct > 0.5 ? 1.0 - verticalPct : verticalPct;
+
+		if (rootRegion != null) {
+			return rootRegion;
+		}
+
+		if (dockableRegion != null) {
+			return dockableRegion;
+		}
 
 		if (horizontalEdgeDist < verticalEdgeDist) {
 			if (horizontalPct < REGION_SENSITIVITY) {
@@ -160,5 +232,13 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		dispatchEvent(e);
+	}
+
+	public void setTargetRootRegion(DockingRegion region) {
+		rootRegion = region;
+	}
+
+	public void setTargetDockableRegion(DockingRegion region) {
+		dockableRegion = region;
 	}
 }

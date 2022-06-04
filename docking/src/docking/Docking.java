@@ -7,6 +7,8 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO we need to check if the window loses focus and kill the floating dialog. other wise strange things happen
+
 // Main class for the docking framework
 // register and dock/undock dockables here
 public class Docking {
