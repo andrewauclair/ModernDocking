@@ -34,7 +34,7 @@ import java.util.Map;
 
 // TODO perspectives/views/layouts, probably calling them "layouts"
 
-// TODO programmatic layout. we can dock/undock pretty well from a user perspective. now we need that ability from the programming side
+// TODO programmatic layout. we can dock/undock pretty well from a user perspective. now we need that ability from the programming side. -- done for root, need to allow the app to get a panel and call its dock/undock functions directly
 
 // Main class for the docking framework
 // register and dock/undock dockables here
@@ -201,7 +201,7 @@ public class Docking {
 			throw new DockableRegistrationFailureException("Frame does not have a RootDockingPanel: " + frame);
 		}
 
-		appendDockable(root, dockable, region);
+		root.dock(dockable, region);
 	}
 
 	public static void dock(Dockable dockable, DockingRegion region) {
@@ -245,50 +245,6 @@ public class Docking {
 //				}
 //				return;
 //			}
-		}
-	}
-
-	private static void appendDockable(RootDockingPanel root, Dockable dockable, DockingRegion region) {
-		if (root.getPanel() == null) {
-			root.setPanel(new DockedSimplePanel(new DockableWrapper(dockable)));
-		}
-		else if (root.getPanel() instanceof DockedSimplePanel) {
-			DockedSimplePanel first = (DockedSimplePanel) root.getPanel();
-
-			if (region == DockingRegion.CENTER) {
-				DockedTabbedPanel tabbedPanel = new DockedTabbedPanel();
-
-				tabbedPanel.addPanel(first.getDockable());
-				tabbedPanel.addPanel(new DockableWrapper(dockable));
-
-				root.setPanel(tabbedPanel);
-			}
-			else {
-				DockedSplitPanel split = new DockedSplitPanel(root);
-
-				if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
-					split.setLeft(first);
-					split.setRight(new DockedSimplePanel(new DockableWrapper(dockable)));
-				}
-				else {
-					split.setLeft(new DockedSimplePanel(new DockableWrapper(dockable)));
-					split.setRight(first);
-				}
-
-				if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
-					split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-				}
-				else {
-					split.setOrientation(JSplitPane.VERTICAL_SPLIT);
-				}
-
-				root.setPanel(split);
-			}
-		}
-		else if (root.getPanel() instanceof DockedTabbedPanel) {
-			DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) root.getPanel();
-
-			tabbedPanel.addPanel(new DockableWrapper(dockable));
 		}
 	}
 

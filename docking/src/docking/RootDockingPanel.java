@@ -118,46 +118,13 @@ public class RootDockingPanel extends DockingPanel implements AncestorListener, 
 
 	@Override
 	public void dock(Dockable dockable, DockingRegion region) {
-		if (panel == null) {
+		// pass docking to panel if it exists
+		// if panel does not exist, create new simple panel
+		if (panel != null) {
+			panel.dock(dockable, region);
+		}
+		else {
 			setPanel(new DockedSimplePanel(new DockableWrapper(dockable)));
-		}
-		else if (panel instanceof DockedSimplePanel) {
-			DockedSimplePanel first = (DockedSimplePanel) panel;
-
-			if (region == DockingRegion.CENTER) {
-				DockedTabbedPanel tabbedPanel = new DockedTabbedPanel();
-
-				tabbedPanel.addPanel(first.getDockable());
-				tabbedPanel.addPanel(new DockableWrapper(dockable));
-
-				setPanel(tabbedPanel);
-			}
-			else {
-				DockedSplitPanel split = new DockedSplitPanel(this);
-
-				if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
-					split.setLeft(first);
-					split.setRight(new DockedSimplePanel(new DockableWrapper(dockable)));
-				}
-				else {
-					split.setLeft(new DockedSimplePanel(new DockableWrapper(dockable)));
-					split.setRight(first);
-				}
-
-				if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
-					split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-				}
-				else {
-					split.setOrientation(JSplitPane.VERTICAL_SPLIT);
-				}
-
-				setPanel(split);
-			}
-		}
-		else if (panel instanceof DockedTabbedPanel) {
-			DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) panel;
-
-			tabbedPanel.addPanel(new DockableWrapper(dockable));
 		}
 
 		revalidate();

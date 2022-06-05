@@ -20,6 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 import docking.Docking;
+import docking.DockingRegion;
 import docking.RootDockingPanel;
 
 import javax.swing.*;
@@ -77,7 +78,7 @@ public class MainFrame extends JFrame {
 		Docking.dock(this, five);
 		Docking.dock(this, six);
 		Docking.dock(this, seven);
-		Docking.dock(this, eight);
+		Docking.dock(this, eight, DockingRegion.SOUTH);
 	}
 
 	public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
