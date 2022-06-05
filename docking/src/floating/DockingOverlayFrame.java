@@ -100,7 +100,7 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 				}
 			}
 
-			SwingUtilities.convertPointToScreen(point, rootPanel);
+			SwingUtilities.convertPointToScreen(point, rootPanel.getParent());
 
 			setLocation(point);
 			setSize(size);

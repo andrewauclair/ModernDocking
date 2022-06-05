@@ -43,6 +43,7 @@ public class DockingHandlesFrame extends JFrame {
 	private RootDockingPanel targetRoot;
 
 	// TODO turn these into icons
+	private final JLabel rootCenter = new JLabel("RC", SwingConstants.CENTER);
 	private final JLabel rootWest = new JLabel("RW", SwingConstants.CENTER);
 	private final JLabel rootNorth = new JLabel("RN", SwingConstants.CENTER);
 	private final JLabel rootEast = new JLabel("RE", SwingConstants.CENTER);
@@ -65,6 +66,7 @@ public class DockingHandlesFrame extends JFrame {
 
 		setUndecorated(true);
 
+		setupRootLabel(rootCenter, DockingRegion.CENTER);
 		setupRootLabel(rootWest, DockingRegion.WEST);
 		setupRootLabel(rootNorth, DockingRegion.NORTH);
 		setupRootLabel(rootEast, DockingRegion.EAST);
@@ -122,21 +124,26 @@ public class DockingHandlesFrame extends JFrame {
 	public void setRoot(JFrame frame, RootDockingPanel root) {
 		targetRoot = root;
 
-		rootWest.setVisible(targetRoot != null);
-		rootNorth.setVisible(targetRoot != null);
-		rootEast.setVisible(targetRoot != null);
-		rootSouth.setVisible(targetRoot != null);
+		rootCenter.setVisible(targetRoot != null && targetRoot.getPanel() == null);
+		rootWest.setVisible(targetRoot != null && targetRoot.getPanel() != null);
+		rootNorth.setVisible(targetRoot != null && targetRoot.getPanel() != null);
+		rootEast.setVisible(targetRoot != null && targetRoot.getPanel() != null);
+		rootSouth.setVisible(targetRoot != null && targetRoot.getPanel() != null);
 
-		if (targetRoot != null && targetDockable != null) {
-			Point location = ((Component) targetDockable).getLocation();
-			Rectangle bounds = targetRoot.getBounds();
-			location.x += bounds.width / 2;
-			location.y += bounds.height / 2;
+		if (targetRoot != null) {
+			Point location = targetRoot.getLocation();
+			Dimension size = targetRoot.getSize();
+			location.x += size.width / 2;
+			location.y += size.height / 2;
 
-			setLocation(rootWest, (int) (location.x - (bounds.width / 2 * ROOT_HANDLE_EDGE_DISTANCE)), location.y);
-			setLocation(rootNorth, location.x, (int) (location.y - (bounds.height / 2 * ROOT_HANDLE_EDGE_DISTANCE)));
-			setLocation(rootEast, (int) (location.x + (bounds.width / 2 * ROOT_HANDLE_EDGE_DISTANCE)), location.y);
-			setLocation(rootSouth, location.x, (int) (location.y + (bounds.height / 2 * ROOT_HANDLE_EDGE_DISTANCE)));
+			SwingUtilities.convertPointToScreen(location, targetRoot.getParent());
+			SwingUtilities.convertPointFromScreen(location, this);
+
+			setLocation(rootCenter, location.x, location.y);
+			setLocation(rootWest, (int) (location.x - (size.width / 2 * ROOT_HANDLE_EDGE_DISTANCE)), location.y);
+			setLocation(rootNorth, location.x, (int) (location.y - (size.height / 2 * ROOT_HANDLE_EDGE_DISTANCE)));
+			setLocation(rootEast, (int) (location.x + (size.width / 2 * ROOT_HANDLE_EDGE_DISTANCE)), location.y);
+			setLocation(rootSouth, location.x, (int) (location.y + (size.height / 2 * ROOT_HANDLE_EDGE_DISTANCE)));
 		}
 	}
 
@@ -152,9 +159,9 @@ public class DockingHandlesFrame extends JFrame {
 
 		if (targetDockable != null) {
 			Point location = ((Component) targetDockable).getLocation();
-			Rectangle bounds = ((Component) targetDockable).getBounds();
-			location.x += bounds.width / 2;
-			location.y += bounds.height / 2;
+			Dimension size = ((Component) targetDockable).getSize();
+			location.x += size.width / 2;
+			location.y += size.height / 2;
 
 			SwingUtilities.convertPointToScreen(location, (Component) targetDockable);
 
@@ -191,7 +198,7 @@ public class DockingHandlesFrame extends JFrame {
 		rootRegion = null;
 
 		for (JLabel label : rootRegions.keySet()) {
-			if (label.getBounds().contains(framePoint)) {
+			if (label.isVisible() && label.getBounds().contains(framePoint)) {
 				rootRegion = rootRegions.get(label);
 				label.setBackground(HANDLE_COLOR_SELECTED);
 			}
@@ -203,7 +210,7 @@ public class DockingHandlesFrame extends JFrame {
 		dockableRegion = null;
 
 		for (JLabel label : dockableRegions.keySet()) {
-			if (label.getBounds().contains(framePoint)) {
+			if (label.isVisible() && label.getBounds().contains(framePoint)) {
 				dockableRegion = dockableRegions.get(label);
 				label.setBackground(HANDLE_COLOR_SELECTED);
 			}

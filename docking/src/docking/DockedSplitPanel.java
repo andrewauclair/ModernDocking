@@ -73,12 +73,9 @@ public class DockedSplitPanel extends DockingPanel {
 
 	@Override
 	public void dock(Dockable dockable, DockingRegion region) {
-//		throw new RuntimeException("Implement docking to split panel if needed");
-
-		if (region == DockingRegion.CENTER) {
-			throw new RuntimeException("Docking to the center of split? does that even make sense?");
-		}
-		else {
+		// docking to the center of a split isn't something we allow
+		// wouldn't be difficult to support, but isn't a complication we want in this framework
+		if (region != DockingRegion.CENTER) {
 			DockedSplitPanel split = new DockedSplitPanel(parent);
 			parent.replaceChild(this, split);
 
@@ -98,52 +95,10 @@ public class DockedSplitPanel extends DockingPanel {
 				split.setOrientation(JSplitPane.VERTICAL_SPLIT);
 			}
 		}
-//		if (root.getPanel() == null) {
-//			root.setPanel(new DockedSimplePanel(new DockableWrapper(dockable)));
-//		}
-//		else if (root.getPanel() instanceof DockedSimplePanel) {
-//			DockedSimplePanel first = (DockedSimplePanel) root.getPanel();
-//
-//			if (region == DockingRegion.CENTER) {
-//				DockedTabbedPanel tabbedPanel = new DockedTabbedPanel();
-//
-//				tabbedPanel.addPanel(first.getDockable());
-//				tabbedPanel.addPanel(new DockableWrapper(dockable));
-//
-//				root.setPanel(tabbedPanel);
-//			}
-//			else {
-//				DockedSplitPanel split = new DockedSplitPanel();
-//
-//				if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
-//					split.setLeft(first);
-//					split.setRight(new DockedSimplePanel(new DockableWrapper(dockable)));
-//				}
-//				else {
-//					split.setLeft(new DockedSimplePanel(new DockableWrapper(dockable)));
-//					split.setRight(first);
-//				}
-//
-//				if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
-//					split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-//				}
-//				else {
-//					split.setOrientation(JSplitPane.VERTICAL_SPLIT);
-//				}
-//
-//				root.setPanel(split);
-//			}
-//		}
-//		else if (root.getPanel() instanceof DockedTabbedPanel) {
-//			DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) root.getPanel();
-//
-//			tabbedPanel.addPanel(new DockableWrapper(dockable));
-//		}
 	}
 
 	@Override
 	public void undock(Dockable dockable) {
-		throw new RuntimeException("Can't undock a split");
 	}
 
 	@Override

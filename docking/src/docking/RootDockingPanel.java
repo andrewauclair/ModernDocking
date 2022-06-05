@@ -32,8 +32,12 @@ import java.awt.event.HierarchyListener;
 public class RootDockingPanel extends DockingPanel implements AncestorListener, HierarchyListener {
 	DockingPanel panel;
 
+	// TODO allow the application to define this empty panel. For example, they might like to display a message along the lines of "dock panels here"
+	private JPanel emptyPanel = new JPanel();
+
 	public RootDockingPanel() {
 		setLayout(new BorderLayout());
+//		emptyPanel.setBackground(Color.blue);
 	}
 
 	public DockingPanel getPanel() {
@@ -55,6 +59,8 @@ public class RootDockingPanel extends DockingPanel implements AncestorListener, 
 	}
 
 	private boolean removeExistingPanel() {
+		remove(emptyPanel);
+
 		if (panel != null) {
 			remove(panel);
 			panel = null;
@@ -146,6 +152,7 @@ public class RootDockingPanel extends DockingPanel implements AncestorListener, 
 	public void removeChild(DockingPanel child) {
 		if (child == panel) {
 			if (removeExistingPanel()) {
+				add(emptyPanel, BorderLayout.CENTER);
 				revalidate();
 				repaint();
 			}

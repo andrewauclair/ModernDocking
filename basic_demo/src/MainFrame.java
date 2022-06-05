@@ -22,6 +22,7 @@ SOFTWARE.
 import docking.Docking;
 import docking.DockingRegion;
 import docking.RootDockingPanel;
+import exception.FailOnThreadViolationRepaintManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -71,20 +72,24 @@ public class MainFrame extends JFrame {
 
 		add(dockingPanel, gbc);
 
+		Docking.setMainFrame(this);
+
 		Docking.dock(this, one);
 		Docking.dock(this, two);
-		Docking.dock(this, three);
-		Docking.dock(this, four);
-		Docking.dock(this, five);
-		Docking.dock(this, six);
-		Docking.dock(this, seven);
-		Docking.dock(this, eight, DockingRegion.SOUTH);
+//		Docking.dock(this, three);
+//		Docking.dock(this, four);
+//		Docking.dock(this, five);
+//		Docking.dock(this, six);
+//		Docking.dock(this, seven);
+//		Docking.dock(this, eight, DockingRegion.SOUTH);
 	}
 
 	public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
 		SwingUtilities.invokeLater(() -> {
+			FailOnThreadViolationRepaintManager.install();
+
 			MainFrame mainFrame = new MainFrame();
 			mainFrame.setVisible(true);
 		});
