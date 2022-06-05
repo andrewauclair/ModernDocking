@@ -25,12 +25,11 @@ import docking.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FloatListener extends MouseAdapter {
+public class FloatListener extends MouseAdapter implements WindowListener {
 	private final DockableWrapper dockable;
 
 	private boolean mouseDragging = false;
@@ -50,14 +49,16 @@ public class FloatListener extends MouseAdapter {
 
 	public FloatListener(DockableWrapper dockable) {
 		this.dockable = dockable;
-
+		
 		this.dockable.getDockable().dragSource().addMouseListener(this);
 		this.dockable.getDockable().dragSource().addMouseMotionListener(this);
+//		this.dockable.getDockable().dragSource().addFocusListener(this);
 	}
 
 	private void removeListeners() {
 		dockable.getDockable().dragSource().removeMouseListener(this);
 		dockable.getDockable().dragSource().removeMouseMotionListener(this);
+//		dockable.getDockable().dragSource().removeFocusListener(this);
 
 		dockable.removedListeners();
 	}
@@ -91,8 +92,8 @@ public class FloatListener extends MouseAdapter {
 					if (frame != null && !framesBroughtToFront.contains(frame)) {
 						frame.toFront();
 						floatingFrame.toFront();
-						dockingOverlay.toFront();
 						dockingHandles.toFront();
+						dockingOverlay.toFront();
 
 						framesBroughtToFront.add(frame);
 					}
@@ -119,11 +120,14 @@ public class FloatListener extends MouseAdapter {
 			dragOffset = e.getPoint();
 
 			floatingFrame = new TempFloatingFrame(dockable.getDockable(), dockable.getDockable().dragSource(), e.getPoint());
-
 			dockingOverlay.setFloating(dockable.getDockable());
 
 			dockingHandles.setVisible(true);
 			dockingOverlay.setVisible(true);
+
+			floatingFrame.addWindowListener(this);
+			dockingHandles.addWindowListener(this);
+			dockingOverlay.addWindowListener(this);
 
 			dockable.getParent().undock(dockable.getDockable());
 
@@ -198,6 +202,38 @@ public class FloatListener extends MouseAdapter {
 				dockingHandles.setVisible(false);
 				dockingOverlay.setVisible(false);
 			});
+		}
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// window was deactivated and another app has taken focus, stop floating the panel, drop it where it is
+		if (e.getOppositeWindow() == null) {
+			dropFloatingPanel();
 		}
 	}
 }

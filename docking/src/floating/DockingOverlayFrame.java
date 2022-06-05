@@ -63,9 +63,11 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 	}
 
 	public void setRoot(RootDockingPanel panel) {
-		rootPanel = panel;
+		if (panel != rootPanel) {
+			rootPanel = panel;
 
-		setVisible(targetDockable != null || rootPanel != null);
+			setVisible(targetDockable != null || rootPanel != null);
+		}
 	}
 
 	public void setFloating(Dockable dockable) {
@@ -73,9 +75,11 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 	}
 
 	public void setTargetDockable(Dockable dockable) {
-		targetDockable = dockable;
+		if (dockable != targetDockable) {
+			targetDockable = dockable;
 
-		setVisible(targetDockable != null || rootPanel != null);
+			setVisible(targetDockable != null || rootPanel != null);
+		}
 	}
 
 	public void update(Point screenPos) {
