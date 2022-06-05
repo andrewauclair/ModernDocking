@@ -29,7 +29,12 @@ import java.awt.*;
 public class FloatingFrame extends JFrame {
 	public FloatingFrame(Dockable dockable, TempFloatingFrame floatingFrame) {
 		setLayout(new BorderLayout());
-		setSize(((JComponent) dockable).getSize());
+
+		Dimension size = ((JComponent) dockable).getSize();
+		size.width += Docking.frameBorderSize.width;
+		size.height += Docking.frameBorderSize.height;
+
+		setSize(size);
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 

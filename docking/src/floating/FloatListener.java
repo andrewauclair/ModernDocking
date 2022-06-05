@@ -37,6 +37,7 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 
 	private Timer floatMouseTimer = null;
 
+	private Point mousePressedLocation = new Point(0, 0);
 	private Point dragOffset = new Point(0, 0);
 	private TempFloatingFrame floatingFrame;
 
@@ -52,27 +53,31 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 		
 		this.dockable.getDockable().dragSource().addMouseListener(this);
 		this.dockable.getDockable().dragSource().addMouseMotionListener(this);
-//		this.dockable.getDockable().dragSource().addFocusListener(this);
 	}
 
 	private void removeListeners() {
 		dockable.getDockable().dragSource().removeMouseListener(this);
 		dockable.getDockable().dragSource().removeMouseMotionListener(this);
-//		dockable.getDockable().dragSource().removeFocusListener(this);
 
 		dockable.removedListeners();
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		mousePressedLocation = e.getPoint();
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		System.out.println("mouseReleased");
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
+//		createTimer();
+	}
+
+	private void createTimer() {
 		// create a timer if we're floating and don't have a timer already
 		if (floating && floatMouseTimer == null) {
 			// update the position of the floating frame every 30ms
@@ -125,13 +130,12 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 			dockingHandles.setVisible(true);
 			dockingOverlay.setVisible(true);
 
-			floatingFrame.addWindowListener(this);
-			dockingHandles.addWindowListener(this);
-			dockingOverlay.addWindowListener(this);
-
 			dockable.getParent().undock(dockable.getDockable());
 
-			Point mousePos = MouseInfo.getPointerInfo().getLocation();
+			// make sure we are still using the mouse press point, not the current mouse position which might not be over the frame anymore
+			Point mousePos = new Point(mousePressedLocation);
+			SwingUtilities.convertPointToScreen(mousePos, dockable.getDockable().dragSource());
+
 			JFrame frame = Docking.findRootAtScreenPos(mousePos);
 			RootDockingPanel root = Docking.rootForFrame(frame);
 
@@ -143,7 +147,13 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 			dockable.getParent().revalidate();
 			dockable.getParent().repaint();
 
+			floatingFrame.addWindowListener(this);
+			dockingHandles.addWindowListener(this);
+			dockingOverlay.addWindowListener(this);
+
 			floating = true;
+
+			createTimer();
 		}
 
 		mouseDragging = true;
