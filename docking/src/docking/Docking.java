@@ -28,7 +28,13 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO we need to check if the window loses focus and kill the floating dialog. other wise strange things happen
+// TODO we need to check if the window loses focus and kill the floating dialog. other wise strange things happen. -- Think I've gotten pretty close on this, requires more testing
+
+// TODO persistence (saving and loading)
+
+// TODO perspectives/views/layouts, probably calling them "layouts"
+
+// TODO programmatic layout. we can dock/undock pretty well from a user perspective. now we need that ability from the programming side
 
 // Main class for the docking framework
 // register and dock/undock dockables here
