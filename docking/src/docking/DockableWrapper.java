@@ -2,17 +2,18 @@ package docking;
 
 import floating.FloatListener;
 
-import javax.swing.*;
-
 public class DockableWrapper {
+	private DockingPanel parent;
 	private final Dockable dockable;
 
 	private FloatListener floatListener;
 	public DockableWrapper(Dockable dockable) {
 		this.dockable = dockable;
-		floatListener = new FloatListener(this
-);
+		floatListener = new FloatListener(this);
+	}
 
+	public void setParent(DockingPanel parent) {
+		this.parent = parent;
 	}
 
 	public Dockable getDockable() {
@@ -34,5 +35,7 @@ public class DockableWrapper {
 		floatListener = null;
 	}
 
-
+	public DockingPanel getParent() {
+		return parent;
+	}
 }

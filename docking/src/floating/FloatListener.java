@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FloatListener extends MouseAdapter {
 	private final DockableWrapper dockable;
@@ -20,6 +22,10 @@ public class FloatListener extends MouseAdapter {
 
 	private static final DockingHandlesFrame dockingHandles = new DockingHandlesFrame();
 	private static final DockingOverlayFrame dockingOverlay = new DockingOverlayFrame();
+
+	private static JFrame frameToDispose = null;
+
+	private static final List<JFrame> framesBroughtToFront = new ArrayList<>();
 
 	public FloatListener(DockableWrapper dockable) {
 		this.dockable = dockable;
@@ -61,6 +67,14 @@ public class FloatListener extends MouseAdapter {
 					JFrame frame = Docking.findRootAtScreenPos(mousePos);
 					RootDockingPanel root = Docking.rootForFrame(frame);
 
+					if (frame != null && !framesBroughtToFront.contains(frame)) {
+						frame.toFront();
+						floatingFrame.toFront();
+						dockingOverlay.toFront();
+						dockingHandles.toFront();
+
+						framesBroughtToFront.add(frame);
+					}
 					Dockable dockable = Docking.findDockableAtScreenPos(mousePos);
 
 					dockingHandles.setRoot(frame, root);
@@ -90,7 +104,19 @@ public class FloatListener extends MouseAdapter {
 			dockingHandles.setVisible(true);
 			dockingOverlay.setVisible(true);
 
-			Docking.undock(dockable.getDockable());
+			dockable.getParent().undock(dockable.getDockable());
+
+			Point mousePos = MouseInfo.getPointerInfo().getLocation();
+			JFrame frame = Docking.findRootAtScreenPos(mousePos);
+			RootDockingPanel root = Docking.rootForFrame(frame);
+
+			if (frame != null && root != null && root.getPanel() == null && Docking.canDisposeFrame(frame)) {
+				frameToDispose = frame;
+				frameToDispose.setVisible(false);
+			}
+
+			dockable.getParent().revalidate();
+			dockable.getParent().repaint();
 
 			floating = true;
 		}
@@ -117,19 +143,26 @@ public class FloatListener extends MouseAdapter {
 
 			Point point = MouseInfo.getPointerInfo().getLocation();
 			JFrame frame = Docking.findRootAtScreenPos(point);
+			RootDockingPanel root = Docking.rootForFrame(frame);
 
 			DockingPanel dockingPanel = Docking.findDockingPanelAtScreenPos(point);
 
 			// Docking will add new listeners, we must remove ours here
 			removeListeners();
 
-			if (frame != null && dockingPanel != null) {
-//				Docking.dock(frame, dockable.getDockable(), dockingOverlay.getRegion(mousePos));
-
+			if (root != null && dockingOverlay.isDockingToRoot()) {
+				root.getPanel().dock(dockable.getDockable(), dockingOverlay.getRegion(mousePos));
+			}
+			else if (frame != null && dockingPanel != null) {
 				dockingPanel.dock(dockable.getDockable(), dockingOverlay.getRegion(mousePos));
 			}
 			else {
 				new FloatingFrame(dockable.getDockable(), floatingFrame);
+			}
+
+			if (frameToDispose != null) {
+				frameToDispose.dispose();
+				frameToDispose = null;
 			}
 
 			floatingFrame.dispose();
@@ -137,6 +170,8 @@ public class FloatListener extends MouseAdapter {
 
 			dockingHandles.dockingComplete();
 			dockingOverlay.dockingComplete();
+
+			framesBroughtToFront.clear();
 
 			SwingUtilities.invokeLater(() -> {
 				dockingHandles.setVisible(false);

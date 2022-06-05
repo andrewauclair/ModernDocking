@@ -18,6 +18,9 @@ public class MainFrame extends JFrame {
 		SimplePanel three = new SimplePanel("three", "three");
 		SimplePanel four = new SimplePanel("four", "four");
 		SimplePanel five = new SimplePanel("five", "five");
+		SimplePanel six = new SimplePanel("six", "six");
+		SimplePanel seven = new SimplePanel("seven", "seven");
+		SimplePanel eight = new SimplePanel("eight", "eight");
 
 		JToolBar toolBar = new JToolBar();
 		toolBar.add(new JButton("Test1"));
@@ -51,6 +54,9 @@ public class MainFrame extends JFrame {
 		Docking.dock(this, three);
 		Docking.dock(this, four);
 		Docking.dock(this, five);
+		Docking.dock(this, six);
+		Docking.dock(this, seven);
+		Docking.dock(this, eight);
 	}
 
 	public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {

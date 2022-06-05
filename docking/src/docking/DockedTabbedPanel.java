@@ -12,8 +12,7 @@ public class DockedTabbedPanel extends DockingPanel {
 	private final JTabbedPane tabs = new JTabbedPane();
 	private DockingPanel parent;
 
-	public DockedTabbedPanel(DockingPanel parent) {
-		this.parent = parent;
+	public DockedTabbedPanel() {
 		setLayout(new BorderLayout());
 
 		tabs.setTabPlacement(JTabbedPane.BOTTOM);
@@ -22,6 +21,8 @@ public class DockedTabbedPanel extends DockingPanel {
 	}
 
 	public void addPanel(DockableWrapper dockable) {
+		dockable.setParent(this);
+
 		panels.add(dockable);
 		tabs.add(dockable.getDockable().tabText(), (JComponent) dockable.getDockable());
 
@@ -38,19 +39,25 @@ public class DockedTabbedPanel extends DockingPanel {
 	}
 
 	@Override
+	public void setParent(DockingPanel parent) {
+		this.parent = parent;
+	}
+
+	@Override
 	public void dock(Dockable dockable, DockingRegion region) {
 		if (region == DockingRegion.CENTER) {
 			addPanel(new DockableWrapper(dockable));
 		}
 		else {
-			DockedSplitPanel split = new DockedSplitPanel();
+			DockedSplitPanel split = new DockedSplitPanel(parent);
+			parent.replaceChild(this, split);
 
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
 				split.setLeft(this);
-				split.setRight(new DockedSimplePanel(split, new DockableWrapper(dockable)));
+				split.setRight(new DockedSimplePanel(new DockableWrapper(dockable)));
 			}
 			else {
-				split.setLeft(new DockedSimplePanel(split, new DockableWrapper(dockable)));
+				split.setLeft(new DockedSimplePanel(new DockableWrapper(dockable)));
 				split.setRight(this);
 			}
 
@@ -60,25 +67,39 @@ public class DockedTabbedPanel extends DockingPanel {
 			else {
 				split.setOrientation(JSplitPane.VERTICAL_SPLIT);
 			}
-
-			parent.replaceChild(this, split);
-			parent = split;
 		}
+
+		revalidate();
+		repaint();
 	}
 
 	@Override
-	public boolean undock(Dockable dockable) {
+	public void undock(Dockable dockable) {
+		DockableWrapper toRemove = null;
+
 		for (DockableWrapper panel : panels) {
 			if (panel.getDockable() == dockable) {
-				removePanel(panel);
-				return true;
+//				removePanel(panel);
+				toRemove = panel;
 			}
 		}
-		return false;
+
+		if (toRemove != null) {
+			removePanel(toRemove);
+		}
+
+		if (tabs.getTabCount() == 1) {
+			parent.replaceChild(this, new DockedSimplePanel(panels.get(0)));
+		}
 	}
 
 	@Override
 	public void replaceChild(DockingPanel child, DockingPanel newChild) {
+
+	}
+
+	@Override
+	public void removeChild(DockingPanel child) {
 
 	}
 

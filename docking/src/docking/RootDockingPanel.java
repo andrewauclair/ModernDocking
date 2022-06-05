@@ -23,6 +23,8 @@ public class RootDockingPanel extends DockingPanel implements AncestorListener, 
 		boolean repaint = removeExistingPanel();
 
 		this.panel = panel;
+		this.panel.setParent(this);
+
 		add(panel, BorderLayout.CENTER);
 
 		if (repaint) {
@@ -32,8 +34,9 @@ public class RootDockingPanel extends DockingPanel implements AncestorListener, 
 	}
 
 	private boolean removeExistingPanel() {
-		if (this.panel != null) {
-			remove(this.panel);
+		if (panel != null) {
+			remove(panel);
+			panel = null;
 			return true;
 		}
 		return false;
@@ -89,30 +92,34 @@ public class RootDockingPanel extends DockingPanel implements AncestorListener, 
 	}
 
 	@Override
+	public void setParent(DockingPanel parent) {
+	}
+
+	@Override
 	public void dock(Dockable dockable, DockingRegion region) {
 		if (panel == null) {
-			panel = new DockedSimplePanel(this, new DockableWrapper(dockable));
+			setPanel(new DockedSimplePanel(new DockableWrapper(dockable)));
 		}
 		else if (panel instanceof DockedSimplePanel) {
 			DockedSimplePanel first = (DockedSimplePanel) panel;
 
 			if (region == DockingRegion.CENTER) {
-				DockedTabbedPanel tabbedPanel = new DockedTabbedPanel(this);
+				DockedTabbedPanel tabbedPanel = new DockedTabbedPanel();
 
 				tabbedPanel.addPanel(first.getDockable());
 				tabbedPanel.addPanel(new DockableWrapper(dockable));
 
-				panel = tabbedPanel;
+				setPanel(tabbedPanel);
 			}
 			else {
-				DockedSplitPanel split = new DockedSplitPanel();
+				DockedSplitPanel split = new DockedSplitPanel(this);
 
 				if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
 					split.setLeft(first);
-					split.setRight(new DockedSimplePanel(split, new DockableWrapper(dockable)));
+					split.setRight(new DockedSimplePanel(new DockableWrapper(dockable)));
 				}
 				else {
-					split.setLeft(new DockedSimplePanel(split, new DockableWrapper(dockable)));
+					split.setLeft(new DockedSimplePanel(new DockableWrapper(dockable)));
 					split.setRight(first);
 				}
 
@@ -123,7 +130,7 @@ public class RootDockingPanel extends DockingPanel implements AncestorListener, 
 					split.setOrientation(JSplitPane.VERTICAL_SPLIT);
 				}
 
-				panel = split;
+				setPanel(split);
 			}
 		}
 		else if (panel instanceof DockedTabbedPanel) {
@@ -131,17 +138,29 @@ public class RootDockingPanel extends DockingPanel implements AncestorListener, 
 
 			tabbedPanel.addPanel(new DockableWrapper(dockable));
 		}
+
+		revalidate();
+		repaint();
 	}
 
 	@Override
-	public boolean undock(Dockable dockable) {
-		return panel.undock(dockable);
+	public void undock(Dockable dockable) {
 	}
 
 	@Override
 	public void replaceChild(DockingPanel child, DockingPanel newChild) {
 		if (panel == child) {
 			setPanel(newChild);
+		}
+	}
+
+	@Override
+	public void removeChild(DockingPanel child) {
+		if (child == panel) {
+			if (removeExistingPanel()) {
+				revalidate();
+				repaint();
+			}
 		}
 	}
 }

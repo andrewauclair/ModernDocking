@@ -9,8 +9,10 @@ public class DockedSplitPanel extends DockingPanel {
 	private DockingPanel right = null;
 
 	private final JSplitPane splitPane = new JSplitPane();
+	private DockingPanel parent;
 
-	public DockedSplitPanel() {
+	public DockedSplitPanel(DockingPanel parent) {
+		this.parent = parent;
 		setLayout(new BorderLayout());
 
 		splitPane.setContinuousLayout(true);
@@ -25,6 +27,7 @@ public class DockedSplitPanel extends DockingPanel {
 
 	public void setLeft(DockingPanel panel) {
 		left = panel;
+		left.setParent(this);
 		splitPane.setLeftComponent(panel);
 	}
 
@@ -34,6 +37,7 @@ public class DockedSplitPanel extends DockingPanel {
 
 	public void setRight(DockingPanel panel) {
 		right = panel;
+		right.setParent(this);
 		splitPane.setRightComponent(panel);
 	}
 
@@ -46,8 +50,37 @@ public class DockedSplitPanel extends DockingPanel {
 	}
 
 	@Override
+	public void setParent(DockingPanel parent) {
+		this.parent = parent;
+	}
+
+	@Override
 	public void dock(Dockable dockable, DockingRegion region) {
-		throw new RuntimeException("Implement docking to split panel if needed");
+//		throw new RuntimeException("Implement docking to split panel if needed");
+
+		if (region == DockingRegion.CENTER) {
+			throw new RuntimeException("Docking to the center of split? does that even make sense?");
+		}
+		else {
+			DockedSplitPanel split = new DockedSplitPanel(parent);
+			parent.replaceChild(this, split);
+
+			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
+				split.setLeft(this);
+				split.setRight(new DockedSimplePanel(new DockableWrapper(dockable)));
+			}
+			else {
+				split.setLeft(new DockedSimplePanel(new DockableWrapper(dockable)));
+				split.setRight(this);
+			}
+
+			if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
+				split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+			}
+			else {
+				split.setOrientation(JSplitPane.VERTICAL_SPLIT);
+			}
+		}
 //		if (root.getPanel() == null) {
 //			root.setPanel(new DockedSimplePanel(new DockableWrapper(dockable)));
 //		}
@@ -92,18 +125,8 @@ public class DockedSplitPanel extends DockingPanel {
 	}
 
 	@Override
-	public boolean undock(Dockable dockable) {
-		if (left != null && left.undock(dockable)) {
-			remove(left);
-			left = null;
-			return true;
-		}
-		else if (right != null && right.undock(dockable)) {
-			remove(right);
-			right = null;
-			return true;
-		}
-		return false;
+	public void undock(Dockable dockable) {
+		throw new RuntimeException("Can't undock a split");
 	}
 
 	@Override
@@ -113,6 +136,16 @@ public class DockedSplitPanel extends DockingPanel {
 		}
 		else if (right == child) {
 			setRight(newChild);
+		}
+	}
+
+	@Override
+	public void removeChild(DockingPanel child) {
+		if (left == child) {
+			parent.replaceChild(this, right);
+		}
+		else if (right == child) {
+			parent.replaceChild(this, left);
 		}
 	}
 }

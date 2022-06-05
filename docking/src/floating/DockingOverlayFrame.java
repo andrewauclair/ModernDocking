@@ -146,6 +146,14 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 	}
 
 	public DockingRegion getRegion(Point screenPos) {
+		if (rootRegion != null) {
+			return rootRegion;
+		}
+
+		if (dockableRegion != null) {
+			return dockableRegion;
+		}
+
 		if (targetDockable == null) {
 			return DockingRegion.CENTER;
 		}
@@ -163,14 +171,6 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 
 		double horizontalEdgeDist = horizontalPct > 0.5 ? 1.0 - horizontalPct : horizontalPct;
 		double verticalEdgeDist = verticalPct > 0.5 ? 1.0 - verticalPct : verticalPct;
-
-		if (rootRegion != null) {
-			return rootRegion;
-		}
-
-		if (dockableRegion != null) {
-			return dockableRegion;
-		}
 
 		if (horizontalEdgeDist < verticalEdgeDist) {
 			if (horizontalPct < REGION_SENSITIVITY) {
@@ -232,6 +232,10 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		dispatchEvent(e);
+	}
+
+	public boolean isDockingToRoot() {
+		return rootRegion != null;
 	}
 
 	public void setTargetRootRegion(DockingRegion region) {

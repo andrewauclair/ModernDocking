@@ -20,6 +20,12 @@ public class Docking {
 
 	private static JFrame frameToDispose = null;
 
+	private static JFrame mainFrame = null;
+
+	public static void setMainFrame(JFrame frame) {
+		mainFrame = frame;
+	}
+
 	public static void registerDockable(Dockable dockable) {
 		if (dockables.containsKey(dockable.persistentID())) {
 			throw new DockableRegistrationFailureException("Registration for Dockable failed. Persistent ID " + dockable.persistentID() + " already exists.");
@@ -78,7 +84,7 @@ public class Docking {
 			Point point = new Point(frame.getLocation());
 			Rectangle bounds = new Rectangle(point.x, point.y, frame.getWidth(), frame.getHeight());
 
-			if (bounds.contains(screenPos)) {
+			if (bounds.contains(screenPos) && frame.isVisible()) {
 				return frame;
 			}
 		}
@@ -180,50 +186,50 @@ public class Docking {
 		for (JFrame frame : rootPanels.keySet()) {
 			RootDockingPanel root = rootPanels.get(frame);
 
-			if (root.undock(dockable)) {
-				if (root.getPanel() instanceof DockedSimplePanel) {
-					rootPanels.remove(frame);
-
-					// don't dispose it here, or it'll mess up the mouseMove for FloatListener
-					frameToDispose = frame;
-					frame.setVisible(false);
-				}
-				else if (root.getPanel() instanceof DockedSplitPanel) {
-					DockedSplitPanel splitPanel = (DockedSplitPanel) root.getPanel();
-
-					// no longer need the split, get the panel that's still left and turn it into a simple panel
-					if (!splitPanel.hasDockables()) {
-						if (splitPanel.getLeft() != null) {
-							root.setPanel(splitPanel.getLeft());
-						}
-						else if (splitPanel.getRight() != null) {
-							root.setPanel(splitPanel.getRight());
-						}
-					}
-				}
-				else if (root.getPanel() instanceof DockedTabbedPanel) {
-					DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) root.getPanel();
-
-					// no longer need tabs, switch back to DockedSimplePanel
-					if (tabbedPanel.getPanelCount() == 1) {
-						root.setPanel(new DockedSimplePanel(root, tabbedPanel.getPanel(0)));
-					}
-
-				}
-				return;
-			}
+//			if (root.undock(dockable)) {
+//				if (root.getPanel() instanceof DockedSimplePanel) {
+//					rootPanels.remove(frame);
+//
+//					// don't dispose it here, or it'll mess up the mouseMove for FloatListener
+//					frameToDispose = frame;
+//					frame.setVisible(false);
+//				}
+//				else if (root.getPanel() instanceof DockedSplitPanel) {
+//					DockedSplitPanel splitPanel = (DockedSplitPanel) root.getPanel();
+//
+//					// no longer need the split, get the panel that's still left and turn it into a simple panel
+//					if (!splitPanel.hasDockables()) {
+//						if (splitPanel.getLeft() != null) {
+//							root.setPanel(splitPanel.getLeft());
+//						}
+//						else if (splitPanel.getRight() != null) {
+//							root.setPanel(splitPanel.getRight());
+//						}
+//					}
+//				}
+//				else if (root.getPanel() instanceof DockedTabbedPanel) {
+//					DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) root.getPanel();
+//
+//					// no longer need tabs, switch back to DockedSimplePanel
+//					if (tabbedPanel.getPanelCount() == 1) {
+//						root.setPanel(new DockedSimplePanel(root, tabbedPanel.getPanel(0)));
+//					}
+//
+//				}
+//				return;
+//			}
 		}
 	}
 
 	private static void appendDockable(RootDockingPanel root, Dockable dockable, DockingRegion region) {
 		if (root.getPanel() == null) {
-			root.setPanel(new DockedSimplePanel(root, new DockableWrapper(dockable)));
+			root.setPanel(new DockedSimplePanel(new DockableWrapper(dockable)));
 		}
 		else if (root.getPanel() instanceof DockedSimplePanel) {
 			DockedSimplePanel first = (DockedSimplePanel) root.getPanel();
 
 			if (region == DockingRegion.CENTER) {
-				DockedTabbedPanel tabbedPanel = new DockedTabbedPanel(root);
+				DockedTabbedPanel tabbedPanel = new DockedTabbedPanel();
 
 				tabbedPanel.addPanel(first.getDockable());
 				tabbedPanel.addPanel(new DockableWrapper(dockable));
@@ -231,14 +237,14 @@ public class Docking {
 				root.setPanel(tabbedPanel);
 			}
 			else {
-				DockedSplitPanel split = new DockedSplitPanel();
+				DockedSplitPanel split = new DockedSplitPanel(root);
 
 				if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
 					split.setLeft(first);
-					split.setRight(new DockedSimplePanel(split, new DockableWrapper(dockable)));
+					split.setRight(new DockedSimplePanel(new DockableWrapper(dockable)));
 				}
 				else {
-					split.setLeft(new DockedSimplePanel(split, new DockableWrapper(dockable)));
+					split.setLeft(new DockedSimplePanel(new DockableWrapper(dockable)));
 					split.setRight(first);
 				}
 
@@ -257,5 +263,9 @@ public class Docking {
 
 			tabbedPanel.addPanel(new DockableWrapper(dockable));
 		}
+	}
+
+	public static boolean canDisposeFrame(JFrame frame) {
+		return frame != mainFrame;
 	}
 }
