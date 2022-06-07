@@ -42,17 +42,6 @@ public class DockableWrapper {
 		return dockable;
 	}
 
-	public void docked() {
-//		floatListener = new FloatListener(dockable);
-	}
-
-	public void undocked() {
-//		if (floatListener != null) {
-//			floatListener.removeListeners();
-//			floatListener = null;
-//		}
-	}
-
 	public void removedListeners() {
 		floatListener = null;
 	}

@@ -37,8 +37,6 @@ public class DockedSimplePanel extends DockingPanel {
 		this.dockable = dockable;
 
 		add((JComponent) dockable.getDockable(), BorderLayout.CENTER);
-
-		dockable.docked();
 	}
 
 	public DockableWrapper getDockable() {
@@ -93,8 +91,6 @@ public class DockedSimplePanel extends DockingPanel {
 		if (this.dockable.getDockable() == dockable) {
 //			System.out.println("Undocked panel from DockedSimplePanel");
 			remove((JComponent) this.dockable.getDockable());
-
-			this.dockable.undocked();
 
 			parent.removeChild(this);
 

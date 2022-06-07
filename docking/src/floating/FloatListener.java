@@ -117,7 +117,6 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 
 					if (frame != currentTargetFrame) {
 						changeFrameOverlays(frame);
-//						currentTargetFrame = frame;
 					}
 
 					// update overlays every DELAY_WINDOW_POSITIONING * RATE_TO_UPDATE_OVERLAYS ms

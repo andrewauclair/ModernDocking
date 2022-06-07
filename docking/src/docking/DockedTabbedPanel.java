@@ -48,15 +48,11 @@ public class DockedTabbedPanel extends DockingPanel {
 		tabs.add(dockable.getDockable().tabText(), (JComponent) dockable.getDockable());
 
 		tabs.setSelectedIndex(tabs.getTabCount() - 1);
-
-		dockable.docked();
 	}
 
 	public void removePanel(DockableWrapper dockable) {
 		panels.remove(dockable);
 		tabs.remove((JComponent) dockable.getDockable());
-
-		dockable.undocked();
 	}
 
 	@Override

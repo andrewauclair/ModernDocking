@@ -44,10 +44,6 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 	private DockingRegion dockableRegion;
 	private DockingRegion rootRegion;
 
-//	private RootDockingPanel nextRootTarget;
-//	private boolean waitingForInvisible = false;
-//	private boolean waitingForResize = false;
-
 	public DockingOverlayFrame(JFrame frame, RootDockingPanel root) {
 		setType(Type.UTILITY);
 		setUndecorated(true);
@@ -62,49 +58,21 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 
 		addMouseListener(this);
 		addMouseMotionListener(this);
-//		addComponentListener(this);
 
 		root.addComponentListener(this);
-	}
-
-	public JFrame getFrame() {
-		return frame;
 	}
 
 	public void setActive(boolean active) {
 		setBackground(active ? VISIBLE_BACKGROUND : INVISIBLE_BACKGROUND);
 	}
 
-	public void dockingComplete() {
-		reset();
-	}
-
 	private void reset() {
-//		targetRoot = null;
 		targetDockable = null;
 		floating = null;
 		dockableRegion = null;
 		rootRegion = null;
 
 		setSize(1, 1);
-	}
-
-	public void setRoot(RootDockingPanel panel) {
-		if (panel != targetRoot) {
-//			targetRoot = panel;
-
-//			waitingForInvisible = true;
-//			setVisible(false);
-			setVisible(targetDockable != null || targetRoot != null);
-		}
-	}
-
-	public RootDockingPanel getTargetRoot() {
-		return targetRoot;
-	}
-
-	public Dockable getFloating() {
-		return floating;
 	}
 
 	public void setFloating(Dockable dockable) {
@@ -120,10 +88,6 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 	}
 
 	public void update(Point screenPos) {
-//		if (waitingForInvisible) {
-//			return;
-//		}
-
 		if (targetRoot != null && rootRegion != null) {
 			Point point = targetRoot.getLocation();
 			Dimension size = targetRoot.getSize();
@@ -266,10 +230,6 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 			return dockableRegion;
 		}
 
-//		if (targetDockable == null) {
-//			return DockingRegion.CENTER;
-//		}
-
 		JComponent component = targetDockable != null ? (JComponent) targetDockable : targetRoot;
 
 		Point framePoint = new Point(screenPos);
@@ -360,10 +320,6 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-//		if (waitingForResize) {
-//			waitingForResize = false;
-//			setVisible(targetDockable != null || targetRoot != null);
-//		}
 		setSize(targetRoot.getWidth(), targetRoot.getHeight());
 	}
 
@@ -381,15 +337,5 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 
 	@Override
 	public void componentHidden(ComponentEvent e) {
-//		if (waitingForInvisible) {
-////			System.out.println("Component has been hidden");
-//
-//			waitingForInvisible = false;
-//
-//			waitingForResize = true;
-//
-//			Point mousePos = MouseInfo.getPointerInfo().getLocation();
-//			update(mousePos);
-//		}
 	}
 }

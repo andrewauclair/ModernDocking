@@ -48,7 +48,6 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 	private Dockable targetDockable;
 	private RootDockingPanel targetRoot;
 
-
 	// TODO turn these into icons
 	private final JLabel rootCenter = new JLabel("RC", SwingConstants.CENTER);
 	private final JLabel rootWest = new JLabel("RW", SwingConstants.CENTER);
@@ -67,9 +66,6 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 
 	private DockingRegion rootRegion = null;
 	private DockingRegion dockableRegion = null;
-
-	private int updatesToSkip = 0;
-	private boolean skippingUpdates = false;
 
 	public DockingHandlesFrame(JFrame frame, RootDockingPanel root) {
 		setLayout(null);
@@ -98,10 +94,6 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 		setBackground(new Color(0, 0, 0, 0));
 	}
 
-	public JFrame getFrame() {
-		return frame;
-	}
-
 	public void setActive(boolean active) {
 		setVisible(active);
 	}
@@ -115,7 +107,6 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 		label.setBounds(0, 0, HANDLE_ICON_SIZE, HANDLE_ICON_SIZE);
 		label.setOpaque(true);
 		label.setBackground(HANDLE_COLOR_NOT_SELECTED);
-//		label.addPropertyChangeListener(this);
 
 		rootRegions.put(label, region);
 
@@ -135,40 +126,6 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 		dockableRegions.put(label, region);
 
 		add(label);
-	}
-
-	public void dockingComplete() {
-		targetDockable = null;
-		targetRoot = null;
-		rootRegion = null;
-		dockableRegion = null;
-
-		for (JLabel label : rootRegions.keySet()) {
-			label.setVisible(false);
-		}
-
-		for (JLabel label : dockableRegions.keySet()) {
-			label.setVisible(false);
-		}
-	}
-
-	// set the root of the target frame. Allows the user to always dock to the outer edges of the frame
-	public void setRoot(JFrame frame, RootDockingPanel root) {
-		if (root == targetRoot) {
-			return;
-		}
-
-		targetRoot = root;
-
-		rootCenter.setVisible(false);
-		rootWest.setVisible(false);
-		rootNorth.setVisible(false);
-		rootEast.setVisible(false);
-		rootSouth.setVisible(false);
-	}
-
-	public RootDockingPanel getTargetRoot() {
-		return targetRoot;
 	}
 
 	private void setRootHandleLocations() {

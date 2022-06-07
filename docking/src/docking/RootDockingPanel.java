@@ -29,7 +29,7 @@ import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 
 // only class that should be used by clients
-public class RootDockingPanel extends DockingPanel implements AncestorListener, HierarchyListener {
+public class RootDockingPanel extends DockingPanel {
 	DockingPanel panel;
 
 	// TODO allow the application to define this empty panel. For example, they might like to display a message along the lines of "dock panels here"
@@ -37,7 +37,6 @@ public class RootDockingPanel extends DockingPanel implements AncestorListener, 
 
 	public RootDockingPanel() {
 		setLayout(new BorderLayout());
-//		emptyPanel.setBackground(Color.blue);
 	}
 
 	public DockingPanel getPanel() {
@@ -70,52 +69,11 @@ public class RootDockingPanel extends DockingPanel implements AncestorListener, 
 	}
 
 	@Override
-	public void addNotify() {
-		super.addNotify();
-
-		addAncestorListener(this);
-		addHierarchyListener(this);
-	}
-
-	@Override
 	public void removeNotify() {
-		removeAncestorListener(this);
-
 		JFrame frame = (JFrame) SwingUtilities.getRoot(this);
 		Docking.deregisterDockingPanel(frame);
 
 		super.removeNotify();
-	}
-
-
-	@Override
-	public void ancestorAdded(AncestorEvent event) {
-		JFrame frame = (JFrame) SwingUtilities.getRoot(this);
-//		Docking.registerDockingPanel(this, frame);
-	}
-
-	@Override
-	public void ancestorRemoved(AncestorEvent event) {
-	}
-
-	@Override
-	public void ancestorMoved(AncestorEvent event) {
-	}
-
-	@Override
-	public void hierarchyChanged(HierarchyEvent e) {
-		if ( (e.getChangeFlags() & HierarchyEvent.PARENT_CHANGED) != 0) {
-			if (getParent() == e.getChangedParent()) {
-				System.out.println("*** Added to parent " + e.getChangedParent());
-
-				if (getParent() instanceof JFrame) {
-					Docking.registerDockingPanel(this, (JFrame) getParent());
-				}
-				else {
-					// TODO throw an exception, currently we only support JFrame
-				}
-			}
-		}
 	}
 
 	@Override
