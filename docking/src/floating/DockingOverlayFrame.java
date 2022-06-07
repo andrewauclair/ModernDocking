@@ -27,33 +27,58 @@ import docking.RootDockingPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 
 // displays the overlay highlight of where the panel will be docked
-public class DockingOverlayFrame extends JFrame implements MouseMotionListener, MouseListener {
+public class DockingOverlayFrame extends JFrame implements MouseMotionListener, MouseListener, ComponentListener {
 	private static final double REGION_SENSITIVITY = 0.35;
+	private static final Color INVISIBLE_BACKGROUND = new Color(0, 0, 0, 0);
+	private static final Color VISIBLE_BACKGROUND = new Color(0, 0, 0, 50);
 
-	private RootDockingPanel rootPanel;
+	private final JFrame frame;
+	private final RootDockingPanel targetRoot;
+
 	private Dockable targetDockable;
 	private Dockable floating;
+
 	private DockingRegion dockableRegion;
 	private DockingRegion rootRegion;
 
-	public DockingOverlayFrame() {
+//	private RootDockingPanel nextRootTarget;
+//	private boolean waitingForInvisible = false;
+//	private boolean waitingForResize = false;
+
+	public DockingOverlayFrame(JFrame frame, RootDockingPanel root) {
+		this.frame = frame;
+		targetRoot = root;
+
 		setUndecorated(true);
 
-		setBackground(new Color(0, 0, 0, 50));
+		setBackground(INVISIBLE_BACKGROUND);
 
-		setSize(1, 1);
+		setSize(root.getWidth(), root.getHeight());
 
 		addMouseListener(this);
 		addMouseMotionListener(this);
+//		addComponentListener(this);
+
+		root.addComponentListener(this);
+	}
+
+	public JFrame getFrame() {
+		return frame;
+	}
+
+	public void setActive(boolean active) {
+		setBackground(active ? VISIBLE_BACKGROUND : INVISIBLE_BACKGROUND);
 	}
 
 	public void dockingComplete() {
-		rootPanel = null;
+		reset();
+	}
+
+	private void reset() {
+//		targetRoot = null;
 		targetDockable = null;
 		floating = null;
 		dockableRegion = null;
@@ -63,11 +88,21 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 	}
 
 	public void setRoot(RootDockingPanel panel) {
-		if (panel != rootPanel) {
-			rootPanel = panel;
+		if (panel != targetRoot) {
+//			targetRoot = panel;
 
-			setVisible(targetDockable != null || rootPanel != null);
+//			waitingForInvisible = true;
+//			setVisible(false);
+			setVisible(targetDockable != null || targetRoot != null);
 		}
+	}
+
+	public RootDockingPanel getTargetRoot() {
+		return targetRoot;
+	}
+
+	public Dockable getFloating() {
+		return floating;
 	}
 
 	public void setFloating(Dockable dockable) {
@@ -78,14 +113,18 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 		if (dockable != targetDockable) {
 			targetDockable = dockable;
 
-			setVisible(targetDockable != null || rootPanel != null);
+			setVisible(targetDockable != null || targetRoot != null);
 		}
 	}
 
 	public void update(Point screenPos) {
-		if (rootPanel != null && rootRegion != null) {
-			Point point = rootPanel.getLocation();
-			Dimension size = rootPanel.getSize();
+//		if (waitingForInvisible) {
+//			return;
+//		}
+
+		if (targetRoot != null && rootRegion != null) {
+			Point point = targetRoot.getLocation();
+			Dimension size = targetRoot.getSize();
 
 			switch (rootRegion) {
 				case WEST -> size = new Dimension(size.width / 2, size.height);
@@ -100,7 +139,7 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 				}
 			}
 
-			SwingUtilities.convertPointToScreen(point, rootPanel.getParent());
+			SwingUtilities.convertPointToScreen(point, targetRoot.getParent());
 
 			setLocation(point);
 			setSize(size);
@@ -168,6 +207,52 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 			setLocation(point);
 			setSize(size);
 		}
+		else if (targetRoot != null) {
+			JComponent component = targetRoot;
+
+			Point framePoint = new Point(screenPos);
+			SwingUtilities.convertPointFromScreen(framePoint, component);
+
+			Point point = (component).getLocation();
+			Dimension size = component.getSize();
+
+			double horizontalPct = (framePoint.x - point.x) / (double) size.width;
+			double verticalPct = (framePoint.y - point.y) / (double) size.height;
+
+			double horizontalEdgeDist = horizontalPct > 0.5 ? 1.0 - horizontalPct : horizontalPct;
+			double verticalEdgeDist = verticalPct > 0.5 ? 1.0 - verticalPct : verticalPct;
+
+			if (horizontalEdgeDist < verticalEdgeDist) {
+				if (horizontalPct < REGION_SENSITIVITY) {
+					size = new Dimension(size.width / 2, size.height);
+				}
+				else if (horizontalPct > (1.0 - REGION_SENSITIVITY)) {
+					point.x += size.width / 2;
+					size = new Dimension(size.width / 2, size.height);
+				}
+			}
+			else {
+				if (verticalPct < REGION_SENSITIVITY) {
+					size = new Dimension(size.width, size.height / 2);
+				}
+				else if (verticalPct > (1.0 - REGION_SENSITIVITY)) {
+					point.y += size.height / 2;
+					size = new Dimension(size.width, size.height / 2);
+				}
+			}
+
+			SwingUtilities.convertPointToScreen(point, component);
+
+			setLocation(point);
+			setSize(size);
+		}
+		else {
+			// not over anything, reset all the overlay data
+			setSize(1, 1);
+		}
+
+		revalidate();
+		repaint();
 	}
 
 	public DockingRegion getRegion(Point screenPos) {
@@ -179,11 +264,11 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 			return dockableRegion;
 		}
 
-		if (targetDockable == null) {
-			return DockingRegion.CENTER;
-		}
+//		if (targetDockable == null) {
+//			return DockingRegion.CENTER;
+//		}
 
-		JComponent component = (JComponent) targetDockable;
+		JComponent component = targetDockable != null ? (JComponent) targetDockable : targetRoot;
 
 		Point framePoint = new Point(screenPos);
 		SwingUtilities.convertPointFromScreen(framePoint, component);
@@ -269,5 +354,40 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 
 	public void setTargetDockableRegion(DockingRegion region) {
 		dockableRegion = region;
+	}
+
+	@Override
+	public void componentResized(ComponentEvent e) {
+//		if (waitingForResize) {
+//			waitingForResize = false;
+//			setVisible(targetDockable != null || targetRoot != null);
+//		}
+		setSize(targetRoot.getWidth(), targetRoot.getHeight());
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent e) {
+		Point point = targetRoot.getLocation();
+		SwingUtilities.convertPointToScreen(point, targetRoot.getParent());
+
+		setLocation(point);
+	}
+
+	@Override
+	public void componentShown(ComponentEvent e) {
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent e) {
+//		if (waitingForInvisible) {
+////			System.out.println("Component has been hidden");
+//
+//			waitingForInvisible = false;
+//
+//			waitingForResize = true;
+//
+//			Point mousePos = MouseInfo.getPointerInfo().getLocation();
+//			update(mousePos);
+//		}
 	}
 }

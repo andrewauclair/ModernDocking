@@ -25,9 +25,14 @@ import docking.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FloatListener extends MouseAdapter implements WindowListener {
 	private final DockableWrapper dockable;
@@ -41,16 +46,19 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 	private Point dragOffset = new Point(0, 0);
 	private TempFloatingFrame floatingFrame;
 
-	private static final DockingHandlesFrame dockingHandles = new DockingHandlesFrame();
-	private static final DockingOverlayFrame dockingOverlay = new DockingOverlayFrame();
+	private static final Map<JFrame, DockingHandlesFrame> dockingHandles = new HashMap<>();
+	private static final Map<JFrame, DockingOverlayFrame> dockingOverlays = new HashMap<>();
+
+	private DockingHandlesFrame activeDockingHandles = null;
+	private DockingOverlayFrame activeDockingOverlay = null;
 
 	private static JFrame frameToDispose = null;
 
-	private static final List<JFrame> framesBroughtToFront = new ArrayList<>();
+	private final List<JFrame> framesBroughtToFront = new ArrayList<>();
 
 	public FloatListener(DockableWrapper dockable) {
 		this.dockable = dockable;
-		
+
 		this.dockable.getDockable().dragSource().addMouseListener(this);
 		this.dockable.getDockable().dragSource().addMouseMotionListener(this);
 	}
@@ -62,6 +70,11 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 		dockable.removedListeners();
 	}
 
+	public static void registerDockingFrame(JFrame frame, RootDockingPanel root) {
+		dockingHandles.put(frame, new DockingHandlesFrame(frame, root));
+		dockingOverlays.put(frame, new DockingOverlayFrame(frame, root));
+	}
+
 	@Override
 	public void mousePressed(MouseEvent e) {
 		mousePressedLocation = e.getPoint();
@@ -69,50 +82,119 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		System.out.println("mouseReleased");
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-//		createTimer();
 	}
+
+	private static int timerCount = 0;
+
+	private JFrame currentTargetFrame = null;
 
 	private void createTimer() {
 		// create a timer if we're floating and don't have a timer already
 		if (floating && floatMouseTimer == null) {
+			final int DELAY_WINDOW_POSITIONING = 30;
+			final int RATE_TO_UPDATE_OVERLAYS = 6;
+
 			// update the position of the floating frame every 30ms
-			floatMouseTimer = new Timer(30, e1 -> {
+			floatMouseTimer = new Timer(DELAY_WINDOW_POSITIONING, e1 -> {
+				long startTime = System.nanoTime();
+
+				timerCount = (timerCount + 1) % RATE_TO_UPDATE_OVERLAYS;
+
 				if (floating) {
 					Point mousePos = MouseInfo.getPointerInfo().getLocation();
 
-					Point framePos = MouseInfo.getPointerInfo().getLocation();
+					Point framePos = new Point(mousePos);
 					framePos.x -= dragOffset.x;
 					framePos.y -= dragOffset.y;
 
 					floatingFrame.setLocation(framePos);
 
 					JFrame frame = Docking.findRootAtScreenPos(mousePos);
-					RootDockingPanel root = Docking.rootForFrame(frame);
 
-					if (frame != null && !framesBroughtToFront.contains(frame)) {
-						frame.toFront();
-						floatingFrame.toFront();
-						dockingHandles.toFront();
-						dockingOverlay.toFront();
+					// update overlays every DELAY_WINDOW_POSITIONING * RATE_TO_UPDATE_OVERLAYS ms
+					if (timerCount == 0 || frame != currentTargetFrame) {
+						currentTargetFrame = frame;
 
-						framesBroughtToFront.add(frame);
+						if (frame != null && !framesBroughtToFront.contains(frame)) {
+							frame.toFront();
+							floatingFrame.toFront();
+
+							if (activeDockingOverlay != null) {
+								activeDockingOverlay.toFront();
+							}
+							if (activeDockingHandles != null) {
+								activeDockingHandles.toFront();
+							}
+
+							framesBroughtToFront.add(frame);
+						}
+						Dockable dockable = Docking.findDockableAtScreenPos(mousePos);
+
+						if (frame == null && activeDockingOverlay != null) {
+							activeDockingOverlay.setActive(false);
+							activeDockingOverlay = null;
+						}
+						else if (frame != null && activeDockingOverlay == null) {
+							activeDockingOverlay = dockingOverlays.get(frame);
+							activeDockingOverlay.setActive(true);
+						}
+
+						if (activeDockingOverlay != null && frame != activeDockingOverlay.getFrame()) {
+							activeDockingOverlay.setActive(false);
+							activeDockingOverlay = dockingOverlays.get(frame);
+							activeDockingOverlay.setFloating(this.dockable.getDockable());
+							activeDockingOverlay.setActive(true);
+							activeDockingOverlay.toFront();
+						}
+
+						if (activeDockingOverlay != null) {
+							activeDockingOverlay.setTargetDockable(dockable);
+							activeDockingOverlay.setTargetRootRegion(activeDockingHandles == null ? null : activeDockingHandles.getRootRegion());
+							activeDockingOverlay.setTargetDockableRegion(activeDockingHandles == null ? null : activeDockingHandles.getDockableRegion());
+//							activeDockingOverlay.update(mousePos);
+						}
+
+						if (frame == null && activeDockingHandles != null) {
+							activeDockingHandles.setActive(false);
+							activeDockingHandles = null;
+						}
+						else if (frame != null && activeDockingHandles == null) {
+							activeDockingHandles = dockingHandles.get(frame);
+							activeDockingHandles.setActive(true);
+						}
+
+						if (activeDockingHandles != null && frame != activeDockingHandles.getFrame()) {
+							activeDockingHandles.setActive(false);
+							activeDockingHandles = dockingHandles.get(frame);
+							activeDockingHandles.setFloating(this.dockable.getDockable());
+							activeDockingHandles.setActive(true);
+							activeDockingHandles.toFront();
+						}
+
+						if (activeDockingHandles != null) {
+							activeDockingHandles.setTarget(dockable);
+//							activeDockingHandles.update(mousePos);
+						}
 					}
-					Dockable dockable = Docking.findDockableAtScreenPos(mousePos);
 
-					dockingHandles.setRoot(frame, root);
-					dockingHandles.setTarget(dockable);
-					dockingHandles.update(mousePos);
+					if (activeDockingOverlay != null) {
+						activeDockingOverlay.update(mousePos);
+					}
+					if (activeDockingHandles != null) {
+						activeDockingHandles.update(mousePos);
+					}
+				}
 
-					dockingOverlay.setRoot(root);
-					dockingOverlay.setTargetDockable(dockable);
-					dockingOverlay.setTargetRootRegion(dockingHandles.getRootRegion());
-					dockingOverlay.setTargetDockableRegion(dockingHandles.getDockableRegion());
-					dockingOverlay.update(mousePos);
+				long endTime = System.nanoTime();
+
+				long duration = (endTime - startTime) / 1_000_000;
+
+				if (duration > 20) {
+					System.out.println("Timer update took: " + duration + "ms");
 				}
 			});
 			floatMouseTimer.start();
@@ -125,10 +207,6 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 			dragOffset = e.getPoint();
 
 			floatingFrame = new TempFloatingFrame(dockable.getDockable(), dockable.getDockable().dragSource(), e.getPoint());
-			dockingOverlay.setFloating(dockable.getDockable());
-
-			dockingHandles.setVisible(true);
-			dockingOverlay.setVisible(true);
 
 			dockable.getParent().undock(dockable.getDockable());
 
@@ -139,6 +217,15 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 			JFrame frame = Docking.findRootAtScreenPos(mousePos);
 			RootDockingPanel root = Docking.rootForFrame(frame);
 
+			activeDockingHandles = dockingHandles.get(frame);
+			activeDockingHandles.setActive(true);
+			activeDockingHandles.setFloating(dockable.getDockable());
+
+			activeDockingOverlay = dockingOverlays.get(frame);
+			activeDockingOverlay.setActive(true);
+			activeDockingOverlay.setFloating(dockable.getDockable());
+
+			// TODO This doesn't seem to work if the frame to dispose ends up behind the target immediately
 			if (frame != null && root != null && root.getPanel() == null && Docking.canDisposeFrame(frame)) {
 				frameToDispose = frame;
 				frameToDispose.setVisible(false);
@@ -148,8 +235,6 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 			dockable.getParent().repaint();
 
 			floatingFrame.addWindowListener(this);
-			dockingHandles.addWindowListener(this);
-			dockingOverlay.addWindowListener(this);
 
 			floating = true;
 
@@ -185,11 +270,14 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 			// Docking will add new listeners, we must remove ours here
 			removeListeners();
 
-			if (root != null && dockingOverlay.isDockingToRoot()) {
-				root.dock(dockable.getDockable(), dockingOverlay.getRegion(mousePos));
+			if (root != null && activeDockingOverlay.isDockingToRoot()) {
+				root.dock(dockable.getDockable(), activeDockingOverlay.getRegion(mousePos));
 			}
 			else if (frame != null && dockingPanel != null) {
-				dockingPanel.dock(dockable.getDockable(), dockingOverlay.getRegion(mousePos));
+				dockingPanel.dock(dockable.getDockable(), activeDockingOverlay.getRegion(mousePos));
+			}
+			else if (root != null && frame != null) {
+				root.dock(dockable.getDockable(), activeDockingOverlay.getRegion(mousePos));
 			}
 			else {
 				new FloatingFrame(dockable.getDockable(), floatingFrame);
@@ -203,15 +291,17 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 			floatingFrame.dispose();
 			floatingFrame = null;
 
-			dockingHandles.dockingComplete();
-			dockingOverlay.dockingComplete();
+			if (activeDockingHandles != null) {
+				activeDockingHandles.setActive(false);
+				activeDockingHandles = null;
+			}
+
+			if (activeDockingOverlay != null) {
+				activeDockingOverlay.setActive(false);
+				activeDockingOverlay = null;
+			}
 
 			framesBroughtToFront.clear();
-
-			SwingUtilities.invokeLater(() -> {
-				dockingHandles.setVisible(false);
-				dockingOverlay.setVisible(false);
-			});
 		}
 	}
 

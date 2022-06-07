@@ -27,20 +27,27 @@ import docking.RootDockingPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.HashMap;
 import java.util.Map;
 
 // handles displaying the handles for docking overlaid on the application
 // only displayed over the currently hit docking panel
-public class DockingHandlesFrame extends JFrame {
+public class DockingHandlesFrame extends JFrame implements MouseMotionListener, MouseListener {
 	private static final double ROOT_HANDLE_EDGE_DISTANCE = 0.85;
 	private static final int HANDLE_ICON_SIZE = 32;
 
 	private static final Color HANDLE_COLOR_NOT_SELECTED = new Color(Color.red.getRed(), Color.red.getGreen(), Color.red.getBlue(), 30);
 	private static final Color HANDLE_COLOR_SELECTED = new Color(Color.red.getRed(), Color.red.getGreen(), Color.red.getBlue(), 50);
 
+	private final JFrame frame;
+
+	private Dockable floating;
 	private Dockable targetDockable;
 	private RootDockingPanel targetRoot;
+
 
 	// TODO turn these into icons
 	private final JLabel rootCenter = new JLabel("RC", SwingConstants.CENTER);
@@ -61,10 +68,19 @@ public class DockingHandlesFrame extends JFrame {
 	private DockingRegion rootRegion = null;
 	private DockingRegion dockableRegion = null;
 
-	public DockingHandlesFrame() {
+	private int updatesToSkip = 0;
+	private boolean skippingUpdates = false;
+
+	public DockingHandlesFrame(JFrame frame, RootDockingPanel root) {
 		setLayout(null);
 
+		this.frame = frame;
+		this.targetRoot = root;
+
 		setUndecorated(true);
+
+		addMouseListener(this);
+		addMouseMotionListener(this);
 
 		setupRootLabel(rootCenter, DockingRegion.CENTER);
 		setupRootLabel(rootWest, DockingRegion.WEST);
@@ -81,12 +97,24 @@ public class DockingHandlesFrame extends JFrame {
 		setBackground(new Color(0, 0, 0, 0));
 	}
 
+	public JFrame getFrame() {
+		return frame;
+	}
+
+	public void setActive(boolean active) {
+		setVisible(active);
+	}
+
 	private void setupRootLabel(JLabel label, DockingRegion region) {
+		label.addMouseListener(this);
+		label.addMouseMotionListener(this);
+
 		label.setVisible(false);
 
 		label.setBounds(0, 0, HANDLE_ICON_SIZE, HANDLE_ICON_SIZE);
 		label.setOpaque(true);
 		label.setBackground(HANDLE_COLOR_NOT_SELECTED);
+//		label.addPropertyChangeListener(this);
 
 		rootRegions.put(label, region);
 
@@ -94,6 +122,9 @@ public class DockingHandlesFrame extends JFrame {
 	}
 
 	private void setupDockableLabel(JLabel label, DockingRegion region) {
+		label.addMouseListener(this);
+		label.addMouseMotionListener(this);
+
 		label.setVisible(false);
 
 		label.setBounds(0, 0, HANDLE_ICON_SIZE, HANDLE_ICON_SIZE);
@@ -122,8 +153,24 @@ public class DockingHandlesFrame extends JFrame {
 
 	// set the root of the target frame. Allows the user to always dock to the outer edges of the frame
 	public void setRoot(JFrame frame, RootDockingPanel root) {
+		if (root == targetRoot) {
+			return;
+		}
+
 		targetRoot = root;
 
+		rootCenter.setVisible(false);
+		rootWest.setVisible(false);
+		rootNorth.setVisible(false);
+		rootEast.setVisible(false);
+		rootSouth.setVisible(false);
+	}
+
+	public RootDockingPanel getTargetRoot() {
+		return targetRoot;
+	}
+
+	private void setRootHandleLocations() {
 		rootCenter.setVisible(targetRoot != null && targetRoot.getPanel() == null);
 		rootWest.setVisible(targetRoot != null && targetRoot.getPanel() != null);
 		rootNorth.setVisible(targetRoot != null && targetRoot.getPanel() != null);
@@ -149,8 +196,20 @@ public class DockingHandlesFrame extends JFrame {
 
 	// set the specific Dockable target which we'll show a basic handle in the center of
 	public void setTarget(Dockable dockable) {
+		if (dockable == targetDockable) {
+			return;
+		}
+
 		targetDockable = dockable;
 
+		dockableCenter.setVisible(false);
+		dockableWest.setVisible(false);
+		dockableNorth.setVisible(false);
+		dockableEast.setVisible(false);
+		dockableSouth.setVisible(false);
+	}
+
+	private void setDockableHandleLocations() {
 		dockableCenter.setVisible(targetDockable != null);
 		dockableWest.setVisible(targetDockable != null);
 		dockableNorth.setVisible(targetDockable != null);
@@ -163,7 +222,7 @@ public class DockingHandlesFrame extends JFrame {
 			location.x += size.width / 2;
 			location.y += size.height / 2;
 
-			SwingUtilities.convertPointToScreen(location, (Component) targetDockable);
+			SwingUtilities.convertPointToScreen(location, ((Component) targetDockable).getParent());
 
 			SwingUtilities.convertPointFromScreen(location, this);
 			setLocation(dockableCenter, location.x, location.y);
@@ -175,22 +234,21 @@ public class DockingHandlesFrame extends JFrame {
 	}
 
 	public void update(Point screenPos) {
-		if (targetRoot == null) {
-			return;
-		}
-
 		JComponent component = targetRoot;
 
 		Point framePoint = new Point(screenPos);
-		SwingUtilities.convertPointFromScreen(framePoint, component);
+		SwingUtilities.convertPointFromScreen(framePoint, component.getParent());
 
 		Point point = (component).getLocation();
 		Dimension size = component.getSize();
 
-		SwingUtilities.convertPointToScreen(point, component);
+		SwingUtilities.convertPointToScreen(point, component.getParent());
 
 		setLocation(point);
 		setSize(size);
+
+		setRootHandleLocations();
+		setDockableHandleLocations();
 
 		framePoint = new Point(screenPos);
 		SwingUtilities.convertPointFromScreen(framePoint, this);
@@ -219,6 +277,7 @@ public class DockingHandlesFrame extends JFrame {
 			}
 		}
 
+		revalidate();
 		repaint();
 	}
 
@@ -232,5 +291,52 @@ public class DockingHandlesFrame extends JFrame {
 
 	private void setLocation(Component component, int x, int y) {
 		component.setLocation(x - (HANDLE_ICON_SIZE / 2), y - (HANDLE_ICON_SIZE / 2));
+	}
+
+	public void setFloating(Dockable dockable) {
+		floating = dockable;
+	}
+
+	// we don't want to use the mouse events in this overlay frame because that would break the app
+	// pass them off to the component that we really need them in, the drag source
+	private void dispatchEvent(MouseEvent e) {
+		if (floating != null) {
+			floating.dragSource().dispatchEvent(e);
+		}
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		dispatchEvent(e);
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		dispatchEvent(e);
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		dispatchEvent(e);
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		dispatchEvent(e);
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		dispatchEvent(e);
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		dispatchEvent(e);
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		dispatchEvent(e);
 	}
 }

@@ -91,7 +91,7 @@ public class DockedSimplePanel extends DockingPanel {
 	@Override
 	public void undock(Dockable dockable) {
 		if (this.dockable.getDockable() == dockable) {
-			System.out.println("Undocked panel from DockedSimplePanel");
+//			System.out.println("Undocked panel from DockedSimplePanel");
 			remove((JComponent) this.dockable.getDockable());
 
 			this.dockable.undocked();

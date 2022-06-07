@@ -22,6 +22,7 @@ SOFTWARE.
 package docking;
 
 import exception.DockableRegistrationFailureException;
+import floating.FloatListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -89,6 +90,7 @@ public class Docking {
 			throw new DockableRegistrationFailureException("RootDockingPanel already registered for frame: " + parent);
 		}
 		rootPanels.put(parent, panel);
+		FloatListener.registerDockingFrame(parent, panel);
 	}
 
 	// TODO add a possible listener for this. I'd like a way to listen for panels being auto undocked and being able to redock them somewhere else depending on what they are
@@ -114,10 +116,10 @@ public class Docking {
 	}
 	public static JFrame findRootAtScreenPos(Point screenPos) {
 		for (JFrame frame : rootPanels.keySet()) {
-			Point point = new Point(frame.getLocation());
-			Rectangle bounds = new Rectangle(point.x, point.y, frame.getWidth(), frame.getHeight());
+			Rectangle bounds = new Rectangle(frame.getX(), frame.getY(), frame.getWidth(), frame.getHeight());
 
 			if (bounds.contains(screenPos) && frame.isVisible()) {
+//				System.out.println("found frame at: " + screenPos + ", " + bounds);
 				return frame;
 			}
 		}
