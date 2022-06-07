@@ -279,6 +279,7 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 			// Docking will add new listeners, we must remove ours here
 			removeListeners();
 
+			// TODO only allow docking to the locations that we have handles. For example, you can currently dock to the root center, even when not available
 			if (root != null && activeDockingOverlay.isDockingToRoot()) {
 				root.dock(dockable.getDockable(), activeDockingOverlay.getRegion(mousePos));
 			}
