@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/JavaSwingDocking.iml" filepath="$PROJECT_DIR$/.idea/JavaSwingDocking.iml" />
+      <module fileurl="file://$PROJECT_DIR$/basic_demo/basic_demo.iml" filepath="$PROJECT_DIR$/basic_demo/basic_demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/docking/docking.iml" filepath="$PROJECT_DIR$/docking/docking.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ide_demo/ide_demo.iml" filepath="$PROJECT_DIR$/ide_demo/ide_demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/packet_capture_demo/packet_capture_demo.iml" filepath="$PROJECT_DIR$/packet_capture_demo/packet_capture_demo.iml" />
+    </modules>
+  </component>
+</project>
