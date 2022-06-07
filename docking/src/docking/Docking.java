@@ -126,6 +126,20 @@ public class Docking {
 		return null;
 	}
 
+	public static JFrame findFrameForDockable(Dockable dockable) {
+		Container parent = ((Component) dockable).getParent();
+
+		while (parent != null) {
+			if (parent instanceof JFrame) {
+				if (rootPanels.containsKey(parent)) {
+					return (JFrame) parent;
+				}
+			}
+			parent = parent.getParent();
+		}
+		return null;
+	}
+
 	public static RootDockingPanel rootForFrame(JFrame frame) {
 		if (rootPanels.containsKey(frame)) {
 			return rootPanels.get(frame);

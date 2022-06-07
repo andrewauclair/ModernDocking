@@ -49,10 +49,12 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 //	private boolean waitingForResize = false;
 
 	public DockingOverlayFrame(JFrame frame, RootDockingPanel root) {
+		setType(Type.UTILITY);
+		setUndecorated(true);
+
 		this.frame = frame;
 		targetRoot = root;
 
-		setUndecorated(true);
 
 		setBackground(INVISIBLE_BACKGROUND);
 

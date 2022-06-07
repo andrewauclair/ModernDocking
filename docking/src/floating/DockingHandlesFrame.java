@@ -73,6 +73,7 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 
 	public DockingHandlesFrame(JFrame frame, RootDockingPanel root) {
 		setLayout(null);
+		setType(Type.UTILITY);
 
 		this.frame = frame;
 		this.targetRoot = root;

@@ -30,6 +30,8 @@ import java.awt.*;
 public class TempFloatingFrame extends JFrame {
 	public TempFloatingFrame(Dockable dockable, JComponent dragSrc, Point mouseDragPos) {
 		setLayout(new BorderLayout());
+		setUndecorated(true);
+		setType(Type.UTILITY);
 
 		setSize(((JComponent) dockable).getSize());
 
@@ -42,8 +44,6 @@ public class TempFloatingFrame extends JFrame {
 		setLocation(newPoint);
 
 		add((JComponent) dockable, BorderLayout.CENTER);
-
-		setUndecorated(true);
 
 		setVisible(true);
 	}
