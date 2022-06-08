@@ -62,19 +62,23 @@ public class DockedTabbedPanel extends DockingPanel {
 
 	@Override
 	public void dock(Dockable dockable, DockingRegion region) {
+		DockableWrapper wrapper = Docking.getWrapper(dockable);
+
 		if (region == DockingRegion.CENTER) {
-			addPanel(new DockableWrapper(dockable));
+			addPanel(wrapper);
 		}
 		else {
 			DockedSplitPanel split = new DockedSplitPanel(parent);
 			parent.replaceChild(this, split);
 
+			DockedSimplePanel newPanel = new DockedSimplePanel(wrapper);
+
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
 				split.setLeft(this);
-				split.setRight(new DockedSimplePanel(new DockableWrapper(dockable)));
+				split.setRight(newPanel);
 			}
 			else {
-				split.setLeft(new DockedSimplePanel(new DockableWrapper(dockable)));
+				split.setLeft(newPanel);
 				split.setRight(this);
 			}
 

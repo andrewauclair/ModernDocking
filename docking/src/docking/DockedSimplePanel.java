@@ -39,7 +39,7 @@ public class DockedSimplePanel extends DockingPanel {
 		add((JComponent) dockable.getDockable(), BorderLayout.CENTER);
 	}
 
-	public DockableWrapper getDockable() {
+	public DockableWrapper getWrapper() {
 		return dockable;
 	}
 
@@ -52,12 +52,13 @@ public class DockedSimplePanel extends DockingPanel {
 	public void dock(Dockable dockable, DockingRegion region) {
 		// docking to CENTER: Simple -> Tabbed
 		// docking else where: Simple -> Split
+		DockableWrapper wrapper = Docking.getWrapper(dockable);
 
 		if (region == DockingRegion.CENTER) {
 			DockedTabbedPanel tabbedPanel = new DockedTabbedPanel();
 
 			tabbedPanel.addPanel(this.dockable);
-			tabbedPanel.addPanel(new DockableWrapper(dockable));
+			tabbedPanel.addPanel(wrapper);
 
 			parent.replaceChild(this, tabbedPanel);
 		}
@@ -65,12 +66,14 @@ public class DockedSimplePanel extends DockingPanel {
 			DockedSplitPanel split = new DockedSplitPanel(parent);
 			parent.replaceChild(this, split);
 
+			DockedSimplePanel newPanel = new DockedSimplePanel(wrapper);
+
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
 				split.setLeft(this);
-				split.setRight(new DockedSimplePanel(new DockableWrapper(dockable)));
+				split.setRight(newPanel);
 			}
 			else {
-				split.setLeft(new DockedSimplePanel(new DockableWrapper(dockable)));
+				split.setLeft(newPanel);
 				split.setRight(this);
 			}
 

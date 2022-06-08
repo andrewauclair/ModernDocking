@@ -47,7 +47,7 @@ import java.util.Map;
 public class Docking {
 	public static Dimension frameBorderSize = new Dimension(0, 0);
 
-	private static final Map<String, Dockable> dockables = new HashMap<>();
+	private static final Map<String, DockableWrapper> dockables = new HashMap<>();
 
 	private static final Map<JFrame, RootDockingPanel> rootPanels = new HashMap<>();
 
@@ -63,7 +63,7 @@ public class Docking {
 		if (dockables.containsKey(dockable.persistentID())) {
 			throw new DockableRegistrationFailureException("Registration for Dockable failed. Persistent ID " + dockable.persistentID() + " already exists.");
 		}
-		dockables.put(dockable.persistentID(), dockable);
+		dockables.put(dockable.persistentID(), new DockableWrapper(dockable));
 	}
 
 	// Dockables must be deregistered so it can be properly disposed
@@ -204,11 +204,11 @@ public class Docking {
 	}
 
 	// TODO allow setting the split weight somehow
-	public static void dock(JFrame frame, Dockable dockable) {
-		dock(frame, dockable, DockingRegion.CENTER);
+	public static void dock(Dockable dockable, JFrame frame) {
+		dock(dockable, frame, DockingRegion.CENTER);
 	}
 
-	public static void dock(JFrame frame, Dockable dockable, DockingRegion region) {
+	public static void dock(Dockable dockable, JFrame frame, DockingRegion region) {
 		if (frameToDispose != null) {
 			frameToDispose.dispose();
 			frameToDispose = null;
@@ -223,51 +223,32 @@ public class Docking {
 		root.dock(dockable, region);
 	}
 
-	public static void dock(Dockable dockable, DockingRegion region) {
-
+	public static void dock(Dockable source, Dockable target, DockingRegion region) {
+		DockableWrapper wrapper = Docking.getWrapper(target);
+		wrapper.getParent().dock(source, region);
 	}
 
 	public static void undock(Dockable dockable) {
-		// find the right panel for this and undock it
-		for (JFrame frame : rootPanels.keySet()) {
-			RootDockingPanel root = rootPanels.get(frame);
-
-//			if (root.undock(dockable)) {
-//				if (root.getPanel() instanceof DockedSimplePanel) {
-//					rootPanels.remove(frame);
-//
-//					// don't dispose it here, or it'll mess up the mouseMove for FloatListener
-//					frameToDispose = frame;
-//					frame.setVisible(false);
-//				}
-//				else if (root.getPanel() instanceof DockedSplitPanel) {
-//					DockedSplitPanel splitPanel = (DockedSplitPanel) root.getPanel();
-//
-//					// no longer need the split, get the panel that's still left and turn it into a simple panel
-//					if (!splitPanel.hasDockables()) {
-//						if (splitPanel.getLeft() != null) {
-//							root.setPanel(splitPanel.getLeft());
-//						}
-//						else if (splitPanel.getRight() != null) {
-//							root.setPanel(splitPanel.getRight());
-//						}
-//					}
-//				}
-//				else if (root.getPanel() instanceof DockedTabbedPanel) {
-//					DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) root.getPanel();
-//
-//					// no longer need tabs, switch back to DockedSimplePanel
-//					if (tabbedPanel.getPanelCount() == 1) {
-//						root.setPanel(new DockedSimplePanel(root, tabbedPanel.getPanel(0)));
-//					}
-//
-//				}
-//				return;
-//			}
-		}
+		DockableWrapper wrapper = getWrapper(dockable);
+		wrapper.getParent().undock(dockable);
 	}
 
 	public static boolean canDisposeFrame(JFrame frame) {
 		return frame != mainFrame;
+	}
+
+	public static Dockable getDockable(String persistentID) {
+		if (dockables.containsKey(persistentID)) {
+			return dockables.get(persistentID).getDockable();
+		}
+		return null;
+	}
+
+	// internal function to get the dockable wrapper
+	static DockableWrapper getWrapper(Dockable dockable) {
+		if (dockables.containsKey(dockable.persistentID())) {
+			return dockables.get(dockable.persistentID());
+		}
+		throw new DockableRegistrationFailureException("Dockable with Persistent ID " + dockable.persistentID() + " has not been registered.");
 	}
 }

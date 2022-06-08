@@ -73,18 +73,22 @@ public class DockedSplitPanel extends DockingPanel {
 
 	@Override
 	public void dock(Dockable dockable, DockingRegion region) {
+		DockableWrapper wrapper = Docking.getWrapper(dockable);
+
 		// docking to the center of a split isn't something we allow
 		// wouldn't be difficult to support, but isn't a complication we want in this framework
 		if (region != DockingRegion.CENTER) {
 			DockedSplitPanel split = new DockedSplitPanel(parent);
 			parent.replaceChild(this, split);
 
+			DockedSimplePanel newPanel = new DockedSimplePanel(wrapper);
+
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
 				split.setLeft(this);
-				split.setRight(new DockedSimplePanel(new DockableWrapper(dockable)));
+				split.setRight(newPanel);
 			}
 			else {
-				split.setLeft(new DockedSimplePanel(new DockableWrapper(dockable)));
+				split.setLeft(newPanel);
 				split.setRight(this);
 			}
 

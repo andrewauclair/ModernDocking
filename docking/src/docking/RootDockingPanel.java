@@ -88,7 +88,7 @@ public class RootDockingPanel extends DockingPanel {
 			panel.dock(dockable, region);
 		}
 		else {
-			setPanel(new DockedSimplePanel(new DockableWrapper(dockable)));
+			setPanel(new DockedSimplePanel(Docking.getWrapper(dockable)));
 		}
 
 		revalidate();

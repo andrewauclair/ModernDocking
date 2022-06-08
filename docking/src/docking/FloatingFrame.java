@@ -49,7 +49,7 @@ public class FloatingFrame extends JFrame {
 
 		Docking.registerDockingPanel(root, this);
 
-		Docking.dock(this, dockable);
+		Docking.dock(dockable, this);
 
 		setVisible(true);
 	}
