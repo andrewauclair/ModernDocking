@@ -22,10 +22,13 @@ SOFTWARE.
 package docking;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 // DockingPanel that has a split pane with 2 dockables, split can be vertical or horizontal
-public class DockedSplitPanel extends DockingPanel {
+public class DockedSplitPanel extends DockingPanel implements MouseListener {
 	private DockingPanel left = null;
 	private DockingPanel right = null;
 
@@ -38,6 +41,10 @@ public class DockedSplitPanel extends DockingPanel {
 
 		splitPane.setContinuousLayout(true);
 		splitPane.setResizeWeight(0.5);
+
+		if (splitPane.getUI() instanceof BasicSplitPaneUI) {
+			((BasicSplitPaneUI) splitPane.getUI()).getDivider().addMouseListener(this);
+		}
 
 		add(splitPane, BorderLayout.CENTER);
 	}
@@ -123,5 +130,32 @@ public class DockedSplitPanel extends DockingPanel {
 		else if (right == child) {
 			parent.replaceChild(this, left);
 		}
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if (e.getClickCount() >= 2) {
+			splitPane.setDividerLocation(0.5);
+		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+
 	}
 }

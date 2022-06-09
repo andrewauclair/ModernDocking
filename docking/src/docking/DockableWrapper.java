@@ -45,7 +45,10 @@ public class DockableWrapper {
 	}
 
 	public void removedListeners() {
-		floatListener = null;
+		if (floatListener != null) {
+			floatListener.removeListeners();
+			floatListener = null;
+		}
 	}
 
 	public DockingPanel getParent() {

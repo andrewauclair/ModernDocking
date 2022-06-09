@@ -25,7 +25,11 @@ import docking.RootDockingPanel;
 import exception.FailOnThreadViolationRepaintManager;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Random;
 
 public class MainFrame extends JFrame {
@@ -33,6 +37,14 @@ public class MainFrame extends JFrame {
 		setTitle("Test Docking Framework");
 
 		setSize(800, 600);
+
+		JLabel test = new JLabel("Test");
+		test.setOpaque(true);
+		test.setBackground(Color.RED);
+		test.setSize(100, 100);
+		test.setLocation(100, 100);
+
+//		getLayeredPane().add(test, 2);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -47,12 +59,15 @@ public class MainFrame extends JFrame {
 
 		JToolBar toolBar = new JToolBar();
 		JButton test1 = new JButton("Test1");
-		test1.addActionListener(e -> {
-			Docking.undock(one);
-		});
+		test1.addActionListener(e -> Docking.undock(one));
 		toolBar.add(test1);
-		toolBar.add(new JButton("Test2"));
-		toolBar.add(new JButton("Test3"));
+		JButton test2 = new JButton("Test2");
+		toolBar.add(test2);
+		JButton test3 = new JButton("Test3");
+		toolBar.add(test3);
+
+		test2.addActionListener(e -> test.setVisible(false));
+		test3.addActionListener(e -> test.setVisible(true));
 
 		setLayout(new GridBagLayout());
 
@@ -75,6 +90,29 @@ public class MainFrame extends JFrame {
 		dockingPanel.setBackground(new Color(rand.nextInt(255),rand.nextInt(255),rand.nextInt(255)));
 
 		add(dockingPanel, gbc);
+
+		gbc.gridy++;
+		gbc.weighty = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.fill = GridBagConstraints.NONE;
+
+		JTabbedPane tabs = new JTabbedPane();
+		tabs.setTabPlacement(JTabbedPane.BOTTOM);
+		tabs.add("Test", null);
+
+		tabs.addChangeListener(e -> test.setVisible(!test.isVisible()));
+		tabs.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				test.setVisible(!test.isVisible());
+			}
+		});
+//		add(tabs, gbc);
+
+		JToggleButton button = new JToggleButton("Test");
+//		button.addActionListener(e -> button.setSelected(!button.isSelected()));
+		button.addActionListener(e -> test.setVisible(button.isSelected()));
+//		add(button, gbc);
 
 		Docking.setMainFrame(this);
 

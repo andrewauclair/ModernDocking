@@ -56,6 +56,10 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 
 	private final List<JFrame> framesBroughtToFront = new ArrayList<>();
 
+	private static int timerCount = 0;
+
+	private JFrame currentTargetFrame = null;
+
 	public FloatListener(DockableWrapper dockable) {
 		this.dockable = dockable;
 
@@ -63,7 +67,7 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 		this.dockable.getDockable().dragSource().addMouseMotionListener(this);
 	}
 
-	private void removeListeners() {
+	public void removeListeners() {
 		dockable.getDockable().dragSource().removeMouseListener(this);
 		dockable.getDockable().dragSource().removeMouseMotionListener(this);
 
@@ -87,10 +91,6 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 	@Override
 	public void mouseEntered(MouseEvent e) {
 	}
-
-	private static int timerCount = 0;
-
-	private JFrame currentTargetFrame = null;
 
 	private void createTimer() {
 		// create a timer if we're floating and don't have a timer already
@@ -200,6 +200,7 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		if (!mouseDragging) {
+			System.out.println("Start drag");
 			dragOffset = e.getPoint();
 
 			JFrame frameForDockable = Docking.findFrameForDockable(dockable.getDockable());
@@ -274,9 +275,6 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 			RootDockingPanel root = Docking.rootForFrame(frame);
 
 			DockingPanel dockingPanel = Docking.findDockingPanelAtScreenPos(point);
-
-			// Docking will add new listeners, we must remove ours here
-			removeListeners();
 
 			// TODO only allow docking to the locations that we have handles. For example, you can currently dock to the root center, even when not available
 			if (root != null && activeDockingOverlay.isDockingToRoot()) {
