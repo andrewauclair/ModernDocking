@@ -100,7 +100,6 @@ public class DockedTabbedPanel extends DockingPanel {
 
 		for (DockableWrapper panel : panels) {
 			if (panel.getDockable() == dockable) {
-//				removePanel(panel);
 				toRemove = panel;
 			}
 		}

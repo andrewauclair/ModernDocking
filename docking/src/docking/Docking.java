@@ -38,7 +38,6 @@ import java.util.Map;
 // TODO programmatic layout. we can dock/undock pretty well from a user perspective. now we need that ability from the programming side. -- done for root, need to allow the app to get a panel and call its dock/undock functions directly
 
 // TODO allow the app to set the divider resize weight somehow
-// TODO remember what the divider position is. For example, docking 2 panels in a split, moving the split and then docking a new panel with one of them. this resets the split instead of keeping the position
 
 // TODO make empty root panel look better and add a "RC" Root Center docking handle in case the root is empty
 

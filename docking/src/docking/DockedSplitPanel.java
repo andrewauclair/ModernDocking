@@ -24,8 +24,7 @@ package docking;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 
 // DockingPanel that has a split pane with 2 dockables, split can be vertical or horizontal
 public class DockedSplitPanel extends DockingPanel implements MouseListener {
@@ -42,11 +41,49 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener {
 		splitPane.setContinuousLayout(true);
 		splitPane.setResizeWeight(0.5);
 
+		setDividerLocation(splitPane.getResizeWeight());
+
 		if (splitPane.getUI() instanceof BasicSplitPaneUI) {
 			((BasicSplitPaneUI) splitPane.getUI()).getDivider().addMouseListener(this);
 		}
 
 		add(splitPane, BorderLayout.CENTER);
+	}
+
+	private void setDividerLocation(final double proportion) {
+		if (splitPane.isShowing()) {
+			if ((splitPane.getWidth() > 0) && (splitPane.getHeight() > 0)) {
+				splitPane.setDividerLocation(proportion);
+			}
+			else {
+				// split hasn't been completely calculated yet, wait until componentResize
+				splitPane.addComponentListener(new ComponentAdapter() {
+					@Override
+					public void componentResized(ComponentEvent e) {
+						// remove this listener, it's a one off
+						splitPane.removeComponentListener(this);
+						// call the function again, this time it should actually set the divider location
+						setDividerLocation(proportion);
+					}
+				});
+			}
+		}
+		else {
+			// split hasn't been shown yet, wait until it's showing
+			splitPane.addHierarchyListener(new HierarchyListener() {
+				@Override
+				public void hierarchyChanged(HierarchyEvent e) {
+					boolean isShowingChangeEvent = (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0;
+
+					if (isShowingChangeEvent && splitPane.isShowing()) {
+						// remove this listener, it's a one off
+						splitPane.removeHierarchyListener(this);
+						// call the function again, this time it might set the size or wait for componentResize
+						setDividerLocation(proportion);
+					}
+				}
+			});
+		}
 	}
 
 	public DockingPanel getLeft() {
@@ -56,7 +93,13 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener {
 	public void setLeft(DockingPanel panel) {
 		left = panel;
 		left.setParent(this);
+
+		// remember where the divider was and put it back
+		int dividerLocation = splitPane.getDividerLocation();
+
 		splitPane.setLeftComponent(panel);
+
+		splitPane.setDividerLocation(dividerLocation);
 	}
 
 	public DockingPanel getRight() {
@@ -66,7 +109,13 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener {
 	public void setRight(DockingPanel panel) {
 		right = panel;
 		right.setParent(this);
+
+		// remember where the divider was and put it back
+		int dividerLocation = splitPane.getDividerLocation();
+
 		splitPane.setRightComponent(panel);
+
+		splitPane.setDividerLocation(dividerLocation);
 	}
 
 	public void setOrientation(int orientation) {
@@ -135,27 +184,23 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() >= 2) {
-			splitPane.setDividerLocation(0.5);
+			setDividerLocation(splitPane.getResizeWeight());
 		}
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-
 	}
 }
