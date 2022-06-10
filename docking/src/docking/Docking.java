@@ -35,11 +35,13 @@ import java.util.Map;
 
 // TODO perspectives/views/layouts, probably calling them "layouts"
 
-// TODO programmatic layout. we can dock/undock pretty well from a user perspective. now we need that ability from the programming side. -- done for root, need to allow the app to get a panel and call its dock/undock functions directly
-
 // TODO allow the app to set the divider resize weight somehow
 
 // TODO make empty root panel look better and add a "RC" Root Center docking handle in case the root is empty
+
+// TODO support maximize (should have icon that shows that you can maximize and then it should change when it is maxed)
+
+// TODO add buttons for maximize/minimize, pin and close
 
 // Main class for the docking framework
 // register and dock/undock dockables here
@@ -92,6 +94,7 @@ public class Docking {
 	}
 
 	// TODO add a possible listener for this. I'd like a way to listen for panels being auto undocked and being able to redock them somewhere else depending on what they are
+	// TODO ... for example: dockable in a floating frame, closing it would dock it back into the main window in its default location (root east, for example)
 	static void deregisterDockingPanel(JFrame parent) {
 		if (rootPanels.containsKey(parent)) {
 			RootDockingPanel root = rootPanels.get(parent);
