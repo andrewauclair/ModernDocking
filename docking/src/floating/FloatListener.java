@@ -76,7 +76,7 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 
 	public static void registerDockingFrame(JFrame frame, RootDockingPanel root) {
 		dockingHandles.put(frame, new DockingHandlesFrame(frame, root));
-		dockingOverlays.put(frame, new DockingOverlayFrame(frame, root));
+		dockingOverlays.put(frame, new DockingOverlayFrame(root));
 	}
 
 	@Override
@@ -276,15 +276,16 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 
 			DockingPanel dockingPanel = Docking.findDockingPanelAtScreenPos(point);
 
-			// TODO only allow docking to the locations that we have handles. For example, you can currently dock to the root center, even when not available
+			DockingRegion region = activeDockingOverlay.getRegion(mousePos);
+
 			if (root != null && activeDockingOverlay.isDockingToRoot()) {
-				root.dock(dockable.getDockable(), activeDockingOverlay.getRegion(mousePos));
+				root.dock(dockable.getDockable(), region);
 			}
-			else if (frame != null && dockingPanel != null) {
-				dockingPanel.dock(dockable.getDockable(), activeDockingOverlay.getRegion(mousePos));
+			else if (frame != null && dockingPanel != null && activeDockingOverlay.isDockingToDockable()) {
+				dockingPanel.dock(dockable.getDockable(), region);
 			}
-			else if (root != null && frame != null) {
-				root.dock(dockable.getDockable(), activeDockingOverlay.getRegion(mousePos));
+			else if (root != null && frame != null && region != DockingRegion.CENTER) {
+				root.dock(dockable.getDockable(), region);
 			}
 			else {
 				new FloatingFrame(dockable.getDockable(), floatingFrame);

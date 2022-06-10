@@ -35,7 +35,6 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 	private static final Color INVISIBLE_BACKGROUND = new Color(0, 0, 0, 0);
 	private static final Color VISIBLE_BACKGROUND = new Color(0, 0, 0, 50);
 
-	private final JFrame frame;
 	private final RootDockingPanel targetRoot;
 
 	private Dockable targetDockable;
@@ -44,13 +43,11 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 	private DockingRegion dockableRegion;
 	private DockingRegion rootRegion;
 
-	public DockingOverlayFrame(JFrame frame, RootDockingPanel root) {
+	public DockingOverlayFrame(RootDockingPanel root) {
 		setType(Type.UTILITY);
 		setUndecorated(true);
 
-		this.frame = frame;
 		targetRoot = root;
-
 
 		setBackground(INVISIBLE_BACKGROUND);
 
@@ -64,15 +61,6 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 
 	public void setActive(boolean active) {
 		setBackground(active ? VISIBLE_BACKGROUND : INVISIBLE_BACKGROUND);
-	}
-
-	private void reset() {
-		targetDockable = null;
-		floating = null;
-		dockableRegion = null;
-		rootRegion = null;
-
-		setSize(1, 1);
 	}
 
 	public void setFloating(Dockable dockable) {
@@ -310,6 +298,9 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 		return rootRegion != null;
 	}
 
+	public boolean isDockingToDockable() {
+		return dockableRegion != null;
+	}
 	public void setTargetRootRegion(DockingRegion region) {
 		rootRegion = region;
 	}

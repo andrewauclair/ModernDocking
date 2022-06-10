@@ -46,7 +46,7 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 
 	private Dockable floating;
 	private Dockable targetDockable;
-	private RootDockingPanel targetRoot;
+	private final RootDockingPanel targetRoot;
 
 	// TODO turn these into icons
 	private final JLabel rootCenter = new JLabel("RC", SwingConstants.CENTER);
