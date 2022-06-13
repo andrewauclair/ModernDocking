@@ -63,7 +63,7 @@ public class DockedSimplePanel extends DockingPanel {
 			parent.replaceChild(this, tabbedPanel);
 		}
 		else {
-			DockedSplitPanel split = new DockedSplitPanel(parent);
+			DockedSplitPanel split = new DockedSplitPanel();
 			parent.replaceChild(this, split);
 
 			DockedSimplePanel newPanel = new DockedSimplePanel(wrapper);

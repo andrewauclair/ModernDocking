@@ -23,6 +23,7 @@ import docking.Docking;
 import docking.DockingRegion;
 import docking.RootDockingPanel;
 import exception.FailOnThreadViolationRepaintManager;
+import persist.RootDockState;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -33,6 +34,8 @@ import java.awt.event.MouseEvent;
 import java.util.Random;
 
 public class MainFrame extends JFrame {
+	static RootDockState state;
+
 	public MainFrame() {
 		setTitle("Test Docking Framework");
 
@@ -56,6 +59,8 @@ public class MainFrame extends JFrame {
 		SimplePanel six = new SimplePanel("six", "six");
 		SimplePanel seven = new SimplePanel("seven", "seven");
 		SimplePanel eight = new SimplePanel("eight", "eight");
+		ToolPanel explorer = new ToolPanel("Explorer", "explorer", true);
+		ToolPanel output = new ToolPanel("Output", "output", false);
 
 		JToolBar toolBar = new JToolBar();
 		JButton test1 = new JButton("Test1");
@@ -65,6 +70,16 @@ public class MainFrame extends JFrame {
 		toolBar.add(test2);
 		JButton test3 = new JButton("Test3");
 		toolBar.add(test3);
+		JButton save = new JButton("save");
+		JButton restore = new JButton("restore");
+		toolBar.add(save);
+		toolBar.add(restore);
+
+
+		save.addActionListener(e -> {
+			state = Docking.getRootState(this);
+		});
+		restore.addActionListener(e -> Docking.restoreState(this, state));
 
 		test2.addActionListener(e -> test.setVisible(false));
 		test3.addActionListener(e -> test.setVisible(true));
@@ -129,6 +144,8 @@ public class MainFrame extends JFrame {
 		Docking.dock(two, one, DockingRegion.SOUTH);
 		Docking.dock(three, this, DockingRegion.WEST);
 		Docking.dock(four, two, DockingRegion.CENTER);
+		Docking.dock(output, this, DockingRegion.SOUTH);
+		Docking.dock(explorer, this, DockingRegion.EAST);
 	}
 
 	public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {

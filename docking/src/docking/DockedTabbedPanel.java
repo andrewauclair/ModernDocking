@@ -55,6 +55,15 @@ public class DockedTabbedPanel extends DockingPanel {
 		tabs.remove((JComponent) dockable.getDockable());
 	}
 
+	public List<String> persistentIDs() {
+		List<String> ids = new ArrayList<>();
+
+		for (DockableWrapper panel : panels) {
+			ids.add(panel.getDockable().persistentID());
+		}
+		return ids;
+	}
+
 	@Override
 	public void setParent(DockingPanel parent) {
 		this.parent = parent;
@@ -68,7 +77,7 @@ public class DockedTabbedPanel extends DockingPanel {
 			addPanel(wrapper);
 		}
 		else {
-			DockedSplitPanel split = new DockedSplitPanel(parent);
+			DockedSplitPanel split = new DockedSplitPanel();
 			parent.replaceChild(this, split);
 
 			DockedSimplePanel newPanel = new DockedSimplePanel(wrapper);

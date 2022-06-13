@@ -19,28 +19,58 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-import docking.DockingRegion;
+import docking.Dockable;
+import docking.Docking;
 
-import java.util.Collections;
-import java.util.List;
+import javax.swing.*;
+import java.awt.*;
 
-public class SimplePanel extends BasePanel {
-	public SimplePanel(String title, String persistentID) {
-		super(title, persistentID);
+public abstract class BasePanel extends JPanel implements Dockable {
+	private final JPanel titlePanel = new JPanel();
+
+	private final String title;
+	private final String persistentID;
+
+	public BasePanel(String title, String persistentID) {
+		super(new GridBagLayout());
+
+		this.title = title;
+		this.persistentID = persistentID;
+
+		Docking.registerDockable(this);
+
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 1.0;
+
+		titlePanel.add(new JLabel(title));
+		titlePanel.setBackground(new Color(78, 78, 247, 255));
+
+		add(titlePanel, gbc);
+		gbc.gridy++;
+		gbc.weighty = 1.0;
+		gbc.fill = GridBagConstraints.BOTH;
+
+		JPanel panel = new JPanel();
+
+		add(panel, gbc);
 	}
 
 	@Override
-	public boolean floatingAllowed() {
-		return true;
+	public JComponent dragSource() {
+		return titlePanel;
 	}
 
 	@Override
-	public boolean limitToRoot() {
-		return false;
+	public String persistentID() {
+		return persistentID;
 	}
 
 	@Override
-	public List<DockingRegion> disallowedRegions() {
-		return Collections.emptyList();
+	public String tabText() {
+		return title;
 	}
 }

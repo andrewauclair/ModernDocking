@@ -22,6 +22,7 @@ SOFTWARE.
 package docking;
 
 import javax.swing.*;
+import java.util.List;
 
 public interface Dockable {
 	// provide the drag source to the docking framework
@@ -36,4 +37,16 @@ public interface Dockable {
 	// the tab text to be displayed when Dockable is in a tabbed pane. Does not need to be unique
 	// NOTE: this text should be static. If it needs to change, then the Dockable needs to be undocked and docked again.
 	String tabText();
+
+	// indicates that this dockable is allowed to be floated as its own new window.
+	// if floating is not allowed and an attempt is made to float the dockable, it will be returned to where it was undocked.
+	boolean floatingAllowed();
+
+	// force the dockable to remain in the root it started in.
+	// this is useful for having a new floating frame with many dockables that are only allowed in that one frame.
+	boolean limitToRoot();
+
+	// list of regions where the dockable is not allowed to be docked.
+	// often used to prevent "vertical" style dockables from being dockabled horizontally (i.e. disallow "North" and "South" regions)
+	List<DockingRegion> disallowedRegions();
 }

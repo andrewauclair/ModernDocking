@@ -23,6 +23,7 @@ package docking;
 
 import exception.DockableRegistrationFailureException;
 import floating.FloatListener;
+import persist.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -252,5 +253,66 @@ public class Docking {
 			return dockables.get(dockable.persistentID());
 		}
 		throw new DockableRegistrationFailureException("Dockable with Persistent ID " + dockable.persistentID() + " has not been registered.");
+	}
+
+	public static RootDockState getRootState(JFrame frame) {
+		RootDockingPanel root = rootForFrame(frame);
+
+		return new RootDockState(root);
+	}
+
+	public static void restoreState(JFrame frame, RootDockState state) {
+		RootDockingPanel root = rootForFrame(frame);
+
+		undockComponents(root);
+
+		root.setPanel(restoreState(state.getState()));
+	}
+
+	private static DockingPanel restoreState(DockingState state) {
+		if (state instanceof PanelState) {
+			return restoreSimple((PanelState) state);
+		}
+		else if (state instanceof SplitState) {
+			return restoreSplit((SplitState) state);
+		}
+		else if (state instanceof TabState) {
+			return restoreTabbed((TabState) state);
+		}
+		else {
+			throw new RuntimeException("Unknown state type");
+		}
+	}
+
+	private static DockedSplitPanel restoreSplit(SplitState state) {
+		DockedSplitPanel panel = new DockedSplitPanel();
+
+		panel.setLeft(restoreState(state.getLeft()));
+		panel.setRight(restoreState(state.getRight()));
+		panel.setOrientation(state.getOrientation());
+
+		return panel;
+	}
+
+	private static DockedTabbedPanel restoreTabbed(TabState state) {
+		DockedTabbedPanel panel = new DockedTabbedPanel();
+
+		for (String persistentID : state.getPersistentIDs()) {
+			Dockable dockable = getDockable(persistentID);
+
+			undock(dockable);
+
+			panel.addPanel(getWrapper(dockable));
+		}
+
+		return panel;
+	}
+
+	private static DockedSimplePanel restoreSimple(PanelState state) {
+		Dockable dockable = getDockable(state.getPersistentID());
+
+		undock(dockable);
+
+		return new DockedSimplePanel(getWrapper(dockable));
 	}
 }

@@ -21,17 +21,20 @@ SOFTWARE.
  */
 import docking.DockingRegion;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
-public class SimplePanel extends BasePanel {
-	public SimplePanel(String title, String persistentID) {
+public class ToolPanel extends BasePanel {
+	private final boolean vertical;
+
+	public ToolPanel(String title, String persistentID, boolean vertical) {
 		super(title, persistentID);
+		this.vertical = vertical;
 	}
 
 	@Override
 	public boolean floatingAllowed() {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -41,6 +44,6 @@ public class SimplePanel extends BasePanel {
 
 	@Override
 	public List<DockingRegion> disallowedRegions() {
-		return Collections.emptyList();
+		return vertical ? Arrays.asList(DockingRegion.WEST, DockingRegion.EAST) : Arrays.asList(DockingRegion.NORTH, DockingRegion.SOUTH);
 	}
 }

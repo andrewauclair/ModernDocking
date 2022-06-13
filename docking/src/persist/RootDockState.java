@@ -19,28 +19,32 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-import docking.DockingRegion;
+package persist;
 
-import java.util.Collections;
-import java.util.List;
+import docking.DockedSimplePanel;
+import docking.DockedSplitPanel;
+import docking.DockedTabbedPanel;
+import docking.RootDockingPanel;
 
-public class SimplePanel extends BasePanel {
-	public SimplePanel(String title, String persistentID) {
-		super(title, persistentID);
+public class RootDockState {
+	private final DockingState state;
+
+	public RootDockState(RootDockingPanel panel) {
+		if (panel.getPanel() instanceof DockedSimplePanel) {
+			state = new PanelState(((DockedSimplePanel) panel.getPanel()).getWrapper().getDockable().persistentID());
+		}
+		else if (panel.getPanel() instanceof DockedSplitPanel) {
+			state = new SplitState((DockedSplitPanel) panel.getPanel());
+		}
+		else if (panel.getPanel() instanceof DockedTabbedPanel) {
+			state = new TabState((DockedTabbedPanel) panel.getPanel());
+		}
+		else {
+			throw new RuntimeException("Unknown panel");
+		}
 	}
 
-	@Override
-	public boolean floatingAllowed() {
-		return true;
-	}
-
-	@Override
-	public boolean limitToRoot() {
-		return false;
-	}
-
-	@Override
-	public List<DockingRegion> disallowedRegions() {
-		return Collections.emptyList();
+	public DockingState getState() {
+		return state;
 	}
 }
