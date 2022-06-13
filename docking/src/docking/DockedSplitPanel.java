@@ -49,7 +49,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener {
 		add(splitPane, BorderLayout.CENTER);
 	}
 
-	private void setDividerLocation(final double proportion) {
+	public void setDividerLocation(final double proportion) {
 		if (splitPane.isShowing()) {
 			if ((splitPane.getWidth() > 0) && (splitPane.getHeight() > 0)) {
 				splitPane.setDividerLocation(proportion);
