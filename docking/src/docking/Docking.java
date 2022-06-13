@@ -232,8 +232,17 @@ public class Docking {
 	}
 
 	public static void undock(Dockable dockable) {
+		JFrame frame = findFrameForDockable(dockable);
+
+		RootDockingPanel root = rootForFrame(frame);
+
 		DockableWrapper wrapper = getWrapper(dockable);
 		wrapper.getParent().undock(dockable);
+
+		if (frame != null && root != null && canDisposeFrame(frame) && root.isEmpty()) {
+			deregisterDockingPanel(frame);
+			frame.dispose();
+		}
 	}
 
 	public static boolean canDisposeFrame(JFrame frame) {

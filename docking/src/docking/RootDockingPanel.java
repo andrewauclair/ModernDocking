@@ -43,6 +43,10 @@ public class RootDockingPanel extends DockingPanel {
 		return panel;
 	}
 
+	public boolean isEmpty() {
+		return panel == null;
+	}
+
 	public void setPanel(DockingPanel panel) {
 		boolean repaint = removeExistingPanel();
 
