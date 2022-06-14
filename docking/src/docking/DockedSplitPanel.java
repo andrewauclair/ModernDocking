@@ -39,6 +39,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener {
 
 		splitPane.setContinuousLayout(true);
 		splitPane.setResizeWeight(0.5);
+		splitPane.setBorder(null);
 
 		setDividerLocation(splitPane.getResizeWeight());
 

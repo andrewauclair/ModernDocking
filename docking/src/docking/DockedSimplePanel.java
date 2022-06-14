@@ -32,6 +32,8 @@ public class DockedSimplePanel extends DockingPanel {
 	public DockedSimplePanel(DockableWrapper dockable) {
 		setLayout(new BorderLayout());
 
+		setBorder(null);
+
 		dockable.setParent(this);
 
 		this.dockable = dockable;

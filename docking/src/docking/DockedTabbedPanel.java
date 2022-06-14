@@ -36,6 +36,8 @@ public class DockedTabbedPanel extends DockingPanel {
 	public DockedTabbedPanel() {
 		setLayout(new BorderLayout());
 
+		setBorder(null);
+
 		tabs.setTabPlacement(JTabbedPane.BOTTOM);
 
 		add(tabs, BorderLayout.CENTER);

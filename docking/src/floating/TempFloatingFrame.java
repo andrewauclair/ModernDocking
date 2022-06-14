@@ -43,7 +43,19 @@ public class TempFloatingFrame extends JFrame {
 
 		setLocation(newPoint);
 
-		add((JComponent) dockable, BorderLayout.CENTER);
+		JPanel panel = new JPanel(new GridBagLayout());
+
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridy = 0;
+		gbc.gridx = 0;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		gbc.fill = GridBagConstraints.BOTH;
+
+		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+		panel.add((Component) dockable, gbc);
+
+		add(panel, BorderLayout.CENTER);
 
 		setVisible(true);
 	}

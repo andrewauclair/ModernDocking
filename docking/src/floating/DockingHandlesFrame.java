@@ -39,7 +39,7 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 	private static final double ROOT_HANDLE_EDGE_DISTANCE = 0.85;
 	private static final int HANDLE_ICON_SIZE = 32;
 
-	private static final Color HANDLE_COLOR_NOT_SELECTED = new Color(Color.red.getRed(), Color.red.getGreen(), Color.red.getBlue(), 30);
+	private static final Color HANDLE_COLOR_NOT_SELECTED = new Color(0, 0, 0, 30);//Color.red.getRed(), Color.red.getGreen(), Color.red.getBlue(), 30);
 	private static final Color HANDLE_COLOR_SELECTED = new Color(Color.red.getRed(), Color.red.getGreen(), Color.red.getBlue(), 50);
 
 	private final JFrame frame;
@@ -49,17 +49,17 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 	private final RootDockingPanel targetRoot;
 
 	// TODO turn these into icons
-	private final JLabel rootCenter = new JLabel("RC", SwingConstants.CENTER);
-	private final JLabel rootWest = new JLabel("RW", SwingConstants.CENTER);
-	private final JLabel rootNorth = new JLabel("RN", SwingConstants.CENTER);
-	private final JLabel rootEast = new JLabel("RE", SwingConstants.CENTER);
-	private final JLabel rootSouth = new JLabel("RS", SwingConstants.CENTER);
+	private final JLabel rootCenter = new JLabel();
+	private final JLabel rootWest = new JLabel();
+	private final JLabel rootNorth = new JLabel();
+	private final JLabel rootEast = new JLabel();
+	private final JLabel rootSouth = new JLabel();
 
-	private final JLabel dockableCenter = new JLabel("DC", SwingConstants.CENTER);
-	private final JLabel dockableWest = new JLabel("DW", SwingConstants.CENTER);
-	private final JLabel dockableNorth = new JLabel("DN", SwingConstants.CENTER);
-	private final JLabel dockableEast = new JLabel("DE", SwingConstants.CENTER);
-	private final JLabel dockableSouth = new JLabel("DS", SwingConstants.CENTER);
+	private final JLabel dockableCenter = new JLabel();
+	private final JLabel dockableWest = new JLabel();
+	private final JLabel dockableNorth = new JLabel();
+	private final JLabel dockableEast = new JLabel();
+	private final JLabel dockableSouth = new JLabel();
 
 	private final Map<JLabel, DockingRegion> rootRegions = new HashMap<>();
 	private final Map<JLabel, DockingRegion> dockableRegions = new HashMap<>();
@@ -91,6 +91,18 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 		setupDockableLabel(dockableEast, DockingRegion.EAST);
 		setupDockableLabel(dockableSouth, DockingRegion.SOUTH);
 
+		rootCenter.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-center.png")));
+		rootWest.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-west.png")));
+		rootNorth.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-north.png")));
+		rootEast.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-east.png")));
+		rootSouth.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-south.png")));
+
+		dockableCenter.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-center.png")));
+		dockableWest.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-west.png")));
+		dockableNorth.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-north.png")));
+		dockableEast.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-east.png")));
+		dockableSouth.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-south.png")));
+
 		setBackground(new Color(0, 0, 0, 0));
 	}
 
@@ -104,9 +116,13 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 
 		label.setVisible(false);
 
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		label.setVerticalAlignment(SwingConstants.CENTER);
+		label.setText(null);
 		label.setBounds(0, 0, HANDLE_ICON_SIZE, HANDLE_ICON_SIZE);
 		label.setOpaque(true);
 		label.setBackground(HANDLE_COLOR_NOT_SELECTED);
+		label.setBorder(null);
 
 		rootRegions.put(label, region);
 
@@ -122,6 +138,7 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 		label.setBounds(0, 0, HANDLE_ICON_SIZE, HANDLE_ICON_SIZE);
 		label.setOpaque(true);
 		label.setBackground(HANDLE_COLOR_NOT_SELECTED);
+		label.setBorder(null);
 
 		dockableRegions.put(label, region);
 
@@ -182,12 +199,14 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 
 			SwingUtilities.convertPointToScreen(location, ((Component) targetDockable).getParent());
 
+			int spacing = HANDLE_ICON_SIZE + 4;
+
 			SwingUtilities.convertPointFromScreen(location, this);
 			setLocation(dockableCenter, location.x, location.y);
-			setLocation(dockableWest, location.x - HANDLE_ICON_SIZE, location.y);
-			setLocation(dockableNorth, location.x, location.y - HANDLE_ICON_SIZE);
-			setLocation(dockableEast, location.x + HANDLE_ICON_SIZE, location.y);
-			setLocation(dockableSouth, location.x, location.y + HANDLE_ICON_SIZE);
+			setLocation(dockableWest, location.x - spacing, location.y);
+			setLocation(dockableNorth, location.x, location.y - spacing);
+			setLocation(dockableEast, location.x + spacing, location.y);
+			setLocation(dockableSouth, location.x, location.y + spacing);
 		}
 	}
 

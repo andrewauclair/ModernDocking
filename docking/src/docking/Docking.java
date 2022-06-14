@@ -32,11 +32,11 @@ import java.util.Map;
 
 // TODO we need to check if the window loses focus and kill the floating dialog. other wise strange things happen. -- Think I've gotten pretty close on this, requires more testing
 
-// TODO persistence (saving and loading)
+// TODO persistence (saving and loading) -- in memory done, next up persist to file
 
 // TODO perspectives/views/layouts, probably calling them "layouts"
 
-// TODO allow the app to set the divider resize weight somehow
+// TODO allow the app to set the divider location when docking dockables
 
 // TODO make empty root panel look better and add a "RC" Root Center docking handle in case the root is empty
 
@@ -267,11 +267,19 @@ public class Docking {
 	public static RootDockState getRootState(JFrame frame) {
 		RootDockingPanel root = rootForFrame(frame);
 
+		if (root == null) {
+			throw new RuntimeException("Root for frame does not exist: " + frame);
+		}
+
 		return new RootDockState(root);
 	}
 
 	public static void restoreState(JFrame frame, RootDockState state) {
 		RootDockingPanel root = rootForFrame(frame);
+
+		if (root == null) {
+			throw new RuntimeException("Root for frame does not exist: " + frame);
+		}
 
 		undockComponents(root);
 
@@ -310,6 +318,10 @@ public class Docking {
 		for (String persistentID : state.getPersistentIDs()) {
 			Dockable dockable = getDockable(persistentID);
 
+			if (dockable == null) {
+				throw new RuntimeException("Dockable with persistent ID " + persistentID + " does not exist.");
+			}
+
 			undock(dockable);
 
 			panel.addPanel(getWrapper(dockable));
@@ -320,6 +332,10 @@ public class Docking {
 
 	private static DockedSimplePanel restoreSimple(PanelState state) {
 		Dockable dockable = getDockable(state.getPersistentID());
+
+		if (dockable == null) {
+			throw new RuntimeException("Dockable with persistent ID " + state.getPersistentID() + " does not exist.");
+		}
 
 		undock(dockable);
 
