@@ -19,6 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+
 import docking.Docking;
 import docking.DockingRegion;
 import docking.RootDockingPanel;
@@ -26,8 +27,6 @@ import exception.FailOnThreadViolationRepaintManager;
 import persist.RootDockState;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -125,27 +124,19 @@ public class MainFrame extends JFrame {
 //		add(tabs, gbc);
 
 		JToggleButton button = new JToggleButton("Test");
-//		button.addActionListener(e -> button.setSelected(!button.isSelected()));
 		button.addActionListener(e -> test.setVisible(button.isSelected()));
-//		add(button, gbc);
 
 		Docking.setMainFrame(this);
 
-//		Docking.dock(this, one);
-//		Docking.dock(this, two);
-//		Docking.dock(this, three);
-//		Docking.dock(this, four);
-//		Docking.dock(this, five);
-//		Docking.dock(this, six);
-//		Docking.dock(this, seven);
-//		Docking.dock(this, eight, DockingRegion.SOUTH);
-//		Docking.dock(seven, eight, DockingRegion.SOUTH);
 		Docking.dock(one, this);
 		Docking.dock(two, one, DockingRegion.SOUTH);
 		Docking.dock(three, this, DockingRegion.WEST);
 		Docking.dock(four, two, DockingRegion.CENTER);
 		Docking.dock(output, this, DockingRegion.SOUTH);
 		Docking.dock(explorer, this, DockingRegion.EAST);
+
+		// save the default layout so that we have something to restore, do it later so that the splits setup properly
+		SwingUtilities.invokeLater(save::doClick);
 	}
 
 	public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {

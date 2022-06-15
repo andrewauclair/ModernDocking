@@ -40,6 +40,8 @@ public interface Dockable {
 
 	// indicates that this dockable is allowed to be floated as its own new window.
 	// if floating is not allowed and an attempt is made to float the dockable, it will be returned to where it was undocked.
+	// Note that this is independent of limitToRoot(). Returning false for floatingAllowed() and false for limitToRoot() will still
+	//    allow the dockable to be moved between roots, but it can't be used to start a new floating root.
 	boolean floatingAllowed();
 
 	// force the dockable to remain in the root it started in.

@@ -42,13 +42,10 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 	private static final Color HANDLE_COLOR_NOT_SELECTED = new Color(0, 0, 0, 30);//Color.red.getRed(), Color.red.getGreen(), Color.red.getBlue(), 30);
 	private static final Color HANDLE_COLOR_SELECTED = new Color(Color.red.getRed(), Color.red.getGreen(), Color.red.getBlue(), 50);
 
-	private final JFrame frame;
-
 	private Dockable floating;
 	private Dockable targetDockable;
 	private final RootDockingPanel targetRoot;
 
-	// TODO turn these into icons
 	private final JLabel rootCenter = new JLabel();
 	private final JLabel rootWest = new JLabel();
 	private final JLabel rootNorth = new JLabel();
@@ -67,11 +64,10 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 	private DockingRegion rootRegion = null;
 	private DockingRegion dockableRegion = null;
 
-	public DockingHandlesFrame(JFrame frame, RootDockingPanel root) {
+	public DockingHandlesFrame(RootDockingPanel root) {
 		setLayout(null);
 		setType(Type.UTILITY);
 
-		this.frame = frame;
 		this.targetRoot = root;
 
 		setUndecorated(true);
@@ -147,10 +143,10 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 
 	private void setRootHandleLocations() {
 		rootCenter.setVisible(targetRoot != null && targetRoot.getPanel() == null);
-		rootWest.setVisible(targetRoot != null && targetRoot.getPanel() != null);
-		rootNorth.setVisible(targetRoot != null && targetRoot.getPanel() != null);
-		rootEast.setVisible(targetRoot != null && targetRoot.getPanel() != null);
-		rootSouth.setVisible(targetRoot != null && targetRoot.getPanel() != null);
+		rootWest.setVisible(targetRoot != null && targetRoot.getPanel() != null && isRegionAllowed(DockingRegion.WEST));
+		rootNorth.setVisible(targetRoot != null && targetRoot.getPanel() != null && isRegionAllowed(DockingRegion.NORTH));
+		rootEast.setVisible(targetRoot != null && targetRoot.getPanel() != null && isRegionAllowed(DockingRegion.EAST));
+		rootSouth.setVisible(targetRoot != null && targetRoot.getPanel() != null && isRegionAllowed(DockingRegion.SOUTH));
 
 		if (targetRoot != null) {
 			Point location = targetRoot.getLocation();
@@ -184,12 +180,16 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 		dockableSouth.setVisible(false);
 	}
 
+	private boolean isRegionAllowed(DockingRegion region) {
+		return !floating.disallowedRegions().contains(region);
+	}
+
 	private void setDockableHandleLocations() {
 		dockableCenter.setVisible(targetDockable != null);
-		dockableWest.setVisible(targetDockable != null);
-		dockableNorth.setVisible(targetDockable != null);
-		dockableEast.setVisible(targetDockable != null);
-		dockableSouth.setVisible(targetDockable != null);
+		dockableWest.setVisible(targetDockable != null && isRegionAllowed(DockingRegion.WEST));
+		dockableNorth.setVisible(targetDockable != null && isRegionAllowed(DockingRegion.NORTH));
+		dockableEast.setVisible(targetDockable != null && isRegionAllowed(DockingRegion.EAST));
+		dockableSouth.setVisible(targetDockable != null && isRegionAllowed(DockingRegion.SOUTH));
 
 		if (targetDockable != null) {
 			Point location = ((Component) targetDockable).getLocation();

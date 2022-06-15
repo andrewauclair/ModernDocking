@@ -44,6 +44,6 @@ public class ToolPanel extends BasePanel {
 
 	@Override
 	public List<DockingRegion> disallowedRegions() {
-		return vertical ? Arrays.asList(DockingRegion.WEST, DockingRegion.EAST) : Arrays.asList(DockingRegion.NORTH, DockingRegion.SOUTH);
+		return vertical ? Arrays.asList(DockingRegion.NORTH, DockingRegion.SOUTH) : Arrays.asList(DockingRegion.WEST, DockingRegion.EAST);
 	}
 }

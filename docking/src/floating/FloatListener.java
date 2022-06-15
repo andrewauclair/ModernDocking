@@ -75,7 +75,7 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 	}
 
 	public static void registerDockingFrame(JFrame frame, RootDockingPanel root) {
-		dockingHandles.put(frame, new DockingHandlesFrame(frame, root));
+		dockingHandles.put(frame, new DockingHandlesFrame(root));
 		dockingOverlays.put(frame, new DockingOverlayFrame(root));
 	}
 
