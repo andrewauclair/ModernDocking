@@ -96,7 +96,7 @@ public class Docking {
 
 	// TODO add a possible listener for this. I'd like a way to listen for panels being auto undocked and being able to redock them somewhere else depending on what they are
 	// TODO ... for example: dockable in a floating frame, closing it would dock it back into the main window in its default location (root east, for example)
-	static void deregisterDockingPanel(JFrame parent) {
+	public static void deregisterDockingPanel(JFrame parent) {
 		if (rootPanels.containsKey(parent)) {
 			RootDockingPanel root = rootPanels.get(parent);
 
@@ -108,14 +108,15 @@ public class Docking {
 
 	private static void undockComponents(Container container) {
 		for (Component component : container.getComponents()) {
-			if (component instanceof Container) {
-				undockComponents((Container) component);
-			}
-			else if (component instanceof Dockable) {
+			if (component instanceof Dockable) {
 				undock((Dockable) component);
+			}
+			else if (component instanceof Container) {
+				undockComponents((Container) component);
 			}
 		}
 	}
+
 	public static JFrame findRootAtScreenPos(Point screenPos) {
 		for (JFrame frame : rootPanels.keySet()) {
 			Rectangle bounds = new Rectangle(frame.getX(), frame.getY(), frame.getWidth(), frame.getHeight());
@@ -340,5 +341,47 @@ public class Docking {
 		undock(dockable);
 
 		return new DockedSimplePanel(getWrapper(dockable));
+	}
+
+	public static void removeIllegalFloats(JFrame frame) {
+		// remove panels from frame if they return false for allowFloating() and there are no other dockables in the frame
+		RootDockingPanel root = rootForFrame(frame);
+
+		if (Docking.canDisposeFrame(frame) && root != null) {
+			if (shouldUndock(root)) {
+				System.out.println("Undock rest of dockables");
+				undockIllegalFloats(root);
+			}
+		}
+	}
+
+	private static boolean shouldUndock(Container container) {
+		for (Component component : container.getComponents()) {
+			if (component instanceof Dockable) {
+				if (((Dockable) component).floatingAllowed()) {
+					return false;
+				}
+			}
+			else if (component instanceof Container) {
+				if (!shouldUndock((Container) component)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	private static void undockIllegalFloats(Container container) {
+		for (Component component : container.getComponents()) {
+			if (component instanceof Dockable) {
+				Dockable dockable = (Dockable) component;
+
+				DockableWrapper wrapper = getWrapper(dockable);
+				wrapper.getParent().undock(dockable);
+			}
+			else if (component instanceof Container) {
+				undockIllegalFloats((Container) component);
+			}
+		}
 	}
 }

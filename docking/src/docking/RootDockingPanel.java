@@ -22,11 +22,7 @@ SOFTWARE.
 package docking;
 
 import javax.swing.*;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 import java.awt.*;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
 
 // only class that should be used by clients
 public class RootDockingPanel extends DockingPanel {
