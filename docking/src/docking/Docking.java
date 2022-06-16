@@ -65,6 +65,7 @@ public class Docking {
 		if (dockables.containsKey(dockable.persistentID())) {
 			throw new DockableRegistrationFailureException("Registration for Dockable failed. Persistent ID " + dockable.persistentID() + " already exists.");
 		}
+		((Component) dockable).setName(dockable.persistentID());
 		dockables.put(dockable.persistentID(), new DockableWrapper(dockable));
 	}
 
@@ -349,7 +350,6 @@ public class Docking {
 
 		if (Docking.canDisposeFrame(frame) && root != null) {
 			if (shouldUndock(root)) {
-				System.out.println("Undock rest of dockables");
 				undockIllegalFloats(root);
 			}
 		}

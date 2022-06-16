@@ -1,4 +1,4 @@
-/*
+package test_app;/*
 Copyright (c) 2022 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -143,6 +143,7 @@ public class MainFrame extends JFrame {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
 		SwingUtilities.invokeLater(() -> {
+			FailOnThreadViolationRepaintManager.install();
 			FailOnThreadViolationRepaintManager.install();
 
 			MainFrame mainFrame = new MainFrame();

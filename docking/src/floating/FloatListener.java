@@ -287,7 +287,7 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 			else if (frame != null && dockingPanel != null && activeDockingOverlay != null && activeDockingOverlay.isDockingToDockable()) {
 				dockingPanel.dock(dockable.getDockable(), region);
 			}
-			else if (root != null && frame != null && region != DockingRegion.CENTER) {
+			else if (root != null && frame != null && region != DockingRegion.CENTER && activeDockingOverlay == null) {
 				root.dock(dockable.getDockable(), region);
 			}
 			else if (!dockable.getDockable().floatingAllowed()) {

@@ -29,6 +29,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+// TODO There seems to be a bug with the overlay not showing up if you only have a single dockable
+
 // displays the overlay highlight of where the panel will be docked
 public class DockingOverlayFrame extends JFrame implements MouseMotionListener, MouseListener, ComponentListener {
 	private static final double REGION_SENSITIVITY = 0.35;
@@ -37,8 +39,8 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 
 	private final RootDockingPanel targetRoot;
 
-	private Dockable targetDockable;
 	private Dockable floating;
+	private Dockable targetDockable;
 
 	private DockingRegion dockableRegion;
 	private DockingRegion rootRegion;
@@ -73,6 +75,10 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 
 			setVisible(targetDockable != null || targetRoot != null);
 		}
+	}
+
+	private boolean isRegionAllowed(DockingRegion region) {
+		return !floating.disallowedRegions().contains(region);
 	}
 
 	public void update(Point screenPos) {
@@ -137,26 +143,29 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 			double horizontalEdgeDist = horizontalPct > 0.5 ? 1.0 - horizontalPct : horizontalPct;
 			double verticalEdgeDist = verticalPct > 0.5 ? 1.0 - verticalPct : verticalPct;
 
-			if (horizontalEdgeDist < verticalEdgeDist) {
-				if (horizontalPct < REGION_SENSITIVITY) {
+			boolean westAllowed = isRegionAllowed(DockingRegion.WEST);
+			boolean eastAllowed = isRegionAllowed(DockingRegion.EAST);
+
+			if (horizontalEdgeDist < verticalEdgeDist && (westAllowed || eastAllowed)) {
+				if (horizontalPct < REGION_SENSITIVITY && westAllowed) {
 					size = new Dimension(size.width / 2, size.height);
 				}
-				else if (horizontalPct > (1.0 - REGION_SENSITIVITY)) {
+				else if (horizontalPct > (1.0 - REGION_SENSITIVITY) && eastAllowed) {
 					point.x += size.width / 2;
 					size = new Dimension(size.width / 2, size.height);
 				}
 			}
 			else {
-				if (verticalPct < REGION_SENSITIVITY) {
+				if (verticalPct < REGION_SENSITIVITY && isRegionAllowed(DockingRegion.NORTH)) {
 					size = new Dimension(size.width, size.height / 2);
 				}
-				else if (verticalPct > (1.0 - REGION_SENSITIVITY)) {
+				else if (verticalPct > (1.0 - REGION_SENSITIVITY) && isRegionAllowed(DockingRegion.SOUTH)) {
 					point.y += size.height / 2;
 					size = new Dimension(size.width, size.height / 2);
 				}
 			}
 
-			SwingUtilities.convertPointToScreen(point, component);
+			SwingUtilities.convertPointToScreen(point, component.getParent());
 
 			setLocation(point);
 			setSize(size);
@@ -176,26 +185,36 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 			double horizontalEdgeDist = horizontalPct > 0.5 ? 1.0 - horizontalPct : horizontalPct;
 			double verticalEdgeDist = verticalPct > 0.5 ? 1.0 - verticalPct : verticalPct;
 
-			if (horizontalEdgeDist < verticalEdgeDist) {
-				if (horizontalPct < REGION_SENSITIVITY) {
+			boolean westAllowed = isRegionAllowed(DockingRegion.WEST);
+			boolean eastAllowed = isRegionAllowed(DockingRegion.EAST);
+
+			if (horizontalEdgeDist < verticalEdgeDist && (westAllowed || eastAllowed)) {
+				if (horizontalPct < REGION_SENSITIVITY && westAllowed) {
 					size = new Dimension(size.width / 2, size.height);
 				}
-				else if (horizontalPct > (1.0 - REGION_SENSITIVITY)) {
+				else if (horizontalPct > (1.0 - REGION_SENSITIVITY) && eastAllowed) {
 					point.x += size.width / 2;
 					size = new Dimension(size.width / 2, size.height);
 				}
 			}
-			else {
-				if (verticalPct < REGION_SENSITIVITY) {
-					size = new Dimension(size.width, size.height / 2);
-				}
-				else if (verticalPct > (1.0 - REGION_SENSITIVITY)) {
-					point.y += size.height / 2;
-					size = new Dimension(size.width, size.height / 2);
-				}
+			else if (verticalPct < REGION_SENSITIVITY && isRegionAllowed(DockingRegion.NORTH)) {
+				size = new Dimension(size.width, size.height / 2);
+			}
+			else if (verticalPct > (1.0 - REGION_SENSITIVITY) && isRegionAllowed(DockingRegion.SOUTH)) {
+				point.y += size.height / 2;
+				size = new Dimension(size.width, size.height / 2);
+			}
+			else if (targetRoot.getPanel() != null) {
+				size = new Dimension(1, 1);
 			}
 
-			SwingUtilities.convertPointToScreen(point, component);
+			// force the region to always be the center if the root is empty
+			if (targetRoot.getPanel() == null) {
+				point = component.getLocation();
+				size = component.getSize();
+			}
+
+			SwingUtilities.convertPointToScreen(point, targetRoot.getParent());
 
 			setLocation(point);
 			setSize(size);
@@ -216,6 +235,11 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 
 		if (dockableRegion != null) {
 			return dockableRegion;
+		}
+
+		// force the region to always be the center if the root is empty
+		if (targetRoot.getPanel() == null) {
+			return DockingRegion.CENTER;
 		}
 
 		JComponent component = targetDockable != null ? (JComponent) targetDockable : targetRoot;
@@ -299,8 +323,9 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 	}
 
 	public boolean isDockingToDockable() {
-		return dockableRegion != null;
+		return dockableRegion != null || targetDockable != null;
 	}
+
 	public void setTargetRootRegion(DockingRegion region) {
 		rootRegion = region;
 	}
