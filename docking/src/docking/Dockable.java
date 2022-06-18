@@ -51,4 +51,10 @@ public interface Dockable {
 	// list of regions where the dockable is not allowed to be docked.
 	// often used to prevent "vertical" style dockables from being dockabled horizontally (i.e. disallow "North" and "South" regions)
 	List<DockingRegion> disallowedRegions();
+
+	boolean allowClose();
+
+	boolean allowMinMax();
+
+	boolean allowPin();
 }

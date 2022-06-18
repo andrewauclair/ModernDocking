@@ -19,6 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+import docking.DefaultDragHeader;
 import docking.Dockable;
 import docking.Docking;
 
@@ -26,13 +27,15 @@ import javax.swing.*;
 import java.awt.*;
 
 public abstract class BasePanel extends JPanel implements Dockable {
-	private final JPanel titlePanel = new JPanel();
+	private final JPanel titlePanel;
 
 	private final String title;
 	private final String persistentID;
 
 	public BasePanel(String title, String persistentID) {
 		super(new GridBagLayout());
+
+		titlePanel = new DefaultDragHeader(this, title);
 
 		this.title = title;
 		this.persistentID = persistentID;
@@ -46,7 +49,7 @@ public abstract class BasePanel extends JPanel implements Dockable {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 
-		titlePanel.add(new JLabel(title));
+//		titlePanel.add(new JLabel(title));
 		titlePanel.setBackground(new Color(78, 78, 247, 255));
 
 		add(titlePanel, gbc);

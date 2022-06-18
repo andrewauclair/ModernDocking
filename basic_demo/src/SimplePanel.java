@@ -43,4 +43,19 @@ public class SimplePanel extends BasePanel {
 	public List<DockingRegion> disallowedRegions() {
 		return Collections.emptyList();
 	}
+
+	@Override
+	public boolean allowClose() {
+		return false;
+	}
+
+	@Override
+	public boolean allowMinMax() {
+		return false;
+	}
+
+	@Override
+	public boolean allowPin() {
+		return false;
+	}
 }
