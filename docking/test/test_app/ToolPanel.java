@@ -46,4 +46,19 @@ public class ToolPanel extends BasePanel {
 	public List<DockingRegion> disallowedRegions() {
 		return vertical ? Arrays.asList(DockingRegion.NORTH, DockingRegion.SOUTH) : Arrays.asList(DockingRegion.WEST, DockingRegion.EAST);
 	}
+
+	@Override
+	public boolean allowClose() {
+		return false;
+	}
+
+	@Override
+	public boolean allowMinMax() {
+		return false;
+	}
+
+	@Override
+	public boolean allowPin() {
+		return false;
+	}
 }

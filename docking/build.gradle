@@ -1,0 +1,30 @@
+plugins {
+	id 'java'
+	id 'idea'
+	id "com.github.ben-manes.versions" version "0.33.0"
+}
+
+sourceCompatibility = JavaVersion.VERSION_15
+targetCompatibility = JavaVersion.VERSION_15
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+	maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+sourceSets.main.java.srcDirs = ['src']
+sourceSets.test.java.srcDirs = ['test']
+sourceSets.main.resources.srcDirs = ['src']
+
+dependencies {
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
+	testImplementation "org.uitest4j:uitest4j-core:0.2.2-SNAPSHOT"
+
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+}
+
+repositories {
+	mavenCentral()
+}
