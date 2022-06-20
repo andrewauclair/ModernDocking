@@ -23,11 +23,13 @@ package docking;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
 // DockingPanel that has a JTabbedPane inside its center
-public class DockedTabbedPanel extends DockingPanel {
+public class DockedTabbedPanel extends DockingPanel implements MouseListener {
 	private final List<DockableWrapper> panels = new ArrayList<>();
 
 	private final JTabbedPane tabs = new JTabbedPane();
@@ -36,11 +38,15 @@ public class DockedTabbedPanel extends DockingPanel {
 	public DockedTabbedPanel() {
 		setLayout(new BorderLayout());
 
-		setBorder(null);
+		Color color = UIManager.getLookAndFeelDefaults().getColor("Component.focusColor");
+
+		setNotSelectedBorder();
 
 		tabs.setTabPlacement(JTabbedPane.BOTTOM);
 
 		add(tabs, BorderLayout.CENTER);
+
+		tabs.addMouseListener(this);
 	}
 
 	public void addPanel(DockableWrapper dockable) {
@@ -132,5 +138,42 @@ public class DockedTabbedPanel extends DockingPanel {
 	@Override
 	public void removeChild(DockingPanel child) {
 		// no-op, docked tab can't have panel children, wrappers only
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		Color color = UIManager.getLookAndFeelDefaults().getColor("Component.focusColor");
+		setBorder(BorderFactory.createLineBorder(color, 2));
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		setNotSelectedBorder();
+	}
+
+	private void setNotSelectedBorder() {
+		Color color = UIManager.getLookAndFeelDefaults().getColor("Component.borderColor");
+
+		setBorder(
+				BorderFactory.createCompoundBorder(
+						BorderFactory.createEmptyBorder(1, 1, 1, 1),
+						BorderFactory.createLineBorder(color, 1)
+				)
+		);
 	}
 }

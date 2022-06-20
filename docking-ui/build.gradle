@@ -14,8 +14,15 @@ repositories {
 }
 
 sourceSets.main.java.srcDirs = ['src']
+sourceSets.test.java.srcDirs = ['test']
+sourceSets.main.resources.srcDirs = ['resources']
 
 dependencies {
+	implementation project(':docking')
+	
+	implementation 'com.formdev:flatlaf:2.3'
+	implementation 'com.formdev:flatlaf-extras:2.3'
+	implementation 'com.formdev:svgSalamander:1.1.3'
 }
 
 repositories {

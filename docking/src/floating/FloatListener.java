@@ -71,6 +71,14 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 		this.dockable.getDockable().dragSource().addMouseMotionListener(this);
 	}
 
+	public static void reset() {
+		// used when creating a new Docking instance, mostly to hack the tests
+		dockingHandles.clear();
+		dockingOverlays.clear();
+		frameToDispose = null;
+		timerCount = 0;
+	}
+
 	public void removeListeners() {
 		dockable.getDockable().dragSource().removeMouseListener(this);
 		dockable.getDockable().dragSource().removeMouseMotionListener(this);
@@ -305,6 +313,7 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 				frameToDispose = null;
 			}
 
+			floatingFrame.removeWindowListener(this);
 			floatingFrame.dispose();
 			floatingFrame = null;
 
@@ -348,6 +357,7 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 
 	@Override
 	public void windowDeactivated(WindowEvent e) {
+		System.out.println("windowDeactivated: " + e.getOppositeWindow());
 		// window was deactivated and another app has taken focus, stop floating the panel, drop it where it is
 		if (e.getOppositeWindow() == null) {
 			dropFloatingPanel();

@@ -27,6 +27,8 @@ import java.util.List;
 public class SimplePanel extends BasePanel {
 	public SimplePanel(String title, String persistentID) {
 		super(title, persistentID);
+
+
 	}
 
 	@Override

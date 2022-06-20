@@ -30,13 +30,15 @@ public class SplitState implements DockingState {
 	private final DockingState right;
 
 	private final int orientation;
-	private final double dividerLocation;
+	private final int dividerLocation;
 	private final double resizeWeight;
 
 	public SplitState(DockedSplitPanel panel) {
 		orientation = panel.getSplitPane().getOrientation();
-		dividerLocation = panel.getSplitPane().getDividerLocation() / (double) panel.getSplitPane().getMaximumDividerLocation();
+		dividerLocation = panel.getSplitPane().getDividerLocation();// / (double) panel.getSplitPane().getMaximumDividerLocation();
 		resizeWeight = panel.getSplitPane().getResizeWeight();
+
+//		System.out.println("divider, location: " + panel.getSplitPane().getDividerLocation() + ", max: " + panel.getSplitPane().getMaximumDividerLocation() + ", loc: " + dividerLocation);
 
 		if (panel.getLeft() instanceof DockedTabbedPanel) {
 			left = new TabState((DockedTabbedPanel) panel.getLeft());
@@ -77,7 +79,7 @@ public class SplitState implements DockingState {
 		return orientation;
 	}
 
-	public double getDividerLocation() {
+	public int getDividerLocation() {
 		return dividerLocation;
 	}
 

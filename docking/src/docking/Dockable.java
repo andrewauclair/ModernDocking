@@ -52,9 +52,12 @@ public interface Dockable {
 	// often used to prevent "vertical" style dockables from being dockabled horizontally (i.e. disallow "North" and "South" regions)
 	List<DockingRegion> disallowedRegions();
 
+	// helper function to determine if the header close button should be displayed
 	boolean allowClose();
 
+	// helper function to determine if the header min/max button should be displayed
 	boolean allowMinMax();
 
-	boolean allowPin();
+	// helper function to determine if the header 'more' button should be displayed
+	boolean hasMoreOptions();
 }

@@ -23,22 +23,27 @@ package docking;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 // simple docking panel that only has a single Dockable in the center
-public class DockedSimplePanel extends DockingPanel {
+public class DockedSimplePanel extends DockingPanel implements MouseListener {
 	private final DockableWrapper dockable;
 
 	private DockingPanel parent;
+
 	public DockedSimplePanel(DockableWrapper dockable) {
 		setLayout(new BorderLayout());
 
-		setBorder(null);
+		setNotSelectedBorder();
 
 		dockable.setParent(this);
 
 		this.dockable = dockable;
 
 		add((JComponent) dockable.getDockable(), BorderLayout.CENTER);
+
+		((Component) dockable.getDockable()).addMouseListener(this);
 	}
 
 	public DockableWrapper getWrapper() {
@@ -112,5 +117,39 @@ public class DockedSimplePanel extends DockingPanel {
 	@Override
 	public void removeChild(DockingPanel child) {
 		// no-op, simple panel has no children
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		Color color = UIManager.getLookAndFeelDefaults().getColor("Component.focusColor");
+		setBorder(BorderFactory.createLineBorder(color, 2));
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+//		setNotSelectedBorder();
+	}
+
+	private void setNotSelectedBorder() {
+		Color color = UIManager.getLookAndFeelDefaults().getColor("Component.borderColor");
+
+		setBorder(
+				BorderFactory.createCompoundBorder(
+						BorderFactory.createEmptyBorder(1, 1, 1, 1),
+						BorderFactory.createLineBorder(color, 1)
+				)
+		);
 	}
 }

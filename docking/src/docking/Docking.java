@@ -27,10 +27,10 @@ import persist.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.AWTEventListener;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
-
-// TODO we need to check if the window loses focus and kill the floating dialog. other wise strange things happen. -- Think I've gotten pretty close on this, requires more testing
 
 // TODO persistence (saving and loading) -- in memory done, next up persist to file
 
@@ -49,29 +49,77 @@ import java.util.Map;
 public class Docking {
 	public static Dimension frameBorderSize = new Dimension(0, 0);
 
-	private static final Map<String, DockableWrapper> dockables = new HashMap<>();
+	private final Map<String, DockableWrapper> dockables = new HashMap<>();
 
-	private static final Map<JFrame, RootDockingPanel> rootPanels = new HashMap<>();
+	private final Map<JFrame, RootDockingPanel> rootPanels = new HashMap<>();
 
-	private static JFrame frameToDispose = null;
+	private JFrame frameToDispose = null;
 
-	private static JFrame mainFrame = null;
+	private final JFrame mainFrame;
 
-	public static void setMainFrame(JFrame frame) {
-		mainFrame = frame;
+	private static Docking instance;
+
+	private DockingPanel activePanel = null;
+
+	private final Map<JFrame, RootDockState> maximizeRestoreState = new HashMap<>();
+
+	public Docking(JFrame mainFrame) {
+		this.mainFrame = mainFrame;
+		instance = this;
+		FloatListener.reset();
+		frameBorderSize = new Dimension(0, 0);
+
+		long eventMask = AWTEvent.MOUSE_EVENT_MASK;
+
+		Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
+//				System.out.println(e.getID());
+			if (e.getID() == MouseEvent.MOUSE_ENTERED || e.getID() == MouseEvent.MOUSE_EXITED) {
+				DockingPanel dockable = findDockingPanelAtScreenPos(((MouseEvent) e).getLocationOnScreen());
+
+				if (activePanel != null && dockable == null) {
+					setNotSelectedBorder();
+					activePanel = null;
+				}
+
+				if (activePanel != dockable && (dockable instanceof DockedSimplePanel || dockable instanceof DockedTabbedPanel)) {
+					if (activePanel != null) {
+						setNotSelectedBorder();
+					}
+					activePanel = dockable;
+					setSelectedBorder();
+				}
+
+			}
+		}, eventMask);
+	}
+
+	private void setSelectedBorder() {
+		Color color = UIManager.getLookAndFeelDefaults().getColor("Component.focusColor");
+		activePanel.setBorder(BorderFactory.createLineBorder(color, 2));
+	}
+
+	private void setNotSelectedBorder() {
+		Color color = UIManager.getLookAndFeelDefaults().getColor("Component.borderColor");
+
+		activePanel.setBorder(
+				BorderFactory.createCompoundBorder(
+						BorderFactory.createEmptyBorder(1, 1, 1, 1),
+						BorderFactory.createLineBorder(color, 1)
+				)
+		);
 	}
 
 	public static void registerDockable(Dockable dockable) {
-		if (dockables.containsKey(dockable.persistentID())) {
+		if (instance.dockables.containsKey(dockable.persistentID())) {
 			throw new DockableRegistrationFailureException("Registration for Dockable failed. Persistent ID " + dockable.persistentID() + " already exists.");
 		}
 		((Component) dockable).setName(dockable.persistentID());
-		dockables.put(dockable.persistentID(), new DockableWrapper(dockable));
+		instance.dockables.put(dockable.persistentID(), new DockableWrapper(dockable));
 	}
 
 	// Dockables must be deregistered so it can be properly disposed
 	public static void deregisterDockable(Dockable dockable) {
-		dockables.remove(dockable.persistentID());
+		instance.dockables.remove(dockable.persistentID());
 	}
 
 	// package private registration function for DockingPanel
@@ -88,23 +136,23 @@ public class Docking {
 			});
 		}
 
-		if (rootPanels.containsKey(parent)) {
+		if (instance.rootPanels.containsKey(parent)) {
 			throw new DockableRegistrationFailureException("RootDockingPanel already registered for frame: " + parent);
 		}
-		rootPanels.put(parent, panel);
+		instance.rootPanels.put(parent, panel);
 		FloatListener.registerDockingFrame(parent, panel);
 	}
 
 	// TODO add a possible listener for this. I'd like a way to listen for panels being auto undocked and being able to redock them somewhere else depending on what they are
 	// TODO ... for example: dockable in a floating frame, closing it would dock it back into the main window in its default location (root east, for example)
 	public static void deregisterDockingPanel(JFrame parent) {
-		if (rootPanels.containsKey(parent)) {
-			RootDockingPanel root = rootPanels.get(parent);
+		if (instance.rootPanels.containsKey(parent)) {
+			RootDockingPanel root = instance.rootPanels.get(parent);
 
 			undockComponents(root);
 		}
 
-		rootPanels.remove(parent);
+		instance.rootPanels.remove(parent);
 	}
 
 	private static void undockComponents(Container container) {
@@ -119,7 +167,7 @@ public class Docking {
 	}
 
 	public static JFrame findRootAtScreenPos(Point screenPos) {
-		for (JFrame frame : rootPanels.keySet()) {
+		for (JFrame frame : instance.rootPanels.keySet()) {
 			Rectangle bounds = new Rectangle(frame.getX(), frame.getY(), frame.getWidth(), frame.getHeight());
 
 			if (bounds.contains(screenPos) && frame.isVisible()) {
@@ -134,7 +182,7 @@ public class Docking {
 
 		while (parent != null) {
 			if (parent instanceof JFrame) {
-				if (rootPanels.containsKey(parent)) {
+				if (instance.rootPanels.containsKey(parent)) {
 					return (JFrame) parent;
 				}
 			}
@@ -144,8 +192,8 @@ public class Docking {
 	}
 
 	public static RootDockingPanel rootForFrame(JFrame frame) {
-		if (rootPanels.containsKey(frame)) {
-			return rootPanels.get(frame);
+		if (instance.rootPanels.containsKey(frame)) {
+			return instance.rootPanels.get(frame);
 		}
 		return null;
 	}
@@ -214,12 +262,12 @@ public class Docking {
 	}
 
 	public static void dock(Dockable dockable, JFrame frame, DockingRegion region) {
-		if (frameToDispose != null) {
-			frameToDispose.dispose();
-			frameToDispose = null;
+		if (instance.frameToDispose != null) {
+			instance.frameToDispose.dispose();
+			instance.frameToDispose = null;
 		}
 
-		RootDockingPanel root = rootPanels.get(frame);
+		RootDockingPanel root = instance.rootPanels.get(frame);
 
 		if (root == null) {
 			throw new DockableRegistrationFailureException("Frame does not have a RootDockingPanel: " + frame);
@@ -248,20 +296,20 @@ public class Docking {
 	}
 
 	public static boolean canDisposeFrame(JFrame frame) {
-		return frame != mainFrame;
+		return frame != instance.mainFrame;
 	}
 
 	public static Dockable getDockable(String persistentID) {
-		if (dockables.containsKey(persistentID)) {
-			return dockables.get(persistentID).getDockable();
+		if (instance.dockables.containsKey(persistentID)) {
+			return instance.dockables.get(persistentID).getDockable();
 		}
 		return null;
 	}
 
 	// internal function to get the dockable wrapper
 	static DockableWrapper getWrapper(Dockable dockable) {
-		if (dockables.containsKey(dockable.persistentID())) {
-			return dockables.get(dockable.persistentID());
+		if (instance.dockables.containsKey(dockable.persistentID())) {
+			return instance.dockables.get(dockable.persistentID());
 		}
 		throw new DockableRegistrationFailureException("Dockable with Persistent ID " + dockable.persistentID() + " has not been registered.");
 	}
@@ -382,6 +430,33 @@ public class Docking {
 			else if (component instanceof Container) {
 				undockIllegalFloats((Container) component);
 			}
+		}
+	}
+
+	public static boolean isMaximized(Dockable dockable) {
+		return getWrapper(dockable).isMaximized();
+	}
+
+	public static void maximize(Dockable dockable) {
+		JFrame frame = findFrameForDockable(dockable);
+
+		// can only maximize one panel per root
+		if (!instance.maximizeRestoreState.containsKey(frame)) {
+			getWrapper(dockable).setMaximized(true);
+			instance.maximizeRestoreState.put(frame, getRootState(frame));
+			undockComponents(rootForFrame(frame));
+			dock(dockable, frame);
+		}
+	}
+
+	public static void minimize(Dockable dockable) {
+		JFrame frame = findFrameForDockable(dockable);
+
+		// can only minimize if already maximized
+		if (instance.maximizeRestoreState.containsKey(frame)) {
+			getWrapper(dockable).setMaximized(false);
+			restoreState(frame, instance.maximizeRestoreState.get(frame));
+			instance.maximizeRestoreState.remove(frame);
 		}
 	}
 }

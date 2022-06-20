@@ -31,6 +31,8 @@ public class DockableWrapper {
 
 	private FloatListener floatListener;
 
+	private boolean maximized = false;
+
 	public DockableWrapper(Dockable dockable) {
 		this.dockable = dockable;
 		floatListener = new FloatListener(this);
@@ -53,5 +55,13 @@ public class DockableWrapper {
 
 	public DockingPanel getParent() {
 		return parent;
+	}
+
+	public boolean isMaximized() {
+		return maximized;
+	}
+
+	public void setMaximized(boolean maximized) {
+		this.maximized = maximized;
 	}
 }

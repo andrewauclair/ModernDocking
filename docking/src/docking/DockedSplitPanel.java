@@ -22,6 +22,7 @@ SOFTWARE.
 package docking;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
@@ -86,6 +87,42 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener {
 		}
 	}
 
+	public void setDividerLocation(final int location) {
+		if (splitPane.isShowing()) {
+			if ((splitPane.getWidth() > 0) && (splitPane.getHeight() > 0)) {
+				splitPane.setDividerLocation(location);
+			}
+			else {
+				// split hasn't been completely calculated yet, wait until componentResize
+				splitPane.addComponentListener(new ComponentAdapter() {
+					@Override
+					public void componentResized(ComponentEvent e) {
+						// remove this listener, it's a one off
+						splitPane.removeComponentListener(this);
+						// call the function again, this time it should actually set the divider location
+						setDividerLocation(location);
+					}
+				});
+			}
+		}
+		else {
+			// split hasn't been shown yet, wait until it's showing
+			splitPane.addHierarchyListener(new HierarchyListener() {
+				@Override
+				public void hierarchyChanged(HierarchyEvent e) {
+					boolean isShowingChangeEvent = (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0;
+
+					if (isShowingChangeEvent && splitPane.isShowing()) {
+						// remove this listener, it's a one off
+						splitPane.removeHierarchyListener(this);
+						// call the function again, this time it might set the size or wait for componentResize
+						setDividerLocation(location);
+					}
+				}
+			});
+		}
+	}
+
 	public JSplitPane getSplitPane() {
 		return splitPane;
 	}
@@ -124,6 +161,30 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener {
 
 	public void setOrientation(int orientation) {
 		splitPane.setOrientation(orientation);
+
+		if (splitPane.getUI() instanceof BasicSplitPaneUI) {
+			// grab the divider from the UI and remove the border from it
+			BasicSplitPaneDivider divider = ((BasicSplitPaneUI) splitPane.getUI())
+					.getDivider();
+			if (divider != null && divider.getBorder() != null) {
+				divider.setBorder(null);
+			}
+		}
+		Color color = splitPane.getBackground().darker();
+
+		boolean setLeft = true;//left instanceof DockedSimplePanel;
+		boolean setRight = true;//right instanceof DockedSimplePanel;
+
+//		left.setBorder(null);
+//		right.setBorder(null);
+//		if (orientation == JSplitPane.VERTICAL_SPLIT) {
+//			left.setBorder(setLeft ? BorderFactory.createMatteBorder(0, 0, 1, 0, color) : null);
+//			right.setBorder(setRight ? BorderFactory.createMatteBorder(1, 0, 0, 0, color) : null);
+//		}
+//		else {
+//			left.setBorder(setLeft ? BorderFactory.createMatteBorder(0, 0, 0, 1, color) : null);
+//			right.setBorder(setRight ? BorderFactory.createMatteBorder(0, 1, 0, 0, color) : null);
+//		}
 	}
 
 	@Override

@@ -20,6 +20,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import docking.Docking;
 import docking.DockingRegion;
 import docking.RootDockingPanel;
@@ -50,20 +54,9 @@ public class MainFrame extends JFrame {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		SimplePanel one = new SimplePanel("one", "one");
-		SimplePanel two = new SimplePanel("two", "two");
-		SimplePanel three = new SimplePanel("three", "three");
-		SimplePanel four = new SimplePanel("four", "four");
-		SimplePanel five = new SimplePanel("five", "five");
-		SimplePanel six = new SimplePanel("six", "six");
-		SimplePanel seven = new SimplePanel("seven", "seven");
-		SimplePanel eight = new SimplePanel("eight", "eight");
-		ToolPanel explorer = new ToolPanel("Explorer", "explorer", true);
-		ToolPanel output = new ToolPanel("Output", "output", false);
-
 		JToolBar toolBar = new JToolBar();
 		JButton test1 = new JButton("Test1");
-		test1.addActionListener(e -> Docking.undock(one));
+//		test1.addActionListener(e -> Docking.undock(one));
 		toolBar.add(test1);
 		JButton test2 = new JButton("Test2");
 		toolBar.add(test2);
@@ -74,6 +67,31 @@ public class MainFrame extends JFrame {
 		toolBar.add(save);
 		toolBar.add(restore);
 
+		JButton light = new JButton("Light");
+		JButton dark = new JButton("Dark");
+
+		light.addActionListener(e -> {
+			try {
+				UIManager.setLookAndFeel(new FlatLightLaf());
+				FlatLaf.updateUI();
+			}
+			catch (UnsupportedLookAndFeelException ex) {
+				throw new RuntimeException(ex);
+			}
+		});
+
+		dark.addActionListener(e -> {
+			try {
+				UIManager.setLookAndFeel(new FlatDarkLaf());
+				FlatLaf.updateUI();
+			}
+			catch (UnsupportedLookAndFeelException ex) {
+				throw new RuntimeException(ex);
+			}
+		});
+
+		toolBar.add(light);
+		toolBar.add(dark);
 
 		save.addActionListener(e -> {
 			state = Docking.getRootState(this);
@@ -98,12 +116,32 @@ public class MainFrame extends JFrame {
 		gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
 
+		new Docking(this);
+
 		RootDockingPanel dockingPanel = new RootDockingPanel();
 		Docking.registerDockingPanel(dockingPanel, this);
 		Random rand = new Random();
 		dockingPanel.setBackground(new Color(rand.nextInt(255),rand.nextInt(255),rand.nextInt(255)));
 
 		add(dockingPanel, gbc);
+
+		JButton close = new JButton(new FlatSVGIcon("icons/x.svg"));
+//		gbc.gridy++;
+//		add(close, gbc);
+
+
+		SimplePanel one = new SimplePanel("One", "one");
+		SimplePanel two = new SimplePanel("Two", "two");
+		SimplePanel three = new SimplePanel("Three", "three");
+		SimplePanel four = new SimplePanel("Four", "four");
+		SimplePanel five = new SimplePanel("Five", "five");
+		SimplePanel six = new SimplePanel("Six", "six");
+		SimplePanel seven = new SimplePanel("Seven", "seven");
+		SimplePanel eight = new SimplePanel("Eight", "eight");
+		ToolPanel explorer = new ToolPanel("Explorer", "explorer", true);
+		ToolPanel output = new ToolPanel("Output", "output", false);
+
+
 
 		gbc.gridy++;
 		gbc.weighty = 0;
@@ -126,7 +164,7 @@ public class MainFrame extends JFrame {
 		JToggleButton button = new JToggleButton("Test");
 		button.addActionListener(e -> test.setVisible(button.isSelected()));
 
-		Docking.setMainFrame(this);
+
 
 		Docking.dock(one, this);
 		Docking.dock(two, one, DockingRegion.SOUTH);
@@ -140,10 +178,20 @@ public class MainFrame extends JFrame {
 	}
 
 	public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		try {
+			FlatLaf.registerCustomDefaultsSource( "docking" );
+			UIManager.setLookAndFeel(new FlatDarkLaf());
+//			UIManager.setLookAndFeel(new FlatLightLaf());
 
+//			System.setProperty("flatlaf.uiScale", "3.0x");
+//			System.setProperty("flatlaf.uiScale.enabled", "true");
+		}
+		catch (Exception e) {
+		}
+//			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0,0,0,0));
+		UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
 		SwingUtilities.invokeLater(() -> {
-			FailOnThreadViolationRepaintManager.install();
 			FailOnThreadViolationRepaintManager.install();
 
 			MainFrame mainFrame = new MainFrame();
