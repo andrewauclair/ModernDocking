@@ -19,6 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+import docking.DefaultDragHeader;
 import docking.Dockable;
 import docking.Docking;
 
@@ -26,7 +27,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public abstract class BasePanel extends JPanel implements Dockable {
-	private final JPanel titlePanel = new JPanel();
+	private final JPanel titlePanel;
 
 	private final String title;
 	private final String persistentID;
@@ -37,6 +38,8 @@ public abstract class BasePanel extends JPanel implements Dockable {
 		this.title = title;
 		this.persistentID = persistentID;
 
+		titlePanel = new DefaultDragHeader(this, title);
+
 		Docking.registerDockable(this);
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -46,8 +49,13 @@ public abstract class BasePanel extends JPanel implements Dockable {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 
-		titlePanel.add(new JLabel(title));
-		titlePanel.setBackground(new Color(78, 78, 247, 255));
+
+//		titlePanel.add(new JLabel(title));
+//		titlePanel.setBackground(new Color(78, 78, 247, 30));
+//		titlePanel.setBackground(new Color(39, 183, 245, 50));
+//		titlePanel.setOpaque(true);
+//		Color color = UIManager.getLookAndFeelDefaults().getColor("Component.borderColor");
+//		titlePanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, color));
 
 		add(titlePanel, gbc);
 		gbc.gridy++;

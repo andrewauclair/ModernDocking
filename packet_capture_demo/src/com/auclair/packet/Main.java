@@ -1,7 +1,6 @@
 package com.auclair.packet;
 
 import com.auclair.packet.view.MainFrame;
-import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;

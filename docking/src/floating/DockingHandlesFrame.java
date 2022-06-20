@@ -22,29 +22,25 @@ SOFTWARE.
 package floating;
 
 import docking.Dockable;
-import docking.DockingIcons;
 import docking.DockingRegion;
 import docking.RootDockingPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO handles show up in the old spot when resizing the frame and then floating a panel
+
 // handles displaying the handles for docking overlaid on the application
 // only displayed over the currently hit docking panel
 public class DockingHandlesFrame extends JFrame implements MouseMotionListener, MouseListener {
-//	public static final double ROOT_HANDLE_EDGE_DISTANCE = 0.85;
 	public static final int HANDLE_ICON_SIZE = 32;
 	public static final int HANDLE_SPACING = HANDLE_ICON_SIZE + 8;
 	public static final int ROOT_HANDLE_SPACING = HANDLE_ICON_SIZE + 16;
-
-	private static final Color HANDLE_COLOR_NOT_SELECTED = new Color(0, 0, 0, 30);//Color.red.getRed(), Color.red.getGreen(), Color.red.getBlue(), 30);
-	private static final Color HANDLE_COLOR_SELECTED = new Color(Color.red.getRed(), Color.red.getGreen(), Color.red.getBlue(), 50);
 
 	private Dockable floating;
 	private Dockable targetDockable;
@@ -61,8 +57,6 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 	private final JLabel dockableNorth = new JLabel();
 	private final JLabel dockableEast = new JLabel();
 	private final JLabel dockableSouth = new JLabel();
-
-	private boolean mouseOverDockableCenter = false;
 
 	private final Map<JLabel, DockingRegion> rootRegions = new HashMap<>();
 	private final Map<JLabel, DockingRegion> dockableRegions = new HashMap<>();
@@ -95,19 +89,6 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 		setupDockableLabel(dockableEast, DockingRegion.EAST);
 		setupDockableLabel(dockableSouth, DockingRegion.SOUTH);
 
-		rootCenter.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-center.png")));
-		rootWest.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-west.png")));
-		rootNorth.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-north.png")));
-		rootEast.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-east.png")));
-		rootSouth.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-south.png")));
-
-		dockableCenter.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-center.png")));
-		dockableWest.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-west.png")));
-//		dockableNorth.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-north.png")));
-		dockableNorth.setIcon(DockingIcons.handleNorth());
-		dockableEast.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-east.png")));
-		dockableSouth.setIcon(new ImageIcon(DockingHandlesFrame.class.getResource("/icons/dock-south.png")));
-
 		setBackground(new Color(0, 0, 0, 0));
 	}
 
@@ -126,7 +107,6 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 		label.setText(null);
 		label.setBounds(0, 0, HANDLE_ICON_SIZE, HANDLE_ICON_SIZE);
 		label.setOpaque(true);
-		label.setBackground(HANDLE_COLOR_NOT_SELECTED);
 		label.setBorder(null);
 
 		rootRegions.put(label, region);
@@ -143,7 +123,6 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 
 		label.setBounds(0, 0, HANDLE_ICON_SIZE, HANDLE_ICON_SIZE);
 		label.setOpaque(true);
-		label.setBackground(HANDLE_COLOR_NOT_SELECTED);
 		label.setBorder(null);
 
 		dockableRegions.put(label, region);
@@ -169,10 +148,10 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 			SwingUtilities.convertPointFromScreen(location, this);
 
 			setLocation(rootCenter, location.x, location.y);
-			setLocation(rootWest, (int) (location.x - (size.width / 2) + ROOT_HANDLE_SPACING), location.y);
-			setLocation(rootNorth, location.x, (int) (location.y - (size.height / 2) + ROOT_HANDLE_SPACING));
-			setLocation(rootEast, (int) (location.x + (size.width / 2) - ROOT_HANDLE_SPACING), location.y);
-			setLocation(rootSouth, location.x, (int) (location.y + (size.height / 2) - ROOT_HANDLE_SPACING));
+			setLocation(rootWest, location.x - (size.width / 2) + ROOT_HANDLE_SPACING, location.y);
+			setLocation(rootNorth, location.x, location.y - (size.height / 2) + ROOT_HANDLE_SPACING);
+			setLocation(rootEast, location.x + (size.width / 2) - ROOT_HANDLE_SPACING, location.y);
+			setLocation(rootSouth, location.x, location.y + (size.height / 2) - ROOT_HANDLE_SPACING);
 		}
 	}
 
@@ -246,11 +225,9 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 		for (JLabel label : rootRegions.keySet()) {
 			if (label.isVisible() && label.getBounds().contains(framePoint)) {
 				rootRegion = rootRegions.get(label);
-				label.setBackground(HANDLE_COLOR_SELECTED);
 				rootMouseOver.put(label, true);
 			}
 			else {
-				label.setBackground(HANDLE_COLOR_NOT_SELECTED);
 				rootMouseOver.put(label, false);
 			}
 		}
@@ -260,11 +237,9 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 		for (JLabel label : dockableRegions.keySet()) {
 			if (label.isVisible() && label.getBounds().contains(framePoint)) {
 				dockableRegion = dockableRegions.get(label);
-				label.setBackground(HANDLE_COLOR_SELECTED);
 				dockableMouseOver.put(label, true);
 			}
 			else {
-				label.setBackground(HANDLE_COLOR_NOT_SELECTED);
 				dockableMouseOver.put(label, false);
 			}
 		}

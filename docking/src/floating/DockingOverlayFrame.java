@@ -30,6 +30,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 // TODO There seems to be a bug with the overlay not showing up if you only have a single dockable
+// TODO overlay doesn't seem to always show up on the top layer
 
 // displays the overlay highlight of where the panel will be docked
 public class DockingOverlayFrame extends JFrame implements MouseMotionListener, MouseListener, ComponentListener {
