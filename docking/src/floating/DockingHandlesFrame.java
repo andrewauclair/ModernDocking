@@ -22,6 +22,7 @@ SOFTWARE.
 package floating;
 
 import docking.Dockable;
+import docking.DockingColors;
 import docking.DockingRegion;
 import docking.RootDockingPanel;
 
@@ -34,6 +35,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 // TODO handles show up in the old spot when resizing the frame and then floating a panel
+// TODO handle drawing doesn't scale with flatlaf.uiScale
+// TODO highlighted handle shows up highlighted when showing frame again
 
 // handles displaying the handles for docking overlaid on the application
 // only displayed over the currently hit docking panel
@@ -102,12 +105,7 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 
 		label.setVisible(false);
 
-		label.setHorizontalAlignment(SwingConstants.CENTER);
-		label.setVerticalAlignment(SwingConstants.CENTER);
-		label.setText(null);
 		label.setBounds(0, 0, HANDLE_ICON_SIZE, HANDLE_ICON_SIZE);
-		label.setOpaque(true);
-		label.setBorder(null);
 
 		rootRegions.put(label, region);
 		rootMouseOver.put(label, false);
@@ -122,8 +120,6 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 		label.setVisible(false);
 
 		label.setBounds(0, 0, HANDLE_ICON_SIZE, HANDLE_ICON_SIZE);
-		label.setOpaque(true);
-		label.setBorder(null);
 
 		dockableRegions.put(label, region);
 		dockableMouseOver.put(label, false);
@@ -189,7 +185,7 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 
 			SwingUtilities.convertPointToScreen(location, ((Component) targetDockable).getParent());
 
-			int spacing = HANDLE_SPACING;// HANDLE_ICON_SIZE + 4;
+			int spacing = HANDLE_SPACING;
 
 			SwingUtilities.convertPointFromScreen(location, this);
 			setLocation(dockableCenter, location.x, location.y);
@@ -361,7 +357,7 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 				17
 		);
 
-		Color background = UIManager.getColor("Panel.background");
+		Color background = DockingColors.getHandlesBackground();
 
 		g.setColor(background);
 		// dockable handles background
@@ -382,7 +378,7 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 		g.setColor(background);
 		g.fillRect(rootWest.getX() - spacing, rootWest.getY() - spacing, HANDLE_ICON_SIZE + (spacing * 2), HANDLE_ICON_SIZE + (spacing * 2));
 
-		Color border = UIManager.getColor("Component.borderColor");
+		Color border = DockingColors.getHandlesBackgroundBorder();
 		g.setColor(border);
 		g.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);
 
@@ -401,10 +397,10 @@ public class DockingHandlesFrame extends JFrame implements MouseMotionListener, 
 		g.setColor(border);
 		g.drawRect(rootWest.getX() - spacing, rootWest.getY() - spacing, HANDLE_ICON_SIZE + (spacing * 2), HANDLE_ICON_SIZE + (spacing * 2));
 
-		Color outline = UIManager.getColor("Button.foreground");
+		Color outline = DockingColors.getHandlesOutline();
 		g.setColor(outline);
 
-		Color hover = UIManager.getColor("Button.default.borderColor");
+		Color hover = DockingColors.getHandlesFill();
 
 		Graphics2D g2 = (Graphics2D) g.create();
 		Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
