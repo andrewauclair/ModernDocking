@@ -29,6 +29,7 @@ public class DockingColors {
 	private final Entry handlesFill = new Entry();
 
 	private final Entry dockingOverlay = new Entry();
+	private final Entry dockingOverlayBorder = new Entry();
 	private int dockingOverlayAlpha = 60;
 	private String dockingOverlayAlphaKey = "";
 
@@ -42,6 +43,8 @@ public class DockingColors {
 				handlesOutline.update();
 				handlesFill.update();
 				dockingOverlay.update();
+				dockingOverlayBorder.update();
+				colors.dockingOverlayAlpha = UIManager.getInt(colors.dockingOverlayAlphaKey);
 			}
 		});
 	}
@@ -84,7 +87,16 @@ public class DockingColors {
 
 	public static Color getDockingOverlay() {
 		Color color = colors.dockingOverlay.color;
-		return new Color(color.getRed(), color.getGreen(), color.getBlue(), colors.dockingOverlayAlpha / 255.0f);
+		return new Color(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f, colors.dockingOverlayAlpha / 255.0f);
+	}
+
+	public static void setDockingOverlayBorder(String key) {
+		colors.dockingOverlayBorder.setColor(key);
+	}
+
+	public static Color getDockingOverlayBorder() {
+		Color color = colors.dockingOverlayBorder.color;
+		return new Color(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f, colors.dockingOverlayAlpha / 255.0f);
 	}
 
 	public static void setDockingOverlayAlpha(String key) {

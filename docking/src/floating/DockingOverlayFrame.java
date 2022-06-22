@@ -22,6 +22,7 @@ SOFTWARE.
 package floating;
 
 import docking.Dockable;
+import docking.DockingColors;
 import docking.DockingRegion;
 import docking.RootDockingPanel;
 
@@ -29,11 +30,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-// TODO There seems to be a bug with the overlay not showing up if you only have a single dockable
-// TODO overlay doesn't seem to always show up on the top layer
-
 // displays the overlay highlight of where the panel will be docked
-public class DockingOverlayFrame extends JFrame implements MouseMotionListener, MouseListener, ComponentListener {
+public class DockingOverlayFrame implements MouseMotionListener, MouseListener, ComponentListener {
 	private static final double REGION_SENSITIVITY = 0.35;
 	private static final Color INVISIBLE_BACKGROUND = new Color(0, 0, 0, 0);
 	private static final Color VISIBLE_BACKGROUND = new Color(0, 0, 0, 50);
@@ -46,24 +44,26 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 	private DockingRegion dockableRegion;
 	private DockingRegion rootRegion;
 
-	public DockingOverlayFrame(RootDockingPanel root) {
-		setType(Type.UTILITY);
-		setUndecorated(true);
+	private Point location = new Point(0, 0);
+	private Dimension size;
+	private JFrame utilFrame;
+
+	private boolean visible = false;
+
+	public DockingOverlayFrame(JFrame utilFrame, RootDockingPanel root) {
+		this.utilFrame = utilFrame;
 
 		targetRoot = root;
+		size = utilFrame.getSize();
 
-		setBackground(INVISIBLE_BACKGROUND);
-
-		setSize(root.getWidth(), root.getHeight());
-
-		addMouseListener(this);
-		addMouseMotionListener(this);
+		utilFrame.addMouseListener(this);
+		utilFrame.addMouseMotionListener(this);
 
 		root.addComponentListener(this);
 	}
 
 	public void setActive(boolean active) {
-		setBackground(active ? VISIBLE_BACKGROUND : INVISIBLE_BACKGROUND);
+		visible = active;
 	}
 
 	public void setFloating(Dockable dockable) {
@@ -71,11 +71,7 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 	}
 
 	public void setTargetDockable(Dockable dockable) {
-		if (dockable != targetDockable) {
-			targetDockable = dockable;
-
-			setVisible(targetDockable != null || targetRoot != null);
-		}
+		targetDockable = dockable;
 	}
 
 	private boolean isRegionAllowed(DockingRegion region) {
@@ -100,10 +96,8 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 				}
 			}
 
-			SwingUtilities.convertPointToScreen(point, targetRoot.getParent());
-
-			setLocation(point);
-			setSize(size);
+			this.location = point;
+			this.size = size;
 		}
 		else if (targetDockable != null && dockableRegion != null) {
 			JComponent component = (JComponent) targetDockable;
@@ -124,10 +118,8 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 				}
 			}
 
-			SwingUtilities.convertPointToScreen(point, component);
-
-			setLocation(point);
-			setSize(size);
+			this.location = point;
+			this.size = size;
 		}
 		else if (targetDockable != null) {
 			JComponent component = (JComponent) targetDockable;
@@ -166,10 +158,8 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 				}
 			}
 
-			SwingUtilities.convertPointToScreen(point, component.getParent());
-
-			setLocation(point);
-			setSize(size);
+			this.location = point;
+			this.size = size;
 		}
 		else if (targetRoot != null) {
 			JComponent component = targetRoot;
@@ -215,18 +205,16 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 				size = component.getSize();
 			}
 
-			SwingUtilities.convertPointToScreen(point, targetRoot.getParent());
-
-			setLocation(point);
-			setSize(size);
+			this.location = point;
+			this.size = size;
 		}
 		else {
 			// not over anything, reset all the overlay data
-			setSize(1, 1);
+//			utilFrame.setSize(1, 1);
 		}
 
-		revalidate();
-		repaint();
+		utilFrame.revalidate();
+		utilFrame.repaint();
 	}
 
 	public DockingRegion getRegion(Point screenPos) {
@@ -337,15 +325,11 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		setSize(targetRoot.getWidth(), targetRoot.getHeight());
+		size = utilFrame.getSize();
 	}
 
 	@Override
 	public void componentMoved(ComponentEvent e) {
-		Point point = targetRoot.getLocation();
-		SwingUtilities.convertPointToScreen(point, targetRoot.getParent());
-
-		setLocation(point);
 	}
 
 	@Override
@@ -354,5 +338,14 @@ public class DockingOverlayFrame extends JFrame implements MouseMotionListener, 
 
 	@Override
 	public void componentHidden(ComponentEvent e) {
+	}
+
+	public void paint(Graphics g) {
+		if (visible) {
+			g.setColor(DockingColors.getDockingOverlay());
+			g.fillRect(location.x, location.y, size.width, size.height);
+			g.setColor(DockingColors.getDockingOverlayBorder());
+			g.fillRect(location.x, location.y, size.width, size.height);
+		}
 	}
 }

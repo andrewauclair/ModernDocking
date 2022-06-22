@@ -19,6 +19,7 @@ public class Main {
 		DockingColors.setHandlesOutline("Docking.handles.outline");
 		DockingColors.setHandlesFill("Docking.handles.fill");
 		DockingColors.setDockingOverlay("Docking.overlay.color");
+		DockingColors.setDockingOverlayBorder("Docking.overlay.border.color");
 		DockingColors.setDockingOverlayAlpha("Docking.overlay.alpha");
 
 		SwingUtilities.invokeLater(() -> {
