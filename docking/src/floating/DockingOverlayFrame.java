@@ -35,7 +35,6 @@ public class DockingOverlayFrame implements MouseMotionListener, MouseListener, 
 	// determines how close to the edge the user has to drag the panel before they see an overlay other than CENTER
 	private static final double REGION_SENSITIVITY = 0.35;
 
-	private JFrame targetFrame;
 	// the target root for this overlay, always the same
 	private final RootDockingPanel targetRoot;
 
@@ -62,9 +61,8 @@ public class DockingOverlayFrame implements MouseMotionListener, MouseListener, 
 	// whether to draw this overlay, different from swing visiblity because we're manually painting
 	private boolean visible = false;
 
-	public DockingOverlayFrame(JFrame utilFrame, JFrame targetFrame, RootDockingPanel root) {
+	public DockingOverlayFrame(JFrame utilFrame, RootDockingPanel root) {
 		this.utilFrame = utilFrame;
-		this.targetFrame = targetFrame;
 
 		targetRoot = root;
 		size = utilFrame.getSize();
@@ -143,7 +141,7 @@ public class DockingOverlayFrame implements MouseMotionListener, MouseListener, 
 			JComponent component = (JComponent) targetDockable;
 
 			Point framePoint = new Point(screenPos);
-			SwingUtilities.convertPointFromScreen(framePoint, component);
+			SwingUtilities.convertPointFromScreen(framePoint, utilFrame);
 
 			Point point = (component).getLocation();
 			Dimension size = component.getSize();

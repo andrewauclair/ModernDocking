@@ -46,7 +46,7 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		setSize(frame.getSize());
 
 		handles = new DockingHandlesFrame(this, root);
-		overlay = new DockingOverlayFrame(this, frame, root);
+		overlay = new DockingOverlayFrame(this, root);
 
 		frame.addComponentListener(this);
 
