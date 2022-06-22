@@ -36,6 +36,7 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 	private final DockingOverlayFrame overlay;
 	private final JFrame frame;
 
+	// create a new DockingUtilsFrame with a frame and its root panel
 	public DockingUtilsFrame(JFrame frame, RootDockingPanel root) {
 		this.frame = frame;
 		setType(Type.UTILITY);
@@ -45,13 +46,14 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		setSize(frame.getSize());
 
 		handles = new DockingHandlesFrame(this, root);
-		overlay = new DockingOverlayFrame(this, root);
+		overlay = new DockingOverlayFrame(this, frame, root);
 
 		frame.addComponentListener(this);
 
 		setBackground(new Color(0, 0, 0, 0));
 	}
 
+	// set the current dockable that the mouse is over, might be null
 	public void setTargetDockable(Dockable target) {
 		handles.setTarget(target);
 		overlay.setTargetDockable(target);
@@ -60,16 +62,19 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		overlay.setTargetDockableRegion(handles.getDockableRegion());
 	}
 
+	// set the floating panel, doesn't change once the panel is first floated
 	public void setFloating(Dockable floating) {
 		handles.setFloating(floating);
 		overlay.setFloating(floating);
 	}
 
+	// update the overlay with the current mouse position
 	public void update(Point screenPos) {
 		handles.update(screenPos);
 		overlay.update(screenPos);
 	}
 
+	// activate the overlays, sets them to visible
 	public void setActive(boolean active) {
 		handles.setActive(active);
 		overlay.setActive(active);
@@ -79,10 +84,13 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		return overlay.getRegion(screenPos);
 	}
 
+	// checks if docking to the root. This is only possible when the mosue is over a root docking handle
 	public boolean isDockingToRoot() {
 		return overlay.isDockingToRoot();
 	}
 
+	// checks if docking to a dockable. Returns false if isDockingToRoot() is true.
+	// Returns false if not over a frame
 	public boolean isDockingToDockable() {
 		return overlay.isDockingToDockable();
 	}

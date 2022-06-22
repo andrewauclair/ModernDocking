@@ -32,26 +32,39 @@ import java.awt.event.*;
 
 // displays the overlay highlight of where the panel will be docked
 public class DockingOverlayFrame implements MouseMotionListener, MouseListener, ComponentListener {
+	// determines how close to the edge the user has to drag the panel before they see an overlay other than CENTER
 	private static final double REGION_SENSITIVITY = 0.35;
-	private static final Color INVISIBLE_BACKGROUND = new Color(0, 0, 0, 0);
-	private static final Color VISIBLE_BACKGROUND = new Color(0, 0, 0, 50);
 
+	private JFrame targetFrame;
+	// the target root for this overlay, always the same
 	private final RootDockingPanel targetRoot;
 
+	// the dockable that is currently floating in its own undecoarted frame
 	private Dockable floating;
+
+	// the target dockable that the mouse is currently over, could be null
 	private Dockable targetDockable;
 
+	// the region on the dockable that is being docked to, this comes from the handles? I think
 	private DockingRegion dockableRegion;
+
+	// the region on the root that is being docked to, this comes from the handles? I think
 	private DockingRegion rootRegion;
 
+	// the top left location where the overlay starts
 	private Point location = new Point(0, 0);
+	// the total size of the overlay, used for drawing
 	private Dimension size;
-	private JFrame utilFrame;
 
+	// the utility frame that this overlay belongs to
+	private final JFrame utilFrame;
+
+	// whether to draw this overlay, different from swing visiblity because we're manually painting
 	private boolean visible = false;
 
-	public DockingOverlayFrame(JFrame utilFrame, RootDockingPanel root) {
+	public DockingOverlayFrame(JFrame utilFrame, JFrame targetFrame, RootDockingPanel root) {
 		this.utilFrame = utilFrame;
+		this.targetFrame = targetFrame;
 
 		targetRoot = root;
 		size = utilFrame.getSize();
@@ -74,6 +87,7 @@ public class DockingOverlayFrame implements MouseMotionListener, MouseListener, 
 		targetDockable = dockable;
 	}
 
+	// check if the floating dockable is allowed to dock to this region
 	private boolean isRegionAllowed(DockingRegion region) {
 		return !floating.disallowedRegions().contains(region);
 	}
@@ -82,6 +96,8 @@ public class DockingOverlayFrame implements MouseMotionListener, MouseListener, 
 		if (targetRoot != null && rootRegion != null) {
 			Point point = targetRoot.getLocation();
 			Dimension size = targetRoot.getSize();
+
+			point = SwingUtilities.convertPoint(targetRoot.getParent(), point, utilFrame);
 
 			switch (rootRegion) {
 				case WEST -> size = new Dimension(size.width / 2, size.height);
@@ -104,6 +120,8 @@ public class DockingOverlayFrame implements MouseMotionListener, MouseListener, 
 
 			Point point = component.getLocation();
 			Dimension size = component.getSize();
+
+			point = SwingUtilities.convertPoint(component.getParent(), point, utilFrame);
 
 			switch (dockableRegion) {
 				case WEST -> size = new Dimension(size.width / 2, size.height);
@@ -129,6 +147,8 @@ public class DockingOverlayFrame implements MouseMotionListener, MouseListener, 
 
 			Point point = (component).getLocation();
 			Dimension size = component.getSize();
+
+			point = SwingUtilities.convertPoint(component.getParent(), point, utilFrame);
 
 			double horizontalPct = (framePoint.x - point.x) / (double) size.width;
 			double verticalPct = (framePoint.y - point.y) / (double) size.height;
@@ -164,53 +184,13 @@ public class DockingOverlayFrame implements MouseMotionListener, MouseListener, 
 		else if (targetRoot != null) {
 			JComponent component = targetRoot;
 
-			Point framePoint = new Point(screenPos);
-			SwingUtilities.convertPointFromScreen(framePoint, component);
-
 			Point point = (component).getLocation();
 			Dimension size = component.getSize();
 
-			double horizontalPct = (framePoint.x - point.x) / (double) size.width;
-			double verticalPct = (framePoint.y - point.y) / (double) size.height;
-
-			double horizontalEdgeDist = horizontalPct > 0.5 ? 1.0 - horizontalPct : horizontalPct;
-			double verticalEdgeDist = verticalPct > 0.5 ? 1.0 - verticalPct : verticalPct;
-
-			boolean westAllowed = isRegionAllowed(DockingRegion.WEST);
-			boolean eastAllowed = isRegionAllowed(DockingRegion.EAST);
-
-			if (horizontalEdgeDist < verticalEdgeDist && (westAllowed || eastAllowed)) {
-				if (horizontalPct < REGION_SENSITIVITY && westAllowed) {
-					size = new Dimension(size.width / 2, size.height);
-				}
-				else if (horizontalPct > (1.0 - REGION_SENSITIVITY) && eastAllowed) {
-					point.x += size.width / 2;
-					size = new Dimension(size.width / 2, size.height);
-				}
-			}
-			else if (verticalPct < REGION_SENSITIVITY && isRegionAllowed(DockingRegion.NORTH)) {
-				size = new Dimension(size.width, size.height / 2);
-			}
-			else if (verticalPct > (1.0 - REGION_SENSITIVITY) && isRegionAllowed(DockingRegion.SOUTH)) {
-				point.y += size.height / 2;
-				size = new Dimension(size.width, size.height / 2);
-			}
-			else if (targetRoot.getPanel() != null) {
-				size = new Dimension(1, 1);
-			}
-
-			// force the region to always be the center if the root is empty
-			if (targetRoot.getPanel() == null) {
-				point = component.getLocation();
-				size = component.getSize();
-			}
+			point = SwingUtilities.convertPoint(component.getParent(), point, utilFrame);
 
 			this.location = point;
 			this.size = size;
-		}
-		else {
-			// not over anything, reset all the overlay data
-//			utilFrame.setSize(1, 1);
 		}
 
 		utilFrame.revalidate();
@@ -308,6 +288,10 @@ public class DockingOverlayFrame implements MouseMotionListener, MouseListener, 
 	}
 
 	public boolean isDockingToRoot() {
+		// force the region to always be the center if the root is empty
+		if (targetRoot.getPanel() == null) {
+			return true;
+		}
 		return rootRegion != null;
 	}
 
@@ -330,6 +314,7 @@ public class DockingOverlayFrame implements MouseMotionListener, MouseListener, 
 
 	@Override
 	public void componentMoved(ComponentEvent e) {
+		location = utilFrame.getLocation();
 	}
 
 	@Override

@@ -20,7 +20,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import docking.Docking;
+import docking.DockingColors;
 import docking.DockingRegion;
 import docking.RootDockingPanel;
 import exception.FailOnThreadViolationRepaintManager;
@@ -39,6 +44,8 @@ public class MainFrame extends JFrame {
 		setTitle("Test Docking Framework");
 
 		setSize(800, 600);
+
+		new Docking(this);
 
 		JLabel test = new JLabel("Test");
 		test.setOpaque(true);
@@ -126,7 +133,7 @@ public class MainFrame extends JFrame {
 		JToggleButton button = new JToggleButton("Test");
 		button.addActionListener(e -> test.setVisible(button.isSelected()));
 
-		Docking.setMainFrame(this);
+//		Docking.setMainFrame(this);
 
 		Docking.dock(one, this);
 		Docking.dock(two, one, DockingRegion.SOUTH);
@@ -139,11 +146,54 @@ public class MainFrame extends JFrame {
 		SwingUtilities.invokeLater(save::doClick);
 	}
 
-	public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+	public static void main(String[] args) {
+		DockingColors.setHandlesBackground("Docking.handles.background");
+		DockingColors.setHandlesBackgroundBorder("Docking.handles.background.border");
+		DockingColors.setHandlesOutline("Docking.handles.outline");
+		DockingColors.setHandlesFill("Docking.handles.fill");
+		DockingColors.setDockingOverlay("Docking.overlay.color");
+		DockingColors.setDockingOverlayBorder("Docking.overlay.border.color");
+		DockingColors.setDockingOverlayAlpha("Docking.overlay.alpha");
 
 		SwingUtilities.invokeLater(() -> {
-			FailOnThreadViolationRepaintManager.install();
+			try {
+				FlatLaf.registerCustomDefaultsSource( "docking" );
+
+				if (args.length > 1) {
+					System.setProperty("flatlaf.uiScale", args[1]);
+				}
+//			FlatLightLaf.setup();
+//			UIManager.setLookAndFeel(new FlatDarkLaf());
+//			UIManager.setLookAndFeel(new FlatLightLaf());
+				if (args.length > 0 && args[0].equals("light")) {
+					UIManager.setLookAndFeel(new FlatLightLaf());
+				}
+				else if (args.length > 0 && args[0].equals("dark")) {
+					UIManager.setLookAndFeel(new FlatDarkLaf());
+				}
+				else {
+					try {
+						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					}
+					catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+						   UnsupportedLookAndFeelException ex) {
+						throw new RuntimeException(ex);
+					}
+				}
+				FlatLaf.updateUI();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				try {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				}
+				catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+					   UnsupportedLookAndFeelException ex) {
+					throw new RuntimeException(ex);
+				}
+			}
+			UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0,0,0,0));
+			UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
 
 			MainFrame mainFrame = new MainFrame();
 			mainFrame.setVisible(true);

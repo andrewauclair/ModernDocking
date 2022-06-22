@@ -58,7 +58,7 @@ public class ToolPanel extends BasePanel {
 	}
 
 	@Override
-	public boolean allowPin() {
+	public boolean hasMoreOptions() {
 		return false;
 	}
 }

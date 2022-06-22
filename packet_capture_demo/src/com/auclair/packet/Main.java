@@ -33,8 +33,6 @@ import java.awt.*;
 
 public class Main {
 	public static void main(String[] args) {
-		UIManager.put("docking.handles.north", new FlatSVGIcon("icons/layout-3 (1).svg"));
-
 		DockingColors.setHandlesBackground("Docking.handles.background");
 		DockingColors.setHandlesBackgroundBorder("Docking.handles.background.border");
 		DockingColors.setHandlesOutline("Docking.handles.outline");

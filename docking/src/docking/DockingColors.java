@@ -101,6 +101,6 @@ public class DockingColors {
 
 	public static void setDockingOverlayAlpha(String key) {
 		colors.dockingOverlayAlphaKey = key;
-		colors.dockingOverlayAlpha = UIManager.getInt(key);
+//		colors.dockingOverlayAlpha = UIManager.getInt(key);
 	}
 }

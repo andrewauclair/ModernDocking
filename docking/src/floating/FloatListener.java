@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 public class FloatListener extends MouseAdapter implements WindowListener {
+	// current floating dockable
 	private final DockableWrapper dockable;
 
 	private boolean mouseDragging = false;
@@ -175,6 +176,7 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 
 			if (activeUtilsFrame != null) {
 				Point mousePos = MouseInfo.getPointerInfo().getLocation();
+				activeUtilsFrame.setFloating(dockable.getDockable());
 				activeUtilsFrame.update(mousePos);
 				activeUtilsFrame.setActive(true);
 				activeUtilsFrame.toFront();

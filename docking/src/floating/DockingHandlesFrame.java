@@ -300,11 +300,10 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 	}
 
 	public void paint(Graphics g) {
-//		super.paint(g);
 		Rectangle bounds = g.getClipBounds();
 
-		int centerX = bounds.x + (bounds.width / 2);
-		int centerY = bounds.y + (bounds.height / 2);
+		int centerX = dockableCenter.getX() + (HANDLE_ICON_SIZE / 2);
+		int centerY = dockableCenter.getY() + (HANDLE_ICON_SIZE / 2);
 
 		int spacing = HANDLE_SPACING - HANDLE_ICON_SIZE;
 		int half_icon = HANDLE_ICON_SIZE / 2;
@@ -355,19 +354,6 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 		Color background = DockingColors.getHandlesBackground();
 		Color border = DockingColors.getHandlesBackgroundBorder();
 		Color outline = DockingColors.getHandlesOutline();
-
-		if (targetDockable != null) {
-			g.setColor(background);
-			// dockable handles background
-			g.fillPolygon(poly.xpoints, poly.ypoints, poly.npoints);
-
-			g.setColor(border);
-			g.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);
-		}
-
-
-
-//		g.setColor(outline);
 
 		Color hover = DockingColors.getHandlesFill();
 
@@ -467,6 +453,15 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 				g.setColor(hover);
 				g.fillRect(bounds.x + 1, bounds.y + halfWidth + 1, bounds.width - 1, halfWidth - 1);
 			}
+		}
+
+		if (targetDockable != null) {
+			g.setColor(background);
+			// dockable handles background
+			g.fillPolygon(poly.xpoints, poly.ypoints, poly.npoints);
+
+			g.setColor(border);
+			g.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);
 		}
 
 		// draw the dockable handles

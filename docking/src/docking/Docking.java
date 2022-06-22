@@ -40,8 +40,6 @@ import java.util.Map;
 
 // TODO make empty root panel look better and add a "RC" Root Center docking handle in case the root is empty
 
-// TODO support maximize (should have icon that shows that you can maximize and then it should change when it is maxed)
-
 // TODO add buttons for maximize/minimize, pin and close
 
 // Main class for the docking framework

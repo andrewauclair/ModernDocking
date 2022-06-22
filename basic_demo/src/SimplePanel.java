@@ -55,7 +55,7 @@ public class SimplePanel extends BasePanel {
 	}
 
 	@Override
-	public boolean allowPin() {
+	public boolean hasMoreOptions() {
 		return false;
 	}
 }
