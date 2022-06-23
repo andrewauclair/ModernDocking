@@ -1,4 +1,4 @@
-rootProject.name = 'packet-capture-demo'
+rootProject.name = 'basic-demo'
 
 include ':docking'
 include ':docking-ui'

@@ -3,8 +3,6 @@ package docking;
 import javax.swing.*;
 import java.awt.*;
 
-// TODO Need some sensible defaults in case we're using the system l&f
-
 public class DockingColors {
 	private static class Entry {
 		String key = ""; // key to look up color in UIManager

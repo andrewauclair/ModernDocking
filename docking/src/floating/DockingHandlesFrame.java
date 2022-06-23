@@ -21,7 +21,6 @@ SOFTWARE.
  */
 package floating;
 
-import com.sun.source.tree.ContinueTree;
 import docking.Dockable;
 import docking.DockingColors;
 import docking.DockingRegion;
@@ -36,7 +35,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 // TODO handle drawing doesn't scale with flatlaf.uiScale
-// TODO highlighted handle shows up highlighted when showing frame again
 
 // handles displaying the handles for docking overlaid on the application
 // only displayed over the currently hit docking panel
@@ -68,7 +66,7 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 
 	private DockingRegion rootRegion = null;
 	private DockingRegion dockableRegion = null;
-	private JFrame utilFrame;
+	private final JFrame utilFrame;
 
 	public DockingHandlesFrame(JFrame utilFrame, RootDockingPanel root) {
 		this.utilFrame = utilFrame;
@@ -300,7 +298,7 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 	}
 
 	public void paint(Graphics g) {
-		Rectangle bounds = g.getClipBounds();
+//		Rectangle bounds = g.getClipBounds();
 
 		int centerX = dockableCenter.getX() + (HANDLE_ICON_SIZE / 2);
 		int centerY = dockableCenter.getY() + (HANDLE_ICON_SIZE / 2);
@@ -370,7 +368,7 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 			g.setColor(border);
 			g.drawRect(rootCenter.getX() - spacing, rootCenter.getY() - spacing, HANDLE_ICON_SIZE + (spacing * 2), HANDLE_ICON_SIZE + (spacing * 2));
 
-			bounds = rootCenter.getBounds();
+			Rectangle bounds = rootCenter.getBounds();
 			g.setColor(outline);
 			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
@@ -387,7 +385,7 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 			g.setColor(border);
 			g.drawRect(rootEast.getX() - spacing, rootEast.getY() - spacing, HANDLE_ICON_SIZE + (spacing * 2), HANDLE_ICON_SIZE + (spacing * 2));
 
-			bounds = rootEast.getBounds();
+			Rectangle bounds = rootEast.getBounds();
 			g.setColor(outline);
 			int halfWidth = bounds.width / 2;
 			g.drawRect(bounds.x + halfWidth, bounds.y, bounds.width - halfWidth, bounds.height);
@@ -405,7 +403,7 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 			g.setColor(border);
 			g.drawRect(rootWest.getX() - spacing, rootWest.getY() - spacing, HANDLE_ICON_SIZE + (spacing * 2), HANDLE_ICON_SIZE + (spacing * 2));
 
-			bounds = rootWest.getBounds();
+			Rectangle bounds = rootWest.getBounds();
 			g.setColor(outline);
 			int halfWidth = bounds.width / 2;
 			g.drawRect(bounds.x, bounds.y, bounds.width - halfWidth, bounds.height);
@@ -423,7 +421,7 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 			g.setColor(border);
 			g.drawRect(rootNorth.getX() - spacing, rootNorth.getY() - spacing, HANDLE_ICON_SIZE + (spacing * 2), HANDLE_ICON_SIZE + (spacing * 2));
 
-			bounds = rootNorth.getBounds();
+			Rectangle bounds = rootNorth.getBounds();
 
 			g.setColor(outline);
 
@@ -444,7 +442,7 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 			g.setColor(border);
 			g.drawRect(rootSouth.getX() - spacing, rootSouth.getY() - spacing, HANDLE_ICON_SIZE + (spacing * 2), HANDLE_ICON_SIZE + (spacing * 2));
 
-			bounds = rootSouth.getBounds();
+			Rectangle bounds = rootSouth.getBounds();
 			g.setColor(outline);
 			int halfWidth = bounds.width / 2;
 			g.drawRect(bounds.x, bounds.y + halfWidth, bounds.width, bounds.height - halfWidth);
@@ -466,7 +464,7 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 
 		// draw the dockable handles
 		if (dockableCenter.isVisible()) {
-			bounds = dockableCenter.getBounds();
+			Rectangle bounds = dockableCenter.getBounds();
 			g.setColor(outline);
 			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
@@ -477,7 +475,7 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 		}
 
 		if (dockableEast.isVisible()) {
-			bounds = dockableEast.getBounds();
+			Rectangle bounds = dockableEast.getBounds();
 			g.setColor(outline);
 			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
@@ -492,7 +490,7 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 		}
 
 		if (dockableWest.isVisible()) {
-			bounds = dockableWest.getBounds();
+			Rectangle bounds = dockableWest.getBounds();
 			g.setColor(outline);
 			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
@@ -507,7 +505,7 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 		}
 
 		if (dockableNorth.isVisible()) {
-			bounds = dockableNorth.getBounds();
+			Rectangle bounds = dockableNorth.getBounds();
 			g.setColor(outline);
 			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
@@ -522,7 +520,7 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 		}
 
 		if (dockableSouth.isVisible()) {
-			bounds = dockableSouth.getBounds();
+			Rectangle bounds = dockableSouth.getBounds();
 			g.setColor(outline);
 			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 

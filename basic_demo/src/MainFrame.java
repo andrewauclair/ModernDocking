@@ -29,6 +29,7 @@ import docking.DockingColors;
 import docking.DockingRegion;
 import docking.RootDockingPanel;
 import exception.FailOnThreadViolationRepaintManager;
+import layouts.DockingLayout;
 import persist.RootDockState;
 
 import javax.swing.*;
@@ -39,6 +40,7 @@ import java.util.Random;
 
 public class MainFrame extends JFrame {
 	static RootDockState state;
+	static DockingLayout currentLayout;
 
 	public MainFrame() {
 		setTitle("Test Docking Framework");
@@ -83,9 +85,13 @@ public class MainFrame extends JFrame {
 
 
 		save.addActionListener(e -> {
-			state = Docking.getRootState(this);
+//			state = Docking.getRootState(this);
+			currentLayout = Docking.getCurrentLayout(this);
 		});
-		restore.addActionListener(e -> Docking.restoreState(this, state));
+		restore.addActionListener(e -> {
+//			Docking.restoreState(this, state);
+			Docking.setLayout(this, currentLayout);
+		});
 
 		test2.addActionListener(e -> test.setVisible(false));
 		test3.addActionListener(e -> test.setVisible(true));

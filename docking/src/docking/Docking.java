@@ -23,6 +23,7 @@ package docking;
 
 import exception.DockableRegistrationFailureException;
 import floating.FloatListener;
+import layouts.*;
 import persist.*;
 
 import javax.swing.*;
@@ -33,12 +34,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 // TODO persistence (saving and loading) -- in memory done, next up persist to file
+// TODO saving/loading relies on divider absolute positions. if the dialog is resized before restoring then it looks wrong
 
 // TODO perspectives/views/layouts, probably calling them "layouts"
 
 // TODO allow the app to set the divider location when docking dockables
-
-// TODO make empty root panel look better and add a "RC" Root Center docking handle in case the root is empty
 
 // TODO add buttons for maximize/minimize, pin and close
 
@@ -322,6 +322,28 @@ public class Docking {
 		return new RootDockState(root);
 	}
 
+	public static DockingLayout getCurrentLayout(JFrame frame) {
+		RootDockingPanel root = rootForFrame(frame);
+
+		if (root == null) {
+			throw new RuntimeException("Root for frame does not exist: " + frame);
+		}
+
+		return DockingLayouts.layoutFromRoot(root);
+	}
+
+	public static void setLayout(JFrame frame, DockingLayout layout) {
+		RootDockingPanel root = rootForFrame(frame);
+
+		if (root == null) {
+			throw new RuntimeException("Root for frame does not exist: " + frame);
+		}
+
+		undockComponents(root);
+
+		root.setPanel(restoreState(layout.getRootNode()));
+	}
+
 	public static void restoreState(JFrame frame, RootDockState state) {
 		RootDockingPanel root = rootForFrame(frame);
 
@@ -383,6 +405,62 @@ public class Docking {
 
 		if (dockable == null) {
 			throw new RuntimeException("Dockable with persistent ID " + state.getPersistentID() + " does not exist.");
+		}
+
+		undock(dockable);
+
+		return new DockedSimplePanel(getWrapper(dockable));
+	}
+
+	private static DockingPanel restoreState(DockingLayoutNode node) {
+		if (node instanceof DockingSimplePanelNode) {
+			return restoreSimple((DockingSimplePanelNode) node);
+		}
+		else if (node instanceof DockingSplitPanelNode) {
+			return restoreSplit((DockingSplitPanelNode) node);
+		}
+		else if (node instanceof DockingTabPanelNode) {
+			return restoreTabbed((DockingTabPanelNode) node);
+		}
+		else {
+			throw new RuntimeException("Unknown state type");
+		}
+	}
+
+	private static DockedSplitPanel restoreSplit(DockingSplitPanelNode node) {
+		DockedSplitPanel panel = new DockedSplitPanel();
+
+		panel.setLeft(restoreState(node.getLeft()));
+		panel.setRight(restoreState(node.getRight()));
+		panel.setOrientation(node.getOrientation());
+//		panel.setDividerLocation(node.getDividerLocation());
+
+		return panel;
+	}
+
+	private static DockedTabbedPanel restoreTabbed(DockingTabPanelNode node) {
+		DockedTabbedPanel panel = new DockedTabbedPanel();
+
+		for (String persistentID : node.getPersistentIDs()) {
+			Dockable dockable = getDockable(persistentID);
+
+			if (dockable == null) {
+				throw new RuntimeException("Dockable with persistent ID " + persistentID + " does not exist.");
+			}
+
+			undock(dockable);
+
+			panel.addPanel(getWrapper(dockable));
+		}
+
+		return panel;
+	}
+
+	private static DockedSimplePanel restoreSimple(DockingSimplePanelNode node) {
+		Dockable dockable = getDockable(node.persistentID());
+
+		if (dockable == null) {
+			throw new RuntimeException("Dockable with persistent ID " + node.persistentID() + " does not exist.");
 		}
 
 		undock(dockable);

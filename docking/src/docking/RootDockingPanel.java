@@ -28,11 +28,14 @@ import java.awt.*;
 public class RootDockingPanel extends DockingPanel {
 	DockingPanel panel;
 
-	// TODO allow the application to define this empty panel. For example, they might like to display a message along the lines of "dock panels here"
 	private JPanel emptyPanel = new JPanel();
 
 	public RootDockingPanel() {
 		setLayout(new BorderLayout());
+	}
+
+	public void setEmptyPanel(JPanel panel) {
+		this.emptyPanel = panel;
 	}
 
 	public DockingPanel getPanel() {
