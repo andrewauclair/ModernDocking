@@ -30,12 +30,14 @@ import docking.DockingRegion;
 import docking.RootDockingPanel;
 import exception.FailOnThreadViolationRepaintManager;
 import layouts.DockingLayout;
+import layouts.DockingLayoutXML;
 import persist.RootDockState;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.Random;
 
 public class MainFrame extends JFrame {
@@ -48,6 +50,50 @@ public class MainFrame extends JFrame {
 		setSize(800, 600);
 
 		new Docking(this);
+
+		JMenuBar menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
+
+		JMenu file = new JMenu("File");
+		menuBar.add(file);
+
+		JMenuItem saveLayout = new JMenuItem("Save Layout to File...");
+		file.add(saveLayout);
+
+		saveLayout.addActionListener(e -> {
+			JFileChooser chooser = new JFileChooser();
+			int result = chooser.showSaveDialog(MainFrame.this);
+
+			if (result == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = chooser.getSelectedFile();
+
+				DockingLayout layout = Docking.getCurrentLayout(MainFrame.this);
+
+				boolean saved = DockingLayoutXML.saveLayoutToFile(selectedFile, layout);
+
+				if (!saved) {
+					JOptionPane.showMessageDialog(MainFrame.this, "Failed to save layout");
+				}
+			}
+		});
+
+		JMenuItem loadLayout = new JMenuItem("Load Layout from File...");
+		file.add(loadLayout);
+
+		loadLayout.addActionListener(e -> {
+			JFileChooser chooser = new JFileChooser();
+			int result = chooser.showOpenDialog(MainFrame.this);
+
+			if (result == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = chooser.getSelectedFile();
+
+				DockingLayout layout = DockingLayoutXML.loadLayoutFromFile(selectedFile);
+
+				if (layout != null) {
+					Docking.setLayout(MainFrame.this, layout);
+				}
+			}
+		});
 
 		JLabel test = new JLabel("Test");
 		test.setOpaque(true);

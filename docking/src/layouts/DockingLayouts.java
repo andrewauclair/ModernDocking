@@ -27,6 +27,11 @@ import persist.RootDockState;
 import persist.SplitState;
 import persist.TabState;
 
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +53,8 @@ public class DockingLayouts {
 	public List<String> getLayoutNames() {
 		return new ArrayList<>(layouts.keySet());
 	}
+
+
 
 	public static DockingLayout layoutFromRoot(RootDockingPanel root) {
 		return new DockingLayout(panelToNode(root.getPanel()));
