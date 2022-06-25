@@ -28,20 +28,16 @@ import persist.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.AWTEventListener;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.*;
 
 // TODO auto persist
-// TODO saving/loading relies on divider absolute positions. if the dialog is resized before restoring then it looks wrong
-
-// TODO allow the app to set the divider location when docking dockables
 
 // TODO add buttons for maximize/minimize, pin and close
 
 // Main class for the docking framework
 // register and dock/undock dockables here
-public class Docking {
+public class Docking implements ComponentListener, WindowStateListener {
 	public static Dimension frameBorderSize = new Dimension(0, 0);
 
 	private final Map<String, DockableWrapper> dockables = new HashMap<>();
@@ -64,10 +60,8 @@ public class Docking {
 		FloatListener.reset();
 		frameBorderSize = new Dimension(0, 0);
 
-		long eventMask = AWTEvent.MOUSE_EVENT_MASK;
-
+		// use an AWT event listener to set a border around the dockable that the mouse is currently over
 		Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
-//				System.out.println(e.getID());
 			if (e.getID() == MouseEvent.MOUSE_ENTERED || e.getID() == MouseEvent.MOUSE_EXITED) {
 				DockingPanel dockable = findDockingPanelAtScreenPos(((MouseEvent) e).getLocationOnScreen());
 
@@ -85,7 +79,7 @@ public class Docking {
 				}
 
 			}
-		}, eventMask);
+		}, AWTEvent.MOUSE_EVENT_MASK);
 	}
 
 	private void setSelectedBorder() {
@@ -136,6 +130,9 @@ public class Docking {
 		}
 		instance.rootPanels.put(parent, panel);
 		FloatListener.registerDockingFrame(parent, panel);
+
+		parent.addComponentListener(instance);
+		parent.addWindowStateListener(instance);
 	}
 
 	// TODO add a possible listener for this. I'd like a way to listen for panels being auto undocked and being able to redock them somewhere else depending on what they are
@@ -148,6 +145,9 @@ public class Docking {
 		}
 
 		instance.rootPanels.remove(parent);
+
+		parent.removeComponentListener(instance);
+		parent.removeWindowStateListener(instance);
 	}
 
 	private static void undockComponents(Container container) {
@@ -259,12 +259,24 @@ public class Docking {
 		return (DockingPanel) component;
 	}
 
+	public static void dock(String persistentID, JFrame frame) {
+		dock(getDockable(persistentID), frame, DockingRegion.CENTER);
+	}
+
 	public static void dock(Dockable dockable, JFrame frame) {
 		dock(dockable, frame, DockingRegion.CENTER);
 	}
 
+	public static void dock(String persistentID, JFrame frame, DockingRegion region) {
+		dock(getDockable(persistentID), frame, region, 0.5);
+	}
+
 	public static void dock(Dockable dockable, JFrame frame, DockingRegion region) {
 		dock(dockable, frame, region, 0.5);
+	}
+
+	public static void dock(String persistentID, JFrame frame, DockingRegion region, double dividerProportion) {
+		dock(getDockable(persistentID), frame, region, dividerProportion);
 	}
 
 	public static void dock(Dockable dockable, JFrame frame, DockingRegion region, double dividerProportion) {
@@ -280,6 +292,20 @@ public class Docking {
 		}
 
 		root.dock(dockable, region, dividerProportion);
+
+		AppState.persist();
+	}
+
+	public static void dock(String source, String target, DockingRegion region) {
+		dock(getDockable(source), getDockable(target), region, 0.5);
+	}
+
+	public static void dock(String source, Dockable target, DockingRegion region) {
+		dock(getDockable(source), target, region, 0.5);
+	}
+
+	public static void dock(Dockable source, String target, DockingRegion region) {
+		dock(source, getDockable(target), region, 0.5);
 	}
 
 	public static void dock(Dockable source, Dockable target, DockingRegion region) {
@@ -289,8 +315,14 @@ public class Docking {
 	public static void dock(Dockable source, Dockable target, DockingRegion region, double dividerProportion) {
 		DockableWrapper wrapper = Docking.getWrapper(target);
 		wrapper.getParent().dock(source, region, dividerProportion);
+
+		AppState.persist();
 	}
 	
+	public static void undock(String persistentID) {
+		undock(getDockable(persistentID));
+	}
+
 	public static void undock(Dockable dockable) {
 		JFrame frame = findFrameForDockable(dockable);
 
@@ -303,6 +335,38 @@ public class Docking {
 			deregisterDockingPanel(frame);
 			frame.dispose();
 		}
+
+		AppState.persist();
+	}
+
+	public static boolean isDocked(String persistentID) {
+		return isDocked(getDockable(persistentID));
+	}
+
+	public static boolean isDocked(Dockable dockable) {
+		for (RootDockingPanel root : instance.rootPanels.values()) {
+			if (isDocked(root, dockable)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static boolean isDocked(Container container, Dockable search) {
+		for (Component component : container.getComponents()) {
+			if (component instanceof Dockable) {
+				Dockable dockable = (Dockable) component;
+				if (dockable == search) {
+					return true;
+				}
+			}
+			else if (component instanceof Container) {
+				if (isDocked((Container) component, search)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public static boolean canDisposeFrame(JFrame frame) {
@@ -368,6 +432,8 @@ public class Docking {
 			}
 		}
 
+		AppState.setPaused(true);
+
 		// setup main frame
 		setLayout(instance.mainFrame, layout.getMainFrameLayout());
 
@@ -378,6 +444,9 @@ public class Docking {
 
 			setLayout(frame, frameLayout);
 		}
+
+		AppState.setPaused(false);
+		AppState.persist();
 	}
 
 	public static void setLayout(JFrame frame, DockingLayout layout) {
@@ -393,7 +462,16 @@ public class Docking {
 
 		undockComponents(root);
 
+		boolean paused = AppState.isPaused();
+		AppState.setPaused(true);
+
 		root.setPanel(restoreState(layout.getRootNode()));
+
+		AppState.setPaused(paused);
+
+		if (!paused) {
+			AppState.persist();
+		}
 	}
 
 	public static void restoreState(JFrame frame, RootDockState state) {
@@ -405,7 +483,16 @@ public class Docking {
 
 		undockComponents(root);
 
+		boolean paused = AppState.isPaused();
+		AppState.setPaused(true);
+
 		root.setPanel(restoreState(state.getState()));
+
+		AppState.setPaused(paused);
+
+		if (!paused) {
+			AppState.persist();
+		}
 	}
 
 	private static DockingPanel restoreState(DockingState state) {
@@ -529,6 +616,8 @@ public class Docking {
 				undockIllegalFloats(root);
 			}
 		}
+
+		AppState.persist();
 	}
 
 	private static boolean shouldUndock(Container container) {
@@ -586,5 +675,28 @@ public class Docking {
 			restoreState(frame, instance.maximizeRestoreState.get(frame));
 			instance.maximizeRestoreState.remove(frame);
 		}
+	}
+
+	@Override
+	public void componentResized(ComponentEvent e) {
+		AppState.persist();
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent e) {
+		AppState.persist();
+	}
+
+	@Override
+	public void componentShown(ComponentEvent e) {
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent e) {
+	}
+
+	@Override
+	public void windowStateChanged(WindowEvent e) {
+		AppState.persist();
 	}
 }

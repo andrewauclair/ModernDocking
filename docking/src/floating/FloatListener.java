@@ -22,6 +22,7 @@ SOFTWARE.
 package floating;
 
 import docking.*;
+import persist.AppState;
 import persist.RootDockState;
 
 import javax.swing.*;
@@ -277,6 +278,8 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 			else {
 				new FloatingFrame(dockable.getDockable(), floatingFrame);
 			}
+
+			AppState.persist();
 
 			originalFrame = null;
 

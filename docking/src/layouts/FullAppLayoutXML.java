@@ -26,16 +26,26 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class FullAppLayoutXML {
 	private static final String NL = "\n";
 
 	// saves a docking layout to the given file, returns true if successful, false otherwise
 	public static boolean saveLayoutToFile(File file, FullAppLayout layout) {
-		file.getParentFile().mkdirs();
+		try {
+			file.createNewFile();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		if (file.getParentFile() != null) {
+			file.getParentFile().mkdirs();
+		}
 
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
-		XMLStreamWriter writer = null;
+		XMLStreamWriter writer;
 		try {
 			writer = factory.createXMLStreamWriter(new FileOutputStream(file));
 		}
@@ -102,6 +112,7 @@ public class FullAppLayoutXML {
 		}
 		catch (XMLStreamException e) {
 			e.printStackTrace();
+			layout = null;
 		}
 		finally {
 			try {

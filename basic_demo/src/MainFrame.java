@@ -33,6 +33,7 @@ import layouts.DockingLayout;
 import layouts.DockingLayoutXML;
 import layouts.FullAppLayout;
 import layouts.FullAppLayoutXML;
+import persist.AppState;
 import persist.RootDockState;
 
 import javax.swing.*;
@@ -52,6 +53,14 @@ public class MainFrame extends JFrame {
 		setSize(800, 600);
 
 		new Docking(this);
+
+		AppState.setAutoPersist(false);
+		AppState.setPersistFile(new File("auto_persist_layout.xml"));
+
+		SwingUtilities.invokeLater(() -> {
+			AppState.restore();
+			AppState.setAutoPersist(true);
+		});
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -118,6 +127,20 @@ public class MainFrame extends JFrame {
 		SimplePanel eight = new SimplePanel("eight", "eight");
 		ToolPanel explorer = new ToolPanel("Explorer", "explorer", true);
 		ToolPanel output = new ToolPanel("Output", "output", false);
+
+		JMenu view = new JMenu("View");
+		menuBar.add(view);
+
+		view.add(actionListenDock("one"));
+		view.add(actionListenDock("two"));
+		view.add(actionListenDock("three"));
+		view.add(actionListenDock("four"));
+		view.add(actionListenDock("five"));
+		view.add(actionListenDock("six"));
+		view.add(actionListenDock("seven"));
+		view.add(actionListenDock("eight"));
+		view.add(actionListenDock("explorer"));
+		view.add(actionListenDock("output"));
 
 		JToolBar toolBar = new JToolBar();
 		JButton test1 = new JButton("Test1");
@@ -197,6 +220,16 @@ public class MainFrame extends JFrame {
 
 		// save the default layout so that we have something to restore, do it later so that the splits setup properly
 		SwingUtilities.invokeLater(save::doClick);
+	}
+
+	private JMenuItem actionListenDock(String persistentID) {
+		JMenuItem item = new JMenuItem(persistentID);
+		item.addActionListener(e -> {
+			if (!Docking.isDocked(Docking.getDockable(persistentID))) {
+				Docking.dock(Docking.getDockable(persistentID), this, DockingRegion.SOUTH);
+			}
+		});
+		return item;
 	}
 
 	public static void main(String[] args) {

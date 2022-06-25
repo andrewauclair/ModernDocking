@@ -21,14 +21,18 @@ SOFTWARE.
  */
 package docking;
 
+import persist.AppState;
+
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 // DockingPanel that has a split pane with 2 dockables, split can be vertical or horizontal
-public class DockedSplitPanel extends DockingPanel implements MouseListener {
+public class DockedSplitPanel extends DockingPanel implements MouseListener, PropertyChangeListener {
 	private DockingPanel left = null;
 	private DockingPanel right = null;
 
@@ -41,6 +45,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener {
 		splitPane.setContinuousLayout(true);
 		splitPane.setResizeWeight(0.5);
 		splitPane.setBorder(null);
+		splitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, this);
 
 		setDividerLocation(splitPane.getResizeWeight());
 
@@ -91,6 +96,8 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener {
 		if (splitPane.isShowing()) {
 			if ((splitPane.getWidth() > 0) && (splitPane.getHeight() > 0)) {
 				splitPane.setDividerLocation(location);
+
+				AppState.persist();
 			}
 			else {
 				// split hasn't been completely calculated yet, wait until componentResize
@@ -170,21 +177,6 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener {
 				divider.setBorder(null);
 			}
 		}
-		Color color = splitPane.getBackground().darker();
-
-		boolean setLeft = true;//left instanceof DockedSimplePanel;
-		boolean setRight = true;//right instanceof DockedSimplePanel;
-
-//		left.setBorder(null);
-//		right.setBorder(null);
-//		if (orientation == JSplitPane.VERTICAL_SPLIT) {
-//			left.setBorder(setLeft ? BorderFactory.createMatteBorder(0, 0, 1, 0, color) : null);
-//			right.setBorder(setRight ? BorderFactory.createMatteBorder(1, 0, 0, 0, color) : null);
-//		}
-//		else {
-//			left.setBorder(setLeft ? BorderFactory.createMatteBorder(0, 0, 0, 1, color) : null);
-//			right.setBorder(setRight ? BorderFactory.createMatteBorder(0, 1, 0, 0, color) : null);
-//		}
 	}
 
 	@Override
@@ -262,6 +254,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener {
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		AppState.persist();
 	}
 
 	@Override
@@ -270,5 +263,10 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener {
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		AppState.persist();
 	}
 }

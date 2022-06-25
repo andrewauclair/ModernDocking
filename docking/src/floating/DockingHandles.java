@@ -36,14 +36,9 @@ import java.util.Map;
 
 import static floating.DockingHandle.HANDLE_ICON_SIZE;
 
-// TODO handle drawing doesn't scale with flatlaf.uiScale
-
 // handles displaying the handles for docking overlaid on the application
 // only displayed over the currently hit docking panel
 public class DockingHandles implements MouseMotionListener, MouseListener {
-//	public static final int HANDLE_SPACING = HANDLE_ICON_SIZE + 8;
-//	public static final int ROOT_HANDLE_SPACING = HANDLE_ICON_SIZE + 16;
-
 	public int handleSpacing(JLabel handle) {
 		return handle.getWidth() + 8;
 	}
