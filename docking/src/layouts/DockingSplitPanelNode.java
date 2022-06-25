@@ -59,7 +59,6 @@ public class DockingSplitPanelNode implements DockingLayoutNode {
 
 	@Override
 	public void dock(String persistentID, DockingRegion region) {
-		// TODO throw exception if trying to dock to CENTER
 	}
 
 	@Override

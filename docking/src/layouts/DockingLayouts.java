@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 public class DockingLayouts {
-	// TODO add support for converting a in memory persist to a layout to save to a file
-	// users will create docking layouts when they want to design a layout, which they can then apply
 	private final Map<String, DockingLayout> layouts = new HashMap<>();
 
 	public void registerLayout(String name, DockingLayout layout) {

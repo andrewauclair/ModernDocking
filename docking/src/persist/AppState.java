@@ -7,10 +7,7 @@ import layouts.FullAppLayoutXML;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-// TODO this class should allow automatic saving of the layouts for all docking frames
-// TODO this class should support saving/loading from xml or something similar
 public class AppState {
 	private static boolean autoPersist = false;
 	private static File autoPersistFile = null;
