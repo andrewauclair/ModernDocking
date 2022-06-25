@@ -478,7 +478,7 @@ public class Docking {
 		panel.setLeft(restoreState(node.getLeft()));
 		panel.setRight(restoreState(node.getRight()));
 		panel.setOrientation(node.getOrientation());
-//		panel.setDividerLocation(node.getDividerLocation());
+		panel.setDividerLocation(node.getDividerProportion());
 
 		return panel;
 	}

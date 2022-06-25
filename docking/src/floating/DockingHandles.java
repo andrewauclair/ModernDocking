@@ -40,7 +40,7 @@ import static floating.DockingHandle.HANDLE_ICON_SIZE;
 
 // handles displaying the handles for docking overlaid on the application
 // only displayed over the currently hit docking panel
-public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
+public class DockingHandles implements MouseMotionListener, MouseListener {
 //	public static final int HANDLE_SPACING = HANDLE_ICON_SIZE + 8;
 //	public static final int ROOT_HANDLE_SPACING = HANDLE_ICON_SIZE + 16;
 
@@ -77,7 +77,7 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 	private DockingRegion dockableRegion = null;
 	private final JFrame utilFrame;
 
-	public DockingHandlesFrame(JFrame utilFrame, RootDockingPanel root) {
+	public DockingHandles(JFrame utilFrame, RootDockingPanel root) {
 		this.utilFrame = utilFrame;
 
 		this.targetRoot = root;

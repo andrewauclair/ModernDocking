@@ -107,6 +107,7 @@ public class DockingLayoutXML {
 	private static void writeSplitNodeToFile(XMLStreamWriter writer, DockingSplitPanelNode node) throws XMLStreamException {
 		writer.writeStartElement("split");
 		writer.writeAttribute("orientation", String.valueOf(node.getOrientation()));
+		writer.writeAttribute("divider-proportion", String.valueOf(node.getDividerProportion()));
 		writer.writeCharacters(NL);
 
 		writer.writeStartElement("left");
@@ -223,6 +224,14 @@ public class DockingLayoutXML {
 		DockingLayoutNode right = null;
 
 		int orientation = Integer.parseInt(reader.getAttributeValue(0));
+		float dividerProportion = Float.parseFloat(reader.getAttributeValue(1));
+
+		if (dividerProportion < 0.0f) {
+			dividerProportion = 0.0f;
+		}
+		else if (dividerProportion > 1.0f) {
+			dividerProportion = 1.0f;
+		}
 
 		while (reader.hasNext()) {
 			int next = reader.nextTag();
@@ -239,7 +248,7 @@ public class DockingLayoutXML {
 				break;
 			}
 		}
-		return new DockingSplitPanelNode(left, right, orientation);
+		return new DockingSplitPanelNode(left, right, orientation, dividerProportion);
 	}
 
 	private static DockingTabPanelNode readTabNodeFromFile(XMLStreamReader reader) throws XMLStreamException {

@@ -23,6 +23,7 @@ package layouts;
 
 import docking.*;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,7 +69,16 @@ public class DockingLayouts {
 		return node;
 	}
 	private static DockingLayoutNode splitPanelToNode(DockedSplitPanel panel) {
-		return new DockingSplitPanelNode(panelToNode(panel.getLeft()), panelToNode(panel.getRight()), panel.getSplitPane().getOrientation());
+		JSplitPane splitPane = panel.getSplitPane();
+
+		int orientation = splitPane.getOrientation();
+		int height = splitPane.getHeight();
+		int dividerSize = splitPane.getDividerSize();
+		int dividerLocation = splitPane.getDividerLocation();
+		int width = splitPane.getWidth();
+		float dividerProportion = orientation == JSplitPane.VERTICAL_SPLIT ? dividerLocation / (float) (height - dividerSize) :
+				dividerLocation / (float) (width - dividerSize);
+		return new DockingSplitPanelNode(panelToNode(panel.getLeft()), panelToNode(panel.getRight()), splitPane.getOrientation(), dividerProportion);
 	}
 
 	private static DockingLayoutNode tabbedPanelToNode(DockedTabbedPanel panel) {

@@ -27,13 +27,15 @@ public class DockingSplitPanelNode implements DockingLayoutNode {
 	private DockingLayoutNode left;
 	private DockingLayoutNode right;
 	private int orientation;
+	private float dividerProportion;
 
 	private DockingLayoutNode parent;
 
-	public DockingSplitPanelNode(DockingLayoutNode left, DockingLayoutNode right, int orientation) {
+	public DockingSplitPanelNode(DockingLayoutNode left, DockingLayoutNode right, int orientation, float dividerProportion) {
 		this.left = left;
 		this.right = right;
 		this.orientation = orientation;
+		this.dividerProportion = dividerProportion;
 
 		this.left.setParent(this);
 		this.right.setParent(this);
@@ -80,5 +82,9 @@ public class DockingSplitPanelNode implements DockingLayoutNode {
 
 	public int getOrientation() {
 		return orientation;
+	}
+
+	public float getDividerProportion() {
+		return dividerProportion;
 	}
 }

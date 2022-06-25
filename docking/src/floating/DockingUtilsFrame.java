@@ -32,8 +32,8 @@ import java.awt.event.ComponentListener;
 
 // utility frame that is used to draw handles and overlay highlighting
 public class DockingUtilsFrame extends JFrame implements ComponentListener {
-	private final DockingHandlesFrame handles;
-	private final DockingOverlayFrame overlay;
+	private final DockingHandles handles;
+	private final DockingOverlay overlay;
 	private final JFrame frame;
 
 	// create a new DockingUtilsFrame with a frame and its root panel
@@ -45,8 +45,8 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		setLocation(frame.getLocation());
 		setSize(frame.getSize());
 
-		handles = new DockingHandlesFrame(this, root);
-		overlay = new DockingOverlayFrame(this, root);
+		handles = new DockingHandles(this, root);
+		overlay = new DockingOverlay(this, root);
 
 		frame.addComponentListener(this);
 

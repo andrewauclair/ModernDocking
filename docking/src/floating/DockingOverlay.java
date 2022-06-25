@@ -31,7 +31,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 // displays the overlay highlight of where the panel will be docked
-public class DockingOverlayFrame implements MouseMotionListener, MouseListener, ComponentListener {
+public class DockingOverlay implements MouseMotionListener, MouseListener, ComponentListener {
 	// determines how close to the edge the user has to drag the panel before they see an overlay other than CENTER
 	private static final double REGION_SENSITIVITY = 0.35;
 
@@ -61,7 +61,7 @@ public class DockingOverlayFrame implements MouseMotionListener, MouseListener, 
 	// whether to draw this overlay, different from swing visiblity because we're manually painting
 	private boolean visible = false;
 
-	public DockingOverlayFrame(JFrame utilFrame, RootDockingPanel root) {
+	public DockingOverlay(JFrame utilFrame, RootDockingPanel root) {
 		this.utilFrame = utilFrame;
 
 		targetRoot = root;
