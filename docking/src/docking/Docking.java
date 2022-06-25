@@ -30,8 +30,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.AWTEventListener;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 // TODO persistence (saving and loading) -- in memory done, next up persist to file
 // TODO saving/loading relies on divider absolute positions. if the dialog is resized before restoring then it looks wrong
@@ -196,6 +195,14 @@ public class Docking {
 		return null;
 	}
 
+	public static JFrame frameForRoot(RootDockingPanel root) {
+		Optional<JFrame> first = instance.rootPanels.keySet().stream()
+				.filter(frame -> instance.rootPanels.get(frame) == root)
+				.findFirst();
+
+		return first.orElse(null);
+	}
+
 	public static Dockable findDockableAtScreenPos(Point screenPos) {
 		JFrame frame = findRootAtScreenPos(screenPos);
 
@@ -332,12 +339,52 @@ public class Docking {
 		return DockingLayouts.layoutFromRoot(root);
 	}
 
+	public static FullAppLayout getFullLayout() {
+		FullAppLayout layout = new FullAppLayout();
+
+		layout.setMainFrame(getCurrentLayout(instance.mainFrame));
+
+		for (JFrame frame : instance.rootPanels.keySet()) {
+			if (frame != instance.mainFrame) {
+				layout.addFrame(getCurrentLayout(frame));
+			}
+		}
+
+		return layout;
+	}
+
+	public static void restoreFullLayout(FullAppLayout layout) {
+		// get rid of all existing frames and undock all dockables
+		Set<JFrame> frames = new HashSet<>(instance.rootPanels.keySet());
+		for (JFrame frame : frames) {
+			if (frame != instance.mainFrame) {
+				undockComponents(frame);
+				frame.dispose();
+			}
+		}
+
+		// setup main frame
+		setLayout(instance.mainFrame, layout.getMainFrameLayout());
+
+		// setup rest of floating frames from layout
+		for (DockingLayout frameLayout : layout.getFloatingFrameLayouts()) {
+			FloatingFrame frame = new FloatingFrame(frameLayout.getLocation(), frameLayout.getSize(), frameLayout.getState());
+			frame.setVisible(true);
+
+			setLayout(frame, frameLayout);
+		}
+	}
+
 	public static void setLayout(JFrame frame, DockingLayout layout) {
 		RootDockingPanel root = rootForFrame(frame);
 
 		if (root == null) {
 			throw new RuntimeException("Root for frame does not exist: " + frame);
 		}
+
+		frame.setLocation(layout.getLocation());
+		frame.setSize(layout.getSize());
+		frame.setExtendedState(layout.getState());
 
 		undockComponents(root);
 

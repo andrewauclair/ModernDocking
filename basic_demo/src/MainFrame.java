@@ -31,6 +31,8 @@ import docking.RootDockingPanel;
 import exception.FailOnThreadViolationRepaintManager;
 import layouts.DockingLayout;
 import layouts.DockingLayoutXML;
+import layouts.FullAppLayout;
+import layouts.FullAppLayoutXML;
 import persist.RootDockState;
 
 import javax.swing.*;
@@ -67,9 +69,9 @@ public class MainFrame extends JFrame {
 			if (result == JFileChooser.APPROVE_OPTION) {
 				File selectedFile = chooser.getSelectedFile();
 
-				DockingLayout layout = Docking.getCurrentLayout(MainFrame.this);
+				FullAppLayout layout = Docking.getFullLayout();
 
-				boolean saved = DockingLayoutXML.saveLayoutToFile(selectedFile, layout);
+				boolean saved = FullAppLayoutXML.saveLayoutToFile(selectedFile, layout);
 
 				if (!saved) {
 					JOptionPane.showMessageDialog(MainFrame.this, "Failed to save layout");
@@ -87,10 +89,11 @@ public class MainFrame extends JFrame {
 			if (result == JFileChooser.APPROVE_OPTION) {
 				File selectedFile = chooser.getSelectedFile();
 
-				DockingLayout layout = DockingLayoutXML.loadLayoutFromFile(selectedFile);
+				FullAppLayout layout = FullAppLayoutXML.loadLayoutFromFile(selectedFile);
 
 				if (layout != null) {
-					Docking.setLayout(MainFrame.this, layout);
+//					Docking.setLayout(MainFrame.this, layout);
+					Docking.restoreFullLayout(layout);
 				}
 			}
 		});

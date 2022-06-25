@@ -22,16 +22,7 @@ SOFTWARE.
 package layouts;
 
 import docking.*;
-import persist.PanelState;
-import persist.RootDockState;
-import persist.SplitState;
-import persist.TabState;
 
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +48,7 @@ public class DockingLayouts {
 
 
 	public static DockingLayout layoutFromRoot(RootDockingPanel root) {
-		return new DockingLayout(panelToNode(root.getPanel()));
+		return new DockingLayout(Docking.frameForRoot(root), panelToNode(root.getPanel()));
 	}
 
 	private static DockingLayoutNode panelToNode(DockingPanel panel) {

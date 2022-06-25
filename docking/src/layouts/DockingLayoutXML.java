@@ -1,6 +1,28 @@
+/*
+Copyright (c) 2022 Andrew Auclair
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+ */
 package layouts;
 
 import javax.xml.stream.*;
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -21,16 +43,11 @@ public class DockingLayoutXML {
 			e.printStackTrace();
 			return false;
 		}
-
+		boolean saved;
 		try {
 			writer.writeStartDocument();
-			writer.writeCharacters(NL);
-			writer.writeStartElement("layout");
-			writer.writeCharacters(NL);
 
-			writeNodeToFile(writer, layout.getRootNode());
-
-			writer.writeEndElement();
+			saved = saveLayoutToFile(writer, layout, false);
 
 			writer.writeEndDocument();
 		}
@@ -46,6 +63,24 @@ public class DockingLayoutXML {
 				e.printStackTrace();
 			}
 		}
+
+		return saved;
+	}
+
+	static boolean saveLayoutToFile(XMLStreamWriter writer, DockingLayout layout, boolean isMainFrame) throws XMLStreamException {
+		writer.writeCharacters(NL);
+		writer.writeStartElement("layout");
+		writer.writeAttribute("main-frame", String.valueOf(isMainFrame));
+		writer.writeAttribute("location", layout.getLocation().x + "," + layout.getLocation().y);
+		writer.writeAttribute("size", layout.getSize().width + "," + layout.getSize().height);
+		writer.writeAttribute("state", String.valueOf(layout.getState()));
+
+		writer.writeCharacters(NL);
+
+		writeNodeToFile(writer, layout.getRootNode());
+
+		writer.writeEndElement();
+
 		return true;
 	}
 
@@ -124,14 +159,13 @@ public class DockingLayoutXML {
 				int next = reader.nextTag();
 
 				if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("layout")) {
-					layout = new DockingLayout(readNodeFromFile(reader, "layout"));
+					layout = readLayoutFromReader(reader);
 					break;
 				}
 			}
 		}
 		catch (XMLStreamException e) {
 			e.printStackTrace();
-			layout = null;
 		}
 		finally {
 			try {
@@ -142,6 +176,18 @@ public class DockingLayoutXML {
 			}
 		}
 		return layout;
+	}
+
+	static DockingLayout readLayoutFromReader(XMLStreamReader reader) throws XMLStreamException {
+		boolean isMainFrame = Boolean.parseBoolean(reader.getAttributeValue(0));
+		String locStr = reader.getAttributeValue(1);
+		String sizeStr = reader.getAttributeValue(2);
+		int state = Integer.parseInt(reader.getAttributeValue(3));
+
+		Point location = new Point(Integer.parseInt(locStr.substring(0, locStr.indexOf(","))), Integer.parseInt(locStr.substring(locStr.indexOf(",") + 1)));
+		Dimension size = new Dimension(Integer.parseInt(sizeStr.substring(0, sizeStr.indexOf(","))), Integer.parseInt(sizeStr.substring(sizeStr.indexOf(",") + 1)));
+
+		return new DockingLayout(isMainFrame, location, size, state, readNodeFromFile(reader, "layout"));
 	}
 
 	private static DockingLayoutNode readNodeFromFile(XMLStreamReader reader, String name) throws XMLStreamException {

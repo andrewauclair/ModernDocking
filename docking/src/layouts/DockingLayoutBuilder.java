@@ -26,9 +26,11 @@ import docking.DockingRegion;
 import javax.swing.*;
 
 public class DockingLayoutBuilder {
+	private final JFrame frame;
 	private DockingLayoutNode rootNode;
 
-	public DockingLayoutBuilder(String firstID) {
+	public DockingLayoutBuilder(JFrame frame, String firstID) {
+		this.frame = frame;
 		rootNode = new DockingSimplePanelNode(firstID);
 	}
 
@@ -60,7 +62,7 @@ public class DockingLayoutBuilder {
 	}
 
 	public DockingLayout build() {
-		return new DockingLayout(rootNode);
+		return new DockingLayout(frame, rootNode);
 	}
 
 	// TODO throw exception if a persistent id already exists

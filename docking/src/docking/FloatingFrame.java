@@ -27,6 +27,21 @@ import javax.swing.*;
 import java.awt.*;
 
 public class FloatingFrame extends JFrame {
+	public FloatingFrame(Point location, Dimension size, int state) {
+		setLocation(location);
+		setSize(size);
+		setExtendedState(state);
+
+		setLayout(new BorderLayout());
+
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+		RootDockingPanel root = new RootDockingPanel();
+		add(root, BorderLayout.CENTER);
+
+		Docking.registerDockingPanel(root, this);
+	}
+
 	public FloatingFrame(Dockable dockable, TempFloatingFrame floatingFrame) {
 		setLayout(new BorderLayout());
 

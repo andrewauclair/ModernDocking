@@ -21,11 +21,46 @@ SOFTWARE.
  */
 package layouts;
 
+import javax.swing.*;
+import java.awt.*;
+
+// layout of a single frame
 public class DockingLayout {
+	private boolean isMainFrame;
+	private final Point location;
+	private final Dimension size;
+	private final int state;
 	private final DockingLayoutNode rootNode;
 
-	public DockingLayout(DockingLayoutNode rootNode) {
+	public DockingLayout(boolean isMainFrame, Point location, Dimension size, int state, DockingLayoutNode rootNode) {
+		this.isMainFrame = isMainFrame;
+		this.location = location;
+		this.size = size;
+		this.state = state;
 		this.rootNode = rootNode;
+	}
+
+	public DockingLayout(JFrame frame, DockingLayoutNode rootNode) {
+		this.rootNode = rootNode;
+		this.location = frame.getLocation();
+		this.size = frame.getSize();
+		this.state = frame.getExtendedState();
+	}
+
+	public boolean isMainFrame() {
+		return isMainFrame;
+	}
+
+	public Point getLocation() {
+		return location;
+	}
+
+	public Dimension getSize() {
+		return size;
+	}
+
+	public int getState() {
+		return state;
 	}
 
 	public DockingLayoutNode getRootNode() {
