@@ -32,10 +32,8 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.MouseEvent;
 import java.util.*;
 
-// TODO persistence (saving and loading) -- in memory done, next up persist to file
+// TODO auto persist
 // TODO saving/loading relies on divider absolute positions. if the dialog is resized before restoring then it looks wrong
-
-// TODO perspectives/views/layouts, probably calling them "layouts"
 
 // TODO allow the app to set the divider location when docking dockables
 

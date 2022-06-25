@@ -34,30 +34,39 @@ import java.awt.event.MouseMotionListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import static floating.DockingHandle.HANDLE_ICON_SIZE;
+
 // TODO handle drawing doesn't scale with flatlaf.uiScale
 
 // handles displaying the handles for docking overlaid on the application
 // only displayed over the currently hit docking panel
 public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
-	public static final int HANDLE_ICON_SIZE = 32;
-	public static final int HANDLE_SPACING = HANDLE_ICON_SIZE + 8;
-	public static final int ROOT_HANDLE_SPACING = HANDLE_ICON_SIZE + 16;
+//	public static final int HANDLE_SPACING = HANDLE_ICON_SIZE + 8;
+//	public static final int ROOT_HANDLE_SPACING = HANDLE_ICON_SIZE + 16;
+
+	public int handleSpacing(JLabel handle) {
+		return handle.getWidth() + 8;
+	}
+
+	public int rootHandleSpacing(JLabel handle) {
+		return handle.getWidth() + 16;
+	}
 
 	private Dockable floating;
 	private Dockable targetDockable;
 	private final RootDockingPanel targetRoot;
 
-	private final JLabel rootCenter = new JLabel();
-	private final JLabel rootWest = new JLabel();
-	private final JLabel rootNorth = new JLabel();
-	private final JLabel rootEast = new JLabel();
-	private final JLabel rootSouth = new JLabel();
+	private final JLabel rootCenter = new DockingHandle();
+	private final JLabel rootWest = new DockingHandle();
+	private final JLabel rootNorth = new DockingHandle();
+	private final JLabel rootEast = new DockingHandle();
+	private final JLabel rootSouth = new DockingHandle();
 
-	private final JLabel dockableCenter = new JLabel();
-	private final JLabel dockableWest = new JLabel();
-	private final JLabel dockableNorth = new JLabel();
-	private final JLabel dockableEast = new JLabel();
-	private final JLabel dockableSouth = new JLabel();
+	private final JLabel dockableCenter = new DockingHandle();
+	private final JLabel dockableWest = new DockingHandle();
+	private final JLabel dockableNorth = new DockingHandle();
+	private final JLabel dockableEast = new DockingHandle();
+	private final JLabel dockableSouth = new DockingHandle();
 
 	private final Map<JLabel, DockingRegion> rootRegions = new HashMap<>();
 	private final Map<JLabel, DockingRegion> dockableRegions = new HashMap<>();
@@ -138,10 +147,10 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 			SwingUtilities.convertPointFromScreen(location, utilFrame);
 
 			setLocation(rootCenter, location.x, location.y);
-			setLocation(rootWest, location.x - (size.width / 2) + ROOT_HANDLE_SPACING, location.y);
-			setLocation(rootNorth, location.x, location.y - (size.height / 2) + ROOT_HANDLE_SPACING);
-			setLocation(rootEast, location.x + (size.width / 2) - ROOT_HANDLE_SPACING, location.y);
-			setLocation(rootSouth, location.x, location.y + (size.height / 2) - ROOT_HANDLE_SPACING);
+			setLocation(rootWest, location.x - (size.width / 2) + rootHandleSpacing(rootWest), location.y);
+			setLocation(rootNorth, location.x, location.y - (size.height / 2) + rootHandleSpacing(rootNorth));
+			setLocation(rootEast, location.x + (size.width / 2) - rootHandleSpacing(rootEast), location.y);
+			setLocation(rootSouth, location.x, location.y + (size.height / 2) - rootHandleSpacing(rootSouth));
 		}
 	}
 
@@ -179,14 +188,12 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 
 			SwingUtilities.convertPointToScreen(location, ((Component) targetDockable).getParent());
 
-			int spacing = HANDLE_SPACING;
-
 			SwingUtilities.convertPointFromScreen(location, utilFrame);
 			setLocation(dockableCenter, location.x, location.y);
-			setLocation(dockableWest, location.x - spacing, location.y);
-			setLocation(dockableNorth, location.x, location.y - spacing);
-			setLocation(dockableEast, location.x + spacing, location.y);
-			setLocation(dockableSouth, location.x, location.y + spacing);
+			setLocation(dockableWest, location.x - handleSpacing(dockableWest), location.y);
+			setLocation(dockableNorth, location.x, location.y - handleSpacing(dockableNorth));
+			setLocation(dockableEast, location.x + handleSpacing(dockableEast), location.y);
+			setLocation(dockableSouth, location.x, location.y + handleSpacing(dockableSouth));
 		}
 	}
 
@@ -300,12 +307,12 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 	public void paint(Graphics g) {
 //		Rectangle bounds = g.getClipBounds();
 
-		int centerX = dockableCenter.getX() + (HANDLE_ICON_SIZE / 2);
-		int centerY = dockableCenter.getY() + (HANDLE_ICON_SIZE / 2);
+		int centerX = dockableCenter.getX() + (dockableCenter.getWidth() / 2);
+		int centerY = dockableCenter.getY() + (dockableCenter.getWidth() / 2);
 
-		int spacing = HANDLE_SPACING - HANDLE_ICON_SIZE;
-		int half_icon = HANDLE_ICON_SIZE / 2;
-		int one_and_a_half_icons = (int) (HANDLE_ICON_SIZE * 1.5);
+		int spacing = handleSpacing(dockableCenter) - dockableCenter.getWidth();
+		int half_icon = dockableCenter.getWidth() / 2;
+		int one_and_a_half_icons = (int) (dockableCenter.getWidth() * 1.5);
 
 		Polygon poly = new Polygon(
 				new int[] {
@@ -362,95 +369,109 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 
 		// draw the root handles
 		if (rootCenter.isVisible()) {
-			g.setColor(background);
-			g.fillRect(rootCenter.getX() - spacing, rootCenter.getY() - spacing, HANDLE_ICON_SIZE + (spacing * 2), HANDLE_ICON_SIZE + (spacing * 2));
+			spacing = handleSpacing(rootCenter) - rootCenter.getWidth();
 
-			g.setColor(border);
-			g.drawRect(rootCenter.getX() - spacing, rootCenter.getY() - spacing, HANDLE_ICON_SIZE + (spacing * 2), HANDLE_ICON_SIZE + (spacing * 2));
+			g.setColor(background);
+			g.fillRect(rootCenter.getX() - spacing, rootCenter.getY() - spacing, rootCenter.getWidth() + (spacing * 2), rootCenter.getWidth() + (spacing * 2));
 
 			Rectangle bounds = rootCenter.getBounds();
-			g.setColor(outline);
-			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
 			if (rootMouseOver.get(rootCenter)) {
 				g.setColor(hover);
-				g.fillRect(bounds.x + 1, bounds.y + 1, bounds.width - 1, bounds.height - 1);
+				g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
 			}
+
+			g.setColor(border);
+			g.drawRect(rootCenter.getX() - spacing, rootCenter.getY() - spacing, rootCenter.getWidth() + (spacing * 2), rootCenter.getWidth() + (spacing * 2));
+
+			g.setColor(outline);
+			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 		}
 
 		if (rootEast.isVisible()) {
-			g.setColor(background);
-			g.fillRect(rootEast.getX() - spacing, rootEast.getY() - spacing, HANDLE_ICON_SIZE + (spacing * 2), HANDLE_ICON_SIZE + (spacing * 2));
+			spacing = handleSpacing(rootEast) - rootEast.getWidth();
 
-			g.setColor(border);
-			g.drawRect(rootEast.getX() - spacing, rootEast.getY() - spacing, HANDLE_ICON_SIZE + (spacing * 2), HANDLE_ICON_SIZE + (spacing * 2));
+			g.setColor(background);
+			g.fillRect(rootEast.getX() - spacing, rootEast.getY() - spacing, rootEast.getWidth() + (spacing * 2), rootEast.getWidth() + (spacing * 2));
 
 			Rectangle bounds = rootEast.getBounds();
-			g.setColor(outline);
-			int halfWidth = bounds.width / 2;
-			g.drawRect(bounds.x + halfWidth, bounds.y, bounds.width - halfWidth, bounds.height);
 
 			if (rootMouseOver.get(rootEast)) {
 				g.setColor(hover);
-				g.fillRect(bounds.x + halfWidth + 1, bounds.y + 1, halfWidth - 1, bounds.height - 1);
+				g.fillRect(bounds.x + (bounds.width / 2), bounds.y, bounds.width / 2, bounds.height);
 			}
+
+			g.setColor(border);
+			g.drawRect(rootEast.getX() - spacing, rootEast.getY() - spacing, rootEast.getWidth() + (spacing * 2), rootEast.getWidth() + (spacing * 2));
+
+			g.setColor(outline);
+			int halfWidth = bounds.width / 2;
+			g.drawRect(bounds.x + halfWidth, bounds.y, bounds.width - halfWidth, bounds.height);
 		}
 
 		if (rootWest.isVisible()) {
-			g.setColor(background);
-			g.fillRect(rootWest.getX() - spacing, rootWest.getY() - spacing, HANDLE_ICON_SIZE + (spacing * 2), HANDLE_ICON_SIZE + (spacing * 2));
+			spacing = handleSpacing(rootWest) - rootWest.getWidth();
 
-			g.setColor(border);
-			g.drawRect(rootWest.getX() - spacing, rootWest.getY() - spacing, HANDLE_ICON_SIZE + (spacing * 2), HANDLE_ICON_SIZE + (spacing * 2));
+			g.setColor(background);
+			g.fillRect(rootWest.getX() - spacing, rootWest.getY() - spacing, rootWest.getWidth() + (spacing * 2), rootWest.getWidth() + (spacing * 2));
 
 			Rectangle bounds = rootWest.getBounds();
-			g.setColor(outline);
-			int halfWidth = bounds.width / 2;
-			g.drawRect(bounds.x, bounds.y, bounds.width - halfWidth, bounds.height);
 
 			if (rootMouseOver.get(rootWest)) {
 				g.setColor(hover);
-				g.fillRect(bounds.x + 1, bounds.y + 1, halfWidth - 1, bounds.height - 1);
+				g.fillRect(bounds.x, bounds.y, bounds.width / 2, bounds.height);
 			}
+
+			g.setColor(border);
+			g.drawRect(rootWest.getX() - spacing, rootWest.getY() - spacing, rootWest.getWidth() + (spacing * 2), rootWest.getWidth() + (spacing * 2));
+
+			g.setColor(outline);
+			int halfWidth = bounds.width / 2;
+			g.drawRect(bounds.x, bounds.y, bounds.width - halfWidth, bounds.height);
 		}
 
 		if (rootNorth.isVisible()) {
-			g.setColor(background);
-			g.fillRect(rootNorth.getX() - spacing, rootNorth.getY() - spacing, HANDLE_ICON_SIZE + (spacing * 2), HANDLE_ICON_SIZE + (spacing * 2));
+			spacing = handleSpacing(rootNorth) - rootNorth.getWidth();
 
-			g.setColor(border);
-			g.drawRect(rootNorth.getX() - spacing, rootNorth.getY() - spacing, HANDLE_ICON_SIZE + (spacing * 2), HANDLE_ICON_SIZE + (spacing * 2));
+			g.setColor(background);
+			g.fillRect(rootNorth.getX() - spacing, rootNorth.getY() - spacing, rootNorth.getWidth() + (spacing * 2), rootNorth.getWidth() + (spacing * 2));
 
 			Rectangle bounds = rootNorth.getBounds();
+
+			if (rootMouseOver.get(rootNorth)) {
+				g.setColor(hover);
+				g.fillRect(bounds.x, bounds.y, bounds.width, bounds.width / 2);
+			}
+
+			g.setColor(border);
+			g.drawRect(rootNorth.getX() - spacing, rootNorth.getY() - spacing, rootNorth.getWidth() + (spacing * 2), rootNorth.getWidth() + (spacing * 2));
 
 			g.setColor(outline);
 
 			int halfWidth = bounds.width / 2;
 
 			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height - halfWidth);
-
-			if (rootMouseOver.get(rootNorth)) {
-				g.setColor(hover);
-				g.fillRect(bounds.x + 1, bounds.y + 1, bounds.width - 1, halfWidth - 1);
-			}
 		}
 
 		if (rootSouth.isVisible()) {
-			g.setColor(background);
-			g.fillRect(rootSouth.getX() - spacing, rootSouth.getY() - spacing, HANDLE_ICON_SIZE + (spacing * 2), HANDLE_ICON_SIZE + (spacing * 2));
+			spacing = handleSpacing(rootSouth) - rootSouth.getWidth();
 
-			g.setColor(border);
-			g.drawRect(rootSouth.getX() - spacing, rootSouth.getY() - spacing, HANDLE_ICON_SIZE + (spacing * 2), HANDLE_ICON_SIZE + (spacing * 2));
+			g.setColor(background);
+			g.fillRect(rootSouth.getX() - spacing, rootSouth.getY() - spacing, rootSouth.getWidth() + (spacing * 2), rootSouth.getWidth() + (spacing * 2));
 
 			Rectangle bounds = rootSouth.getBounds();
-			g.setColor(outline);
-			int halfWidth = bounds.width / 2;
-			g.drawRect(bounds.x, bounds.y + halfWidth, bounds.width, bounds.height - halfWidth);
 
 			if (rootMouseOver.get(rootSouth)) {
 				g.setColor(hover);
-				g.fillRect(bounds.x + 1, bounds.y + halfWidth + 1, bounds.width - 1, halfWidth - 1);
+				g.fillRect(bounds.x, bounds.y + (bounds.width / 2), bounds.width, bounds.width / 2);
 			}
+
+			g.setColor(border);
+			g.drawRect(rootSouth.getX() - spacing, rootSouth.getY() - spacing, rootSouth.getWidth() + (spacing * 2), rootSouth.getWidth() + (spacing * 2));
+
+			g.setColor(outline);
+			int halfWidth = bounds.width / 2;
+			g.drawRect(bounds.x, bounds.y + halfWidth, bounds.width, bounds.height - halfWidth);
 		}
 
 		if (targetDockable != null) {
@@ -470,68 +491,72 @@ public class DockingHandlesFrame implements MouseMotionListener, MouseListener {
 
 			if (dockableMouseOver.get(dockableCenter)) {
 				g.setColor(hover);
-				g.fillRect(bounds.x + 1, bounds.y + 1, bounds.width - 1, bounds.height - 1);
+				g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
 			}
 		}
 
 		if (dockableEast.isVisible()) {
 			Rectangle bounds = dockableEast.getBounds();
+
+			if (dockableMouseOver.get(dockableEast)) {
+				g.setColor(hover);
+				g.fillRect(bounds.x + (bounds.width / 2), bounds.y, bounds.width / 2, bounds.height);
+			}
+
 			g.setColor(outline);
 			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
 			int halfWidth = bounds.width / 2;
 
 			g2.drawLine(bounds.x + halfWidth, bounds.y, bounds.x + halfWidth, bounds.y + bounds.height);
-
-			if (dockableMouseOver.get(dockableEast)) {
-				g.setColor(hover);
-				g.fillRect(bounds.x + halfWidth + 1, bounds.y + 1, halfWidth - 1, bounds.height - 1);
-			}
 		}
 
 		if (dockableWest.isVisible()) {
 			Rectangle bounds = dockableWest.getBounds();
+
+			if (dockableMouseOver.get(dockableWest)) {
+				g.setColor(hover);
+				g.fillRect(bounds.x, bounds.y, bounds.width / 2, bounds.height);
+			}
+
 			g.setColor(outline);
 			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
 			int halfWidth = bounds.width / 2;
 
 			g2.drawLine(bounds.x + halfWidth, bounds.y, bounds.x + halfWidth, bounds.y + bounds.height);
-
-			if (dockableMouseOver.get(dockableWest)) {
-				g.setColor(hover);
-				g.fillRect(bounds.x + 1, bounds.y + 1, halfWidth - 1, bounds.height - 1);
-			}
 		}
 
 		if (dockableNorth.isVisible()) {
 			Rectangle bounds = dockableNorth.getBounds();
+
+			if (dockableMouseOver.get(dockableNorth)) {
+				g.setColor(hover);
+				g.fillRect(bounds.x, bounds.y, bounds.width, bounds.width / 2);
+			}
+
 			g.setColor(outline);
 			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
 			int halfWidth = bounds.width / 2;
 
 			g2.drawLine(bounds.x, bounds.y + halfWidth, bounds.x + bounds.width, bounds.y + halfWidth);
-
-			if (dockableMouseOver.get(dockableNorth)) {
-				g.setColor(hover);
-				g.fillRect(bounds.x + 1, bounds.y + 1, bounds.width - 1, halfWidth - 1);
-			}
 		}
 
 		if (dockableSouth.isVisible()) {
 			Rectangle bounds = dockableSouth.getBounds();
+
+			if (dockableMouseOver.get(dockableSouth)) {
+				g.setColor(hover);
+				g.fillRect(bounds.x, bounds.y + (bounds.width / 2), bounds.width, bounds.width / 2);
+			}
+
 			g.setColor(outline);
 			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
 			int halfWidth = bounds.width / 2;
 
 			g2.drawLine(bounds.x, bounds.y + halfWidth, bounds.x + bounds.width, bounds.y + halfWidth);
-
-			if (dockableMouseOver.get(dockableSouth)) {
-				g.setColor(hover);
-				g.fillRect(bounds.x + 1, bounds.y + halfWidth + 1, bounds.width - 1, halfWidth - 1);
-			}
 		}
 
 		g2.dispose();
