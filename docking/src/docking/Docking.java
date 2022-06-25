@@ -259,12 +259,15 @@ public class Docking {
 		return (DockingPanel) component;
 	}
 
-	// TODO allow setting the split weight somehow
 	public static void dock(Dockable dockable, JFrame frame) {
 		dock(dockable, frame, DockingRegion.CENTER);
 	}
 
 	public static void dock(Dockable dockable, JFrame frame, DockingRegion region) {
+		dock(dockable, frame, region, 0.5);
+	}
+
+	public static void dock(Dockable dockable, JFrame frame, DockingRegion region, double dividerProportion) {
 		if (instance.frameToDispose != null) {
 			instance.frameToDispose.dispose();
 			instance.frameToDispose = null;
@@ -276,14 +279,18 @@ public class Docking {
 			throw new DockableRegistrationFailureException("Frame does not have a RootDockingPanel: " + frame);
 		}
 
-		root.dock(dockable, region);
+		root.dock(dockable, region, dividerProportion);
 	}
 
 	public static void dock(Dockable source, Dockable target, DockingRegion region) {
-		DockableWrapper wrapper = Docking.getWrapper(target);
-		wrapper.getParent().dock(source, region);
+		dock(source, target, region, 0.5);
 	}
 
+	public static void dock(Dockable source, Dockable target, DockingRegion region, double dividerProportion) {
+		DockableWrapper wrapper = Docking.getWrapper(target);
+		wrapper.getParent().dock(source, region, dividerProportion);
+	}
+	
 	public static void undock(Dockable dockable) {
 		JFrame frame = findFrameForDockable(dockable);
 

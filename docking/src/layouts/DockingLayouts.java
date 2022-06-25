@@ -76,7 +76,7 @@ public class DockingLayouts {
 		int dividerSize = splitPane.getDividerSize();
 		int dividerLocation = splitPane.getDividerLocation();
 		int width = splitPane.getWidth();
-		float dividerProportion = orientation == JSplitPane.VERTICAL_SPLIT ? dividerLocation / (float) (height - dividerSize) :
+		double dividerProportion = orientation == JSplitPane.VERTICAL_SPLIT ? dividerLocation / (float) (height - dividerSize) :
 				dividerLocation / (float) (width - dividerSize);
 		return new DockingSplitPanelNode(panelToNode(panel.getLeft()), panelToNode(panel.getRight()), splitPane.getOrientation(), dividerProportion);
 	}

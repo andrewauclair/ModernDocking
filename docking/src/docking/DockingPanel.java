@@ -27,7 +27,7 @@ import javax.swing.*;
 public abstract class DockingPanel extends JPanel {
 	public abstract void setParent(DockingPanel parent);
 
-	public abstract void dock(Dockable dockable, DockingRegion region);
+	public abstract void dock(Dockable dockable, DockingRegion region, double dividerProportion);
 
 	// undock the given dockable, returns true if the dockable was found and removed
 	public abstract void undock(Dockable dockable);

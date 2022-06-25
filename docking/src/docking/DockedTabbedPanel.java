@@ -78,7 +78,7 @@ public class DockedTabbedPanel extends DockingPanel implements MouseListener {
 	}
 
 	@Override
-	public void dock(Dockable dockable, DockingRegion region) {
+	public void dock(Dockable dockable, DockingRegion region, double dividerProportion) {
 		DockableWrapper wrapper = Docking.getWrapper(dockable);
 
 		if (region == DockingRegion.CENTER) {
@@ -93,6 +93,7 @@ public class DockedTabbedPanel extends DockingPanel implements MouseListener {
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
 				split.setLeft(this);
 				split.setRight(newPanel);
+				dividerProportion = 1.0 - dividerProportion;
 			}
 			else {
 				split.setLeft(newPanel);
@@ -105,6 +106,8 @@ public class DockedTabbedPanel extends DockingPanel implements MouseListener {
 			else {
 				split.setOrientation(JSplitPane.VERTICAL_SPLIT);
 			}
+
+			split.setDividerLocation(dividerProportion);
 		}
 
 		revalidate();

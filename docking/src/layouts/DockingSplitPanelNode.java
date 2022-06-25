@@ -26,12 +26,12 @@ import docking.DockingRegion;
 public class DockingSplitPanelNode implements DockingLayoutNode {
 	private DockingLayoutNode left;
 	private DockingLayoutNode right;
-	private int orientation;
-	private float dividerProportion;
+	private final int orientation;
+	private final double dividerProportion;
 
 	private DockingLayoutNode parent;
 
-	public DockingSplitPanelNode(DockingLayoutNode left, DockingLayoutNode right, int orientation, float dividerProportion) {
+	public DockingSplitPanelNode(DockingLayoutNode left, DockingLayoutNode right, int orientation, double dividerProportion) {
 		this.left = left;
 		this.right = right;
 		this.orientation = orientation;
@@ -84,7 +84,7 @@ public class DockingSplitPanelNode implements DockingLayoutNode {
 		return orientation;
 	}
 
-	public float getDividerProportion() {
+	public double getDividerProportion() {
 		return dividerProportion;
 	}
 }

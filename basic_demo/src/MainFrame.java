@@ -188,8 +188,6 @@ public class MainFrame extends JFrame {
 		JToggleButton button = new JToggleButton("Test");
 		button.addActionListener(e -> test.setVisible(button.isSelected()));
 
-//		Docking.setMainFrame(this);
-
 		Docking.dock(one, this);
 		Docking.dock(two, one, DockingRegion.SOUTH);
 		Docking.dock(three, this, DockingRegion.WEST);

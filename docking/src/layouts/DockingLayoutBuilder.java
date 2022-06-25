@@ -42,41 +42,41 @@ public class DockingLayoutBuilder {
 	}
 
 	public DockingLayoutBuilder dockToRootNorth(String persistentID) {
-		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, JSplitPane.VERTICAL_SPLIT, 0.5f);
+		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, JSplitPane.VERTICAL_SPLIT, 0.5);
 		return this;
 	}
 
-	public DockingLayoutBuilder dockToRootNorth(String persistentID, float dividerProportion) {
+	public DockingLayoutBuilder dockToRootNorth(String persistentID, double dividerProportion) {
 		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, JSplitPane.VERTICAL_SPLIT, dividerProportion);
 		return this;
 	}
 
 	public DockingLayoutBuilder dockToRootSouth(String persistentID) {
-		rootNode = new DockingSplitPanelNode(rootNode, new DockingSimplePanelNode(persistentID), JSplitPane.VERTICAL_SPLIT, 0.5f);
+		rootNode = new DockingSplitPanelNode(rootNode, new DockingSimplePanelNode(persistentID), JSplitPane.VERTICAL_SPLIT, 0.5);
 		return this;
 	}
 
-	public DockingLayoutBuilder dockToRootSouth(String persistentID, float dividerProportion) {
+	public DockingLayoutBuilder dockToRootSouth(String persistentID, double dividerProportion) {
 		rootNode = new DockingSplitPanelNode(rootNode, new DockingSimplePanelNode(persistentID), JSplitPane.VERTICAL_SPLIT, dividerProportion);
 		return this;
 	}
 
 	public DockingLayoutBuilder dockToRootWest(String persistentID) {
-		rootNode = new DockingSplitPanelNode(rootNode, new DockingSimplePanelNode(persistentID), JSplitPane.HORIZONTAL_SPLIT, 0.5f);
+		rootNode = new DockingSplitPanelNode(rootNode, new DockingSimplePanelNode(persistentID), JSplitPane.HORIZONTAL_SPLIT, 0.5);
 		return this;
 	}
 
-	public DockingLayoutBuilder dockToRootWest(String persistentID, float dividerProportion) {
+	public DockingLayoutBuilder dockToRootWest(String persistentID, double dividerProportion) {
 		rootNode = new DockingSplitPanelNode(rootNode, new DockingSimplePanelNode(persistentID), JSplitPane.HORIZONTAL_SPLIT, dividerProportion);
 		return this;
 	}
 
 	public DockingLayoutBuilder dockToRootEast(String persistentID) {
-		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, JSplitPane.HORIZONTAL_SPLIT, 0.5f);
+		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, JSplitPane.HORIZONTAL_SPLIT, 0.5);
 		return this;
 	}
 
-	public DockingLayoutBuilder dockToRootEast(String persistentID, float dividerProportion) {
+	public DockingLayoutBuilder dockToRootEast(String persistentID, double dividerProportion) {
 		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, JSplitPane.HORIZONTAL_SPLIT, dividerProportion);
 		return this;
 	}

@@ -224,13 +224,13 @@ public class DockingLayoutXML {
 		DockingLayoutNode right = null;
 
 		int orientation = Integer.parseInt(reader.getAttributeValue(0));
-		float dividerProportion = Float.parseFloat(reader.getAttributeValue(1));
+		double dividerProportion = Double.parseDouble(reader.getAttributeValue(1));
 
-		if (dividerProportion < 0.0f) {
-			dividerProportion = 0.0f;
+		if (dividerProportion < 0.0) {
+			dividerProportion = 0.0;
 		}
-		else if (dividerProportion > 1.0f) {
-			dividerProportion = 1.0f;
+		else if (dividerProportion > 1.0) {
+			dividerProportion = 1.0;
 		}
 
 		while (reader.hasNext()) {

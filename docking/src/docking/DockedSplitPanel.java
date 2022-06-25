@@ -193,7 +193,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener {
 	}
 
 	@Override
-	public void dock(Dockable dockable, DockingRegion region) {
+	public void dock(Dockable dockable, DockingRegion region, double dividerProportion) {
 		DockableWrapper wrapper = Docking.getWrapper(dockable);
 
 		// docking to the center of a split isn't something we allow
@@ -207,6 +207,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener {
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
 				split.setLeft(this);
 				split.setRight(newPanel);
+				dividerProportion = 1.0 - dividerProportion;
 			}
 			else {
 				split.setLeft(newPanel);
@@ -219,6 +220,8 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener {
 			else {
 				split.setOrientation(JSplitPane.VERTICAL_SPLIT);
 			}
+
+			split.setDividerLocation(dividerProportion);
 		}
 	}
 
