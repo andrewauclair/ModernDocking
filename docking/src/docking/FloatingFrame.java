@@ -41,6 +41,8 @@ public class FloatingFrame extends JFrame {
 
 		Docking.registerDockingPanel(root, this);
 
+		Docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
+
 		setVisible(true);
 	}
 
@@ -65,6 +67,8 @@ public class FloatingFrame extends JFrame {
 		add(root, BorderLayout.CENTER);
 
 		Docking.registerDockingPanel(root, this);
+
+		Docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
 
 		Docking.dock(dockable, this);
 

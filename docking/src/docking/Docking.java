@@ -30,6 +30,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 // TODO find a good solution for where to dock new dockables. For example, I might select a view menu item which docks a certain dockable, that dockable should go in a logical location which is entirely app dependent (might depend on what other dockables are docked)
 
@@ -189,17 +191,6 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 	public static JFrame findFrameForDockable(Dockable dockable) {
 		return getWrapper(dockable).getFrame();
-//		Container parent = ((Component) dockable).getParent();
-//
-//		while (parent != null) {
-//			if (parent instanceof JFrame) {
-//				if (instance.rootPanels.containsKey(parent)) {
-//					return (JFrame) parent;
-//				}
-//			}
-//			parent = parent.getParent();
-//		}
-//		return null;
 	}
 
 	public static RootDockingPanel rootForFrame(JFrame frame) {
@@ -338,8 +329,6 @@ public class Docking implements ComponentListener, WindowStateListener {
 		wrapper.getParent().dock(source, region, dividerProportion);
 
 		getWrapper(source).setFrame(wrapper.getFrame());
-
-//		new	FireDockEventOnAdd(source);
 
 		DockingListeners.fireDockedEvent(source);
 
@@ -781,6 +770,15 @@ public class Docking implements ComponentListener, WindowStateListener {
 			setLayout(frame, instance.maximizeRestoreLayout.get(frame));
 
 			instance.maximizeRestoreLayout.remove(frame);
+
+			// everything has been restored, go through the list of dockables and fire docked events for the ones that are docked
+			List<DockableWrapper> dockables = instance.dockables.values().stream()
+					.filter(wrapper -> wrapper.getFrame() == frame)
+					.collect(Collectors.toList());
+
+			for (DockableWrapper wrapper : dockables) {
+				DockingListeners.fireDockedEvent(wrapper.getDockable());
+			}
 		}
 	}
 
