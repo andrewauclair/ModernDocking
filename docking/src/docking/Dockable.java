@@ -27,6 +27,7 @@ import java.util.List;
 public interface Dockable {
 	// provide the drag source to the docking framework
 	// this is usually a title bar JPanel
+	// return null if the dockable should not be relocatable
 	JComponent dragSource();
 
 	// provide the persistent ID to the docking framework

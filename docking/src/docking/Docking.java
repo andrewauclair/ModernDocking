@@ -33,8 +33,6 @@ import java.util.*;
 
 // TODO persist maximize state for dockables
 
-// TODO add buttons for maximize/minimize, pin and close
-
 // TODO find a good solution for where to dock new dockables. For example, I might select a view menu item which docks a certain dockable, that dockable should go in a logical location which is entirely app dependent (might depend on what other dockables are docked)
 
 // TODO support panels that can't be dragged, this might require handling null drag handles

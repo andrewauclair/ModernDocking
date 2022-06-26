@@ -259,7 +259,7 @@ public class DockingHandles implements MouseMotionListener, MouseListener {
 	// we don't want to use the mouse events in this overlay frame because that would break the app
 	// pass them off to the component that we really need them in, the drag source
 	private void dispatchEvent(MouseEvent e) {
-		if (floating != null) {
+		if (floating != null && floating.dragSource() != null) {
 			floating.dragSource().dispatchEvent(e);
 		}
 	}
