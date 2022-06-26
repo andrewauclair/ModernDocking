@@ -35,6 +35,8 @@ import java.util.*;
 
 // TODO support pinning dockables, this should also support icons so that text or an icon can be shown on the toolbar button
 
+// TODO add some option for bringing dockable to front. This means showing the frame it's in and possibly the tab if it's in a tabbed pane
+
 // Main class for the docking framework
 // register and dock/undock dockables here
 public class Docking implements ComponentListener, WindowStateListener {
@@ -53,8 +55,6 @@ public class Docking implements ComponentListener, WindowStateListener {
 	private DockingPanel activePanel = null;
 
 	private final Map<JFrame, DockingLayout> maximizeRestoreLayout = new HashMap<>();
-
-	private static final DockingListeners listeners = new DockingListeners();
 
 	public Docking(JFrame mainFrame) {
 		this.mainFrame = mainFrame;
@@ -113,7 +113,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 		instance.dockables.remove(dockable.persistentID());
 	}
 
-	// package private registration function for DockingPanel
+	// registration function for DockingPanel
 	public static void registerDockingPanel(RootDockingPanel panel, JFrame parent) {
 		if (frameBorderSize.height == 0) {
 			SwingUtilities.invokeLater(() -> {
@@ -197,6 +197,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 		return null;
 	}
 
+	// TODO should this function throw an exception if the frame doesn't have a root? this is used in a lot of places where the frame should absolutely have a root to work
 	public static RootDockingPanel rootForFrame(JFrame frame) {
 		if (instance.rootPanels.containsKey(frame)) {
 			return instance.rootPanels.get(frame);
@@ -304,6 +305,8 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 		root.dock(dockable, region, dividerProportion);
 
+		DockingListeners.fireDockedEvent(dockable);
+
 		AppState.persist();
 	}
 
@@ -327,9 +330,23 @@ public class Docking implements ComponentListener, WindowStateListener {
 		DockableWrapper wrapper = Docking.getWrapper(target);
 		wrapper.getParent().dock(source, region, dividerProportion);
 
+		DockingListeners.fireDockedEvent(source);
+
 		AppState.persist();
 	}
-	
+
+	public static void newWindow(Dockable dockable) {
+		Point location = ((JComponent) dockable).getLocationOnScreen();
+		Dimension size = ((JComponent) dockable).getSize();
+		size.width += frameBorderSize.width;
+		size.height += frameBorderSize.height;
+
+		FloatingFrame frame = new FloatingFrame(location, size, JFrame.NORMAL);
+
+		undock(dockable);
+		dock(dockable, frame);
+	}
+
 	public static void undock(String persistentID) {
 		undock(getDockable(persistentID));
 	}
@@ -347,6 +364,8 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 		wrapper.getParent().undock(dockable);
 
+		DockingListeners.fireUndockedEvent(dockable);
+
 		if (frame != null && root != null && canDisposeFrame(frame) && root.isEmpty()) {
 			deregisterDockingPanel(frame);
 			frame.dispose();
@@ -360,30 +379,31 @@ public class Docking implements ComponentListener, WindowStateListener {
 	}
 
 	public static boolean isDocked(Dockable dockable) {
-		for (RootDockingPanel root : instance.rootPanels.values()) {
-			if (isDocked(root, dockable)) {
-				return true;
-			}
-		}
-		return false;
+		return getWrapper(dockable).getParent() != null;
+//		for (RootDockingPanel root : instance.rootPanels.values()) {
+//			if (isDocked(root, dockable)) {
+//				return true;
+//			}
+//		}
+//		return false;
 	}
 
-	private static boolean isDocked(Container container, Dockable search) {
-		for (Component component : container.getComponents()) {
-			if (component instanceof Dockable) {
-				Dockable dockable = (Dockable) component;
-				if (dockable == search) {
-					return true;
-				}
-			}
-			else if (component instanceof Container) {
-				if (isDocked((Container) component, search)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+//	private static boolean isDocked(Container container, Dockable search) {
+//		for (Component component : container.getComponents()) {
+//			if (component instanceof Dockable) {
+//				Dockable dockable = (Dockable) component;
+//				if (dockable == search) {
+//					return true;
+//				}
+//			}
+//			else if (component instanceof Container) {
+//				if (isDocked((Container) component, search)) {
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
+//	}
 
 	public static boolean canDisposeFrame(JFrame frame) {
 		return frame != instance.mainFrame && !instance.maximizeRestoreLayout.containsKey(frame);
@@ -468,6 +488,13 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 		AppState.setPaused(false);
 		AppState.persist();
+
+		// everything has been restored, go through the list of dockables and fire docked events for the ones that are docked
+		for (DockableWrapper wrapper : instance.dockables.values()) {
+			if (isDocked(wrapper.getDockable())) {
+				DockingListeners.fireDockedEvent(wrapper.getDockable());
+			}
+		}
 	}
 
 	private static void restoreLayoutFromFull(JFrame frame, DockingLayout layout) {
@@ -492,7 +519,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 			instance.maximizeRestoreLayout.put(frame, layout);
 
-			root.setPanel(new DockedSimplePanel(wrapper));
+			dock(wrapper.getDockable(), frame);
 		}
 		else {
 			root.setPanel(restoreState(layout.getRootNode()));
@@ -706,9 +733,10 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 	public static void maximize(Dockable dockable) {
 		JFrame frame = findFrameForDockable(dockable);
+		RootDockingPanel root = rootForFrame(frame);
 
 		// can only maximize one panel per root
-		if (!instance.maximizeRestoreLayout.containsKey(frame)) {
+		if (!instance.maximizeRestoreLayout.containsKey(frame) && root != null) {
 			getWrapper(dockable).setMaximized(true);
 			DockingListeners.fireMaximizeEvent(dockable, true);
 
@@ -717,7 +745,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 			instance.maximizeRestoreLayout.put(frame, layout);
 
-			undockComponents(rootForFrame(frame));
+			undockComponents(root);
 
 			dock(dockable, frame);
 		}

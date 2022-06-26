@@ -24,10 +24,8 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import docking.Docking;
-import docking.DockingColors;
-import docking.DockingRegion;
-import docking.RootDockingPanel;
+import docking.*;
+import event.DockingListener;
 import exception.FailOnThreadViolationRepaintManager;
 import layouts.DockingLayout;
 import layouts.DockingLayoutXML;
@@ -225,10 +223,29 @@ public class MainFrame extends JFrame {
 	}
 
 	private JMenuItem actionListenDock(String persistentID) {
-		JMenuItem item = new JMenuItem(persistentID);
+		JCheckBoxMenuItem item = new JCheckBoxMenuItem(persistentID);
 		item.addActionListener(e -> {
-			if (!Docking.isDocked(Docking.getDockable(persistentID))) {
-				Docking.dock(Docking.getDockable(persistentID), this, DockingRegion.SOUTH);
+			Dockable dockable = Docking.getDockable(persistentID);
+
+			if (!Docking.isDocked(dockable)) {
+				Docking.dock(dockable, this, DockingRegion.SOUTH);
+			}
+			item.setSelected(Docking.isDocked(dockable));
+		});
+		final String id = persistentID;
+		DockingListeners.addDockingListener(new DockingListener() {
+			@Override
+			public void docked(String persistentID) {
+				if (id.equals(persistentID)) {
+					item.setSelected(true);
+				}
+			}
+
+			@Override
+			public void undocked(String persistentID) {
+				if (id.equals(persistentID)) {
+					item.setSelected(false);
+				}
 			}
 		});
 		return item;

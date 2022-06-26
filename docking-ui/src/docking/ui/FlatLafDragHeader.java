@@ -130,6 +130,9 @@ public class FlatLafDragHeader extends JPanel implements MaximizeListener {
 		undock.setEnabled(dockable.allowClose());
 		window.setEnabled(dockable.floatingAllowed());
 
+		undock.addActionListener(e -> Docking.undock(dockable));
+		window.addActionListener(e -> Docking.newWindow(dockable));
+
 		JMenu viewMode = new JMenu("View Mode");
 		viewMode.add(pinned);
 		viewMode.add(unpinned);
@@ -141,7 +144,6 @@ public class FlatLafDragHeader extends JPanel implements MaximizeListener {
 
 		settings.add(maximizeOption);
 
-		// TODO add some indication that we're maximized to the UI, done, but is text the nicest I can come up with?
 		maximizeOption.addActionListener(e -> {
 			boolean maxed = Docking.isMaximized(dockable);
 

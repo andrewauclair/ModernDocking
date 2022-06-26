@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package docking;
 
+import event.DockingListener;
 import event.MaximizeListener;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.List;
 
 public class DockingListeners {
 	private static final List<MaximizeListener> maximizeListeners = new ArrayList<>();
+	private static final List<DockingListener> dockingListeners = new ArrayList<>();
 
 	public static void addMaximizeListener(MaximizeListener listener) {
 		if (!maximizeListeners.contains(listener)) {
@@ -42,5 +44,25 @@ public class DockingListeners {
 	// package private function to fire an event
 	static void fireMaximizeEvent(Dockable dockable, boolean maximized) {
 		maximizeListeners.forEach(listener -> listener.maximized(dockable, maximized));
+	}
+
+	public static void addDockingListener(DockingListener listener) {
+		if (!dockingListeners.contains(listener)) {
+			dockingListeners.add(listener);
+		}
+	}
+
+	public static void removeDockingListener(DockingListener listener) {
+		dockingListeners.remove(listener);
+	}
+
+	// package private function to fire docked event
+	static void fireDockedEvent(Dockable dockable) {
+		dockingListeners.forEach(listener -> listener.docked(dockable.persistentID()));
+	}
+
+	// package private function to fire undocked event
+	static void fireUndockedEvent(Dockable dockable) {
+		dockingListeners.forEach(listener -> listener.undocked(dockable.persistentID()));
 	}
 }
