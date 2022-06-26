@@ -24,6 +24,8 @@ package docking.ui;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import docking.Dockable;
 import docking.Docking;
+import docking.DockingListeners;
+import event.MaximizeListener;
 import floating.DockingHandle;
 
 import javax.swing.*;
@@ -32,15 +34,18 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 // TODO create a "model" of the header that this JPanel implements against. that way users can create their own and the logic that we want to happen is in the model
-public class FlatLafDragHeader extends JPanel {
+public class FlatLafDragHeader extends JPanel implements MaximizeListener {
 	private final JPopupMenu settings = new JPopupMenu();
 	private final Dockable dockable;
 
 	private final JLabel maximizedIndicator = new JLabel("Maximized");
+	private final JCheckBoxMenuItem maximizeOption = new JCheckBoxMenuItem("Maximize");
 
 	public FlatLafDragHeader(Dockable dockable, String title) {
 		this.dockable = dockable;
 		setOpaque(true);
+
+		DockingListeners.addMaximizeListener(this);
 
 		FlatSVGIcon settings = new FlatSVGIcon("icons/settings.svg");
 
@@ -134,14 +139,13 @@ public class FlatLafDragHeader extends JPanel {
 		settings.add(viewMode);
 		settings.addSeparator();
 
-		JCheckBoxMenuItem maximize = new JCheckBoxMenuItem("Maximize");
-		settings.add(maximize);
+		settings.add(maximizeOption);
 
 		// TODO add some indication that we're maximized to the UI, done, but is text the nicest I can come up with?
-		maximize.addActionListener(e -> {
+		maximizeOption.addActionListener(e -> {
 			boolean maxed = Docking.isMaximized(dockable);
 
-			maximize.setSelected(!maxed);
+			maximizeOption.setSelected(!maxed);
 			maximizedIndicator.setVisible(!maxed);
 
 			if (maxed) {
@@ -174,5 +178,13 @@ public class FlatLafDragHeader extends JPanel {
 				button.setOpaque(false);
 			}
 		});
+	}
+
+	@Override
+	public void maximized(Dockable dockable, boolean maximized) {
+		if (this.dockable == dockable) {
+			maximizedIndicator.setVisible(maximized);
+			maximizeOption.setSelected(maximized);
+		}
 	}
 }

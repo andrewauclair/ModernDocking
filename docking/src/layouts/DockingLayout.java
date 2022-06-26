@@ -31,6 +31,7 @@ public class DockingLayout {
 	private final Dimension size;
 	private final int state;
 	private final DockingLayoutNode rootNode;
+	private String maximizedDockable = null;
 
 	public DockingLayout(boolean isMainFrame, Point location, Dimension size, int state, DockingLayoutNode rootNode) {
 		this.isMainFrame = isMainFrame;
@@ -65,5 +66,13 @@ public class DockingLayout {
 
 	public DockingLayoutNode getRootNode() {
 		return rootNode;
+	}
+
+	public void setMaximizedDockable(String persistentID) {
+		maximizedDockable = persistentID;
+	}
+
+	public String getMaximizedDockable() {
+		return maximizedDockable;
 	}
 }

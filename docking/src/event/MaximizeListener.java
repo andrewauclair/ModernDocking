@@ -19,45 +19,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package floating;
+package event;
 
 import docking.Dockable;
 
-import javax.swing.*;
-import java.awt.*;
-
-// this is a frame used temporarily when floating a panel
-public class TempFloatingFrame extends JFrame {
-	public TempFloatingFrame(Dockable dockable, JComponent dragSrc, Point mouseDragPos) {
-		setLayout(new BorderLayout());
-		setUndecorated(true);
-		setType(Type.UTILITY);
-
-		setSize(((JComponent) dockable).getSize());
-
-		Point newPoint = new Point(mouseDragPos);
-		SwingUtilities.convertPointToScreen(newPoint, dragSrc);
-
-		newPoint.x -= mouseDragPos.x;
-		newPoint.y -= mouseDragPos.y;
-
-		setLocation(newPoint);
-
-		JPanel panel = new JPanel(new GridBagLayout());
-
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridy = 0;
-		gbc.gridx = 0;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		gbc.fill = GridBagConstraints.BOTH;
-
-		// TODO pull this color from the UIManager/L&F
-		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-		panel.add((Component) dockable, gbc);
-
-		add(panel, BorderLayout.CENTER);
-
-		setVisible(true);
-	}
+public interface MaximizeListener {
+	void maximized(Dockable dockable, boolean maximized);
 }

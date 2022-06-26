@@ -19,45 +19,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package floating;
+package docking;
 
-import docking.Dockable;
+import event.MaximizeListener;
 
-import javax.swing.*;
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-// this is a frame used temporarily when floating a panel
-public class TempFloatingFrame extends JFrame {
-	public TempFloatingFrame(Dockable dockable, JComponent dragSrc, Point mouseDragPos) {
-		setLayout(new BorderLayout());
-		setUndecorated(true);
-		setType(Type.UTILITY);
+public class DockingListeners {
+	private static final List<MaximizeListener> maximizeListeners = new ArrayList<>();
 
-		setSize(((JComponent) dockable).getSize());
+	public static void addMaximizeListener(MaximizeListener listener) {
+		if (!maximizeListeners.contains(listener)) {
+			maximizeListeners.add(listener);
+		}
+	}
 
-		Point newPoint = new Point(mouseDragPos);
-		SwingUtilities.convertPointToScreen(newPoint, dragSrc);
+	public static void removeMaximizeListener(MaximizeListener listener) {
+		maximizeListeners.remove(listener);
+	}
 
-		newPoint.x -= mouseDragPos.x;
-		newPoint.y -= mouseDragPos.y;
-
-		setLocation(newPoint);
-
-		JPanel panel = new JPanel(new GridBagLayout());
-
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridy = 0;
-		gbc.gridx = 0;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		gbc.fill = GridBagConstraints.BOTH;
-
-		// TODO pull this color from the UIManager/L&F
-		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-		panel.add((Component) dockable, gbc);
-
-		add(panel, BorderLayout.CENTER);
-
-		setVisible(true);
+	// package private function to fire an event
+	static void fireMaximizeEvent(Dockable dockable, boolean maximized) {
+		maximizeListeners.forEach(listener -> listener.maximized(dockable, maximized));
 	}
 }

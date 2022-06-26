@@ -44,7 +44,6 @@ import java.io.File;
 import java.util.Random;
 
 public class MainFrame extends JFrame {
-	static RootDockState state;
 	static DockingLayout currentLayout;
 
 	public MainFrame() {

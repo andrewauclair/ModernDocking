@@ -31,11 +31,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-// TODO persist maximize state for dockables
-
 // TODO find a good solution for where to dock new dockables. For example, I might select a view menu item which docks a certain dockable, that dockable should go in a logical location which is entirely app dependent (might depend on what other dockables are docked)
-
-// TODO support panels that can't be dragged, this might require handling null drag handles
 
 // TODO support pinning dockables, this should also support icons so that text or an icon can be shown on the toolbar button
 
@@ -56,7 +52,9 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 	private DockingPanel activePanel = null;
 
-	private final Map<JFrame, RootDockState> maximizeRestoreState = new HashMap<>();
+	private final Map<JFrame, DockingLayout> maximizeRestoreLayout = new HashMap<>();
+
+	private static final DockingListeners listeners = new DockingListeners();
 
 	public Docking(JFrame mainFrame) {
 		this.mainFrame = mainFrame;
@@ -301,7 +299,6 @@ public class Docking implements ComponentListener, WindowStateListener {
 		RootDockingPanel root = instance.rootPanels.get(frame);
 
 		if (root == null) {
-			// TODO restoring from a file and then maximizing one of the dockables in a floating frame throws this exception
 			throw new DockableRegistrationFailureException("Frame does not have a RootDockingPanel: " + frame);
 		}
 
@@ -389,7 +386,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 	}
 
 	public static boolean canDisposeFrame(JFrame frame) {
-		return frame != instance.mainFrame && !instance.maximizeRestoreState.containsKey(frame);
+		return frame != instance.mainFrame && !instance.maximizeRestoreLayout.containsKey(frame);
 	}
 
 	public static Dockable getDockable(String persistentID) {
@@ -424,6 +421,12 @@ public class Docking implements ComponentListener, WindowStateListener {
 			throw new RuntimeException("Root for frame does not exist: " + frame);
 		}
 
+		DockingLayout maxLayout = instance.maximizeRestoreLayout.get(frame);
+
+		if (maxLayout != null) {
+			return maxLayout;
+		}
+
 		return DockingLayouts.layoutFromRoot(root);
 	}
 
@@ -454,17 +457,46 @@ public class Docking implements ComponentListener, WindowStateListener {
 		AppState.setPaused(true);
 
 		// setup main frame
-		setLayout(instance.mainFrame, layout.getMainFrameLayout());
+		restoreLayoutFromFull(instance.mainFrame, layout.getMainFrameLayout());
 
 		// setup rest of floating frames from layout
 		for (DockingLayout frameLayout : layout.getFloatingFrameLayouts()) {
 			FloatingFrame frame = new FloatingFrame(frameLayout.getLocation(), frameLayout.getSize(), frameLayout.getState());
 
-			setLayout(frame, frameLayout);
+			restoreLayoutFromFull(frame, frameLayout);
 		}
 
 		AppState.setPaused(false);
 		AppState.persist();
+	}
+
+	private static void restoreLayoutFromFull(JFrame frame, DockingLayout layout) {
+		RootDockingPanel root = rootForFrame(frame);
+
+		if (root == null) {
+			throw new RuntimeException("Root for frame does not exist: " + frame);
+		}
+
+		frame.setLocation(layout.getLocation());
+		frame.setSize(layout.getSize());
+		frame.setExtendedState(layout.getState());
+
+		undockComponents(root);
+
+		if (layout.getMaximizedDockable() != null) {
+			DockableWrapper wrapper = getWrapper(getDockable(layout.getMaximizedDockable()));
+			wrapper.setMaximized(true);
+			DockingListeners.fireMaximizeEvent(wrapper.getDockable(), true);
+
+			layout.setMaximizedDockable(null);
+
+			instance.maximizeRestoreLayout.put(frame, layout);
+
+			root.setPanel(new DockedSimplePanel(wrapper));
+		}
+		else {
+			root.setPanel(restoreState(layout.getRootNode()));
+		}
 	}
 
 	public static void setLayout(JFrame frame, DockingLayout layout) {
@@ -676,10 +708,17 @@ public class Docking implements ComponentListener, WindowStateListener {
 		JFrame frame = findFrameForDockable(dockable);
 
 		// can only maximize one panel per root
-		if (!instance.maximizeRestoreState.containsKey(frame)) {
+		if (!instance.maximizeRestoreLayout.containsKey(frame)) {
 			getWrapper(dockable).setMaximized(true);
-			instance.maximizeRestoreState.put(frame, getRootState(frame));
+			DockingListeners.fireMaximizeEvent(dockable, true);
+
+			DockingLayout layout = getCurrentLayout(frame);
+			layout.setMaximizedDockable(dockable.persistentID());
+
+			instance.maximizeRestoreLayout.put(frame, layout);
+
 			undockComponents(rootForFrame(frame));
+
 			dock(dockable, frame);
 		}
 	}
@@ -688,10 +727,13 @@ public class Docking implements ComponentListener, WindowStateListener {
 		JFrame frame = findFrameForDockable(dockable);
 
 		// can only minimize if already maximized
-		if (instance.maximizeRestoreState.containsKey(frame)) {
+		if (instance.maximizeRestoreLayout.containsKey(frame)) {
 			getWrapper(dockable).setMaximized(false);
-			restoreState(frame, instance.maximizeRestoreState.get(frame));
-			instance.maximizeRestoreState.remove(frame);
+			DockingListeners.fireMaximizeEvent(dockable, false);
+
+			setLayout(frame, instance.maximizeRestoreLayout.get(frame));
+
+			instance.maximizeRestoreLayout.remove(frame);
 		}
 	}
 

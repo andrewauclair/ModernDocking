@@ -35,7 +35,7 @@ public class DockingLayoutXML {
 		file.getParentFile().mkdirs();
 
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
-		XMLStreamWriter writer = null;
+		XMLStreamWriter writer;
 		try {
 			writer = factory.createXMLStreamWriter(new FileOutputStream(file));
 		}
@@ -74,6 +74,10 @@ public class DockingLayoutXML {
 		writer.writeAttribute("location", layout.getLocation().x + "," + layout.getLocation().y);
 		writer.writeAttribute("size", layout.getSize().width + "," + layout.getSize().height);
 		writer.writeAttribute("state", String.valueOf(layout.getState()));
+
+		if (layout.getMaximizedDockable() != null) {
+			writer.writeAttribute("max-dockable", layout.getMaximizedDockable());
+		}
 
 		writer.writeCharacters(NL);
 
@@ -184,11 +188,16 @@ public class DockingLayoutXML {
 		String locStr = reader.getAttributeValue(1);
 		String sizeStr = reader.getAttributeValue(2);
 		int state = Integer.parseInt(reader.getAttributeValue(3));
+		String maximizedDockable = reader.getAttributeValue(4);
 
 		Point location = new Point(Integer.parseInt(locStr.substring(0, locStr.indexOf(","))), Integer.parseInt(locStr.substring(locStr.indexOf(",") + 1)));
 		Dimension size = new Dimension(Integer.parseInt(sizeStr.substring(0, sizeStr.indexOf(","))), Integer.parseInt(sizeStr.substring(sizeStr.indexOf(",") + 1)));
 
-		return new DockingLayout(isMainFrame, location, size, state, readNodeFromFile(reader, "layout"));
+		DockingLayout layout = new DockingLayout(isMainFrame, location, size, state, readNodeFromFile(reader, "layout"));
+
+		layout.setMaximizedDockable(maximizedDockable);
+
+		return layout;
 	}
 
 	private static DockingLayoutNode readNodeFromFile(XMLStreamReader reader, String name) throws XMLStreamException {
