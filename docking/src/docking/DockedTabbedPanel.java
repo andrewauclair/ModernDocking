@@ -179,4 +179,14 @@ public class DockedTabbedPanel extends DockingPanel implements MouseListener {
 				)
 		);
 	}
+
+	public void bringToFront(Dockable dockable) {
+		for (int i = 0; i < panels.size(); i++) {
+			DockableWrapper panel = panels.get(i);
+
+			if (panel.getDockable() == dockable) {
+				tabs.setSelectedIndex(i);
+			}
+		}
+	}
 }

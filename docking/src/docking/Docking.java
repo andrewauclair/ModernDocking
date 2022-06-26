@@ -347,6 +347,21 @@ public class Docking implements ComponentListener, WindowStateListener {
 		dock(dockable, frame);
 	}
 
+	public static void bringToFront(Dockable dockable) {
+		if (!isDocked(dockable)) {
+			return;
+		}
+
+		JFrame frame = findFrameForDockable(dockable);
+		frame.setAlwaysOnTop(true);
+		frame.setAlwaysOnTop(false);
+
+		if (getWrapper(dockable).getParent() instanceof DockedTabbedPanel) {
+			DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) getWrapper(dockable).getParent();
+			tabbedPanel.bringToFront(dockable);
+		}
+	}
+
 	public static void undock(String persistentID) {
 		undock(getDockable(persistentID));
 	}

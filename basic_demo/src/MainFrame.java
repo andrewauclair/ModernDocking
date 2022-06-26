@@ -230,9 +230,14 @@ public class MainFrame extends JFrame {
 			if (!Docking.isDocked(dockable)) {
 				Docking.dock(dockable, this, DockingRegion.SOUTH);
 			}
+			else {
+				Docking.bringToFront(dockable);
+			}
 			item.setSelected(Docking.isDocked(dockable));
 		});
+
 		final String id = persistentID;
+
 		DockingListeners.addDockingListener(new DockingListener() {
 			@Override
 			public void docked(String persistentID) {
@@ -267,9 +272,7 @@ public class MainFrame extends JFrame {
 				if (args.length > 1) {
 					System.setProperty("flatlaf.uiScale", args[1]);
 				}
-//			FlatLightLaf.setup();
-//			UIManager.setLookAndFeel(new FlatDarkLaf());
-//			UIManager.setLookAndFeel(new FlatLightLaf());
+
 				if (args.length > 0 && args[0].equals("light")) {
 					UIManager.setLookAndFeel(new FlatLightLaf());
 				}
