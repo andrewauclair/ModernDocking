@@ -263,17 +263,25 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 			RootDockingPanel root = frame == null ? null : Docking.rootForFrame(frame);
 
 			DockingPanel dockingPanel = Docking.findDockingPanelAtScreenPos(point);
+			Dockable dockableAtPos = Docking.findDockableAtScreenPos(point);
+
 
 			DockingRegion region = activeUtilsFrame != null ? activeUtilsFrame.getRegion(mousePos) : DockingRegion.CENTER;
 
 			if (root != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToRoot()) {
-				root.dock(floatingDockable.getDockable(), region, 0.5);
+//				root.dock(floatingDockable.getDockable(), region, 0.5);
+
+				Docking.dock(floatingDockable.getDockable(), frame, region);
 			}
 			else if (frame != null && dockingPanel != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToDockable()) {
-				dockingPanel.dock(floatingDockable.getDockable(), region, 0.5);
+//				dockingPanel.dock(floatingDockable.getDockable(), region, 0.5);
+
+				Docking.dock(floatingDockable.getDockable(), dockableAtPos, region);
 			}
 			else if (root != null && region != DockingRegion.CENTER && activeUtilsFrame == null) {
-				root.dock(floatingDockable.getDockable(), region, 0.5);
+//				root.dock(floatingDockable.getDockable(), region, 0.5);
+
+				Docking.dock(floatingDockable.getDockable(), frame, region);
 			}
 			else if (!floatingDockable.getDockable().floatingAllowed()) {
 				Docking.restoreState(originalFrame, rootState);

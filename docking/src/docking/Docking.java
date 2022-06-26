@@ -782,6 +782,19 @@ public class Docking implements ComponentListener, WindowStateListener {
 		}
 	}
 
+	public static void pinDockable(Dockable dockable) {
+		// TODO get the location that this is unpinned and dock it to the root in that location
+	}
+
+	public static void unpinDockable(Dockable dockable) {
+		RootDockingPanel root = rootForFrame(findFrameForDockable(dockable));
+
+		// TODO we need to figure out how we determine which location this unpins to
+		undock(dockable);
+
+		root.setDockableUnpinned(dockable, DockableToolbar.Location.SOUTH);
+	}
+
 	@Override
 	public void componentResized(ComponentEvent e) {
 		AppState.persist();

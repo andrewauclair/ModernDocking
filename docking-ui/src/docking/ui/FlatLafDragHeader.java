@@ -130,6 +130,8 @@ public class FlatLafDragHeader extends JPanel implements MaximizeListener, Docki
 		undock.setEnabled(dockable.allowClose());
 		window.setEnabled(dockable.floatingAllowed());
 
+		pinned.addActionListener(e -> Docking.pinDockable(dockable));
+		unpinned.addActionListener(e -> Docking.unpinDockable(dockable));
 		undock.addActionListener(e -> Docking.undock(dockable));
 		window.addActionListener(e -> Docking.newWindow(dockable));
 

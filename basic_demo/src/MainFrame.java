@@ -23,23 +23,18 @@ SOFTWARE.
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import docking.*;
 import event.DockingListener;
-import exception.FailOnThreadViolationRepaintManager;
 import layouts.DockingLayout;
-import layouts.DockingLayoutXML;
 import layouts.FullAppLayout;
 import layouts.FullAppLayoutXML;
 import persist.AppState;
-import persist.RootDockState;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.Random;
 
 public class MainFrame extends JFrame {
 	static DockingLayout currentLayout;
@@ -184,8 +179,6 @@ public class MainFrame extends JFrame {
 
 		RootDockingPanel dockingPanel = new RootDockingPanel(this);
 		Docking.registerDockingPanel(dockingPanel, this);
-		Random rand = new Random();
-		dockingPanel.setBackground(new Color(rand.nextInt(255),rand.nextInt(255),rand.nextInt(255)));
 
 		add(dockingPanel, gbc);
 

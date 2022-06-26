@@ -21,12 +21,14 @@ SOFTWARE.
  */
 package docking;
 
+import docking.DockableToolbar.Location;
+
 import javax.swing.*;
 import java.awt.*;
 
 // only class that should be used by clients
 public class RootDockingPanel extends DockingPanel {
-	private JFrame frame;
+	private final JFrame frame;
 
 	DockingPanel panel;
 
@@ -35,9 +37,18 @@ public class RootDockingPanel extends DockingPanel {
 	private boolean pinningSupported = false;
 	private int pinningLayer = JLayeredPane.MODAL_LAYER;
 
+	// "toolbar" panels for unpinned dockables
+	private final DockableToolbar southToolbar = new DockableToolbar(this, false);
+	private final DockableToolbar westToolbar = new DockableToolbar(this, true);
+	private final DockableToolbar eastToolbar = new DockableToolbar(this, true);
+
 	public RootDockingPanel(JFrame frame) {
 		this.frame = frame;
-		setLayout(new BorderLayout());
+		setLayout(new GridBagLayout());
+	}
+
+	public JFrame getFrame() {
+		return frame;
 	}
 
 	public void setEmptyPanel(JPanel panel) {
@@ -50,6 +61,10 @@ public class RootDockingPanel extends DockingPanel {
 
 	public void setPinningSupported(boolean supported) {
 		pinningSupported = supported;
+	}
+
+	public int getPinningLayer() {
+		return pinningLayer;
 	}
 
 	public void setPinningLayer(int layer) {
@@ -65,17 +80,10 @@ public class RootDockingPanel extends DockingPanel {
 	}
 
 	public void setPanel(DockingPanel panel) {
-		boolean repaint = removeExistingPanel();
-
 		this.panel = panel;
 		this.panel.setParent(this);
 
-		add(panel, BorderLayout.CENTER);
-
-		if (repaint) {
-			revalidate();
-			repaint();
-		}
+		createContents();
 	}
 
 	private boolean removeExistingPanel() {
@@ -112,9 +120,6 @@ public class RootDockingPanel extends DockingPanel {
 			setPanel(new DockedSimplePanel(Docking.getWrapper(dockable)));
 			Docking.getWrapper(dockable).setFrame(frame);
 		}
-
-		revalidate();
-		repaint();
 	}
 
 	@Override
@@ -132,10 +137,84 @@ public class RootDockingPanel extends DockingPanel {
 	public void removeChild(DockingPanel child) {
 		if (child == panel) {
 			if (removeExistingPanel()) {
-				add(emptyPanel, BorderLayout.CENTER);
-				revalidate();
-				repaint();
+				createContents();
 			}
 		}
+	}
+
+	public void setDockablePinned(Dockable dockable) {
+		// if the dockable is currently unpinned, remove it from the toolbar, then adjust the toolbars
+		if (westToolbar != null && westToolbar.hasDockable(dockable)) {
+			westToolbar.removeDockable(dockable);
+		}
+		else if (eastToolbar != null && eastToolbar.hasDockable(dockable)) {
+			eastToolbar.removeDockable(dockable);
+		}
+		else if (southToolbar != null && southToolbar.hasDockable(dockable)) {
+			southToolbar.removeDockable(dockable);
+		}
+
+		createContents();
+	}
+
+	// set a dockable to be unpinned at the given location
+	public void setDockableUnpinned(Dockable dockable, Location location) {
+		switch (location) {
+			case WEST -> westToolbar.addDockable(dockable);
+			case SOUTH -> southToolbar.addDockable(dockable);
+			case EAST -> eastToolbar.addDockable(dockable);
+		}
+
+		createContents();
+	}
+
+	private void createContents() {
+		removeAll();
+
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 0.0;
+		gbc.weighty = 0.0;
+		gbc.fill = GridBagConstraints.VERTICAL;
+
+		if (westToolbar.shouldDisplay()) {
+			add(westToolbar, gbc);
+			gbc.gridx++;
+		}
+
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
+		gbc.fill = GridBagConstraints.BOTH;
+
+		if (panel == null) {
+			add(emptyPanel, gbc);
+		}
+		else {
+			add(panel, gbc);
+		}
+		gbc.gridx++;
+
+		gbc.weightx = 0.0;
+		gbc.weighty = 0.0;
+		gbc.fill = GridBagConstraints.VERTICAL;
+
+		if (eastToolbar.shouldDisplay()) {
+			add(eastToolbar, gbc);
+		}
+
+		gbc.gridx = 0;
+		gbc.gridy++;
+		gbc.gridwidth = 3;
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+
+		if (southToolbar.shouldDisplay()) {
+			add(southToolbar, gbc);
+		}
+
+		revalidate();
+		repaint();
 	}
 }

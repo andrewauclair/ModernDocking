@@ -120,15 +120,10 @@ public class MainFrame extends JFrame {
 
 		RootDockingPanel dockingPanel = new RootDockingPanel();
 		Docking.registerDockingPanel(dockingPanel, this);
-		Random rand = new Random();
-		dockingPanel.setBackground(new Color(rand.nextInt(255),rand.nextInt(255),rand.nextInt(255)));
 
 		add(dockingPanel, gbc);
 
 		JButton close = new JButton(new FlatSVGIcon("icons/x.svg"));
-//		gbc.gridy++;
-//		add(close, gbc);
-
 
 		SimplePanel one = new SimplePanel("One", "one");
 		SimplePanel two = new SimplePanel("Two", "two");
