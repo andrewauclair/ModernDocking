@@ -84,6 +84,7 @@ public class DockingLayoutXML {
 		writeNodeToFile(writer, layout.getRootNode());
 
 		writer.writeEndElement();
+		writer.writeCharacters(NL);
 
 		return true;
 	}

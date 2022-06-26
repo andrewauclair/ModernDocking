@@ -52,8 +52,8 @@ public class TempFloatingFrame extends JFrame {
 		gbc.weighty = 1;
 		gbc.fill = GridBagConstraints.BOTH;
 
-		// TODO pull this color from the UIManager/L&F
-		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+		Color color = UIManager.getColor("Component.focusColor");
+		panel.setBorder(BorderFactory.createLineBorder(color, 2));
 		panel.add((Component) dockable, gbc);
 
 		add(panel, BorderLayout.CENTER);

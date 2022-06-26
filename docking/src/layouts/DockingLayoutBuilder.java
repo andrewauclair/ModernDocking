@@ -25,6 +25,7 @@ import docking.DockingRegion;
 
 import javax.swing.*;
 
+// Utility to help create layouts without directly applying them to the actual app
 public class DockingLayoutBuilder {
 	private final JFrame frame;
 	private DockingLayoutNode rootNode;
@@ -34,49 +35,77 @@ public class DockingLayoutBuilder {
 		rootNode = new DockingSimplePanelNode(firstID);
 	}
 
-	public DockingLayoutBuilder dock(String targetID, String persistentID, DockingRegion region) {
+	public DockingLayoutBuilder dock(String targetID, String sourceID, DockingRegion region) {
 		DockingLayoutNode node = findNode(targetID);
-		node.dock(persistentID, region);
+
+		if (exists(sourceID)) {
+			throw new RuntimeException("Dockable already in layout: " + sourceID);
+		}
+		node.dock(sourceID, region);
 
 		return this;
 	}
 
 	public DockingLayoutBuilder dockToRootNorth(String persistentID) {
+		if (exists(persistentID)) {
+			throw new RuntimeException("Dockable already in layout: " + persistentID);
+		}
 		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, JSplitPane.VERTICAL_SPLIT, 0.5);
 		return this;
 	}
 
 	public DockingLayoutBuilder dockToRootNorth(String persistentID, double dividerProportion) {
+		if (exists(persistentID)) {
+			throw new RuntimeException("Dockable already in layout: " + persistentID);
+		}
 		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, JSplitPane.VERTICAL_SPLIT, dividerProportion);
 		return this;
 	}
 
 	public DockingLayoutBuilder dockToRootSouth(String persistentID) {
+		if (exists(persistentID)) {
+			throw new RuntimeException("Dockable already in layout: " + persistentID);
+		}
 		rootNode = new DockingSplitPanelNode(rootNode, new DockingSimplePanelNode(persistentID), JSplitPane.VERTICAL_SPLIT, 0.5);
 		return this;
 	}
 
 	public DockingLayoutBuilder dockToRootSouth(String persistentID, double dividerProportion) {
+		if (exists(persistentID)) {
+			throw new RuntimeException("Dockable already in layout: " + persistentID);
+		}
 		rootNode = new DockingSplitPanelNode(rootNode, new DockingSimplePanelNode(persistentID), JSplitPane.VERTICAL_SPLIT, dividerProportion);
 		return this;
 	}
 
 	public DockingLayoutBuilder dockToRootWest(String persistentID) {
+		if (exists(persistentID)) {
+			throw new RuntimeException("Dockable already in layout: " + persistentID);
+		}
 		rootNode = new DockingSplitPanelNode(rootNode, new DockingSimplePanelNode(persistentID), JSplitPane.HORIZONTAL_SPLIT, 0.5);
 		return this;
 	}
 
 	public DockingLayoutBuilder dockToRootWest(String persistentID, double dividerProportion) {
+		if (exists(persistentID)) {
+			throw new RuntimeException("Dockable already in layout: " + persistentID);
+		}
 		rootNode = new DockingSplitPanelNode(rootNode, new DockingSimplePanelNode(persistentID), JSplitPane.HORIZONTAL_SPLIT, dividerProportion);
 		return this;
 	}
 
 	public DockingLayoutBuilder dockToRootEast(String persistentID) {
+		if (exists(persistentID)) {
+			throw new RuntimeException("Dockable already in layout: " + persistentID);
+		}
 		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, JSplitPane.HORIZONTAL_SPLIT, 0.5);
 		return this;
 	}
 
 	public DockingLayoutBuilder dockToRootEast(String persistentID, double dividerProportion) {
+		if (exists(persistentID)) {
+			throw new RuntimeException("Dockable already in layout: " + persistentID);
+		}
 		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, JSplitPane.HORIZONTAL_SPLIT, dividerProportion);
 		return this;
 	}
@@ -85,9 +114,18 @@ public class DockingLayoutBuilder {
 		return new DockingLayout(frame, rootNode);
 	}
 
-	// TODO throw exception if a persistent id already exists
-	// TODO probably throw an exception that it doesn't exist
 	private DockingLayoutNode findNode(String persistentID) {
-		return rootNode.findNode(persistentID);
+		DockingLayoutNode node = rootNode.findNode(persistentID);
+
+		if (node == null) {
+			throw new RuntimeException("No node for dockable ID found: " + persistentID);
+		}
+		return node;
+	}
+
+	private boolean exists(String persistentID) {
+		DockingLayoutNode node = rootNode.findNode(persistentID);
+
+		return node != null;
 	}
 }

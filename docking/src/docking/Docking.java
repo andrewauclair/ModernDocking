@@ -85,12 +85,12 @@ public class Docking implements ComponentListener, WindowStateListener {
 	}
 
 	private void setSelectedBorder() {
-		Color color = UIManager.getLookAndFeelDefaults().getColor("Component.focusColor");
+		Color color = UIManager.getColor("Component.focusColor");
 		activePanel.setBorder(BorderFactory.createLineBorder(color, 2));
 	}
 
 	private void setNotSelectedBorder() {
-		Color color = UIManager.getLookAndFeelDefaults().getColor("Component.borderColor");
+		Color color = UIManager.getColor("Component.borderColor");
 
 		activePanel.setBorder(
 				BorderFactory.createCompoundBorder(

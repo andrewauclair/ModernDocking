@@ -138,7 +138,7 @@ public class DockedSimplePanel extends DockingPanel implements MouseListener {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		Color color = UIManager.getLookAndFeelDefaults().getColor("Component.focusColor");
+		Color color = UIManager.getColor("Component.focusColor");
 		setBorder(BorderFactory.createLineBorder(color, 2));
 	}
 
@@ -148,7 +148,7 @@ public class DockedSimplePanel extends DockingPanel implements MouseListener {
 	}
 
 	private void setNotSelectedBorder() {
-		Color color = UIManager.getLookAndFeelDefaults().getColor("Component.borderColor");
+		Color color = UIManager.getColor("Component.borderColor");
 
 		setBorder(
 				BorderFactory.createCompoundBorder(
