@@ -182,7 +182,7 @@ public class MainFrame extends JFrame {
 		gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
 
-		RootDockingPanel dockingPanel = new RootDockingPanel();
+		RootDockingPanel dockingPanel = new RootDockingPanel(this);
 		Docking.registerDockingPanel(dockingPanel, this);
 		Random rand = new Random();
 		dockingPanel.setBackground(new Color(rand.nextInt(255),rand.nextInt(255),rand.nextInt(255)));

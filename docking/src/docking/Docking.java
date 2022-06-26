@@ -35,8 +35,6 @@ import java.util.*;
 
 // TODO support pinning dockables, this should also support icons so that text or an icon can be shown on the toolbar button
 
-// TODO add some option for bringing dockable to front. This means showing the frame it's in and possibly the tab if it's in a tabbed pane
-
 // Main class for the docking framework
 // register and dock/undock dockables here
 public class Docking implements ComponentListener, WindowStateListener {
@@ -143,11 +141,17 @@ public class Docking implements ComponentListener, WindowStateListener {
 			throw new DockableRegistrationFailureException("No root panel for frame has been registered.");
 		}
 
-
+		RootDockingPanel root = rootForFrame(frame);
+		root.setPinningSupported(allow);
+		root.setPinningLayer(layer);
 	}
 
-	// TODO add a possible listener for this. I'd like a way to listen for panels being auto undocked and being able to redock them somewhere else depending on what they are
-	// TODO ... for example: dockable in a floating frame, closing it would dock it back into the main window in its default location (root east, for example)
+	public static boolean pinningAllowed(Dockable dockable) {
+		RootDockingPanel root = rootForFrame(findFrameForDockable(dockable));
+
+		return dockable.allowPinning() && root.isPinningSupported();
+	}
+
 	public static void deregisterDockingPanel(JFrame parent) {
 		if (instance.rootPanels.containsKey(parent)) {
 			RootDockingPanel root = instance.rootPanels.get(parent);
@@ -184,25 +188,25 @@ public class Docking implements ComponentListener, WindowStateListener {
 	}
 
 	public static JFrame findFrameForDockable(Dockable dockable) {
-		Container parent = ((Component) dockable).getParent();
-
-		while (parent != null) {
-			if (parent instanceof JFrame) {
-				if (instance.rootPanels.containsKey(parent)) {
-					return (JFrame) parent;
-				}
-			}
-			parent = parent.getParent();
-		}
-		return null;
+		return getWrapper(dockable).getFrame();
+//		Container parent = ((Component) dockable).getParent();
+//
+//		while (parent != null) {
+//			if (parent instanceof JFrame) {
+//				if (instance.rootPanels.containsKey(parent)) {
+//					return (JFrame) parent;
+//				}
+//			}
+//			parent = parent.getParent();
+//		}
+//		return null;
 	}
 
-	// TODO should this function throw an exception if the frame doesn't have a root? this is used in a lot of places where the frame should absolutely have a root to work
 	public static RootDockingPanel rootForFrame(JFrame frame) {
 		if (instance.rootPanels.containsKey(frame)) {
 			return instance.rootPanels.get(frame);
 		}
-		return null;
+		throw new DockableRegistrationFailureException("No root panel for frame has been registered.");
 	}
 
 	public static JFrame frameForRoot(RootDockingPanel root) {
@@ -305,6 +309,9 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 		root.dock(dockable, region, dividerProportion);
 
+		getWrapper(dockable).setFrame(frame);
+
+		// fire a docked event when the component is actually added
 		DockingListeners.fireDockedEvent(dockable);
 
 		AppState.persist();
@@ -329,6 +336,10 @@ public class Docking implements ComponentListener, WindowStateListener {
 	public static void dock(Dockable source, Dockable target, DockingRegion region, double dividerProportion) {
 		DockableWrapper wrapper = Docking.getWrapper(target);
 		wrapper.getParent().dock(source, region, dividerProportion);
+
+		getWrapper(source).setFrame(wrapper.getFrame());
+
+//		new	FireDockEventOnAdd(source);
 
 		DockingListeners.fireDockedEvent(source);
 
@@ -378,6 +389,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 		DockableWrapper wrapper = getWrapper(dockable);
 
 		wrapper.getParent().undock(dockable);
+		wrapper.setFrame(null);
 
 		DockingListeners.fireUndockedEvent(dockable);
 
@@ -395,30 +407,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 	public static boolean isDocked(Dockable dockable) {
 		return getWrapper(dockable).getParent() != null;
-//		for (RootDockingPanel root : instance.rootPanels.values()) {
-//			if (isDocked(root, dockable)) {
-//				return true;
-//			}
-//		}
-//		return false;
 	}
-
-//	private static boolean isDocked(Container container, Dockable search) {
-//		for (Component component : container.getComponents()) {
-//			if (component instanceof Dockable) {
-//				Dockable dockable = (Dockable) component;
-//				if (dockable == search) {
-//					return true;
-//				}
-//			}
-//			else if (component instanceof Container) {
-//				if (isDocked((Container) component, search)) {
-//					return true;
-//				}
-//			}
-//		}
-//		return false;
-//	}
 
 	public static boolean canDisposeFrame(JFrame frame) {
 		return frame != instance.mainFrame && !instance.maximizeRestoreLayout.containsKey(frame);
@@ -537,7 +526,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 			dock(wrapper.getDockable(), frame);
 		}
 		else {
-			root.setPanel(restoreState(layout.getRootNode()));
+			root.setPanel(restoreState(layout.getRootNode(), frame));
 		}
 	}
 
@@ -557,7 +546,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 		boolean paused = AppState.isPaused();
 		AppState.setPaused(true);
 
-		root.setPanel(restoreState(layout.getRootNode()));
+		root.setPanel(restoreState(layout.getRootNode(), frame));
 
 		AppState.setPaused(paused);
 
@@ -578,7 +567,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 		boolean paused = AppState.isPaused();
 		AppState.setPaused(true);
 
-		root.setPanel(restoreState(state.getState()));
+		root.setPanel(restoreState(state.getState(), frame));
 
 		AppState.setPaused(paused);
 
@@ -587,33 +576,33 @@ public class Docking implements ComponentListener, WindowStateListener {
 		}
 	}
 
-	private static DockingPanel restoreState(DockingState state) {
+	private static DockingPanel restoreState(DockingState state, JFrame frame) {
 		if (state instanceof PanelState) {
-			return restoreSimple((PanelState) state);
+			return restoreSimple((PanelState) state, frame);
 		}
 		else if (state instanceof SplitState) {
-			return restoreSplit((SplitState) state);
+			return restoreSplit((SplitState) state, frame);
 		}
 		else if (state instanceof TabState) {
-			return restoreTabbed((TabState) state);
+			return restoreTabbed((TabState) state, frame);
 		}
 		else {
 			throw new RuntimeException("Unknown state type");
 		}
 	}
 
-	private static DockedSplitPanel restoreSplit(SplitState state) {
-		DockedSplitPanel panel = new DockedSplitPanel();
+	private static DockedSplitPanel restoreSplit(SplitState state, JFrame frame) {
+		DockedSplitPanel panel = new DockedSplitPanel(frame);
 
-		panel.setLeft(restoreState(state.getLeft()));
-		panel.setRight(restoreState(state.getRight()));
+		panel.setLeft(restoreState(state.getLeft(), frame));
+		panel.setRight(restoreState(state.getRight(), frame));
 		panel.setOrientation(state.getOrientation());
 		panel.setDividerLocation(state.getDividerLocation());
 
 		return panel;
 	}
 
-	private static DockedTabbedPanel restoreTabbed(TabState state) {
+	private static DockedTabbedPanel restoreTabbed(TabState state, JFrame frame) {
 		DockedTabbedPanel panel = new DockedTabbedPanel();
 
 		for (String persistentID : state.getPersistentIDs()) {
@@ -625,13 +614,16 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 			undock(dockable);
 
-			panel.addPanel(getWrapper(dockable));
+			DockableWrapper wrapper = getWrapper(dockable);
+			wrapper.setFrame(frame);
+
+			panel.addPanel(wrapper);
 		}
 
 		return panel;
 	}
 
-	private static DockedSimplePanel restoreSimple(PanelState state) {
+	private static DockedSimplePanel restoreSimple(PanelState state, JFrame frame) {
 		Dockable dockable = getDockable(state.getPersistentID());
 
 		if (dockable == null) {
@@ -640,36 +632,39 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 		undock(dockable);
 
-		return new DockedSimplePanel(getWrapper(dockable));
+		DockableWrapper wrapper = getWrapper(dockable);
+		wrapper.setFrame(frame);
+
+		return new DockedSimplePanel(wrapper);
 	}
 
-	private static DockingPanel restoreState(DockingLayoutNode node) {
+	private static DockingPanel restoreState(DockingLayoutNode node, JFrame frame) {
 		if (node instanceof DockingSimplePanelNode) {
-			return restoreSimple((DockingSimplePanelNode) node);
+			return restoreSimple((DockingSimplePanelNode) node, frame);
 		}
 		else if (node instanceof DockingSplitPanelNode) {
-			return restoreSplit((DockingSplitPanelNode) node);
+			return restoreSplit((DockingSplitPanelNode) node, frame);
 		}
 		else if (node instanceof DockingTabPanelNode) {
-			return restoreTabbed((DockingTabPanelNode) node);
+			return restoreTabbed((DockingTabPanelNode) node, frame);
 		}
 		else {
 			throw new RuntimeException("Unknown state type");
 		}
 	}
 
-	private static DockedSplitPanel restoreSplit(DockingSplitPanelNode node) {
-		DockedSplitPanel panel = new DockedSplitPanel();
+	private static DockedSplitPanel restoreSplit(DockingSplitPanelNode node, JFrame frame) {
+		DockedSplitPanel panel = new DockedSplitPanel(frame);
 
-		panel.setLeft(restoreState(node.getLeft()));
-		panel.setRight(restoreState(node.getRight()));
+		panel.setLeft(restoreState(node.getLeft(), frame));
+		panel.setRight(restoreState(node.getRight(), frame));
 		panel.setOrientation(node.getOrientation());
 		panel.setDividerLocation(node.getDividerProportion());
 
 		return panel;
 	}
 
-	private static DockedTabbedPanel restoreTabbed(DockingTabPanelNode node) {
+	private static DockedTabbedPanel restoreTabbed(DockingTabPanelNode node, JFrame frame) {
 		DockedTabbedPanel panel = new DockedTabbedPanel();
 
 		for (String persistentID : node.getPersistentIDs()) {
@@ -681,13 +676,16 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 			undock(dockable);
 
-			panel.addPanel(getWrapper(dockable));
+			DockableWrapper wrapper = getWrapper(dockable);
+			wrapper.setFrame(frame);
+
+			panel.addPanel(wrapper);
 		}
 
 		return panel;
 	}
 
-	private static DockedSimplePanel restoreSimple(DockingSimplePanelNode node) {
+	private static DockedSimplePanel restoreSimple(DockingSimplePanelNode node, JFrame frame) {
 		Dockable dockable = getDockable(node.persistentID());
 
 		if (dockable == null) {
@@ -696,7 +694,10 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 		undock(dockable);
 
-		return new DockedSimplePanel(getWrapper(dockable));
+		DockableWrapper wrapper = getWrapper(dockable);
+		wrapper.setFrame(frame);
+
+		return new DockedSimplePanel(wrapper);
 	}
 
 	public static void removeIllegalFloats(JFrame frame) {
@@ -735,6 +736,9 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 				DockableWrapper wrapper = getWrapper(dockable);
 				wrapper.getParent().undock(dockable);
+
+				DockingListeners.fireUndockedEvent(dockable);
+				DockingListeners.fireAutoUndockedEvent(dockable);
 			}
 			else if (component instanceof Container) {
 				undockIllegalFloats((Container) component);

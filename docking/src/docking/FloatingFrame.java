@@ -36,7 +36,7 @@ public class FloatingFrame extends JFrame {
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-		RootDockingPanel root = new RootDockingPanel();
+		RootDockingPanel root = new RootDockingPanel(this);
 		add(root, BorderLayout.CENTER);
 
 		Docking.registerDockingPanel(root, this);
@@ -61,7 +61,7 @@ public class FloatingFrame extends JFrame {
 
 		setLocation(location);
 
-		RootDockingPanel root = new RootDockingPanel();
+		RootDockingPanel root = new RootDockingPanel(this);
 		add(root, BorderLayout.CENTER);
 
 		Docking.registerDockingPanel(root, this);

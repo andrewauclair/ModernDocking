@@ -23,9 +23,12 @@ package docking;
 
 import floating.FloatListener;
 
+import javax.swing.*;
+
 // internal wrapper around the Dockable implemented by the application.
 // lets us provide access to the dockable and its parent in the hierarchy
 public class DockableWrapper {
+	private JFrame frame;
 	private DockingPanel parent = null;
 	private final Dockable dockable;
 
@@ -38,6 +41,13 @@ public class DockableWrapper {
 		floatListener = new FloatListener(this);
 	}
 
+	public JFrame getFrame() {
+		return frame;
+	}
+
+	public void setFrame(JFrame frame) {
+		this.frame = frame;
+	}
 	public void setParent(DockingPanel parent) {
 		this.parent = parent;
 	}

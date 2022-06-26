@@ -38,8 +38,10 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 
 	private final JSplitPane splitPane = new JSplitPane();
 	private DockingPanel parent;
+	private JFrame frame;
 
-	public DockedSplitPanel() {
+	public DockedSplitPanel(JFrame frame) {
+		this.frame = frame;
 		setLayout(new BorderLayout());
 
 		splitPane.setContinuousLayout(true);
@@ -191,7 +193,9 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 		// docking to the center of a split isn't something we allow
 		// wouldn't be difficult to support, but isn't a complication we want in this framework
 		if (region != DockingRegion.CENTER) {
-			DockedSplitPanel split = new DockedSplitPanel();
+			wrapper.setFrame(frame);
+
+			DockedSplitPanel split = new DockedSplitPanel(frame);
 			parent.replaceChild(this, split);
 
 			DockedSimplePanel newPanel = new DockedSimplePanel(wrapper);

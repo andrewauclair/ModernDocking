@@ -175,7 +175,7 @@ public class DockingHandles implements MouseMotionListener, MouseListener {
 		dockableEast.setVisible(targetDockable != null && isRegionAllowed(DockingRegion.EAST));
 		dockableSouth.setVisible(targetDockable != null && isRegionAllowed(DockingRegion.SOUTH));
 
-		if (targetDockable != null) {
+		if (targetDockable != null && ((Component) targetDockable).getParent() != null) {
 			Point location = ((Component) targetDockable).getLocation();
 			Dimension size = ((Component) targetDockable).getSize();
 			location.x += size.width / 2;

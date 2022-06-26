@@ -65,4 +65,9 @@ public class DockingListeners {
 	static void fireUndockedEvent(Dockable dockable) {
 		dockingListeners.forEach(listener -> listener.undocked(dockable.persistentID()));
 	}
+
+	// package private function to fire auto undocked event
+	static void fireAutoUndockedEvent(Dockable dockable) {
+		dockingListeners.forEach(listener -> listener.autoUndocked(dockable.persistentID()));
+	}
 }

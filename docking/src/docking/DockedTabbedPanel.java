@@ -80,12 +80,13 @@ public class DockedTabbedPanel extends DockingPanel implements MouseListener {
 	@Override
 	public void dock(Dockable dockable, DockingRegion region, double dividerProportion) {
 		DockableWrapper wrapper = Docking.getWrapper(dockable);
+		wrapper.setFrame(panels.get(0).getFrame());
 
 		if (region == DockingRegion.CENTER) {
 			addPanel(wrapper);
 		}
 		else {
-			DockedSplitPanel split = new DockedSplitPanel();
+			DockedSplitPanel split = new DockedSplitPanel(panels.get(0).getFrame());
 			parent.replaceChild(this, split);
 
 			DockedSimplePanel newPanel = new DockedSimplePanel(wrapper);

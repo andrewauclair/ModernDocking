@@ -26,6 +26,8 @@ import java.awt.*;
 
 // only class that should be used by clients
 public class RootDockingPanel extends DockingPanel {
+	private JFrame frame;
+
 	DockingPanel panel;
 
 	private JPanel emptyPanel = new JPanel();
@@ -33,12 +35,17 @@ public class RootDockingPanel extends DockingPanel {
 	private boolean pinningSupported = false;
 	private int pinningLayer = JLayeredPane.MODAL_LAYER;
 
-	public RootDockingPanel() {
+	public RootDockingPanel(JFrame frame) {
+		this.frame = frame;
 		setLayout(new BorderLayout());
 	}
 
 	public void setEmptyPanel(JPanel panel) {
 		this.emptyPanel = panel;
+	}
+
+	public boolean isPinningSupported() {
+		return pinningSupported;
 	}
 
 	public void setPinningSupported(boolean supported) {
@@ -103,6 +110,7 @@ public class RootDockingPanel extends DockingPanel {
 		}
 		else {
 			setPanel(new DockedSimplePanel(Docking.getWrapper(dockable)));
+			Docking.getWrapper(dockable).setFrame(frame);
 		}
 
 		revalidate();

@@ -25,6 +25,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import docking.Dockable;
 import docking.Docking;
 import docking.DockingListeners;
+import event.DockingListener;
 import event.MaximizeListener;
 import floating.DockingHandle;
 
@@ -34,9 +35,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 // TODO create a "model" of the header that this JPanel implements against. that way users can create their own and the logic that we want to happen is in the model
-public class FlatLafDragHeader extends JPanel implements MaximizeListener {
+public class FlatLafDragHeader extends JPanel implements MaximizeListener, DockingListener {
 	private final JPopupMenu settings = new JPopupMenu();
 	private final Dockable dockable;
+
+	private final JMenuItem pinned = new JMenuItem("Pinned");
+	private final JMenuItem unpinned = new JMenuItem("Unpinned");
+	private final JMenuItem undock = new JMenuItem("Undock");
+	private final JMenuItem window = new JMenuItem("Window");
 
 	private final JLabel maximizedIndicator = new JLabel("Maximized");
 	private final JCheckBoxMenuItem maximizeOption = new JCheckBoxMenuItem("Maximize");
@@ -46,6 +52,7 @@ public class FlatLafDragHeader extends JPanel implements MaximizeListener {
 		setOpaque(true);
 
 		DockingListeners.addMaximizeListener(this);
+		DockingListeners.addDockingListener(this);
 
 		FlatSVGIcon settings = new FlatSVGIcon("icons/settings.svg");
 
@@ -120,13 +127,6 @@ public class FlatLafDragHeader extends JPanel implements MaximizeListener {
 			settings.addSeparator();
 		}
 
-		JMenuItem pinned = new JMenuItem("Pinned");
-		JMenuItem unpinned = new JMenuItem("Unpinned");
-		JMenuItem undock = new JMenuItem("Undock");
-		JMenuItem window = new JMenuItem("Window");
-
-		pinned.setEnabled(dockable.allowPinning());
-		unpinned.setEnabled(dockable.allowPinning());
 		undock.setEnabled(dockable.allowClose());
 		window.setEnabled(dockable.floatingAllowed());
 
@@ -188,5 +188,18 @@ public class FlatLafDragHeader extends JPanel implements MaximizeListener {
 			maximizedIndicator.setVisible(maximized);
 			maximizeOption.setSelected(maximized);
 		}
+	}
+
+	@Override
+	public void docked(String persistentID) {
+		if (dockable.persistentID().equals(persistentID)) {
+			pinned.setEnabled(Docking.pinningAllowed(dockable));
+			unpinned.setEnabled(Docking.pinningAllowed(dockable));
+		}
+	}
+
+	@Override
+	public void undocked(String persistentID) {
+
 	}
 }

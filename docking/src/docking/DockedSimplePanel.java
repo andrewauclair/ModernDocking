@@ -60,6 +60,7 @@ public class DockedSimplePanel extends DockingPanel implements MouseListener {
 		// docking to CENTER: Simple -> Tabbed
 		// docking else where: Simple -> Split
 		DockableWrapper wrapper = Docking.getWrapper(dockable);
+		wrapper.setFrame(this.dockable.getFrame());
 
 		if (region == DockingRegion.CENTER) {
 			DockedTabbedPanel tabbedPanel = new DockedTabbedPanel();
@@ -70,7 +71,7 @@ public class DockedSimplePanel extends DockingPanel implements MouseListener {
 			parent.replaceChild(this, tabbedPanel);
 		}
 		else {
-			DockedSplitPanel split = new DockedSplitPanel();
+			DockedSplitPanel split = new DockedSplitPanel(this.dockable.getFrame());
 			parent.replaceChild(this, split);
 
 			DockedSimplePanel newPanel = new DockedSimplePanel(wrapper);
