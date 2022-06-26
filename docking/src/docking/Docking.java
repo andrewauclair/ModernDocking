@@ -31,9 +31,15 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
+// TODO persist maximize state for dockables
+
 // TODO add buttons for maximize/minimize, pin and close
 
 // TODO find a good solution for where to dock new dockables. For example, I might select a view menu item which docks a certain dockable, that dockable should go in a logical location which is entirely app dependent (might depend on what other dockables are docked)
+
+// TODO support panels that can't be dragged, this might require handling null drag handles
+
+// TODO support pinning dockables, this should also support icons so that text or an icon can be shown on the toolbar button
 
 // Main class for the docking framework
 // register and dock/undock dockables here
@@ -133,6 +139,15 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 		parent.addComponentListener(instance);
 		parent.addWindowStateListener(instance);
+	}
+
+	// allows the user to configure pinning per frame. by default pinning is only enabled on the frames the docking framework creates
+	public static void configurePinning(JFrame frame, int layer, boolean allow) {
+		if (!instance.rootPanels.containsKey(frame)) {
+			throw new DockableRegistrationFailureException("No root panel for frame has been registered.");
+		}
+
+
 	}
 
 	// TODO add a possible listener for this. I'd like a way to listen for panels being auto undocked and being able to redock them somewhere else depending on what they are
@@ -288,6 +303,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 		RootDockingPanel root = instance.rootPanels.get(frame);
 
 		if (root == null) {
+			// TODO restoring from a file and then maximizing one of the dockables in a floating frame throws this exception
 			throw new DockableRegistrationFailureException("Frame does not have a RootDockingPanel: " + frame);
 		}
 
@@ -324,11 +340,16 @@ public class Docking implements ComponentListener, WindowStateListener {
 	}
 
 	public static void undock(Dockable dockable) {
+		if (!isDocked(dockable)) {
+			return;
+		}
+
 		JFrame frame = findFrameForDockable(dockable);
 
 		RootDockingPanel root = rootForFrame(frame);
 
 		DockableWrapper wrapper = getWrapper(dockable);
+
 		wrapper.getParent().undock(dockable);
 
 		if (frame != null && root != null && canDisposeFrame(frame) && root.isEmpty()) {
@@ -370,7 +391,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 	}
 
 	public static boolean canDisposeFrame(JFrame frame) {
-		return frame != instance.mainFrame;
+		return frame != instance.mainFrame && !instance.maximizeRestoreState.containsKey(frame);
 	}
 
 	public static Dockable getDockable(String persistentID) {
@@ -440,7 +461,6 @@ public class Docking implements ComponentListener, WindowStateListener {
 		// setup rest of floating frames from layout
 		for (DockingLayout frameLayout : layout.getFloatingFrameLayouts()) {
 			FloatingFrame frame = new FloatingFrame(frameLayout.getLocation(), frameLayout.getSize(), frameLayout.getState());
-			frame.setVisible(true);
 
 			setLayout(frame, frameLayout);
 		}

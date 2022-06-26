@@ -40,6 +40,8 @@ public class FloatingFrame extends JFrame {
 		add(root, BorderLayout.CENTER);
 
 		Docking.registerDockingPanel(root, this);
+
+		setVisible(true);
 	}
 
 	public FloatingFrame(Dockable dockable, TempFloatingFrame floatingFrame) {

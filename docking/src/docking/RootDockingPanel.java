@@ -30,12 +30,23 @@ public class RootDockingPanel extends DockingPanel {
 
 	private JPanel emptyPanel = new JPanel();
 
+	private boolean pinningSupported = false;
+	private int pinningLayer = JLayeredPane.MODAL_LAYER;
+
 	public RootDockingPanel() {
 		setLayout(new BorderLayout());
 	}
 
 	public void setEmptyPanel(JPanel panel) {
 		this.emptyPanel = panel;
+	}
+
+	public void setPinningSupported(boolean supported) {
+		pinningSupported = supported;
+	}
+
+	public void setPinningLayer(int layer) {
+		pinningLayer = layer;
 	}
 
 	public DockingPanel getPanel() {

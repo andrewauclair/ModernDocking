@@ -22,7 +22,6 @@ SOFTWARE.
 package layouts;
 
 import javax.xml.stream.*;
-import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

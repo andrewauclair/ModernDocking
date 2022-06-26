@@ -107,6 +107,8 @@ public class DockedSimplePanel extends DockingPanel implements MouseListener {
 
 			parent.removeChild(this);
 
+			this.dockable.setParent(null);
+
 			revalidate();
 			repaint();
 		}

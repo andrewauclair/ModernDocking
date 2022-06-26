@@ -1,57 +1,66 @@
+/*
+Copyright (c) 2022 Andrew Auclair
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+ */
 package docking.ui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import docking.Dockable;
 import docking.Docking;
+import floating.DockingHandle;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+// TODO create a "model" of the header that this JPanel implements against. that way users can create their own and the logic that we want to happen is in the model
 public class FlatLafDragHeader extends JPanel {
+	private final JPopupMenu settings = new JPopupMenu();
+	private final Dockable dockable;
+
+	private final JLabel maximizedIndicator = new JLabel("Maximized");
+
 	public FlatLafDragHeader(Dockable dockable, String title) {
+		this.dockable = dockable;
 		setOpaque(true);
 
-		JButton more = new JButton(new FlatSVGIcon("icons/more-vertical.svg"));
+		FlatSVGIcon settings = new FlatSVGIcon("icons/settings.svg");
 
-		FlatSVGIcon max = new FlatSVGIcon("icons/fullscreen.svg");
-		FlatSVGIcon min = new FlatSVGIcon("icons/fullscreen-exit.svg");
-//		max.setColorFilter(FlatSVGIcon.ColorFilter.create);
-		JButton minMax = new JButton(max);
-		minMax.addActionListener(e -> {
-			if (Docking.isMaximized(dockable)) {
-				Docking.minimize(dockable);
-				minMax.setIcon(max);
-			}
-			else {
-				Docking.maximize(dockable);
-				minMax.setIcon(min);
-			}
-		});
-//		minMax.setForeground(Color.white);
+		JButton more = new JButton(settings);
+		more.addActionListener(e -> this.settings.show(more, more.getWidth(), more.getHeight()));
 
-		//		closeIcon.setColorFilter(FlatSVGIcon.ColorFilter.getInstance());
 		FlatSVGIcon closeIcon = new FlatSVGIcon("icons/x.svg");
 		JButton close = new JButton(closeIcon);
 
+		close.addActionListener(e -> Docking.undock(dockable));
+
 		setupButton(more);
-		setupButton(minMax);
-//		setupButton(pin);
 		setupButton(close);
 
-//		setBackground(new Color(200, 238, 255));
-		Color background = new Color(0, 78, 113);
-//		setBackground(background);
 		Color color = UIManager.getColor("Docking.titlebar.default");
 		setBackground(color);
 		close.setBackground(color);
 
-//		setBackground(FlatSVGIcon.ColorFilter.getInstance().getMapper().apply(background));
 		UIManager.addPropertyChangeListener( e -> {
-			if ("lookAndFeel".equals(e.getPropertyName()))
-//				state.put( KEY_LAF, UIManager.getLookAndFeel().getClass().getName() );
-			{
+			if ("lookAndFeel".equals(e.getPropertyName())) {
 				Color bg = UIManager.getColor("Docking.titlebar.default");
 				SwingUtilities.invokeLater(() -> {
 					setBackground(bg);
@@ -72,34 +81,81 @@ public class FlatLafDragHeader extends JPanel {
 
 		JLabel label = new JLabel(title);
 		label.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 0));
+		label.setFont(label.getFont().deriveFont(Font.BOLD));
 
 		add(label, gbc);
 
 		gbc.gridx++;
+		gbc.weightx = 0.2;
+
+		maximizedIndicator.setVisible(false);
+		maximizedIndicator.setFont(maximizedIndicator.getFont().deriveFont(Font.BOLD));
+
+		add(maximizedIndicator, gbc);
+		gbc.gridx++;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.weightx = 0;
 
-		if (dockable.hasMoreOptions()) {
+		if (dockable.hasMoreOptions() || dockable.allowMinMax() || dockable.allowPinning()) {
+			addOptions();
+
 			add(more, gbc);
 			gbc.gridx++;
 		}
-
-		if (dockable.allowMinMax()) {
-			add(minMax, gbc);
-			gbc.gridx++;
-		}
-//		add(pin, gbc);
-//		gbc.gridx++;
 		if (dockable.allowClose()) {
 			add(close, gbc);
 			gbc.gridx++;
 		}
 	}
 
+	private void addOptions() {
+		dockable.addMoreOptions(settings);
+
+		if (settings.getComponentCount() > 0) {
+			settings.addSeparator();
+		}
+
+		JMenuItem pinned = new JMenuItem("Pinned");
+		JMenuItem unpinned = new JMenuItem("Unpinned");
+		JMenuItem undock = new JMenuItem("Undock");
+		JMenuItem window = new JMenuItem("Window");
+
+		pinned.setEnabled(dockable.allowPinning());
+		unpinned.setEnabled(dockable.allowPinning());
+		undock.setEnabled(dockable.allowClose());
+		window.setEnabled(dockable.floatingAllowed());
+
+		JMenu viewMode = new JMenu("View Mode");
+		viewMode.add(pinned);
+		viewMode.add(unpinned);
+		viewMode.add(undock);
+		viewMode.add(window);
+
+		settings.add(viewMode);
+		settings.addSeparator();
+
+		JCheckBoxMenuItem maximize = new JCheckBoxMenuItem("Maximize");
+		settings.add(maximize);
+
+		// TODO add some indication that we're maximized to the UI, done, but is text the nicest I can come up with?
+		maximize.addActionListener(e -> {
+			boolean maxed = Docking.isMaximized(dockable);
+
+			maximize.setSelected(!maxed);
+			maximizedIndicator.setVisible(!maxed);
+
+			if (maxed) {
+				Docking.minimize(dockable);
+			}
+			else {
+				Docking.maximize(dockable);
+			}
+		});
+	}
+
 	private void setupButton(JButton button) {
-//		button.setBackground(new Color(200, 238, 255));
-//		button.setBackground(new Color(0, 78, 113));
-//		button.setForeground(Color.white);
+		Color color = UIManager.getColor("Docking.titlebar.default");
+		button.setBackground(color);
 		button.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		button.setFocusable(false);
 		button.setOpaque(false);

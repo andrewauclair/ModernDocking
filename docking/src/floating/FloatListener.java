@@ -230,6 +230,7 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 			floatingFrame.addWindowListener(this);
 
 			floating = true;
+			AppState.setPaused(true);
 
 			createTimer();
 		}
@@ -249,6 +250,8 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 		}
 
 		if (floating) {
+			AppState.setPaused(false);
+
 			floating = false;
 			mouseDragging = false;
 
@@ -328,7 +331,6 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 
 	@Override
 	public void windowDeactivated(WindowEvent e) {
-		System.out.println("windowDeactivated: " + e.getOppositeWindow());
 		// window was deactivated and another app has taken focus, stop floating the panel, drop it where it is
 		if (e.getOppositeWindow() == null) {
 			dropFloatingPanel();

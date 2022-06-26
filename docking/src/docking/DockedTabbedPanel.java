@@ -61,6 +61,8 @@ public class DockedTabbedPanel extends DockingPanel implements MouseListener {
 	public void removePanel(DockableWrapper dockable) {
 		panels.remove(dockable);
 		tabs.remove((JComponent) dockable.getDockable());
+
+		dockable.setParent(null);
 	}
 
 	public List<String> persistentIDs() {

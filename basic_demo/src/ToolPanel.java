@@ -21,6 +21,7 @@ SOFTWARE.
  */
 import docking.DockingRegion;
 
+import javax.swing.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,7 +50,12 @@ public class ToolPanel extends BasePanel {
 
 	@Override
 	public boolean allowClose() {
-		return false;
+		return true;
+	}
+
+	@Override
+	public boolean allowPinning() {
+		return true;
 	}
 
 	@Override
@@ -59,6 +65,12 @@ public class ToolPanel extends BasePanel {
 
 	@Override
 	public boolean hasMoreOptions() {
-		return false;
+		return true;
+	}
+
+	@Override
+	public void addMoreOptions(JPopupMenu menu) {
+		menu.add(new JMenuItem("Something"));
+		menu.add(new JMenuItem("Else"));
 	}
 }

@@ -55,9 +55,18 @@ public interface Dockable {
 	// helper function to determine if the header close button should be displayed
 	boolean allowClose();
 
+	// helper function to determine if the header pin button should be displayed
+	// NOTE: this is a suggestion. If the parent frame of the dockable does not support pinning then the button will be hidden regardless
+	boolean allowPinning();
+
 	// helper function to determine if the header min/max button should be displayed
 	boolean allowMinMax();
 
 	// helper function to determine if the header 'more' button should be displayed
+	// NOTE: allowPinning() = true results in more options regardless of this return value
 	boolean hasMoreOptions();
+
+	// add the more options to the popup menu. defaults to an empty block to handle the case of hasMoreOptions() = false
+	default void addMoreOptions(JPopupMenu menu) {
+	}
 }

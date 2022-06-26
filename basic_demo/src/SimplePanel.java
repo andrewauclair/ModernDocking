@@ -46,12 +46,17 @@ public class SimplePanel extends BasePanel {
 
 	@Override
 	public boolean allowClose() {
+		return true;
+	}
+
+	@Override
+	public boolean allowPinning() {
 		return false;
 	}
 
 	@Override
 	public boolean allowMinMax() {
-		return false;
+		return true;
 	}
 
 	@Override
