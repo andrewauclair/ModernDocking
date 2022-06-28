@@ -35,6 +35,7 @@ public class DockableWrapper {
 	private FloatListener floatListener;
 
 	private boolean maximized = false;
+	private boolean unpinned = false;
 
 	public DockableWrapper(Dockable dockable) {
 		this.dockable = dockable;
@@ -73,5 +74,13 @@ public class DockableWrapper {
 
 	public void setMaximized(boolean maximized) {
 		this.maximized = maximized;
+	}
+
+	public boolean isUnpinned() {
+		return unpinned;
+	}
+
+	public void setUnpinned(boolean unpinned) {
+		this.unpinned = unpinned;
 	}
 }

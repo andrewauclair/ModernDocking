@@ -41,7 +41,6 @@ public class FlatLafDragHeader extends JPanel implements MaximizeListener, Docki
 
 	private final JMenuItem pinned = new JMenuItem("Pinned");
 	private final JMenuItem unpinned = new JMenuItem("Unpinned");
-	private final JMenuItem undock = new JMenuItem("Undock");
 	private final JMenuItem window = new JMenuItem("Window");
 
 	private final JLabel maximizedIndicator = new JLabel("Maximized");
@@ -127,18 +126,15 @@ public class FlatLafDragHeader extends JPanel implements MaximizeListener, Docki
 			settings.addSeparator();
 		}
 
-		undock.setEnabled(dockable.allowClose());
 		window.setEnabled(dockable.floatingAllowed());
 
 		pinned.addActionListener(e -> Docking.pinDockable(dockable));
 		unpinned.addActionListener(e -> Docking.unpinDockable(dockable));
-		undock.addActionListener(e -> Docking.undock(dockable));
 		window.addActionListener(e -> Docking.newWindow(dockable));
 
 		JMenu viewMode = new JMenu("View Mode");
 		viewMode.add(pinned);
 		viewMode.add(unpinned);
-		viewMode.add(undock);
 		viewMode.add(window);
 
 		settings.add(viewMode);
@@ -195,13 +191,20 @@ public class FlatLafDragHeader extends JPanel implements MaximizeListener, Docki
 	@Override
 	public void docked(String persistentID) {
 		if (dockable.persistentID().equals(persistentID)) {
-			pinned.setEnabled(Docking.pinningAllowed(dockable));
-			unpinned.setEnabled(Docking.pinningAllowed(dockable));
+			pinned.setEnabled(Docking.pinningAllowed(dockable) && Docking.isUnpinned(dockable));
+			unpinned.setEnabled(Docking.pinningAllowed(dockable) && !Docking.isUnpinned(dockable));
 		}
 	}
 
 	@Override
 	public void undocked(String persistentID) {
+	}
 
+	@Override
+	public void unpinned(String persistentID) {
+		if (dockable.persistentID().equals(persistentID)) {
+			pinned.setEnabled(Docking.pinningAllowed(dockable) && Docking.isUnpinned(dockable));
+			unpinned.setEnabled(Docking.pinningAllowed(dockable) && !Docking.isUnpinned(dockable));
+		}
 	}
 }

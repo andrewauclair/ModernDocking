@@ -38,13 +38,17 @@ public class RootDockingPanel extends DockingPanel {
 	private int pinningLayer = JLayeredPane.MODAL_LAYER;
 
 	// "toolbar" panels for unpinned dockables
-	private final DockableToolbar southToolbar = new DockableToolbar(this, false);
-	private final DockableToolbar westToolbar = new DockableToolbar(this, true);
-	private final DockableToolbar eastToolbar = new DockableToolbar(this, true);
+	private final DockableToolbar southToolbar;
+	private final DockableToolbar westToolbar;
+	private final DockableToolbar eastToolbar;
 
 	public RootDockingPanel(JFrame frame) {
-		this.frame = frame;
 		setLayout(new GridBagLayout());
+		this.frame = frame;
+
+		southToolbar = new DockableToolbar(frame, this, false);
+		westToolbar = new DockableToolbar(frame, this, true);
+		eastToolbar = new DockableToolbar(frame, this, true);
 	}
 
 	public JFrame getFrame() {
@@ -124,6 +128,17 @@ public class RootDockingPanel extends DockingPanel {
 
 	@Override
 	public void undock(Dockable dockable) {
+		if (westToolbar.hasDockable(dockable)) {
+			westToolbar.removeDockable(dockable);
+		}
+		else if (eastToolbar.hasDockable(dockable)) {
+			eastToolbar.removeDockable(dockable);
+		}
+		else if (southToolbar.hasDockable(dockable)) {
+			southToolbar.removeDockable(dockable);
+		}
+
+		createContents();
 	}
 
 	@Override
@@ -144,13 +159,13 @@ public class RootDockingPanel extends DockingPanel {
 
 	public void setDockablePinned(Dockable dockable) {
 		// if the dockable is currently unpinned, remove it from the toolbar, then adjust the toolbars
-		if (westToolbar != null && westToolbar.hasDockable(dockable)) {
+		if (westToolbar.hasDockable(dockable)) {
 			westToolbar.removeDockable(dockable);
 		}
-		else if (eastToolbar != null && eastToolbar.hasDockable(dockable)) {
+		else if (eastToolbar.hasDockable(dockable)) {
 			eastToolbar.removeDockable(dockable);
 		}
-		else if (southToolbar != null && southToolbar.hasDockable(dockable)) {
+		else if (southToolbar.hasDockable(dockable)) {
 			southToolbar.removeDockable(dockable);
 		}
 
@@ -216,5 +231,11 @@ public class RootDockingPanel extends DockingPanel {
 
 		revalidate();
 		repaint();
+	}
+
+	public void hideUnpinnedPanels() {
+		westToolbar.hideAll();
+		southToolbar.hideAll();
+		eastToolbar.hideAll();
 	}
 }

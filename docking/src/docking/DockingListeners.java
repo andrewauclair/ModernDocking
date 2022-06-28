@@ -70,4 +70,8 @@ public class DockingListeners {
 	static void fireAutoUndockedEvent(Dockable dockable) {
 		dockingListeners.forEach(listener -> listener.autoUndocked(dockable.persistentID()));
 	}
+
+	static void fireUnpinnedEvent(Dockable dockable) {
+		dockingListeners.forEach(listener -> listener.unpinned(dockable.persistentID()));
+	}
 }

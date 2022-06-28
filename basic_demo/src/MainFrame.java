@@ -245,6 +245,10 @@ public class MainFrame extends JFrame {
 					item.setSelected(false);
 				}
 			}
+
+			@Override
+			public void unpinned(String persistentID) {
+			}
 		});
 		return item;
 	}

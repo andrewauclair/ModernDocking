@@ -21,6 +21,8 @@ SOFTWARE.
  */
 package docking;
 
+import util.UnselectableButtonGroup;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -34,15 +36,16 @@ public class DockableToolbar extends JPanel {
 		EAST
 	}
 
+	private final JFrame frame;
 	private final RootDockingPanel root;
 	private final boolean vertical;
 
 	private static class Entry {
 		private final Dockable dockable;
-		private final JButton button;
+		private final JToggleButton button;
 		private final DockedUnpinnedPanel panel;
 
-		public Entry(Dockable dockable, JButton button, DockedUnpinnedPanel panel) {
+		public Entry(Dockable dockable, JToggleButton button, DockedUnpinnedPanel panel) {
 			this.dockable = dockable;
 			this.button = button;
 			this.panel = panel;
@@ -67,10 +70,11 @@ public class DockableToolbar extends JPanel {
 	}
 
 	private final List<Entry> dockables = new ArrayList<>();
-	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private final UnselectableButtonGroup buttonGroup = new UnselectableButtonGroup();
 
-	public DockableToolbar(RootDockingPanel root, boolean vertical) {
+	public DockableToolbar(JFrame frame, RootDockingPanel root, boolean vertical) {
 		super(new GridBagLayout());
+		this.frame = frame;
 		this.root = root;
 		this.vertical = vertical;
 	}
@@ -106,26 +110,30 @@ public class DockableToolbar extends JPanel {
 		add(new JLabel(""), gbc);
 	}
 
+	private void updateButtons() {
+		for (Entry entry : dockables) {
+			// set only a single panel visible
+			entry.panel.setVisible(buttonGroup.getSelection() == entry.button.getModel());
+		}
+	}
+
 	public void addDockable(Dockable dockable) {
 		if (!hasDockable(dockable)) {
-			JButton button = new JButton(dockable.tabText());
+			DockableWrapper wrapper = Docking.getWrapper(dockable);
+
+			JToggleButton button = new JToggleButton(dockable.tabText());
 			DockedUnpinnedPanel panel = new DockedUnpinnedPanel(dockable, root, this);
 
-			button.addActionListener(e -> {
-				boolean isSelected = button.isSelected();
+			wrapper.setFrame(frame);
 
-				if (isSelected && buttonGroup.getSelection() == button.getModel()) {
-					buttonGroup.clearSelection();
-				}
-				button.setSelected(!isSelected);
-				panel.setVisible(!isSelected);
-			});
+			// update all of the buttons and panels
+			button.addActionListener(e -> updateButtons());
 
 			buttonGroup.add(button);
 
 			dockables.add(new Entry(dockable, button, panel));
 
-			JLayeredPane layeredPane = root.getFrame().getLayeredPane();
+			JLayeredPane layeredPane = frame.getLayeredPane();
 
 			layeredPane.add(panel, root.getPinningLayer());
 
@@ -134,7 +142,17 @@ public class DockableToolbar extends JPanel {
 	}
 
 	public void removeDockable(Dockable dockable) {
-		dockables.removeIf(panel -> panel.dockable.equals(dockable));
+		for (Entry entry : dockables) {
+			if (entry.dockable == dockable) {
+				JLayeredPane layeredPane = frame.getLayeredPane();
+
+				layeredPane.remove(entry.panel);
+				break;
+			}
+		}
+		if (dockables.removeIf(panel -> panel.dockable.equals(dockable))) {
+			createContents();
+		}
 	}
 
 	public boolean hasDockable(Dockable dockable) {
@@ -144,5 +162,9 @@ public class DockableToolbar extends JPanel {
 
 	public boolean shouldDisplay() {
 		return dockables.size() > 0;
+	}
+
+	public void hideAll() {
+		buttonGroup.setSelected(buttonGroup.getSelection(), false);
 	}
 }

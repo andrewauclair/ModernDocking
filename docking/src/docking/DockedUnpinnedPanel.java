@@ -42,10 +42,8 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener {
 		addComponentListener(this);
 
 		setLayout(new BorderLayout());
-		add(((Component) dockable), BorderLayout.CENTER);
 
-		setBackground(Color.GREEN);
-		setBorder(BorderFactory.createLineBorder(Color.MAGENTA));
+		add(new DockedSimplePanel(Docking.getWrapper(dockable)), BorderLayout.CENTER);
 	}
 
 	@Override
@@ -94,7 +92,6 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener {
 		if (e.getComponent() == root) {
 			Point toolbarLocation = toolbar.getLocation();
 			SwingUtilities.convertPointToScreen(toolbarLocation, toolbar.getParent());
-			System.out.println("toolbar on screen pos: " + toolbarLocation);
 
 			Dimension toolbarSize = toolbar.getSize();
 
@@ -108,7 +105,6 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener {
 				Point location = new Point(toolbarLocation.x, toolbarLocation.y - getHeight());
 
 				SwingUtilities.convertPointFromScreen(location, getParent());
-				System.out.println("y: " + toolbarLocation.y + ", height: " + getHeight() + ", new location: " + location);
 
 				setLocation(location);
 				setSize(toolbar.getWidth(), getHeight());

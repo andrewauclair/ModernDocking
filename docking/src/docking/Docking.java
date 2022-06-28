@@ -81,6 +81,17 @@ public class Docking implements ComponentListener, WindowStateListener {
 				}
 
 			}
+			else if (e.getID() == MouseEvent.MOUSE_PRESSED) {
+				Dockable dockable = findDockableAtScreenPos(((MouseEvent) e).getLocationOnScreen());
+
+				if (dockable != null) {
+					JFrame frame = findFrameForDockable(dockable);
+
+					if (getWrapper(dockable).isUnpinned()) {
+						rootForFrame(frame).hideUnpinnedPanels();
+					}
+				}
+			}
 		}, AWTEvent.MOUSE_EVENT_MASK);
 	}
 
@@ -115,21 +126,30 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 	// registration function for DockingPanel
 	public static void registerDockingPanel(RootDockingPanel panel, JFrame parent) {
+		// calculate the frame border size, used when dropping a dockable and changing from an undecorated frame (TempFloatingFrame) to a FloatingFrame
 		if (frameBorderSize.height == 0) {
-			SwingUtilities.invokeLater(() -> {
-				Dimension size = parent.getSize();
-				Dimension contentsSize = parent.getContentPane().getSize();
-				Insets insets = parent.getContentPane().getInsets();
+			parent.addComponentListener(new ComponentAdapter() {
+				@Override
+				public void componentShown(ComponentEvent e) {
+					Point location = parent.getLocation();
+					Point contentsLocation = parent.getContentPane().getLocation();
 
-				frameBorderSize = new Dimension(size.width - contentsSize.width - insets.left, size.height - contentsSize.height - insets.top);
+					// convert content point to screen, location is already in screen coordinates because it's the location of a frame
+					SwingUtilities.convertPointToScreen(contentsLocation, parent.getContentPane().getParent());
 
-				System.out.println("size: " + size + "\ncontents size: " + contentsSize + "\ninsets: " + insets + "\nframe border size: " + frameBorderSize);
+					// frame border size is the difference between the contents location on screen and the frame location
+					frameBorderSize = new Dimension(contentsLocation.x - location.x, contentsLocation.y - location.y);
+
+					// finally, remove this listener now that we've calculated the size
+					parent.removeComponentListener(this);
+				}
 			});
 		}
 
 		if (instance.rootPanels.containsKey(parent)) {
 			throw new DockableRegistrationFailureException("RootDockingPanel already registered for frame: " + parent);
 		}
+
 		instance.rootPanels.put(parent, panel);
 		FloatListener.registerDockingFrame(parent, panel);
 
@@ -377,7 +397,14 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 		DockableWrapper wrapper = getWrapper(dockable);
 
-		wrapper.getParent().undock(dockable);
+		if (isUnpinned(dockable)) {
+			root.undock(dockable);
+			wrapper.setParent(null);
+			wrapper.setUnpinned(false);
+		}
+		else {
+			wrapper.getParent().undock(dockable);
+		}
 		wrapper.setFrame(null);
 
 		DockingListeners.fireUndockedEvent(dockable);
@@ -396,6 +423,14 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 	public static boolean isDocked(Dockable dockable) {
 		return getWrapper(dockable).getParent() != null;
+	}
+
+	public static boolean isUnpinned(String persistentID) {
+		return isUnpinned(getDockable(persistentID));
+	}
+
+	public static boolean isUnpinned(Dockable dockable) {
+		return getWrapper(dockable).isUnpinned();
 	}
 
 	public static boolean canDisposeFrame(JFrame frame) {
@@ -787,12 +822,19 @@ public class Docking implements ComponentListener, WindowStateListener {
 	}
 
 	public static void unpinDockable(Dockable dockable) {
-		RootDockingPanel root = rootForFrame(findFrameForDockable(dockable));
+		JFrame frame = findFrameForDockable(dockable);
+		RootDockingPanel root = rootForFrame(frame);
 
 		// TODO we need to figure out how we determine which location this unpins to
 		undock(dockable);
 
+		// reset the frame, undocking the dockable sets it to null
+		getWrapper(dockable).setFrame(frame);
+		getWrapper(dockable).setUnpinned(true);
+
 		root.setDockableUnpinned(dockable, DockableToolbar.Location.SOUTH);
+
+		DockingListeners.fireUnpinnedEvent(dockable);
 	}
 
 	@Override

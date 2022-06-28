@@ -31,4 +31,6 @@ public interface DockingListener {
 	// TODO maybe make this part of the docking strategy instead of a listener
 	default void autoUndocked(String persistentID) {
 	}
+
+	void unpinned(String persistentID);
 }
