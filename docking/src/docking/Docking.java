@@ -87,7 +87,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 				if (dockable != null) {
 					JFrame frame = findFrameForDockable(dockable);
 
-					if (getWrapper(dockable).isUnpinned()) {
+					if (!getWrapper(dockable).isUnpinned()) {
 						rootForFrame(frame).hideUnpinnedPanels();
 					}
 				}

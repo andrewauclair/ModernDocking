@@ -166,5 +166,7 @@ public class DockableToolbar extends JPanel {
 
 	public void hideAll() {
 		buttonGroup.setSelected(buttonGroup.getSelection(), false);
+
+		updateButtons();
 	}
 }
