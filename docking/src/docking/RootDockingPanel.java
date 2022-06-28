@@ -161,12 +161,18 @@ public class RootDockingPanel extends DockingPanel {
 		// if the dockable is currently unpinned, remove it from the toolbar, then adjust the toolbars
 		if (westToolbar.hasDockable(dockable)) {
 			westToolbar.removeDockable(dockable);
+
+			dock(dockable, DockingRegion.WEST, 0.25f);
 		}
 		else if (eastToolbar.hasDockable(dockable)) {
 			eastToolbar.removeDockable(dockable);
+
+			dock(dockable, DockingRegion.EAST, 0.25f);
 		}
 		else if (southToolbar.hasDockable(dockable)) {
 			southToolbar.removeDockable(dockable);
+
+			dock(dockable, DockingRegion.SOUTH, 0.25f);
 		}
 
 		createContents();

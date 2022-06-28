@@ -819,6 +819,15 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 	public static void pinDockable(Dockable dockable) {
 		// TODO get the location that this is unpinned and dock it to the root in that location
+		JFrame frame = findFrameForDockable(dockable);
+		RootDockingPanel root = rootForFrame(frame);
+
+		if (getWrapper(dockable).isUnpinned()) {
+			root.setDockablePinned(dockable);
+
+			getWrapper(dockable).setUnpinned(false);
+			DockingListeners.fireDockedEvent(dockable);
+		}
 	}
 
 	public static void unpinDockable(Dockable dockable) {

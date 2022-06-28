@@ -191,7 +191,7 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		if (!mouseDragging) {
+		if (!mouseDragging && !Docking.isUnpinned(floatingDockable.getDockable())) {
 			dragOffset = e.getPoint();
 
 			originalFrame = Docking.findFrameForDockable(floatingDockable.getDockable());
@@ -234,9 +234,9 @@ public class FloatListener extends MouseAdapter implements WindowListener {
 			AppState.setPaused(true);
 
 			createTimer();
-		}
 
-		mouseDragging = true;
+			mouseDragging = true;
+		}
 	}
 
 	@Override
