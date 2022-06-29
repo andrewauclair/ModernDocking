@@ -46,9 +46,9 @@ public class RootDockingPanel extends DockingPanel {
 		setLayout(new GridBagLayout());
 		this.frame = frame;
 
-		southToolbar = new DockableToolbar(frame, this, false);
-		westToolbar = new DockableToolbar(frame, this, true);
-		eastToolbar = new DockableToolbar(frame, this, true);
+		southToolbar = new DockableToolbar(frame, this, Location.SOUTH);
+		westToolbar = new DockableToolbar(frame, this, Location.WEST);
+		eastToolbar = new DockableToolbar(frame, this, Location.EAST);
 	}
 
 	public JFrame getFrame() {

@@ -21,8 +21,11 @@ SOFTWARE.
  */
 package docking;
 
+import util.RotatedIcon;
+import util.TextIcon;
 import util.UnselectableButtonGroup;
 
+import javax.security.auth.callback.TextInputCallback;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -38,7 +41,7 @@ public class DockableToolbar extends JPanel {
 
 	private final JFrame frame;
 	private final RootDockingPanel root;
-	private final boolean vertical;
+	private final Location location;
 
 	private static class Entry {
 		private final Dockable dockable;
@@ -72,15 +75,19 @@ public class DockableToolbar extends JPanel {
 	private final List<Entry> dockables = new ArrayList<>();
 	private final UnselectableButtonGroup buttonGroup = new UnselectableButtonGroup();
 
-	public DockableToolbar(JFrame frame, RootDockingPanel root, boolean vertical) {
+	public DockableToolbar(JFrame frame, RootDockingPanel root, Location location) {
 		super(new GridBagLayout());
 		this.frame = frame;
 		this.root = root;
-		this.vertical = vertical;
+		this.location = location;
+	}
+
+	public Location getDockedLocation() {
+		return location;
 	}
 
 	public boolean isVertical() {
-		return vertical;
+		return location == Location.EAST || location == Location.WEST;
 	}
 
 	private void createContents() {
@@ -93,7 +100,7 @@ public class DockableToolbar extends JPanel {
 		for (Entry dockable : dockables) {
 			add(dockable.button, gbc);
 
-			if (vertical) {
+			if (isVertical()) {
 				gbc.gridy++;
 			}
 			else {
@@ -101,7 +108,7 @@ public class DockableToolbar extends JPanel {
 			}
 		}
 
-		if (vertical) {
+		if (isVertical()) {
 			gbc.weighty = 1.0;
 		}
 		else {
@@ -121,7 +128,21 @@ public class DockableToolbar extends JPanel {
 		if (!hasDockable(dockable)) {
 			DockableWrapper wrapper = Docking.getWrapper(dockable);
 
-			JToggleButton button = new JToggleButton(dockable.tabText());
+			JToggleButton button = new JToggleButton();
+
+			if (isVertical()) {
+				TextIcon textIcon = new TextIcon(button, dockable.tabText(), TextIcon.Layout.HORIZONTAL);
+				RotatedIcon rotatedIcon = new RotatedIcon(textIcon, location == Location.WEST ? RotatedIcon.Rotate.UP : RotatedIcon.Rotate.DOWN);
+				button.setIcon(rotatedIcon);
+
+				Insets insets = UIManager.getInsets("Button.margin");
+				Insets margin = new Insets(insets.left, insets.top, insets.left, insets.top);
+				button.setMargin(margin);
+			}
+			else {
+				button.setText(dockable.tabText());
+			}
+
 			DockedUnpinnedPanel panel = new DockedUnpinnedPanel(dockable, root, this);
 
 			wrapper.setFrame(frame);

@@ -67,6 +67,12 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener {
 				Point location = new Point(toolbarLocation.x + toolbarSize.width, toolbarLocation.y);
 				Dimension size = new Dimension(width, height);
 
+				if (toolbar.getDockedLocation() == DockableToolbar.Location.EAST) {
+					location.x = toolbarLocation.x - width;
+				}
+
+				SwingUtilities.convertPointFromScreen(location, getParent());
+
 				setLocation(location);
 				setSize(size);
 			}
@@ -78,6 +84,7 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener {
 				Dimension size = new Dimension(width, height);
 
 				SwingUtilities.convertPointFromScreen(location, getParent());
+
 				setLocation(location);
 				setSize(size);
 			}
@@ -97,6 +104,11 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener {
 
 			if (toolbar.isVertical()) {
 				Point location = new Point(toolbarLocation.x + toolbarSize.width, toolbarLocation.y);
+
+				if (toolbar.getDockedLocation() == DockableToolbar.Location.EAST) {
+					location.x = toolbarLocation.x - getWidth();
+				}
+				SwingUtilities.convertPointFromScreen(location, getParent());
 
 				setLocation(location);
 				setSize(getWidth(), toolbar.getHeight());

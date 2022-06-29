@@ -818,7 +818,6 @@ public class Docking implements ComponentListener, WindowStateListener {
 	}
 
 	public static void pinDockable(Dockable dockable) {
-		// TODO get the location that this is unpinned and dock it to the root in that location
 		JFrame frame = findFrameForDockable(dockable);
 		RootDockingPanel root = rootForFrame(frame);
 
@@ -834,15 +833,39 @@ public class Docking implements ComponentListener, WindowStateListener {
 		JFrame frame = findFrameForDockable(dockable);
 		RootDockingPanel root = rootForFrame(frame);
 
-		// TODO we need to figure out how we determine which location this unpins to
+		Component component = (Component) dockable;
+
+		Point posInFrame = component.getLocation();
+		SwingUtilities.convertPointToScreen(posInFrame, component.getParent());
+		SwingUtilities.convertPointFromScreen(posInFrame, root);
+
+		posInFrame.x += component.getWidth() / 2;
+		posInFrame.y += component.getHeight() / 2;
+
 		undock(dockable);
 
 		// reset the frame, undocking the dockable sets it to null
 		getWrapper(dockable).setFrame(frame);
 		getWrapper(dockable).setUnpinned(true);
 
-		root.setDockableUnpinned(dockable, DockableToolbar.Location.SOUTH);
+		boolean allowedSouth = !dockable.disallowedRegions().contains(DockingRegion.SOUTH);
 
+		int westDist = posInFrame.x;
+		int eastDist = frame.getWidth() - posInFrame.x;
+		int southDist = frame.getHeight() - posInFrame.y;
+
+		boolean east = eastDist <= westDist;
+		boolean south = southDist < westDist && southDist < eastDist;
+
+		if (south && allowedSouth) {
+			root.setDockableUnpinned(dockable, DockableToolbar.Location.SOUTH);
+		}
+		else if (east) {
+			root.setDockableUnpinned(dockable, DockableToolbar.Location.EAST);
+		}
+		else {
+			root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
+		}
 		DockingListeners.fireUnpinnedEvent(dockable);
 	}
 
