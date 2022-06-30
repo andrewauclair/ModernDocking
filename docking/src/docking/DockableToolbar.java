@@ -28,11 +28,13 @@ import util.UnselectableButtonGroup;
 import javax.security.auth.callback.TextInputCallback;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class DockableToolbar extends JPanel {
+public class DockableToolbar extends JPanel implements ComponentListener {
 	public enum Location {
 		WEST,
 		SOUTH,
@@ -80,6 +82,8 @@ public class DockableToolbar extends JPanel {
 		this.frame = frame;
 		this.root = root;
 		this.location = location;
+
+		addComponentListener(this);
 	}
 
 	public Location getDockedLocation() {
@@ -189,5 +193,22 @@ public class DockableToolbar extends JPanel {
 		buttonGroup.setSelected(buttonGroup.getSelection(), false);
 
 		updateButtons();
+	}
+
+	@Override
+	public void componentResized(ComponentEvent e) {
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent e) {
+	}
+
+	@Override
+	public void componentShown(ComponentEvent e) {
+		dockables.forEach(dockable -> dockable.panel.componentResized(e));
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent e) {
 	}
 }

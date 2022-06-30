@@ -21,109 +21,137 @@ SOFTWARE.
  */
 package docking;
 
+import util.SlideBorder;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
-public class DockedUnpinnedPanel extends JPanel implements ComponentListener {
-	private final Dockable dockable;
+public class DockedUnpinnedPanel extends JPanel implements ComponentListener, MouseMotionListener {
 	private final RootDockingPanel root;
 	private final DockableToolbar toolbar;
 
 	private boolean configured = false;
 
 	public DockedUnpinnedPanel(Dockable dockable, RootDockingPanel root, DockableToolbar toolbar) {
-		this.dockable = dockable;
 		this.root = root;
 		this.toolbar = toolbar;
 
 		root.addComponentListener(this);
 		addComponentListener(this);
 
-		setLayout(new BorderLayout());
+		setLayout(new GridBagLayout());
 
-		add(new DockedSimplePanel(Docking.getWrapper(dockable)), BorderLayout.CENTER);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+
+
+		DockedSimplePanel panel = new DockedSimplePanel(Docking.getWrapper(dockable));
+		SlideBorder slideBorder = new SlideBorder(toolbar.getDockedLocation());
+
+		if (toolbar.getDockedLocation() == DockableToolbar.Location.SOUTH) {
+			gbc.weightx = 1.0;
+			gbc.fill = GridBagConstraints.HORIZONTAL;
+			add(slideBorder, gbc);
+			gbc.weightx = 1.0;
+			gbc.weighty = 1.0;
+			gbc.fill = GridBagConstraints.BOTH;
+			gbc.gridy++;
+			add(panel, gbc);
+		}
+		else if (toolbar.getDockedLocation() == DockableToolbar.Location.EAST) {
+			gbc.weighty = 1.0;
+			gbc.fill = GridBagConstraints.VERTICAL;
+			add(slideBorder, gbc);
+			gbc.weightx = 1.0;
+			gbc.weighty = 1.0;
+			gbc.fill = GridBagConstraints.BOTH;
+			gbc.gridx++;
+			add(panel, gbc);
+		}
+		else {
+			gbc.weightx = 1.0;
+			gbc.weighty = 1.0;
+			gbc.fill = GridBagConstraints.BOTH;
+			add(panel, gbc);
+			gbc.weightx = 0.0;
+			gbc.weighty = 1.0;
+			gbc.fill = GridBagConstraints.VERTICAL;
+			gbc.gridx++;
+			add(slideBorder, gbc);
+		}
+
+		slideBorder.addMouseMotionListener(this);
 	}
 
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 
+		setLocationAndSize(0);
+
 		if (!configured) {
 			configured = true;
-
-			Point toolbarLocation = toolbar.getLocation();
-			SwingUtilities.convertPointToScreen(toolbarLocation, toolbar.getParent());
-
-			Dimension toolbarSize = toolbar.getSize();
-
-			// this panel will be in a layered pane without a layout manager
-			// we must configure the size and position ourselves
-			if (toolbar.isVertical()) {
-				int width = (int) (root.getWidth() / 4.0);
-				int height = toolbarSize.height;
-
-				Point location = new Point(toolbarLocation.x + toolbarSize.width, toolbarLocation.y);
-				Dimension size = new Dimension(width, height);
-
-				if (toolbar.getDockedLocation() == DockableToolbar.Location.EAST) {
-					location.x = toolbarLocation.x - width;
-				}
-
-				SwingUtilities.convertPointFromScreen(location, getParent());
-
-				setLocation(location);
-				setSize(size);
-			}
-			else {
-				int width = toolbarSize.width;
-				int height = (int) (root.getHeight() / 4.0);
-
-				Point location = new Point(toolbarLocation.x, toolbarLocation.y - height);
-				Dimension size = new Dimension(width, height);
-
-				SwingUtilities.convertPointFromScreen(location, getParent());
-
-				setLocation(location);
-				setSize(size);
-			}
-
-			revalidate();
-			repaint();
 		}
+	}
+
+	private void setLocationAndSize(int widthDifference) {
+		Point toolbarLocation = toolbar.getLocation();
+		SwingUtilities.convertPointToScreen(toolbarLocation, toolbar.getParent());
+
+		Dimension toolbarSize = toolbar.getSize();
+
+		// this panel will be in a layered pane without a layout manager
+		// we must configure the size and position ourselves
+		if (toolbar.isVertical()) {
+			int width = (int) (root.getWidth() / 4.0);
+			int height = toolbarSize.height;
+
+			if (configured) {
+				width = getWidth() + widthDifference;
+			}
+
+			Point location = new Point(toolbarLocation.x + toolbarSize.width, toolbarLocation.y);
+			Dimension size = new Dimension(width, height);
+
+			if (toolbar.getDockedLocation() == DockableToolbar.Location.EAST) {
+				location.x = toolbarLocation.x - width;
+			}
+
+			SwingUtilities.convertPointFromScreen(location, getParent());
+
+			setLocation(location);
+			setSize(size);
+		}
+		else {
+			int width = toolbarSize.width;
+			int height = (int) (root.getHeight() / 4.0);
+
+			if (configured) {
+				height = getHeight() + widthDifference;
+			}
+
+			Point location = new Point(toolbarLocation.x, toolbarLocation.y - height);
+			Dimension size = new Dimension(width, height);
+
+			SwingUtilities.convertPointFromScreen(location, getParent());
+
+			setLocation(location);
+			setSize(size);
+		}
+
+		revalidate();
+		repaint();
 	}
 
 	@Override
 	public void componentResized(ComponentEvent e) {
 		if (e.getComponent() == root) {
-			Point toolbarLocation = toolbar.getLocation();
-			SwingUtilities.convertPointToScreen(toolbarLocation, toolbar.getParent());
-
-			Dimension toolbarSize = toolbar.getSize();
-
-			if (toolbar.isVertical()) {
-				Point location = new Point(toolbarLocation.x + toolbarSize.width, toolbarLocation.y);
-
-				if (toolbar.getDockedLocation() == DockableToolbar.Location.EAST) {
-					location.x = toolbarLocation.x - getWidth();
-				}
-				SwingUtilities.convertPointFromScreen(location, getParent());
-
-				setLocation(location);
-				setSize(getWidth(), toolbar.getHeight());
-			}
-			else {
-				Point location = new Point(toolbarLocation.x, toolbarLocation.y - getHeight());
-
-				SwingUtilities.convertPointFromScreen(location, getParent());
-
-				setLocation(location);
-				setSize(toolbar.getWidth(), getHeight());
-			}
-
-			revalidate();
-			repaint();
+			setLocationAndSize(0);
 		}
 	}
 
@@ -138,5 +166,24 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener {
 
 	@Override
 	public void componentHidden(ComponentEvent e) {
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		System.out.println(e);
+		if (toolbar.getDockedLocation() == DockableToolbar.Location.SOUTH) {
+			setLocationAndSize(-e.getY());
+		}
+		else if (toolbar.getDockedLocation() == DockableToolbar.Location.WEST) {
+			setLocationAndSize(e.getX());
+		}
+		else {
+			setLocationAndSize(-e.getX());
+		}
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+
 	}
 }
