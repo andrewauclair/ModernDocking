@@ -51,6 +51,7 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		frame.addComponentListener(this);
 
 		setBackground(new Color(0, 0, 0, 0));
+		setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
 	}
 
 	// set the current dockable that the mouse is over, might be null

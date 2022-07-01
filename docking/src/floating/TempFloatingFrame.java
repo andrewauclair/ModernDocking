@@ -32,6 +32,7 @@ public class TempFloatingFrame extends JFrame {
 		setLayout(new BorderLayout());
 		setUndecorated(true);
 		setType(Type.UTILITY);
+		setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
 
 		setSize(((JComponent) dockable).getSize());
 
