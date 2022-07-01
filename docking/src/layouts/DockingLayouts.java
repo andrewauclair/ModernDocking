@@ -61,11 +61,16 @@ public class DockingLayouts {
 		else if (panel instanceof DockedTabbedPanel) {
 			node = tabbedPanelToNode((DockedTabbedPanel) panel);
 		}
+		else if (panel == null) {
+			// the main frame root node contains a null panel if there is nothing docked
+			node = new EmptyPanelNode();
+		}
 		else {
 			throw new RuntimeException("Unknown panel");
 		}
 		return node;
 	}
+
 	private static DockingLayoutNode splitPanelToNode(DockedSplitPanel panel) {
 		JSplitPane splitPane = panel.getSplitPane();
 

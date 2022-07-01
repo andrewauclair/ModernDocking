@@ -94,21 +94,20 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 	}
 
 	private void updateFramePosition(Point mousePos) {
-		Point framePos = new Point(mousePos);
-		framePos.x -= dragOffset.x;
-		framePos.y -= dragOffset.y;
-
+		// update the frames position to our mouse position
+		Point framePos = new Point(mousePos.x - dragOffset.x, mousePos.y - dragOffset.y);
 		floatingFrame.setLocation(framePos);
 
+		// find the frame at our current position
 		JFrame frame = Docking.findRootAtScreenPos(mousePos);
 
-		// update overlays every DELAY_WINDOW_POSITIONING * RATE_TO_UPDATE_OVERLAYS ms
+		// change overlays and bring frames to front if we move over a new frame
 		if (frame != currentTargetFrame) {
 			currentTargetFrame = frame;
 
 			changeFrameOverlays(frame);
 
-			if (frame != null && !framesBroughtToFront.contains(frame)) {
+			if (!framesBroughtToFront.contains(frame)) {
 				if (activeUtilsFrame != null) {
 					activeUtilsFrame.toFront();
 				}
@@ -129,8 +128,8 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		if (activeUtilsFrame != null) {
 			activeUtilsFrame.setActive(false);
 			activeUtilsFrame = null;
-
 		}
+
 		if (newFrame != null) {
 			activeUtilsFrame = utilFrames.get(newFrame);
 

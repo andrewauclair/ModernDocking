@@ -672,6 +672,10 @@ public class Docking implements ComponentListener, WindowStateListener {
 		else if (node instanceof DockingTabPanelNode) {
 			return restoreTabbed((DockingTabPanelNode) node, frame);
 		}
+		else if (node == null) {
+			// the main frame root can contain a null panel if nothing is docked
+			return null;
+		}
 		else {
 			throw new RuntimeException("Unknown state type");
 		}

@@ -85,9 +85,12 @@ public class RootDockingPanel extends DockingPanel {
 
 	public void setPanel(DockingPanel panel) {
 		this.panel = panel;
-		this.panel.setParent(this);
 
-		createContents();
+		if (panel != null) {
+			this.panel.setParent(this);
+
+			createContents();
+		}
 	}
 
 	private boolean removeExistingPanel() {
