@@ -25,7 +25,6 @@ import util.RotatedIcon;
 import util.TextIcon;
 import util.UnselectableButtonGroup;
 
-import javax.security.auth.callback.TextInputCallback;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
@@ -140,6 +139,8 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 				button.setIcon(rotatedIcon);
 
 				Insets insets = UIManager.getInsets("Button.margin");
+				// purposefully putting them in this order to set the margins of a vertical button
+				//noinspection SuspiciousNameCombination
 				Insets margin = new Insets(insets.left, insets.top, insets.left, insets.top);
 				button.setMargin(margin);
 			}

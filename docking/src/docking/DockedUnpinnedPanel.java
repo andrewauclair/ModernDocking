@@ -170,7 +170,6 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener, Mo
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		System.out.println(e);
 		if (toolbar.getDockedLocation() == DockableToolbar.Location.SOUTH) {
 			setLocationAndSize(-e.getY());
 		}

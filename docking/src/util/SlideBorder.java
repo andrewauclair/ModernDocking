@@ -35,6 +35,18 @@ public class SlideBorder extends JPanel {
 	}
 
 	@Override
+	public Dimension getMinimumSize() {
+		Dimension size = super.getMinimumSize();
+		if (location == DockableToolbar.Location.SOUTH) {
+			size.height = 6;
+		}
+		else {
+			size.width = 6;
+		}
+		return size;
+	}
+
+	@Override
 	public Dimension getPreferredSize() {
 		Dimension size = super.getPreferredSize();
 		if (location == DockableToolbar.Location.SOUTH) {
