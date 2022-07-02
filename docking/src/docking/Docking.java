@@ -236,6 +236,15 @@ public class Docking implements ComponentListener, WindowStateListener {
 			return null;
 		}
 
+		return findDockableAtScreenPos(screenPos, frame);
+	}
+
+	public static Dockable findDockableAtScreenPos(Point screenPos, JFrame frame) {
+		// frame is null so there's no dockable to find
+		if (frame == null) {
+			return null;
+		}
+
 		Point framePoint = new Point(screenPos);
 		SwingUtilities.convertPointFromScreen(framePoint, frame);
 

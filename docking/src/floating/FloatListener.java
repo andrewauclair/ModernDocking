@@ -52,8 +52,8 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 	private static JFrame frameToDispose = null;
 
-	private final List<JFrame> framesBroughtToFront = new ArrayList<>();
-
+//	private final List<JFrame> framesBroughtToFront = new ArrayList<>();
+	private JFrame currentTopFrame = null;
 	private JFrame currentTargetFrame = null;
 	private JFrame originalFrame;
 
@@ -101,24 +101,30 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		// find the frame at our current position
 		JFrame frame = Docking.findRootAtScreenPos(mousePos);
 
+		// findRootAtScreenPos has a tendency to find the last added frame at the position. meaning it ignores Z order. override it here because we know better.
+		if (currentTopFrame != null && currentTopFrame.getBounds().contains(mousePos)) {
+			frame = currentTopFrame;
+		}
+
 		// change overlays and bring frames to front if we move over a new frame
 		if (frame != currentTargetFrame) {
 			currentTargetFrame = frame;
 
 			changeFrameOverlays(frame);
 
-			if (!framesBroughtToFront.contains(frame)) {
+			if (frame != null && frame != currentTopFrame) {
+				currentTopFrame = frame;
 				if (activeUtilsFrame != null) {
+					currentTopFrame.toFront();
 					activeUtilsFrame.toFront();
 				}
-
-				framesBroughtToFront.add(frame);
 			}
 		}
 
-		Dockable dockable = Docking.findDockableAtScreenPos(mousePos);
+		Dockable dockable = Docking.findDockableAtScreenPos(mousePos, currentTopFrame);
 
 		if (activeUtilsFrame != null) {
+			activeUtilsFrame.setFloating(floatingDockable.getDockable());
 			activeUtilsFrame.setTargetDockable(dockable);
 			activeUtilsFrame.update(mousePos);
 		}
@@ -174,6 +180,8 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		JFrame frame = Docking.findRootAtScreenPos(mousePos);
 
 		if (frame != frameToDispose) {
+			currentTopFrame = frame;
+			currentTargetFrame = frame;
 			activeUtilsFrame = utilFrames.get(frame);
 		}
 
@@ -182,6 +190,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 				activeUtilsFrame.setFloating(floatingDockable.getDockable());
 				activeUtilsFrame.update(mousePos);
 				activeUtilsFrame.setActive(true);
+				activeUtilsFrame.toFront();
 			}
 		});
 
@@ -237,7 +246,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			activeUtilsFrame = null;
 		}
 
-		framesBroughtToFront.clear();
+//		framesBroughtToFront.clear();
 	}
 
 	@Override
