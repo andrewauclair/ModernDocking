@@ -120,6 +120,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 	// Dockables must be deregistered so it can be properly disposed
 	public static void deregisterDockable(Dockable dockable) {
+		getWrapper(dockable).removedListeners();
 		instance.dockables.remove(dockable.persistentID());
 	}
 
@@ -273,6 +274,15 @@ public class Docking implements ComponentListener, WindowStateListener {
 	public static DockingPanel findDockingPanelAtScreenPos(Point screenPos) {
 		JFrame frame = findRootAtScreenPos(screenPos);
 
+		// no frame found at the location, return null
+		if (frame == null) {
+			return null;
+		}
+
+		return findDockingPanelAtScreenPos(screenPos, frame);
+	}
+
+	public static DockingPanel findDockingPanelAtScreenPos(Point screenPos, JFrame frame) {
 		// no frame found at the location, return null
 		if (frame == null) {
 			return null;

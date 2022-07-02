@@ -49,6 +49,9 @@ public class DockingOverlay {
 	// the region on the root that is being docked to, this comes from the handles? I think
 	private DockingRegion rootRegion;
 
+	// the last region that we calculated. used for painting
+	private DockingRegion lastSelectedRegion;
+
 	// the top left location where the overlay starts
 	private Point location = new Point(0, 0);
 	// the total size of the overlay, used for drawing
@@ -91,6 +94,8 @@ public class DockingOverlay {
 
 			point = SwingUtilities.convertPoint(targetRoot.getParent(), point, utilFrame);
 
+			lastSelectedRegion = rootRegion;
+
 			switch (rootRegion) {
 				case WEST -> size = new Dimension(size.width / 2, size.height);
 				case NORTH -> size = new Dimension(size.width, size.height / 2);
@@ -114,6 +119,8 @@ public class DockingOverlay {
 			Dimension size = component.getSize();
 
 			point = SwingUtilities.convertPoint(component.getParent(), point, utilFrame);
+
+			lastSelectedRegion = dockableRegion;
 
 			switch (dockableRegion) {
 				case WEST -> size = new Dimension(size.width / 2, size.height);
@@ -151,20 +158,24 @@ public class DockingOverlay {
 			boolean westAllowed = isRegionAllowed(DockingRegion.WEST);
 			boolean eastAllowed = isRegionAllowed(DockingRegion.EAST);
 
-			if (horizontalEdgeDist < verticalEdgeDist && (westAllowed || eastAllowed)) {
-				if (horizontalPct < REGION_SENSITIVITY && westAllowed) {
+			if (horizontalEdgeDist < verticalEdgeDist) {// && (westAllowed || eastAllowed)) {
+				if (horizontalPct < REGION_SENSITIVITY) {// && westAllowed) {
+					lastSelectedRegion = DockingRegion.WEST;
 					size = new Dimension(size.width / 2, size.height);
 				}
-				else if (horizontalPct > (1.0 - REGION_SENSITIVITY) && eastAllowed) {
+				else if (horizontalPct > (1.0 - REGION_SENSITIVITY)) {// && eastAllowed) {
+					lastSelectedRegion = DockingRegion.EAST;
 					point.x += size.width / 2;
 					size = new Dimension(size.width / 2, size.height);
 				}
 			}
 			else {
-				if (verticalPct < REGION_SENSITIVITY && isRegionAllowed(DockingRegion.NORTH)) {
+				if (verticalPct < REGION_SENSITIVITY) {// && isRegionAllowed(DockingRegion.NORTH)) {
+					lastSelectedRegion = DockingRegion.NORTH;
 					size = new Dimension(size.width, size.height / 2);
 				}
-				else if (verticalPct > (1.0 - REGION_SENSITIVITY) && isRegionAllowed(DockingRegion.SOUTH)) {
+				else if (verticalPct > (1.0 - REGION_SENSITIVITY)) {// && isRegionAllowed(DockingRegion.SOUTH)) {
+					lastSelectedRegion = DockingRegion.SOUTH;
 					point.y += size.height / 2;
 					size = new Dimension(size.width, size.height / 2);
 				}
@@ -180,6 +191,8 @@ public class DockingOverlay {
 			Dimension size = component.getSize();
 
 			point = SwingUtilities.convertPoint(component.getParent(), point, utilFrame);
+
+			lastSelectedRegion = DockingRegion.CENTER;
 
 			this.location = point;
 			this.size = size;
@@ -273,7 +286,7 @@ public class DockingOverlay {
 	}
 
 	public void paint(Graphics g) {
-		if (visible) {
+		if (visible && isRegionAllowed(lastSelectedRegion)) {
 			g.setColor(DockingColors.getDockingOverlay());
 			g.fillRect(location.x, location.y, size.width, size.height);
 			g.setColor(DockingColors.getDockingOverlayBorder());

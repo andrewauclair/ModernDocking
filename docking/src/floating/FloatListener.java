@@ -37,6 +37,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 	// current floating dockable
 	private final DockableWrapper floatingDockable;
 
+	// our drag source to support dragging the dockables
 	private final DragSource dragSource = new DragSource();
 	// dummy transferable, we don't actually transfer anything
 	private final Transferable transferable = new StringSelection("");
@@ -79,7 +80,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 	public void removeListeners() {
 		if (floatingDockable.getDockable().dragSource() != null) {
-			dragSource.removeDragSourceListener(this);
 			dragSource.removeDragSourceMotionListener(this);
 		}
 
@@ -113,6 +113,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 				currentTopFrame = frame;
 				if (activeUtilsFrame != null) {
 					currentTopFrame.toFront();
+					floatingFrame.toFront();
 					activeUtilsFrame.toFront();
 				}
 			}
@@ -141,7 +142,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 				activeUtilsFrame.setFloating(floatingDockable.getDockable());
 				activeUtilsFrame.update(mousePos);
 				activeUtilsFrame.setActive(true);
-				activeUtilsFrame.toFront();
 			}
 		}
 	}
@@ -202,8 +202,8 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 		RootDockingPanel root = currentTopFrame == null ? null : Docking.rootForFrame(currentTopFrame);
 
-		DockingPanel dockingPanel = Docking.findDockingPanelAtScreenPos(point);
-		Dockable dockableAtPos = Docking.findDockableAtScreenPos(point);
+		DockingPanel dockingPanel = Docking.findDockingPanelAtScreenPos(point, currentTopFrame);
+		Dockable dockableAtPos = Docking.findDockableAtScreenPos(point, currentTopFrame);
 
 		DockingRegion region = activeUtilsFrame != null ? activeUtilsFrame.getRegion(mousePos) : DockingRegion.CENTER;
 
