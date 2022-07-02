@@ -30,9 +30,7 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class FloatListener extends DragSourceAdapter implements DragSourceListener, DragSourceMotionListener {
@@ -52,7 +50,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 	private static JFrame frameToDispose = null;
 
-//	private final List<JFrame> framesBroughtToFront = new ArrayList<>();
 	private JFrame currentTopFrame = null;
 	private JFrame currentTargetFrame = null;
 	private JFrame originalFrame;
@@ -158,11 +155,12 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 		currentTargetFrame = null;
 		originalFrame = Docking.findFrameForDockable(floatingDockable.getDockable());
+
 		rootState = Docking.getRootState(originalFrame);
 
 		RootDockingPanel currentRoot = Docking.rootForFrame(originalFrame);
 
-		floatingFrame = new TempFloatingFrame(floatingDockable.getDockable(), floatingDockable.getDockable().dragSource(), point);
+		floatingFrame = new TempFloatingFrame(floatingDockable.getDockable(), floatingDockable.getDockable().dragSource());
 
 		floatingDockable.getParent().undock(floatingDockable.getDockable());
 
@@ -177,12 +175,10 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		Point mousePos = new Point(point);
 		SwingUtilities.convertPointToScreen(mousePos, floatingDockable.getDockable().dragSource());
 
-		JFrame frame = Docking.findRootAtScreenPos(mousePos);
-
-		if (frame != frameToDispose) {
-			currentTopFrame = frame;
-			currentTargetFrame = frame;
-			activeUtilsFrame = utilFrames.get(frame);
+		if (originalFrame != frameToDispose) {
+			currentTopFrame = originalFrame;
+			currentTargetFrame = originalFrame;
+			activeUtilsFrame = utilFrames.get(originalFrame);
 		}
 
 		SwingUtilities.invokeLater(() -> {
@@ -203,23 +199,22 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		Point mousePos = MouseInfo.getPointerInfo().getLocation();
 
 		Point point = MouseInfo.getPointerInfo().getLocation();
-		JFrame frame = Docking.findRootAtScreenPos(point);
-		RootDockingPanel root = frame == null ? null : Docking.rootForFrame(frame);
+
+		RootDockingPanel root = currentTopFrame == null ? null : Docking.rootForFrame(currentTopFrame);
 
 		DockingPanel dockingPanel = Docking.findDockingPanelAtScreenPos(point);
 		Dockable dockableAtPos = Docking.findDockableAtScreenPos(point);
 
-
 		DockingRegion region = activeUtilsFrame != null ? activeUtilsFrame.getRegion(mousePos) : DockingRegion.CENTER;
 
 		if (root != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToRoot()) {
-			Docking.dock(floatingDockable.getDockable(), frame, region);
+			Docking.dock(floatingDockable.getDockable(), currentTopFrame, region);
 		}
-		else if (frame != null && dockingPanel != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToDockable()) {
+		else if (currentTopFrame != null && dockingPanel != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToDockable()) {
 			Docking.dock(floatingDockable.getDockable(), dockableAtPos, region);
 		}
 		else if (root != null && region != DockingRegion.CENTER && activeUtilsFrame == null) {
-			Docking.dock(floatingDockable.getDockable(), frame, region);
+			Docking.dock(floatingDockable.getDockable(), currentTopFrame, region);
 		}
 		else if (!floatingDockable.getDockable().floatingAllowed()) {
 			Docking.restoreState(originalFrame, rootState);
@@ -228,25 +223,27 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			new FloatingFrame(floatingDockable.getDockable(), floatingFrame);
 		}
 
+		// auto persist the new layout to the file
 		AppState.persist();
 
 		originalFrame = null;
 
+		// if we're disposing the frame we started dragging from, dispose of it now
 		if (frameToDispose != null) {
 			Docking.deregisterDockingPanel(frameToDispose);
 			frameToDispose.dispose();
 			frameToDispose = null;
 		}
 
+		// dispose of the temp floating frame now that we're done with it
 		floatingFrame.dispose();
 		floatingFrame = null;
 
+		// hide the overlay frame if one is active
 		if (activeUtilsFrame != null) {
 			activeUtilsFrame.setActive(false);
 			activeUtilsFrame = null;
 		}
-
-//		framesBroughtToFront.clear();
 	}
 
 	@Override

@@ -22,7 +22,7 @@ public class RotatedIcon implements Icon
 		DOWN,
 		UP,
 		UPSIDE_DOWN,
-		ABOUT_CENTER;
+		ABOUT_CENTER
 	}
 
 	private final Icon icon;
@@ -56,7 +56,7 @@ public class RotatedIcon implements Icon
 
 	/**
 	 *  Create a RotatedIcon. The icon will rotate about its center. This
-	 *  constructor will automatically set the Rotate enum to ABOUT_CENTER.
+	 *  constructor will automatically set Rotate enum to ABOUT_CENTER.
 	 *
 	 *  @param icon	the Icon to rotate
 	 *  @param degrees   the degrees of rotation
@@ -68,7 +68,7 @@ public class RotatedIcon implements Icon
 
 	/**
 	 *  Create a RotatedIcon. The icon will rotate about its center. This
-	 *  constructor will automatically set the Rotate enum to ABOUT_CENTER.
+	 *  constructor will automatically set Rotate enum to ABOUT_CENTER.
 	 *
 	 *  @param icon	the Icon to rotate
 	 *  @param degrees   the degrees of rotation
@@ -92,9 +92,9 @@ public class RotatedIcon implements Icon
 	}
 
 	/**
-	 *  Gets the Rotate enum which indicates the direction of rotation
+	 *  Gets Rotate enum which indicates the direction of rotation
 	 *
-	 *  @return the Rotate enum
+	 *  @return Rotate enum
 	 */
 	public Rotate getRotate()
 	{
@@ -139,7 +139,7 @@ public class RotatedIcon implements Icon
 	 *  Set the Icon as circular or rectangular. Only used for Rotate.ABOUT_CENTER.
 	 *  When true, the icon width/height will not change as the Icon is rotated.
 	 *
-	 *  @param true for a circular Icon, false otherwise
+	 *  @param circularIcon true for a circular Icon, false otherwise
 	 */
 	public void setCircularIcon(boolean circularIcon)
 	{
@@ -167,8 +167,8 @@ public class RotatedIcon implements Icon
 				double radians = Math.toRadians( degrees );
 				double sin = Math.abs( Math.sin( radians ) );
 				double cos = Math.abs( Math.cos( radians ) );
-				int width = (int)Math.floor(icon.getIconWidth() * cos + icon.getIconHeight() * sin);
-				return width;
+
+				return (int)Math.floor(icon.getIconWidth() * cos + icon.getIconHeight() * sin);
 			}
 		}
 		else if (rotate == Rotate.UPSIDE_DOWN)
@@ -194,8 +194,8 @@ public class RotatedIcon implements Icon
 				double radians = Math.toRadians( degrees );
 				double sin = Math.abs( Math.sin( radians ) );
 				double cos = Math.abs( Math.cos( radians ) );
-				int height = (int)Math.floor(icon.getIconHeight() * cos + icon.getIconWidth() * sin);
-				return height;
+
+				return (int)Math.floor(icon.getIconHeight() * cos + icon.getIconWidth() * sin);
 			}
 		}
 		else if (rotate == Rotate.UPSIDE_DOWN)

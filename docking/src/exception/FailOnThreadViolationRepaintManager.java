@@ -71,8 +71,7 @@ public class FailOnThreadViolationRepaintManager extends CheckThreadViolationRep
 	private static RepaintManager currentRepaintManager() {
 		try {
 			RepaintManager repaintManager = RepaintManager.currentManager(null);
-//      Object repaintManager = method("appContextGet").withReturnType(Object.class).withParameterTypes(Object.class)
-//                                                     .in(SwingUtilities.class).invoke(RepaintManager.class);
+
 			if (repaintManager != null) {
 				return repaintManager;
 			}
@@ -98,11 +97,11 @@ public class FailOnThreadViolationRepaintManager extends CheckThreadViolationRep
 	}
 
 	/**
-	 * Throws a {@link EdtViolationException} when a EDT access violation is found.
+	 * Throws a {@link EdtViolationException} when an EDT access violation is found.
 	 *
 	 * @param c                  the component involved in the EDT violation.
 	 * @param stackTraceElements stack trace elements to be set to the thrown exception.
-	 * @throws EdtViolationException when a EDT access violation is found.
+	 * @throws EdtViolationException when an EDT access violation is found.
 	 */
 	@Override
 	void violationFound(JComponent c, StackTraceElement[] stackTraceElements) {

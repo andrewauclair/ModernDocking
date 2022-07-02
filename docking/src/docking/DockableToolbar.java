@@ -152,7 +152,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 
 			wrapper.setFrame(frame);
 
-			// update all of the buttons and panels
+			// update all the buttons and panels
 			button.addActionListener(e -> updateButtons());
 
 			buttonGroup.add(button);

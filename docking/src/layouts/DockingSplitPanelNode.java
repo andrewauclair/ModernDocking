@@ -29,8 +29,6 @@ public class DockingSplitPanelNode implements DockingLayoutNode {
 	private final int orientation;
 	private final double dividerProportion;
 
-	private DockingLayoutNode parent;
-
 	public DockingSplitPanelNode(DockingLayoutNode left, DockingLayoutNode right, int orientation, double dividerProportion) {
 		this.left = left;
 		this.right = right;
@@ -43,7 +41,6 @@ public class DockingSplitPanelNode implements DockingLayoutNode {
 
 	@Override
 	public void setParent(DockingLayoutNode parent) {
-		this.parent = parent;
 	}
 
 	@Override

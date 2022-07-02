@@ -184,7 +184,6 @@ public class MainFrame extends JFrame {
 
 		gbc.gridy++;
 		gbc.weighty = 0;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.fill = GridBagConstraints.NONE;
 
 		JTabbedPane tabs = new JTabbedPane();
@@ -211,7 +210,7 @@ public class MainFrame extends JFrame {
 		Docking.dock(output, this, DockingRegion.SOUTH);
 		Docking.dock(explorer, this, DockingRegion.EAST);
 
-		// save the default layout so that we have something to restore, do it later so that the splits setup properly
+		// save the default layout so that we have something to restore, do it later so that the split is set up properly
 		SwingUtilities.invokeLater(save::doClick);
 	}
 

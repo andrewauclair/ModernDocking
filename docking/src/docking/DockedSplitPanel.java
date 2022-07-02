@@ -38,7 +38,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 
 	private final JSplitPane splitPane = new JSplitPane();
 	private DockingPanel parent;
-	private JFrame frame;
+	private final JFrame frame;
 
 	public DockedSplitPanel(JFrame frame) {
 		this.frame = frame;

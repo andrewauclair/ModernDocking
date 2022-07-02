@@ -28,9 +28,6 @@ import docking.RootDockingPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,90 +35,68 @@ import static floating.DockingHandle.HANDLE_ICON_SIZE;
 
 // handles displaying the handles for docking overlaid on the application
 // only displayed over the currently hit docking panel
-public class DockingHandles implements MouseMotionListener, MouseListener {
-	public int handleSpacing(JLabel handle) {
-		return handle.getWidth() + 8;
-	}
+public class DockingHandles {
+	private final DockingHandle rootCenter = new DockingHandle(DockingRegion.CENTER, true);
+	private final DockingHandle rootWest = new DockingHandle(DockingRegion.WEST, true);
+	private final DockingHandle rootNorth = new DockingHandle(DockingRegion.NORTH, true);
+	private final DockingHandle rootEast = new DockingHandle(DockingRegion.EAST, true);
+	private final DockingHandle rootSouth = new DockingHandle(DockingRegion.SOUTH, true);
 
-	public int rootHandleSpacing(JLabel handle) {
-		return handle.getWidth() + 16;
-	}
+	private final DockingHandle dockableCenter = new DockingHandle(DockingRegion.CENTER, false);
+	private final DockingHandle dockableWest = new DockingHandle(DockingRegion.WEST, false);
+	private final DockingHandle dockableNorth = new DockingHandle(DockingRegion.NORTH, false);
+	private final DockingHandle dockableEast = new DockingHandle(DockingRegion.EAST, false);
+	private final DockingHandle dockableSouth = new DockingHandle(DockingRegion.SOUTH, false);
 
-	private Dockable floating;
-	private Dockable targetDockable;
-	private final RootDockingPanel targetRoot;
-
-	private final JLabel rootCenter = new DockingHandle();
-	private final JLabel rootWest = new DockingHandle();
-	private final JLabel rootNorth = new DockingHandle();
-	private final JLabel rootEast = new DockingHandle();
-	private final JLabel rootSouth = new DockingHandle();
-
-	private final JLabel dockableCenter = new DockingHandle();
-	private final JLabel dockableWest = new DockingHandle();
-	private final JLabel dockableNorth = new DockingHandle();
-	private final JLabel dockableEast = new DockingHandle();
-	private final JLabel dockableSouth = new DockingHandle();
-
-	private final Map<JLabel, DockingRegion> rootRegions = new HashMap<>();
-	private final Map<JLabel, DockingRegion> dockableRegions = new HashMap<>();
-	private final Map<JLabel, Boolean> rootMouseOver = new HashMap<>();
-	private final Map<JLabel, Boolean> dockableMouseOver = new HashMap<>();
+	private final Map<DockingHandle, Boolean> mouseOver = new HashMap<>();
 
 	private DockingRegion rootRegion = null;
 	private DockingRegion dockableRegion = null;
+
 	private final JFrame utilFrame;
+	private final RootDockingPanel targetRoot;
+
+	// the dockable that we're currently trying to dock and is floating in a TempFloatingFrame
+	private Dockable floating;
+	// the dockable that the mouse is currently over, can be null
+	private Dockable targetDockable = null;
 
 	public DockingHandles(JFrame utilFrame, RootDockingPanel root) {
 		this.utilFrame = utilFrame;
 
 		this.targetRoot = root;
 
-		utilFrame.addMouseListener(this);
-		utilFrame.addMouseMotionListener(this);
+		setupHandle(rootCenter);
+		setupHandle(rootWest);
+		setupHandle(rootNorth);
+		setupHandle(rootEast);
+		setupHandle(rootSouth);
 
-		setupRootLabel(rootCenter, DockingRegion.CENTER);
-		setupRootLabel(rootWest, DockingRegion.WEST);
-		setupRootLabel(rootNorth, DockingRegion.NORTH);
-		setupRootLabel(rootEast, DockingRegion.EAST);
-		setupRootLabel(rootSouth, DockingRegion.SOUTH);
+		setupHandle(dockableCenter);
+		setupHandle(dockableWest);
+		setupHandle(dockableNorth);
+		setupHandle(dockableEast);
+		setupHandle(dockableSouth);
+	}
 
-		setupDockableLabel(dockableCenter, DockingRegion.CENTER);
-		setupDockableLabel(dockableWest, DockingRegion.WEST);
-		setupDockableLabel(dockableNorth, DockingRegion.NORTH);
-		setupDockableLabel(dockableEast, DockingRegion.EAST);
-		setupDockableLabel(dockableSouth, DockingRegion.SOUTH);
+	public DockingRegion getDockableRegion() {
+		return dockableRegion;
+	}
+
+	public DockingRegion getRootRegion() {
+		return rootRegion;
 	}
 
 	public void setActive(boolean active) {
 		utilFrame.setVisible(active);
 	}
 
-	private void setupRootLabel(JLabel label, DockingRegion region) {
-		label.addMouseListener(this);
-		label.addMouseMotionListener(this);
-
-		label.setVisible(false);
-
-		label.setBounds(0, 0, HANDLE_ICON_SIZE, HANDLE_ICON_SIZE);
-
-		rootRegions.put(label, region);
-		rootMouseOver.put(label, false);
-
-		utilFrame.add(label);
+	public void setFloating(Dockable dockable) {
+		floating = dockable;
 	}
 
-	private void setupDockableLabel(JLabel label, DockingRegion region) {
-		label.addMouseListener(this);
-		label.addMouseMotionListener(this);
-
-		label.setVisible(false);
-
-		label.setBounds(0, 0, HANDLE_ICON_SIZE, HANDLE_ICON_SIZE);
-
-		dockableRegions.put(label, region);
-		dockableMouseOver.put(label, false);
-
+	private void setupHandle(DockingHandle label) {
+		mouseOver.put(label, false);
 		utilFrame.add(label);
 	}
 
@@ -147,6 +122,14 @@ public class DockingHandles implements MouseMotionListener, MouseListener {
 			setLocation(rootEast, location.x + (size.width / 2) - rootHandleSpacing(rootEast), location.y);
 			setLocation(rootSouth, location.x, location.y + (size.height / 2) - rootHandleSpacing(rootSouth));
 		}
+	}
+
+	private int handleSpacing(JLabel handle) {
+		return handle.getWidth() + 8;
+	}
+
+	private int rootHandleSpacing(JLabel handle) {
+		return handle.getWidth() + 16;
 	}
 
 	// set the specific Dockable target which we'll show a basic handle in the center of
@@ -178,6 +161,7 @@ public class DockingHandles implements MouseMotionListener, MouseListener {
 		if (targetDockable != null && ((Component) targetDockable).getParent() != null) {
 			Point location = ((Component) targetDockable).getLocation();
 			Dimension size = ((Component) targetDockable).getSize();
+
 			location.x += size.width / 2;
 			location.y += size.height / 2;
 
@@ -213,26 +197,20 @@ public class DockingHandles implements MouseMotionListener, MouseListener {
 		SwingUtilities.convertPointFromScreen(framePoint, utilFrame);
 
 		rootRegion = null;
-
-		for (JLabel label : rootRegions.keySet()) {
-			if (label.isVisible() && label.getBounds().contains(framePoint)) {
-				rootRegion = rootRegions.get(label);
-				rootMouseOver.put(label, true);
-			}
-			else {
-				rootMouseOver.put(label, false);
-			}
-		}
-
 		dockableRegion = null;
 
-		for (JLabel label : dockableRegions.keySet()) {
-			if (label.isVisible() && label.getBounds().contains(framePoint)) {
-				dockableRegion = dockableRegions.get(label);
-				dockableMouseOver.put(label, true);
-			}
-			else {
-				dockableMouseOver.put(label, false);
+		for (DockingHandle handle : mouseOver.keySet()) {
+			boolean over = handle.isVisible() && handle.getBounds().contains(framePoint);
+
+			mouseOver.put(handle, over);
+
+			if (over) {
+				if (handle.isRoot()) {
+					rootRegion = handle.getRegion();
+				}
+				else {
+					dockableRegion = handle.getRegion();
+				}
 			}
 		}
 
@@ -240,68 +218,11 @@ public class DockingHandles implements MouseMotionListener, MouseListener {
 		utilFrame.repaint();
 	}
 
-	public DockingRegion getDockableRegion() {
-		return dockableRegion;
-	}
-
-	public DockingRegion getRootRegion() {
-		return rootRegion;
-	}
-
 	private void setLocation(Component component, int x, int y) {
 		component.setLocation(x - (HANDLE_ICON_SIZE / 2), y - (HANDLE_ICON_SIZE / 2));
 	}
 
-	public void setFloating(Dockable dockable) {
-		floating = dockable;
-	}
-
-	// we don't want to use the mouse events in this overlay frame because that would break the app
-	// pass them off to the component that we really need them in, the drag source
-	private void dispatchEvent(MouseEvent e) {
-		if (floating != null && floating.dragSource() != null) {
-			floating.dragSource().dispatchEvent(e);
-		}
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		dispatchEvent(e);
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		dispatchEvent(e);
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		dispatchEvent(e);
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		dispatchEvent(e);
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		dispatchEvent(e);
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		dispatchEvent(e);
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		dispatchEvent(e);
-	}
-
 	public void paint(Graphics g) {
-//		Rectangle bounds = g.getClipBounds();
-
 		int centerX = dockableCenter.getX() + (dockableCenter.getWidth() / 2);
 		int centerY = dockableCenter.getY() + (dockableCenter.getWidth() / 2);
 
@@ -309,6 +230,7 @@ public class DockingHandles implements MouseMotionListener, MouseListener {
 		int half_icon = dockableCenter.getWidth() / 2;
 		int one_and_a_half_icons = (int) (dockableCenter.getWidth() * 1.5);
 
+		// create a polygon of the docking handles background
 		Polygon poly = new Polygon(
 				new int[] {
 						centerX - half_icon - spacing,
@@ -353,207 +275,42 @@ public class DockingHandles implements MouseMotionListener, MouseListener {
 
 		Color background = DockingColors.getHandlesBackground();
 		Color border = DockingColors.getHandlesBackgroundBorder();
-		Color outline = DockingColors.getHandlesOutline();
-
-		Color hover = DockingColors.getHandlesFill();
 
 		Graphics2D g2 = (Graphics2D) g.create();
-		Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
-				0, new float[]{3}, 0);
+		Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
 		g2.setStroke(dashed);
 
-		// draw the root handles
-		if (rootCenter.isVisible()) {
-			spacing = handleSpacing(rootCenter) - rootCenter.getWidth();
+		// draw root handles
+		paintHandle(g, g2, rootCenter);
+		paintHandle(g, g2, rootEast);
+		paintHandle(g, g2, rootWest);
+		paintHandle(g, g2, rootNorth);
+		paintHandle(g, g2, rootSouth);
 
-			g.setColor(background);
-			g.fillRect(rootCenter.getX() - spacing, rootCenter.getY() - spacing, rootCenter.getWidth() + (spacing * 2), rootCenter.getWidth() + (spacing * 2));
-
-			Rectangle bounds = rootCenter.getBounds();
-
-			if (rootMouseOver.get(rootCenter)) {
-				g.setColor(hover);
-				g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
-			}
-
-			g.setColor(border);
-			g.drawRect(rootCenter.getX() - spacing, rootCenter.getY() - spacing, rootCenter.getWidth() + (spacing * 2), rootCenter.getWidth() + (spacing * 2));
-
-			g.setColor(outline);
-			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
-		}
-
-		if (rootEast.isVisible()) {
-			spacing = handleSpacing(rootEast) - rootEast.getWidth();
-
-			g.setColor(background);
-			g.fillRect(rootEast.getX() - spacing, rootEast.getY() - spacing, rootEast.getWidth() + (spacing * 2), rootEast.getWidth() + (spacing * 2));
-
-			Rectangle bounds = rootEast.getBounds();
-
-			if (rootMouseOver.get(rootEast)) {
-				g.setColor(hover);
-				g.fillRect(bounds.x + (bounds.width / 2), bounds.y, bounds.width / 2, bounds.height);
-			}
-
-			g.setColor(border);
-			g.drawRect(rootEast.getX() - spacing, rootEast.getY() - spacing, rootEast.getWidth() + (spacing * 2), rootEast.getWidth() + (spacing * 2));
-
-			g.setColor(outline);
-			int halfWidth = bounds.width / 2;
-			g.drawRect(bounds.x + halfWidth, bounds.y, bounds.width - halfWidth, bounds.height);
-		}
-
-		if (rootWest.isVisible()) {
-			spacing = handleSpacing(rootWest) - rootWest.getWidth();
-
-			g.setColor(background);
-			g.fillRect(rootWest.getX() - spacing, rootWest.getY() - spacing, rootWest.getWidth() + (spacing * 2), rootWest.getWidth() + (spacing * 2));
-
-			Rectangle bounds = rootWest.getBounds();
-
-			if (rootMouseOver.get(rootWest)) {
-				g.setColor(hover);
-				g.fillRect(bounds.x, bounds.y, bounds.width / 2, bounds.height);
-			}
-
-			g.setColor(border);
-			g.drawRect(rootWest.getX() - spacing, rootWest.getY() - spacing, rootWest.getWidth() + (spacing * 2), rootWest.getWidth() + (spacing * 2));
-
-			g.setColor(outline);
-			int halfWidth = bounds.width / 2;
-			g.drawRect(bounds.x, bounds.y, bounds.width - halfWidth, bounds.height);
-		}
-
-		if (rootNorth.isVisible()) {
-			spacing = handleSpacing(rootNorth) - rootNorth.getWidth();
-
-			g.setColor(background);
-			g.fillRect(rootNorth.getX() - spacing, rootNorth.getY() - spacing, rootNorth.getWidth() + (spacing * 2), rootNorth.getWidth() + (spacing * 2));
-
-			Rectangle bounds = rootNorth.getBounds();
-
-			if (rootMouseOver.get(rootNorth)) {
-				g.setColor(hover);
-				g.fillRect(bounds.x, bounds.y, bounds.width, bounds.width / 2);
-			}
-
-			g.setColor(border);
-			g.drawRect(rootNorth.getX() - spacing, rootNorth.getY() - spacing, rootNorth.getWidth() + (spacing * 2), rootNorth.getWidth() + (spacing * 2));
-
-			g.setColor(outline);
-
-			int halfWidth = bounds.width / 2;
-
-			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height - halfWidth);
-		}
-
-		if (rootSouth.isVisible()) {
-			spacing = handleSpacing(rootSouth) - rootSouth.getWidth();
-
-			g.setColor(background);
-			g.fillRect(rootSouth.getX() - spacing, rootSouth.getY() - spacing, rootSouth.getWidth() + (spacing * 2), rootSouth.getWidth() + (spacing * 2));
-
-			Rectangle bounds = rootSouth.getBounds();
-
-			if (rootMouseOver.get(rootSouth)) {
-				g.setColor(hover);
-				g.fillRect(bounds.x, bounds.y + (bounds.width / 2), bounds.width, bounds.width / 2);
-			}
-
-			g.setColor(border);
-			g.drawRect(rootSouth.getX() - spacing, rootSouth.getY() - spacing, rootSouth.getWidth() + (spacing * 2), rootSouth.getWidth() + (spacing * 2));
-
-			g.setColor(outline);
-			int halfWidth = bounds.width / 2;
-			g.drawRect(bounds.x, bounds.y + halfWidth, bounds.width, bounds.height - halfWidth);
-		}
-
+		// draw the dockable handles background over the root handles in case they overlap
 		if (targetDockable != null) {
+			// fill the dockable handles background
 			g.setColor(background);
-			// dockable handles background
 			g.fillPolygon(poly.xpoints, poly.ypoints, poly.npoints);
 
+			// draw the dockable handles border
 			g.setColor(border);
 			g.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);
 		}
 
-		// draw the dockable handles
-		if (dockableCenter.isVisible()) {
-			Rectangle bounds = dockableCenter.getBounds();
-			g.setColor(outline);
-			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
-
-			if (dockableMouseOver.get(dockableCenter)) {
-				g.setColor(hover);
-				g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
-			}
-		}
-
-		if (dockableEast.isVisible()) {
-			Rectangle bounds = dockableEast.getBounds();
-
-			if (dockableMouseOver.get(dockableEast)) {
-				g.setColor(hover);
-				g.fillRect(bounds.x + (bounds.width / 2), bounds.y, bounds.width / 2, bounds.height);
-			}
-
-			g.setColor(outline);
-			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
-
-			int halfWidth = bounds.width / 2;
-
-			g2.drawLine(bounds.x + halfWidth, bounds.y, bounds.x + halfWidth, bounds.y + bounds.height);
-		}
-
-		if (dockableWest.isVisible()) {
-			Rectangle bounds = dockableWest.getBounds();
-
-			if (dockableMouseOver.get(dockableWest)) {
-				g.setColor(hover);
-				g.fillRect(bounds.x, bounds.y, bounds.width / 2, bounds.height);
-			}
-
-			g.setColor(outline);
-			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
-
-			int halfWidth = bounds.width / 2;
-
-			g2.drawLine(bounds.x + halfWidth, bounds.y, bounds.x + halfWidth, bounds.y + bounds.height);
-		}
-
-		if (dockableNorth.isVisible()) {
-			Rectangle bounds = dockableNorth.getBounds();
-
-			if (dockableMouseOver.get(dockableNorth)) {
-				g.setColor(hover);
-				g.fillRect(bounds.x, bounds.y, bounds.width, bounds.width / 2);
-			}
-
-			g.setColor(outline);
-			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
-
-			int halfWidth = bounds.width / 2;
-
-			g2.drawLine(bounds.x, bounds.y + halfWidth, bounds.x + bounds.width, bounds.y + halfWidth);
-		}
-
-		if (dockableSouth.isVisible()) {
-			Rectangle bounds = dockableSouth.getBounds();
-
-			if (dockableMouseOver.get(dockableSouth)) {
-				g.setColor(hover);
-				g.fillRect(bounds.x, bounds.y + (bounds.width / 2), bounds.width, bounds.width / 2);
-			}
-
-			g.setColor(outline);
-			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
-
-			int halfWidth = bounds.width / 2;
-
-			g2.drawLine(bounds.x, bounds.y + halfWidth, bounds.x + bounds.width, bounds.y + halfWidth);
-		}
+		// draw the docking handles over the docking handles background
+		paintHandle(g, g2, dockableCenter);
+		paintHandle(g, g2, dockableEast);
+		paintHandle(g, g2, dockableWest);
+		paintHandle(g, g2, dockableNorth);
+		paintHandle(g, g2, dockableSouth);
 
 		g2.dispose();
+	}
+
+	private void paintHandle(Graphics g, Graphics2D g2, DockingHandle handle) {
+		if (handle.isVisible()) {
+			handle.paintHandle(g, g2, mouseOver.get(handle));
+		}
 	}
 }

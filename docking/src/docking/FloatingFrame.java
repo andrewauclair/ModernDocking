@@ -27,6 +27,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class FloatingFrame extends JFrame {
+	// create a new floating frame. this is used when calling Docking.newWindow or when restoring the layout from a file
 	public FloatingFrame(Point location, Dimension size, int state) {
 		setLocation(location);
 		setSize(size);
@@ -36,40 +37,50 @@ public class FloatingFrame extends JFrame {
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
+		// create, add and register the root
 		RootDockingPanel root = new RootDockingPanel(this);
 		add(root, BorderLayout.CENTER);
 
 		Docking.registerDockingPanel(root, this);
 
+		// allow pinning for this frame
 		Docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
 
 		setVisible(true);
 	}
 
+	// create a floating frame from a temporary frame as a result of docking
 	public FloatingFrame(Dockable dockable, TempFloatingFrame floatingFrame) {
 		setLayout(new BorderLayout());
 
+		// size the frame to the dockable size + the border size of the frame
 		Dimension size = ((JComponent) dockable).getSize();
-		size.width += Docking.frameBorderSize.width;
-		size.height += Docking.frameBorderSize.height;
+		size.width += Docking.frameBorderSizes.left + Docking.frameBorderSizes.right;
+		size.height += Docking.frameBorderSizes.top + Docking.frameBorderSizes.bottom;
 
 		setSize(size);
 
+		// dispose this frame when it closes
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
+		// set the location of this frame to the floating frame location - the frame border size
+		// do this because the undecorated frame is a different size
 		Point location = floatingFrame.getLocation();
-		location.x -= Docking.frameBorderSize.width;
-		location.y -= Docking.frameBorderSize.height;
+		location.x -= Docking.frameBorderSizes.left;
+		location.y -= Docking.frameBorderSizes.top;
 
 		setLocation(location);
 
+		// create, add and register the root
 		RootDockingPanel root = new RootDockingPanel(this);
 		add(root, BorderLayout.CENTER);
 
 		Docking.registerDockingPanel(root, this);
 
+		// allow pinning on this frame
 		Docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
 
+		// finally, dock the dockable and show this frame
 		Docking.dock(dockable, this);
 
 		setVisible(true);

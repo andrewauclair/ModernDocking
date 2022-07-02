@@ -28,10 +28,9 @@ import docking.RootDockingPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 // displays the overlay highlight of where the panel will be docked
-public class DockingOverlay implements MouseMotionListener, MouseListener, ComponentListener {
+public class DockingOverlay {
 	// determines how close to the edge the user has to drag the panel before they see an overlay other than CENTER
 	private static final double REGION_SENSITIVITY = 0.35;
 
@@ -66,11 +65,6 @@ public class DockingOverlay implements MouseMotionListener, MouseListener, Compo
 
 		targetRoot = root;
 		size = utilFrame.getSize();
-
-		utilFrame.addMouseListener(this);
-		utilFrame.addMouseMotionListener(this);
-
-		root.addComponentListener(this);
 	}
 
 	public void setActive(boolean active) {
@@ -195,11 +189,14 @@ public class DockingOverlay implements MouseMotionListener, MouseListener, Compo
 		utilFrame.repaint();
 	}
 
+	// get the region that we're currently displaying an overlay for
 	public DockingRegion getRegion(Point screenPos) {
+		// if we're moused over a root handle, use the region of the handle
 		if (rootRegion != null) {
 			return rootRegion;
 		}
 
+		// if we're moused over a dockable handle, use the region of the handle
 		if (dockableRegion != null) {
 			return dockableRegion;
 		}
@@ -209,80 +206,48 @@ public class DockingOverlay implements MouseMotionListener, MouseListener, Compo
 			return DockingRegion.CENTER;
 		}
 
+		// use the target dockable if we have one, otherwise use the root
 		JComponent component = targetDockable != null ? (JComponent) targetDockable : targetRoot;
 
+		// find the mouse position over the component
 		Point framePoint = new Point(screenPos);
-		SwingUtilities.convertPointFromScreen(framePoint, component);
+		SwingUtilities.convertPointFromScreen(framePoint, component.getParent());
 
 		Point point = (component).getLocation();
 		Dimension size = component.getSize();
 
+		// calculate a percentage along the horizontal axis and vertical axis. we need to determine if we're in the center or one of the other 4 regions
 		double horizontalPct = (framePoint.x - point.x) / (double) size.width;
 		double verticalPct = (framePoint.y - point.y) / (double) size.height;
 
+		// find out if we are in a horizontal region (NORTH / SOUTH) or a vertical region (WEST / EAST)
 		double horizontalEdgeDist = horizontalPct > 0.5 ? 1.0 - horizontalPct : horizontalPct;
 		double verticalEdgeDist = verticalPct > 0.5 ? 1.0 - verticalPct : verticalPct;
 
+		// if we're close to the sides than we are to the bottom or bottom, then we might be in the WEST or EAST region
 		if (horizontalEdgeDist < verticalEdgeDist) {
+			// horizontal percentage is less than our sensitivity for the edge, we're in the WEST region
 			if (horizontalPct < REGION_SENSITIVITY) {
 				return DockingRegion.WEST;
 			}
+			// horizontal percentage is greater than our sensitivity for the edge, we're in the EAST region
 			else if (horizontalPct > (1.0 - REGION_SENSITIVITY)) {
 				return DockingRegion.EAST;
 			}
+			// we didn't exceed the sensitivity in the WEST or EAST regions. we're in the CENTER region
 		}
 		else {
+			// vertical percentage is less than our sensitivity for the edge, we're in the NORTH region
 			if (verticalPct < REGION_SENSITIVITY) {
 				return DockingRegion.NORTH;
 			}
+			// vertical percentage is greater than our sensitivity for the edge, we're in the SOUTH region
 			else if (verticalPct > (1.0 - REGION_SENSITIVITY)) {
 				return DockingRegion.SOUTH;
 			}
+			// we didn't exceed the sensitivity in the NORTH or SOUTH regions. we're in the CENTER region
 		}
 		return DockingRegion.CENTER;
-	}
-
-	// we don't want to use the mouse events in this overlay frame because that would break the app
-	// pass them off to the component that we really need them in, the drag source
-	private void dispatchEvent(MouseEvent e) {
-		if (floating != null && floating.dragSource() != null) {
-			floating.dragSource().dispatchEvent(e);
-		}
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		dispatchEvent(e);
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		dispatchEvent(e);
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		dispatchEvent(e);
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		dispatchEvent(e);
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		dispatchEvent(e);
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		dispatchEvent(e);
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		dispatchEvent(e);
 	}
 
 	public boolean isDockingToRoot() {
@@ -297,30 +262,14 @@ public class DockingOverlay implements MouseMotionListener, MouseListener, Compo
 		return dockableRegion != null || targetDockable != null;
 	}
 
+	// set a region from the handles if we're moused over a root handle
 	public void setTargetRootRegion(DockingRegion region) {
 		rootRegion = region;
 	}
 
+	// set a region from the handles if we're moused over a dockable handle
 	public void setTargetDockableRegion(DockingRegion region) {
 		dockableRegion = region;
-	}
-
-	@Override
-	public void componentResized(ComponentEvent e) {
-		size = utilFrame.getSize();
-	}
-
-	@Override
-	public void componentMoved(ComponentEvent e) {
-		location = utilFrame.getLocation();
-	}
-
-	@Override
-	public void componentShown(ComponentEvent e) {
-	}
-
-	@Override
-	public void componentHidden(ComponentEvent e) {
 	}
 
 	public void paint(Graphics g) {

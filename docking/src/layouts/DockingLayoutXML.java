@@ -43,11 +43,11 @@ public class DockingLayoutXML {
 			e.printStackTrace();
 			return false;
 		}
-		boolean saved;
+
 		try {
 			writer.writeStartDocument();
 
-			saved = saveLayoutToFile(writer, layout, false);
+			saveLayoutToFile(writer, layout, false);
 
 			writer.writeEndDocument();
 		}
@@ -64,10 +64,10 @@ public class DockingLayoutXML {
 			}
 		}
 
-		return saved;
+		return true;
 	}
 
-	static boolean saveLayoutToFile(XMLStreamWriter writer, DockingLayout layout, boolean isMainFrame) throws XMLStreamException {
+	static void saveLayoutToFile(XMLStreamWriter writer, DockingLayout layout, boolean isMainFrame) throws XMLStreamException {
 		writer.writeCharacters(NL);
 		writer.writeStartElement("layout");
 		writer.writeAttribute("main-frame", String.valueOf(isMainFrame));
@@ -85,8 +85,6 @@ public class DockingLayoutXML {
 
 		writer.writeEndElement();
 		writer.writeCharacters(NL);
-
-		return true;
 	}
 
 	private static void writeNodeToFile(XMLStreamWriter writer, DockingLayoutNode node) throws XMLStreamException {
@@ -224,7 +222,7 @@ public class DockingLayoutXML {
 		return node;
 	}
 
-	private static DockingSimplePanelNode readSimpleNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
+	private static DockingSimplePanelNode readSimpleNodeFromFile(XMLStreamReader reader) {
 		String persistentID = reader.getAttributeValue(0);
 		return new DockingSimplePanelNode(persistentID);
 	}

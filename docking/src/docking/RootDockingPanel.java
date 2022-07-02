@@ -119,7 +119,7 @@ public class RootDockingPanel extends DockingPanel {
 	@Override
 	public void dock(Dockable dockable, DockingRegion region, double dividerProportion) {
 		// pass docking to panel if it exists
-		// if panel does not exist, create new simple panel
+		// panel does not exist, create new simple panel
 		if (panel != null) {
 			panel.dock(dockable, region, dividerProportion);
 		}

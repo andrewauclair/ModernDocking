@@ -22,39 +22,47 @@ SOFTWARE.
 package floating;
 
 import docking.Dockable;
+import docking.Docking;
 
 import javax.swing.*;
 import java.awt.*;
 
 // this is a frame used temporarily when floating a panel
 public class TempFloatingFrame extends JFrame {
-	public TempFloatingFrame(Dockable dockable, JComponent dragSrc, Point mouseDragPos) {
-		setLayout(new BorderLayout());
-		setUndecorated(true);
-		setType(Type.UTILITY);
-		setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+	private static final int BORDER_SIZE = 2;
 
-		setSize(((JComponent) dockable).getSize());
+	public TempFloatingFrame(Dockable dockable, JComponent dragSrc) {
+		setLayout(new BorderLayout()); // keep it simple, just use border layout
+		setUndecorated(true); // hide the frame
+		setType(Type.UTILITY); // keeps the frame from appearing in the task bar frames
+		setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR)); //  this frame is only showing while moving
 
-		Point newPoint = new Point(mouseDragPos);
-		SwingUtilities.convertPointToScreen(newPoint, dragSrc);
+		// size the frame to the dockable size
+		Dimension size = ((JComponent) dockable).getSize();
+		size.width += Docking.frameBorderSizes.right;
+		size.height += Docking.frameBorderSizes.bottom;
+		setSize(size);
 
-		newPoint.x -= mouseDragPos.x;
-		newPoint.y -= mouseDragPos.y;
+		// set the frame position to match the current dockable position
+		Point newPoint = new Point(dragSrc.getLocation());
+		SwingUtilities.convertPointToScreen(newPoint, dragSrc.getParent());
 
 		setLocation(newPoint);
 
+		// put the dockable in a panel with a border around it to make it look better
 		JPanel panel = new JPanel(new GridBagLayout());
 
 		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.gridy = 0;
 		gbc.gridx = 0;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
 
+		// set a border around the panel in the component focus color. this lets us distinguish the dockable panel from other windows.
 		Color color = UIManager.getColor("Component.focusColor");
-		panel.setBorder(BorderFactory.createLineBorder(color, 2));
+		panel.setBorder(BorderFactory.createLineBorder(color, BORDER_SIZE));
 		panel.add((Component) dockable, gbc);
 
 		add(panel, BorderLayout.CENTER);

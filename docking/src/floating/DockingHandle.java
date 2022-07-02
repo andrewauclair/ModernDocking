@@ -21,15 +21,49 @@ SOFTWARE.
  */
 package floating;
 
+import docking.DockingColors;
+import docking.DockingRegion;
+
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
 public class DockingHandle extends JLabel implements ComponentListener {
 	public static final int HANDLE_ICON_SIZE = 32;
 
-	public DockingHandle() {
+	private final DockingRegion region;
+	private final boolean isRoot;
+
+	public DockingHandle(DockingRegion region, boolean isRoot) {
+		this.region = region;
+		this.isRoot = isRoot;
+
+		// set the bounds (we're not in a layout manager) and make sure this handle isn't visible
+		setBounds(0, 0, HANDLE_ICON_SIZE, HANDLE_ICON_SIZE);
+		setVisible(false);
+	}
+
+	public DockingRegion getRegion() {
+		return region;
+	}
+
+	public boolean isRoot() {
+		return isRoot;
+	}
+
+	@Override
+	public void addNotify() {
+		super.addNotify();
+
 		addComponentListener(this);
+	}
+
+	@Override
+	public void removeNotify() {
+		removeComponentListener(this);
+
+		super.removeNotify();
 	}
 
 	@Override
@@ -45,12 +79,10 @@ public class DockingHandle extends JLabel implements ComponentListener {
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-
 	}
 
 	@Override
 	public void componentMoved(ComponentEvent e) {
-
 	}
 
 	@Override
@@ -60,6 +92,123 @@ public class DockingHandle extends JLabel implements ComponentListener {
 
 	@Override
 	public void componentHidden(ComponentEvent e) {
+	}
 
+	// g is used to do the main paint operations
+	// g2 is used to draw the dashed lines on top
+	public void paintHandle(Graphics g, Graphics2D g2, boolean mouseOver) {
+		Rectangle bounds = getBounds();
+
+		Color background = DockingColors.getHandlesBackground();
+		Color hover = DockingColors.getHandlesFill();
+		Color outline = DockingColors.getHandlesOutline();
+
+		// each root handle has its own background. we have to draw them here.
+		// the dockables all share one big root that is drawn in DockingHandles
+		if (isRoot) {
+			g.setColor(background);
+			drawBackground(g);
+		}
+
+		if (mouseOver) {
+			g.setColor(hover);
+			fillMouseOverRegion(g);
+		}
+
+		// draw the outline over the mouse over
+		g.setColor(outline);
+
+		if (isRoot && region != DockingRegion.CENTER) {
+			drawRootOutline(g);
+		}
+		else {
+			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+		}
+
+		// only draw the dashed line if the region isn't center and these are not root handles
+		if (region != DockingRegion.CENTER && !isRoot) {
+			drawDashedLine(g2);
+		}
+	}
+
+	private void drawBackground(Graphics g) {
+		int spacing = 8;
+
+		int x = getX() - spacing;
+		int y = getY() - spacing;
+		int width = getWidth() + (spacing * 2);
+		int height = getHeight() + (spacing * 2);
+
+		g.fillRect(x, y, width, height);
+
+		Color border = DockingColors.getHandlesBackgroundBorder();
+
+		g.setColor(border);
+		g.drawRect(x, y, width, height);
+	}
+
+	private void drawRootOutline(Graphics g) {
+		Rectangle bounds = getBounds();
+
+		boolean north = region == DockingRegion.NORTH;
+		boolean south = region == DockingRegion.SOUTH;
+		boolean east = region == DockingRegion.EAST;
+
+		int halfWidth = bounds.width / 2;
+
+		int x = east ? bounds.x + halfWidth : bounds.x;
+		int y = south ? bounds.y + halfWidth : bounds.y;
+		int width = north || south ? bounds.width : halfWidth;
+		int height = north || south ? halfWidth : bounds.height;
+
+		if (region == DockingRegion.CENTER) {
+			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+		}
+		else {
+			g.drawRect(x, y, width, height);
+		}
+	}
+
+	private void fillMouseOverRegion(Graphics g) {
+		Rectangle bounds = getBounds();
+
+		boolean north = region == DockingRegion.NORTH;
+		boolean south = region == DockingRegion.SOUTH;
+		boolean east = region == DockingRegion.EAST;
+
+		int halfWidth = bounds.width / 2;
+
+		int x = east ? bounds.x + halfWidth : bounds.x;
+		int y = south ? bounds.y + halfWidth : bounds.y;
+		int width = north || south ? bounds.width : halfWidth;
+		int height = north || south ? halfWidth : bounds.height;
+
+		if (region == DockingRegion.CENTER) {
+			g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+		}
+		else {
+			g.fillRect(x, y, width, height);
+		}
+	}
+
+	private void drawDashedLine(Graphics2D g2) {
+		Rectangle bounds = getBounds();
+
+		boolean north = region == DockingRegion.NORTH;
+		boolean south = region == DockingRegion.SOUTH;
+
+		int halfWidth = bounds.width / 2;
+
+		int x = north || south ? bounds.x : bounds.x + halfWidth;
+		int y = north || south ? bounds.y + halfWidth : bounds.y;
+		int x2 = north || south ? bounds.x + bounds.width : bounds.x + halfWidth;
+		int y2 = north || south ? bounds.y + halfWidth : bounds.y + bounds.height;
+
+		if (region == DockingRegion.CENTER) {
+			g2.drawLine(bounds.x, bounds.y, bounds.width, bounds.height);
+		}
+		else {
+			g2.drawLine(x, y, x2, y2);
+		}
 	}
 }

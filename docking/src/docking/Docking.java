@@ -29,8 +29,8 @@ import persist.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 // TODO find a good solution for where to dock new dockables. For example, I might select a view menu item which docks a certain dockable, that dockable should go in a logical location which is entirely app dependent (might depend on what other dockables are docked)
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 // Main class for the docking framework
 // register and dock/undock dockables here
 public class Docking implements ComponentListener, WindowStateListener {
-	public static Dimension frameBorderSize = new Dimension(0, 0);
+	public static Insets frameBorderSizes = new Insets(0, 0, 0, 0);
 
 	private final Map<String, DockableWrapper> dockables = new HashMap<>();
 
@@ -60,7 +60,6 @@ public class Docking implements ComponentListener, WindowStateListener {
 		this.mainFrame = mainFrame;
 		instance = this;
 		FloatListener.reset();
-		frameBorderSize = new Dimension(0, 0);
 
 		// use an AWT event listener to set a border around the dockable that the mouse is currently over
 		Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
@@ -127,7 +126,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 	// registration function for DockingPanel
 	public static void registerDockingPanel(RootDockingPanel panel, JFrame parent) {
 		// calculate the frame border size, used when dropping a dockable and changing from an undecorated frame (TempFloatingFrame) to a FloatingFrame
-		if (frameBorderSize.height == 0) {
+		if (frameBorderSizes.top == 0) {
 			parent.addComponentListener(new ComponentAdapter() {
 				@Override
 				public void componentShown(ComponentEvent e) {
@@ -137,8 +136,13 @@ public class Docking implements ComponentListener, WindowStateListener {
 					// convert content point to screen, location is already in screen coordinates because it's the location of a frame
 					SwingUtilities.convertPointToScreen(contentsLocation, parent.getContentPane().getParent());
 
-					// frame border size is the difference between the contents location on screen and the frame location
-					frameBorderSize = new Dimension(contentsLocation.x - location.x, contentsLocation.y - location.y);
+					Dimension size = parent.getSize();
+					Dimension contentsSize = parent.getContentPane().getSize();
+
+					// frame border size is the difference between the content's location and size on screen and the frame's location and size on screen
+					int top = contentsLocation.y - location.y;
+					int left = contentsLocation.x - location.x;
+					frameBorderSizes = new Insets(top, left, size.height - contentsSize.height - top, size.width - contentsSize.width - left);
 
 					// finally, remove this listener now that we've calculated the size
 					parent.removeComponentListener(this);
@@ -367,8 +371,8 @@ public class Docking implements ComponentListener, WindowStateListener {
 	public static void newWindow(Dockable dockable) {
 		Point location = ((JComponent) dockable).getLocationOnScreen();
 		Dimension size = ((JComponent) dockable).getSize();
-		size.width += frameBorderSize.width;
-		size.height += frameBorderSize.height;
+		size.width += frameBorderSizes.left + frameBorderSizes.right;
+		size.height += frameBorderSizes.top + frameBorderSizes.bottom;
 
 		FloatingFrame frame = new FloatingFrame(location, size, JFrame.NORMAL);
 
@@ -450,7 +454,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 		if (instance.dockables.containsKey(persistentID)) {
 			return instance.dockables.get(persistentID).getDockable();
 		}
-		return null;
+		throw new DockableRegistrationFailureException("Dockable with Persistent ID " + persistentID + " has not been registered.");
 	}
 
 	// internal function to get the dockable wrapper

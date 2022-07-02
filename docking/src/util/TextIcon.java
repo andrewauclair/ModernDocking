@@ -1,11 +1,10 @@
 package util;
 
-import java.awt.*;
-import java.beans.*;
-import java.util.*;
 import javax.swing.*;
-
-import java.awt.font.*;
+import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Map;
 
 /**
  *  The TextIcon will paint a String of text as an Icon. The Icon
@@ -23,7 +22,7 @@ import java.awt.font.*;
  *  the rendering. Therefore, it should only be added to component it was
  *  created for.
  *
- *  By default the text will be rendered using the Font and foreground color
+ *  By default, the text will be rendered using the Font and foreground color
  *  of its associated component. However, this class does allow you to override
  *  these properties. Also starting in JDK6 the desktop renderering hints will
  *  be used to renderer the text. For versions not supporting the rendering
@@ -34,7 +33,7 @@ public class TextIcon implements Icon, PropertyChangeListener
 	public enum Layout
 	{
 		HORIZONTAL,
-		VERTICAL;
+		VERTICAL
 	}
 
 	private final JComponent component;
@@ -188,7 +187,7 @@ public class TextIcon implements Icon, PropertyChangeListener
 	}
 
 	/**
-	 *  By default the size of the Icon is based on the size of the rendered
+	 *  By default, the size of the Icon is based on the size of the rendered
 	 *  text. You can specify some padding to be added to the start and end
 	 *  of the text when it is rendered.
 	 *

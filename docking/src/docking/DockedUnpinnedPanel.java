@@ -183,6 +183,5 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener, Mo
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-
 	}
 }

@@ -13,18 +13,13 @@
 package exception;
 
 /**
- * Error thrown when a EDT violation is detected. For more details, please read the <a
+ * Error thrown when an EDT violation is detected. For more details, please read the <a
  * href="http://java.sun.com/javase/6/docs/api/javax/swing/package-summary.html#threading" target="_blank">Swing's
  * Threading Policy</a>.
  *
  * @author Alex Ruiz
  */
 public class EdtViolationException extends RuntimeException {
-	/**
-	 * Generated serial version UID.
-	 */
-	private static final long serialVersionUID = -4009316969453779435L;
-
 	/**
 	 * Creates a new {@link EdtViolationException}.
 	 *

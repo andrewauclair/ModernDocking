@@ -57,6 +57,7 @@ public class DockableWrapper {
 		return dockable;
 	}
 
+	// TODO IntelliJ says this isn't called
 	public void removedListeners() {
 		if (floatListener != null) {
 			floatListener.removeListeners();

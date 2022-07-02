@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // DockingPanel that has a JTabbedPane inside its center
-public class DockedTabbedPanel extends DockingPanel implements MouseListener {
+public class DockedTabbedPanel extends DockingPanel {
 	private final List<DockableWrapper> panels = new ArrayList<>();
 
 	private final JTabbedPane tabs = new JTabbedPane();
@@ -38,13 +38,12 @@ public class DockedTabbedPanel extends DockingPanel implements MouseListener {
 	public DockedTabbedPanel() {
 		setLayout(new BorderLayout());
 
+		// set the initial border. Docking handles the border after this using a global AWT listener
 		setNotSelectedBorder();
 
 		tabs.setTabPlacement(JTabbedPane.BOTTOM);
 
 		add(tabs, BorderLayout.CENTER);
-
-		tabs.addMouseListener(this);
 	}
 
 	public void addPanel(DockableWrapper dockable) {
@@ -142,32 +141,6 @@ public class DockedTabbedPanel extends DockingPanel implements MouseListener {
 	@Override
 	public void removeChild(DockingPanel child) {
 		// no-op, docked tab can't have panel children, wrappers only
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		Color color = UIManager.getColor("Component.focusColor");
-		setBorder(BorderFactory.createLineBorder(color, 2));
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		setNotSelectedBorder();
 	}
 
 	private void setNotSelectedBorder() {

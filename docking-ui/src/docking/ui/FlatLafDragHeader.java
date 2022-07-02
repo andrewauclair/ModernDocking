@@ -27,7 +27,6 @@ import docking.Docking;
 import docking.DockingListeners;
 import event.DockingListener;
 import event.MaximizeListener;
-import floating.DockingHandle;
 
 import javax.swing.*;
 import java.awt.*;

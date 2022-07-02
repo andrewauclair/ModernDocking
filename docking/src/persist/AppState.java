@@ -30,6 +30,8 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 
 public class AppState {
+	private static final int PERSIST_TIMER_DELAY_MS = 500;
+
 	private static boolean autoPersist = false;
 	private static File autoPersistFile = null;
 
@@ -66,19 +68,21 @@ public class AppState {
 			return;
 		}
 
+		// we don't want to persist immediately in case this function is getting called a lot.
+		// start a timer that will be restarted every time persist() is called, until finally the timer will go off and persist the file.
 		if (persistTimer == null) {
-			persistTimer = new Timer(1000, new AbstractAction() {
+			persistTimer = new Timer(PERSIST_TIMER_DELAY_MS, new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// we might have gotten to the timer and then paused persistence
 					if (!paused) {
-						System.out.println("persist full layout");
+						System.out.println("persist full docking layout");
 
 						FullAppLayout layout = Docking.getFullLayout();
 
 						FullAppLayoutXML.saveLayoutToFile(autoPersistFile, layout);
-
 					}
+					// we're done with the timer for now. null it out
 					persistTimer = null;
 				}
 			});
@@ -91,6 +95,7 @@ public class AppState {
 	}
 
 	public static boolean restore() {
+		// don't restore if auto persist is disabled
 		if (autoPersistFile == null || !autoPersistFile.exists()) {
 			return false;
 		}

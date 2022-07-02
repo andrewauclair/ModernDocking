@@ -34,27 +34,42 @@ import java.awt.event.ComponentListener;
 public class DockingUtilsFrame extends JFrame implements ComponentListener {
 	private final DockingHandles handles;
 	private final DockingOverlay overlay;
-	private final JFrame frame;
+	private final JFrame referenceDockingFrame;
 
 	// create a new DockingUtilsFrame with a frame and its root panel
-	public DockingUtilsFrame(JFrame frame, RootDockingPanel root) {
-		this.frame = frame;
-		setType(Type.UTILITY);
-		setUndecorated(true);
-		setLayout(null);
-		setLocation(frame.getLocation());
-		setSize(frame.getSize());
+	public DockingUtilsFrame(JFrame referenceDockingFrame, RootDockingPanel root) {
+		setLayout(null); // don't use a layout manager for this custom painted frame
+		setUndecorated(true); // don't want to see a frame border
+		setType(Type.UTILITY); // hide this frame from the task bar
+		setBackground(new Color(0, 0, 0, 0)); // don't want a background for this frame
+		setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR)); // always moving a dockable when this frame is visible. use the moving cursor to indicate such
 
+		// set location and size based on the reference docking frame
+		setLocation(referenceDockingFrame.getLocation());
+		setSize(referenceDockingFrame.getSize());
+
+		// remember the reference docking frame and create the handles and over components
+		this.referenceDockingFrame = referenceDockingFrame;
 		handles = new DockingHandles(this, root);
 		overlay = new DockingOverlay(this, root);
-
-		frame.addComponentListener(this);
-
-		setBackground(new Color(0, 0, 0, 0));
-		setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
 	}
 
-	// set the current dockable that the mouse is over, might be null
+	@Override
+	public void addNotify() {
+		super.addNotify();
+
+		// listen for the reference frame to move and resize. this frame must match it exactly
+		referenceDockingFrame.addComponentListener(this);
+	}
+
+	@Override
+	public void removeNotify() {
+		referenceDockingFrame.removeComponentListener(this);
+
+		super.removeNotify();
+	}
+
+	// set the current dockable that the mouse is over, can be null
 	public void setTargetDockable(Dockable target) {
 		handles.setTarget(target);
 		overlay.setTargetDockable(target);
@@ -81,11 +96,12 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		overlay.setActive(active);
 	}
 
+	// get the current region from the overlay. this is either a root region or dockable region
 	public DockingRegion getRegion(Point screenPos) {
 		return overlay.getRegion(screenPos);
 	}
 
-	// checks if docking to the root. This is only possible when the mosue is over a root docking handle
+	// checks if docking to the root. This is only possible when the mouse is over a root docking handle
 	public boolean isDockingToRoot() {
 		return overlay.isDockingToRoot();
 	}
@@ -98,12 +114,12 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		setSize(frame.getSize());
+		setSize(referenceDockingFrame.getSize());
 	}
 
 	@Override
 	public void componentMoved(ComponentEvent e) {
-		setLocation(frame.getLocation());
+		setLocation(referenceDockingFrame.getLocation());
 	}
 
 	@Override
@@ -116,7 +132,10 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 
 	@Override
 	public void paint(Graphics g) {
+		// nothing to really paint, but this will give us a clean slate
 		super.paint(g);
+
+		// paint the handles and overlays. nothing is painted if they aren't visible
 		handles.paint(g);
 		overlay.paint(g);
 	}

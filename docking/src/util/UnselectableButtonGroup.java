@@ -9,7 +9,7 @@ import java.util.Vector;
 public class UnselectableButtonGroup extends ButtonGroup {
 
 	// the list of buttons participating in this group
-	protected Vector<AbstractButton> buttons = new Vector<>();
+	protected final Vector<AbstractButton> buttons = new Vector<>();
 
 	/**
 	 * The current selection.
