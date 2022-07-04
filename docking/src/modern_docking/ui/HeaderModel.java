@@ -19,63 +19,65 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+package modern_docking.ui;
+
 import modern_docking.Dockable;
 import modern_docking.Docking;
-import docking.ui.FlatLafDragHeader;
 
 import javax.swing.*;
-import java.awt.*;
 
-public abstract class BasePanel extends JPanel implements Dockable {
-//	private final JPanel titlePanel;
+public class HeaderModel {
+	private final Dockable dockable;
 
-	private final String title;
-	private final String persistentID;
-
-	public BasePanel(String title, String persistentID) {
-		super(new GridBagLayout());
-
-//		titlePanel = new FlatLafDragHeader(this, title);
-
-		this.title = title;
-		this.persistentID = persistentID;
-
-		Docking.registerDockable(this);
-
-		GridBagConstraints gbc = new GridBagConstraints();
-
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-//		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 1.0;
-
-//		titlePanel.add(new JLabel(title));
-//		titlePanel.setBackground(new Color(78, 78, 247, 255));
-
-//		add(titlePanel, gbc);
-//		gbc.gridy++;
-		gbc.weighty = 1.0;
-		gbc.fill = GridBagConstraints.BOTH;
-
-		JPanel panel = new JPanel();
-
-		add(panel, gbc);
+	public HeaderModel(Dockable dockable) {
+		this.dockable = dockable;
 	}
 
-	@Override
-	public JComponent dragSource() {
-		return (JComponent) Docking.getUI(persistentID);
-//		return titlePanel;
+	public void update() {
+
 	}
 
-
-	@Override
-	public String persistentID() {
-		return persistentID;
+	public String titleText() {
+		return dockable.tabText();
 	}
 
-	@Override
-	public String tabText() {
-		return title;
+	public boolean isPinnedAllowed() {
+		return dockable.allowPinning();
+	}
+
+	public boolean isPinned() {
+		return false;
+	}
+
+	public boolean isUnpinnedAllowed() {
+		return dockable.allowPinning();
+	}
+
+	public boolean isUnpinned() {
+		return Docking.isUnpinned(dockable);
+	}
+
+	public boolean isMaximizeAllowed() {
+		return dockable.allowMinMax();
+	}
+
+	public boolean isMaximized() {
+		return Docking.isMaximized(dockable);
+	}
+
+	public boolean isCloseAllowed() {
+		return dockable.allowClose();
+	}
+
+	public boolean hasMoreOptions() {
+		return dockable.hasMoreOptions();
+	}
+
+	public boolean isFloatingAllowed() {
+		return dockable.floatingAllowed();
+	}
+
+	public void addMoreOptions(JPopupMenu menu) {
+		dockable.addMoreOptions(menu);
 	}
 }

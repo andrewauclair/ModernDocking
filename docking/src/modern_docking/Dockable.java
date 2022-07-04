@@ -21,6 +21,11 @@ SOFTWARE.
  */
 package modern_docking;
 
+import modern_docking.ui.DefaultHeaderUI;
+import modern_docking.ui.DockingHeaderUI;
+import modern_docking.ui.HeaderController;
+import modern_docking.ui.HeaderModel;
+
 import javax.swing.*;
 import java.util.List;
 
@@ -69,5 +74,9 @@ public interface Dockable {
 
 	// add the more options to the popup menu. defaults to an empty block to handle the case of hasMoreOptions() = false
 	default void addMoreOptions(JPopupMenu menu) {
+	}
+
+	default DockingHeaderUI createHeaderUI(HeaderController headerController, HeaderModel headerModel) {
+		return new DefaultHeaderUI(headerController, headerModel);
 	}
 }

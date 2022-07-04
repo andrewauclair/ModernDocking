@@ -21,10 +21,7 @@ SOFTWARE.
  */
 package modern_docking.floating;
 
-import modern_docking.Dockable;
-import modern_docking.DockingColors;
-import modern_docking.DockingRegion;
-import modern_docking.RootDockingPanel;
+import modern_docking.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -123,6 +120,9 @@ public class DockingOverlay {
 		else if (targetDockable != null && dockableRegion != null) {
 			JComponent component = (JComponent) targetDockable;
 
+			// the actual component
+			component = Docking.getWrapper(targetDockable).getDisplayPanel();
+
 			Point point = component.getLocation();
 			Dimension size = component.getSize();
 
@@ -156,6 +156,9 @@ public class DockingOverlay {
 		}
 		else if (targetDockable != null) {
 			JComponent component = (JComponent) targetDockable;
+
+			// the actual component
+			component = Docking.getWrapper(targetDockable).getDisplayPanel();
 
 			Point framePoint = new Point(screenPos);
 			SwingUtilities.convertPointFromScreen(framePoint, utilFrame);

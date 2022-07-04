@@ -23,8 +23,10 @@ package modern_docking;
 
 import modern_docking.exception.DockableRegistrationFailureException;
 import modern_docking.floating.FloatListener;
+import modern_docking.internal.*;
 import modern_docking.layouts.*;
 import modern_docking.persist.*;
+import modern_docking.ui.DockingHeaderUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -194,8 +196,8 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 	private static void undockComponents(Container container) {
 		for (Component component : container.getComponents()) {
-			if (component instanceof Dockable) {
-				undock((Dockable) component);
+			if (component instanceof DisplayPanel) {
+				undock(((DisplayPanel) component).getWrapper().getDockable());
 			}
 			else if (component instanceof Container) {
 				undockComponents((Container) component);
@@ -260,15 +262,15 @@ public class Docking implements ComponentListener, WindowStateListener {
 			return null;
 		}
 
-		while (!(component instanceof Dockable) && component.getParent() != null) {
+		while (!(component instanceof DisplayPanel) && component.getParent() != null) {
 			component = component.getParent();
 		}
 
 		// didn't find a Dockable, return null
-		if (!(component instanceof Dockable)) {
+		if (!(component instanceof DisplayPanel)) {
 			return null;
 		}
-		return (Dockable) component;
+		return ((DisplayPanel) component).getWrapper().getDockable();
 	}
 
 	public static DockingPanel findDockingPanelAtScreenPos(Point screenPos) {
@@ -468,7 +470,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 	}
 
 	// internal function to get the dockable wrapper
-	static DockableWrapper getWrapper(Dockable dockable) {
+	public static DockableWrapper getWrapper(Dockable dockable) {
 		if (instance.dockables.containsKey(dockable.persistentID())) {
 			return instance.dockables.get(dockable.persistentID());
 		}
@@ -766,8 +768,9 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 	private static boolean shouldUndock(Container container) {
 		for (Component component : container.getComponents()) {
-			if (component instanceof Dockable) {
-				if (((Dockable) component).floatingAllowed()) {
+			if (component instanceof DisplayPanel) {
+				DisplayPanel panel = (DisplayPanel) component;
+				if (panel.getWrapper().getDockable().floatingAllowed()) {
 					return false;
 				}
 			}
@@ -782,10 +785,11 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 	private static void undockIllegalFloats(Container container) {
 		for (Component component : container.getComponents()) {
-			if (component instanceof Dockable) {
-				Dockable dockable = (Dockable) component;
+			if (component instanceof DisplayPanel) {
+				DisplayPanel panel = (DisplayPanel) component;
 
-				DockableWrapper wrapper = getWrapper(dockable);
+				DockableWrapper wrapper = panel.getWrapper();
+				Dockable dockable = wrapper.getDockable();
 				wrapper.getParent().undock(dockable);
 
 				DockingListeners.fireUndockedEvent(dockable);
@@ -917,5 +921,10 @@ public class Docking implements ComponentListener, WindowStateListener {
 	@Override
 	public void windowStateChanged(WindowEvent e) {
 		AppState.persist();
+	}
+
+	// TODO this is temporary. I think the drag source will become the header UI, which is all internal to docking, which means we can simplify some stuff
+	public static DockingHeaderUI getUI(String persistentID) {
+		return getWrapper(getDockable(persistentID)).getUI();
 	}
 }

@@ -21,9 +21,9 @@ SOFTWARE.
  */
 package modern_docking.persist;
 
-import modern_docking.DockedSimplePanel;
-import modern_docking.DockedSplitPanel;
-import modern_docking.DockedTabbedPanel;
+import modern_docking.internal.DockedSimplePanel;
+import modern_docking.internal.DockedSplitPanel;
+import modern_docking.internal.DockedTabbedPanel;
 
 public class SplitState implements DockingState {
 	private final DockingState left;

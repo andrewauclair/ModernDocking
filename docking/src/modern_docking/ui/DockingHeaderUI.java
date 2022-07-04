@@ -19,32 +19,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package modern_docking.persist;
+package modern_docking.ui;
 
-import modern_docking.internal.DockedSimplePanel;
-import modern_docking.internal.DockedSplitPanel;
-import modern_docking.internal.DockedTabbedPanel;
-import modern_docking.RootDockingPanel;
-
-public class RootDockState {
-	private final DockingState state;
-
-	public RootDockState(RootDockingPanel panel) {
-		if (panel.getPanel() instanceof DockedSimplePanel) {
-			state = new PanelState(((DockedSimplePanel) panel.getPanel()).getWrapper().getDockable().persistentID());
-		}
-		else if (panel.getPanel() instanceof DockedSplitPanel) {
-			state = new SplitState((DockedSplitPanel) panel.getPanel());
-		}
-		else if (panel.getPanel() instanceof DockedTabbedPanel) {
-			state = new TabState((DockedTabbedPanel) panel.getPanel());
-		}
-		else {
-			throw new RuntimeException("Unknown panel");
-		}
-	}
-
-	public DockingState getState() {
-		return state;
-	}
+public interface DockingHeaderUI {
+	void update();
 }

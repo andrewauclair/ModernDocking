@@ -21,7 +21,7 @@ SOFTWARE.
  */
 package modern_docking.persist;
 
-import modern_docking.DockedTabbedPanel;
+import modern_docking.internal.DockedTabbedPanel;
 
 import java.util.ArrayList;
 import java.util.Collections;

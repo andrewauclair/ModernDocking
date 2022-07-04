@@ -63,7 +63,7 @@ public class TempFloatingFrame extends JFrame {
 		// set a border around the panel in the component focus color. this lets us distinguish the dockable panel from other windows.
 		Color color = UIManager.getColor("Component.focusColor");
 		panel.setBorder(BorderFactory.createLineBorder(color, BORDER_SIZE));
-		panel.add((Component) dockable, gbc);
+		panel.add(Docking.getWrapper(dockable).getDisplayPanel(), gbc);
 
 		add(panel, BorderLayout.CENTER);
 

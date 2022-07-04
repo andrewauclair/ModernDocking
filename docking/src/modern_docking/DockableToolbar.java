@@ -21,6 +21,8 @@ SOFTWARE.
  */
 package modern_docking;
 
+import modern_docking.internal.DockableWrapper;
+import modern_docking.internal.DockedUnpinnedPanel;
 import modern_docking.util.RotatedIcon;
 import modern_docking.util.TextIcon;
 import modern_docking.util.UnselectableButtonGroup;

@@ -22,6 +22,7 @@ SOFTWARE.
 package modern_docking.floating;
 
 import modern_docking.*;
+import modern_docking.internal.DockableWrapper;
 import modern_docking.persist.AppState;
 import modern_docking.persist.RootDockState;
 
@@ -57,15 +58,15 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 	private RootDockState rootState;
 
-	public FloatListener(DockableWrapper dockable) {
+	public FloatListener(DockableWrapper dockable, JComponent dragSource) {
 		this.floatingDockable = dockable;
 
-		if (this.floatingDockable.getDockable().dragSource() != null) {
-			dragSource.addDragSourceMotionListener(FloatListener.this);
+		if (dragSource != null) {
+			this.dragSource.addDragSourceMotionListener(FloatListener.this);
 
-			dragSource.createDefaultDragGestureRecognizer(this.floatingDockable.getDockable().dragSource(), DnDConstants.ACTION_MOVE, dge -> {
+			this.dragSource.createDefaultDragGestureRecognizer(dragSource, DnDConstants.ACTION_MOVE, dge -> {
 				if (!Docking.isUnpinned(floatingDockable.getDockable())) {
-					dragSource.startDrag(dge, Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR), transferable, FloatListener.this);
+					this.dragSource.startDrag(dge, Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR), transferable, FloatListener.this);
 					mouseDragged(dge.getDragOrigin());
 				}
 			});

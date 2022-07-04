@@ -19,7 +19,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package modern_docking;
+package modern_docking.internal;
+
+import modern_docking.Dockable;
+import modern_docking.Docking;
+import modern_docking.DockingPanel;
+import modern_docking.DockingRegion;
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,14 +53,14 @@ public class DockedTabbedPanel extends DockingPanel {
 		dockable.setParent(this);
 
 		panels.add(dockable);
-		tabs.add(dockable.getDockable().tabText(), (JComponent) dockable.getDockable());
+		tabs.add(dockable.getDockable().tabText(), dockable.getDisplayPanel());
 
 		tabs.setSelectedIndex(tabs.getTabCount() - 1);
 	}
 
 	public void removePanel(DockableWrapper dockable) {
 		panels.remove(dockable);
-		tabs.remove((JComponent) dockable.getDockable());
+		tabs.remove(dockable.getDisplayPanel());
 
 		dockable.setParent(null);
 	}

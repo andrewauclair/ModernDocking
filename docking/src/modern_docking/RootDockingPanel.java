@@ -21,6 +21,8 @@ SOFTWARE.
  */
 package modern_docking;
 
+import modern_docking.internal.DockedSimplePanel;
+
 import javax.swing.*;
 import java.awt.*;
 

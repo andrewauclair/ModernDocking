@@ -19,7 +19,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package modern_docking;
+package modern_docking.internal;
+
+import modern_docking.Dockable;
+import modern_docking.Docking;
+import modern_docking.DockingPanel;
+import modern_docking.DockingRegion;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,9 +46,9 @@ public class DockedSimplePanel extends DockingPanel implements MouseListener {
 
 		this.dockable = dockable;
 
-		add((JComponent) dockable.getDockable(), BorderLayout.CENTER);
+		add(dockable.getDisplayPanel(), BorderLayout.CENTER);
 
-		((Component) dockable.getDockable()).addMouseListener(this);
+//		((Component) dockable.getDockable()).addMouseListener(this);
 	}
 
 	public DockableWrapper getWrapper() {
@@ -104,7 +109,7 @@ public class DockedSimplePanel extends DockingPanel implements MouseListener {
 	public void undock(Dockable dockable) {
 		if (this.dockable.getDockable() == dockable) {
 //			System.out.println("Undocked panel from DockedSimplePanel");
-			remove((JComponent) this.dockable.getDockable());
+			remove(this.dockable.getDisplayPanel());
 
 			parent.removeChild(this);
 

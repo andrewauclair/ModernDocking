@@ -19,27 +19,43 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package modern_docking;
+package modern_docking.internal;
 
+import modern_docking.Dockable;
+import modern_docking.DockingPanel;
 import modern_docking.floating.FloatListener;
+import modern_docking.internal.DisplayPanel;
+import modern_docking.ui.DockingHeaderUI;
+import modern_docking.ui.HeaderController;
+import modern_docking.ui.HeaderModel;
 
 import javax.swing.*;
 
 // internal wrapper around the Dockable implemented by the application.
 // lets us provide access to the dockable and its parent in the hierarchy
 public class DockableWrapper {
+	private final HeaderController headerController;
 	private JFrame frame;
 	private DockingPanel parent = null;
 	private final Dockable dockable;
 
 	private FloatListener floatListener;
+	private DockingHeaderUI headerUI;
+
+	private final DisplayPanel displayPanel;
 
 	private boolean maximized = false;
 	private boolean unpinned = false;
 
 	public DockableWrapper(Dockable dockable) {
 		this.dockable = dockable;
-		floatListener = new FloatListener(this);
+
+		HeaderModel headerModel = new HeaderModel(dockable);
+		headerController = new HeaderController(dockable, headerModel);
+		headerUI = dockable.createHeaderUI(headerController, headerModel);
+
+		floatListener = new FloatListener(this, (JComponent) headerUI);
+		displayPanel = new DisplayPanel(this);
 	}
 
 	public JFrame getFrame() {
@@ -49,6 +65,7 @@ public class DockableWrapper {
 	public void setFrame(JFrame frame) {
 		this.frame = frame;
 	}
+
 	public void setParent(DockingPanel parent) {
 		this.parent = parent;
 	}
@@ -59,6 +76,8 @@ public class DockableWrapper {
 
 	public void removedListeners() {
 		if (floatListener != null) {
+			headerController.removeListeners();
+
 			floatListener.removeListeners();
 			floatListener = null;
 		}
@@ -82,5 +101,13 @@ public class DockableWrapper {
 
 	public void setUnpinned(boolean unpinned) {
 		this.unpinned = unpinned;
+	}
+
+	public DockingHeaderUI getUI() {
+		return headerUI;
+	}
+
+	public DisplayPanel getDisplayPanel() {
+		return displayPanel;
 	}
 }
