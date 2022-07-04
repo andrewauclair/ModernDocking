@@ -21,15 +21,16 @@ SOFTWARE.
  */
 import javax.swing.*;
 
+// TODO current changes are breaking the intended functionality here
 public class AlwaysDisplayedPanel extends SimplePanel {
 	public AlwaysDisplayedPanel(String title, String persistentID) {
 		super(title, persistentID);
 	}
 
-	@Override
-	public JComponent dragSource() {
-		return null;
-	}
+//	@Override
+//	public JComponent dragSource() {
+//		return null;
+//	}
 
 	@Override
 	public boolean allowClose() {

@@ -27,46 +27,27 @@ import javax.swing.*;
 import java.awt.*;
 
 public abstract class BasePanel extends JPanel implements Dockable {
-//	private final JPanel titlePanel;
-
 	private final String title;
 	private final String persistentID;
 
 	public BasePanel(String title, String persistentID) {
-		super(new GridBagLayout());
-
-//		titlePanel = new FlatLafDragHeader(this, title);
+		super(new BorderLayout());
 
 		this.title = title;
 		this.persistentID = persistentID;
 
 		Docking.registerDockable(this);
 
-		GridBagConstraints gbc = new GridBagConstraints();
-
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-//		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 1.0;
-
-//		titlePanel.add(new JLabel(title));
-//		titlePanel.setBackground(new Color(78, 78, 247, 255));
-
-//		add(titlePanel, gbc);
-//		gbc.gridy++;
-		gbc.weighty = 1.0;
-		gbc.fill = GridBagConstraints.BOTH;
-
 		JPanel panel = new JPanel();
 
-		add(panel, gbc);
+		add(panel, BorderLayout.CENTER);
 	}
 
-	@Override
-	public JComponent dragSource() {
-		return (JComponent) Docking.getUI(persistentID);
+//	@Override
+//	public JComponent dragSource() {
+//		return (JComponent) Docking.getUI(persistentID);
 //		return titlePanel;
-	}
+//	}
 
 
 	@Override
