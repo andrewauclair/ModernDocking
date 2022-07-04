@@ -4,8 +4,10 @@ plugins {
     id "com.github.ben-manes.versions" version "0.33.0"
 }
 
-sourceCompatibility = JavaVersion.VERSION_15
-targetCompatibility = JavaVersion.VERSION_15
+allprojects {
+    sourceCompatibility = JavaVersion.VERSION_1_9
+    targetCompatibility = JavaVersion.VERSION_1_9
+}
 
 repositories {
     mavenLocal()

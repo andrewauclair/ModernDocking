@@ -97,15 +97,23 @@ public class DockingOverlay {
 			lastSelectedRegion = rootRegion;
 
 			switch (rootRegion) {
-				case WEST -> size = new Dimension(size.width / 2, size.height);
-				case NORTH -> size = new Dimension(size.width, size.height / 2);
-				case EAST -> {
+				case WEST: {
+					size = new Dimension(size.width / 2, size.height);
+					break;
+				}
+				case NORTH: {
+					size = new Dimension(size.width, size.height / 2);
+					break;
+				}
+				case EAST: {
 					point.x += size.width / 2;
 					size = new Dimension(size.width / 2, size.height);
+					break;
 				}
-				case SOUTH -> {
+				case SOUTH: {
 					point.y += size.height / 2;
 					size = new Dimension(size.width, size.height / 2);
+					break;
 				}
 			}
 
@@ -123,15 +131,23 @@ public class DockingOverlay {
 			lastSelectedRegion = dockableRegion;
 
 			switch (dockableRegion) {
-				case WEST -> size = new Dimension(size.width / 2, size.height);
-				case NORTH -> size = new Dimension(size.width, size.height / 2);
-				case EAST -> {
+				case WEST: {
+					size = new Dimension(size.width / 2, size.height);
+					break;
+				}
+				case NORTH: {
+					size = new Dimension(size.width, size.height / 2);
+					break;
+				}
+				case EAST: {
 					point.x += size.width / 2;
 					size = new Dimension(size.width / 2, size.height);
+					break;
 				}
-				case SOUTH -> {
+				case SOUTH: {
 					point.y += size.height / 2;
 					size = new Dimension(size.width, size.height / 2);
+					break;
 				}
 			}
 

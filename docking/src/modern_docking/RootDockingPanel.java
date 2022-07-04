@@ -182,9 +182,18 @@ public class RootDockingPanel extends DockingPanel {
 	// set a dockable to be unpinned at the given location
 	public void setDockableUnpinned(Dockable dockable, DockableToolbar.Location location) {
 		switch (location) {
-			case WEST -> westToolbar.addDockable(dockable);
-			case SOUTH -> southToolbar.addDockable(dockable);
-			case EAST -> eastToolbar.addDockable(dockable);
+			case WEST: {
+				westToolbar.addDockable(dockable);
+				break;
+			}
+			case SOUTH: {
+				southToolbar.addDockable(dockable);
+				break;
+			}
+			case EAST: {
+				eastToolbar.addDockable(dockable);
+				break;
+			}
 		}
 
 		createContents();
