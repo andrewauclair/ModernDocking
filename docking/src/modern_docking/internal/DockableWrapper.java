@@ -22,7 +22,6 @@ SOFTWARE.
 package modern_docking.internal;
 
 import modern_docking.Dockable;
-import modern_docking.DockingPanel;
 import modern_docking.floating.FloatListener;
 import modern_docking.ui.DockingHeaderUI;
 import modern_docking.ui.HeaderController;

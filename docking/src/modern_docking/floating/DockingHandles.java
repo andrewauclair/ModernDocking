@@ -22,7 +22,7 @@ SOFTWARE.
 package modern_docking.floating;
 
 import modern_docking.Dockable;
-import modern_docking.DockingColors;
+import modern_docking.internal.DockingColors;
 import modern_docking.DockingRegion;
 import modern_docking.RootDockingPanel;
 

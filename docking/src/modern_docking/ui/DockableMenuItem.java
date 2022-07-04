@@ -19,20 +19,39 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package modern_docking;
+package modern_docking.ui;
+
+import modern_docking.Dockable;
+import modern_docking.Docking;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-// Docking panel with docking regions of: north, south, east, west and center
-public abstract class DockingPanel extends JPanel {
-	public abstract void setParent(DockingPanel parent);
+public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListener {
+	private final Dockable dockable;
 
-	public abstract void dock(Dockable dockable, DockingRegion region, double dividerProportion);
+	public DockableMenuItem(Dockable dockable) {
+		this.dockable = dockable;
+		setText(dockable.tabText());
+	}
 
-	// undock the given dockable, returns true if the dockable was found and removed
-	public abstract void undock(Dockable dockable);
+	@Override
+	public void addNotify() {
+		super.addNotify();
 
-	public abstract void replaceChild(DockingPanel child, DockingPanel newChild);
+		addActionListener(this);
+	}
 
-	public abstract void removeChild(DockingPanel child);
+	@Override
+	public void removeNotify() {
+		removeActionListener(this);
+
+		super.removeNotify();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Docking.dock(dockable, null);
+	}
 }

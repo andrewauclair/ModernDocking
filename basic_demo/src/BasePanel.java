@@ -46,13 +46,6 @@ public abstract class BasePanel extends JPanel implements Dockable {
 		add(panel, BorderLayout.CENTER);
 	}
 
-//	@Override
-//	public JComponent dragSource() {
-//		return (JComponent) Docking.getUI(persistentID);
-//		return titlePanel;
-//	}
-
-
 	@Override
 	public String persistentID() {
 		return persistentID;

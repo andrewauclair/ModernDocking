@@ -19,42 +19,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package modern_docking.util;
+package modern_docking.internal;
 
-import modern_docking.internal.DockableToolbar;
+import modern_docking.Dockable;
+import modern_docking.DockingRegion;
 
 import javax.swing.*;
-import java.awt.*;
 
-public class SlideBorder extends JPanel {
-	private final DockableToolbar.Location location;
+// Docking panel with docking regions of: north, south, east, west and center
+public abstract class DockingPanel extends JPanel {
+	public abstract void setParent(DockingPanel parent);
 
-	public SlideBorder(DockableToolbar.Location location) {
-		this.location = location;
-		setCursor(location == DockableToolbar.Location.SOUTH ? Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR) : Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
-	}
+	public abstract void dock(Dockable dockable, DockingRegion region, double dividerProportion);
 
-	@Override
-	public Dimension getMinimumSize() {
-		Dimension size = super.getMinimumSize();
-		if (location == DockableToolbar.Location.SOUTH) {
-			size.height = 6;
-		}
-		else {
-			size.width = 6;
-		}
-		return size;
-	}
+	// undock the given dockable, returns true if the dockable was found and removed
+	public abstract void undock(Dockable dockable);
 
-	@Override
-	public Dimension getPreferredSize() {
-		Dimension size = super.getPreferredSize();
-		if (location == DockableToolbar.Location.SOUTH) {
-			size.height = 6;
-		}
-		else {
-			size.width = 6;
-		}
-		return size;
-	}
+	public abstract void replaceChild(DockingPanel child, DockingPanel newChild);
+
+	public abstract void removeChild(DockingPanel child);
 }

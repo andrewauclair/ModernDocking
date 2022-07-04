@@ -21,7 +21,7 @@ SOFTWARE.
  */
 package modern_docking.floating;
 
-import modern_docking.DockingColors;
+import modern_docking.internal.DockingColors;
 import modern_docking.DockingRegion;
 
 import javax.swing.*;

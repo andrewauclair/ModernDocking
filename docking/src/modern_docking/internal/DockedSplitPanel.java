@@ -23,7 +23,6 @@ package modern_docking.internal;
 
 import modern_docking.Dockable;
 import modern_docking.Docking;
-import modern_docking.DockingPanel;
 import modern_docking.DockingRegion;
 import modern_docking.persist.AppState;
 
@@ -192,7 +191,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 
 	@Override
 	public void dock(Dockable dockable, DockingRegion region, double dividerProportion) {
-		DockableWrapper wrapper = Docking.getWrapper(dockable);
+		DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
 
 		// docking to the center of a split isn't something we allow
 		// wouldn't be difficult to support, but isn't a complication we want in this framework

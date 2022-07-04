@@ -24,6 +24,9 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import modern_docking.event.DockingListener;
+import modern_docking.internal.DockingColors;
+import modern_docking.internal.DockingInternal;
+import modern_docking.internal.DockingListeners;
 import modern_docking.layouts.DockingLayout;
 import modern_docking.layouts.FullAppLayout;
 import modern_docking.layouts.FullAppLayoutXML;
@@ -217,7 +220,7 @@ public class MainFrame extends JFrame {
 	private JMenuItem actionListenDock(String persistentID) {
 		JCheckBoxMenuItem item = new JCheckBoxMenuItem(persistentID);
 		item.addActionListener(e -> {
-			Dockable dockable = Docking.getDockable(persistentID);
+			Dockable dockable = DockingInternal.getDockable(persistentID);
 
 			if (!Docking.isDocked(dockable)) {
 				Docking.dock(dockable, this, DockingRegion.SOUTH);

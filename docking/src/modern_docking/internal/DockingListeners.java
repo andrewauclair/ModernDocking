@@ -19,8 +19,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package modern_docking;
+package modern_docking.internal;
 
+import modern_docking.Dockable;
 import modern_docking.event.DockingListener;
 import modern_docking.event.MaximizeListener;
 
@@ -42,7 +43,7 @@ public class DockingListeners {
 	}
 
 	// package private function to fire an event
-	static void fireMaximizeEvent(Dockable dockable, boolean maximized) {
+	public static void fireMaximizeEvent(Dockable dockable, boolean maximized) {
 		maximizeListeners.forEach(listener -> listener.maximized(dockable, maximized));
 	}
 
@@ -57,21 +58,21 @@ public class DockingListeners {
 	}
 
 	// package private function to fire docked event
-	static void fireDockedEvent(Dockable dockable) {
+	public static void fireDockedEvent(Dockable dockable) {
 		dockingListeners.forEach(listener -> listener.docked(dockable.persistentID()));
 	}
 
 	// package private function to fire undocked event
-	static void fireUndockedEvent(Dockable dockable) {
+	public static void fireUndockedEvent(Dockable dockable) {
 		dockingListeners.forEach(listener -> listener.undocked(dockable.persistentID()));
 	}
 
 	// package private function to fire auto undocked event
-	static void fireAutoUndockedEvent(Dockable dockable) {
+	public static void fireAutoUndockedEvent(Dockable dockable) {
 		dockingListeners.forEach(listener -> listener.autoUndocked(dockable.persistentID()));
 	}
 
-	static void fireUnpinnedEvent(Dockable dockable) {
+	public static void fireUnpinnedEvent(Dockable dockable) {
 		dockingListeners.forEach(listener -> listener.unpinned(dockable.persistentID()));
 	}
 }

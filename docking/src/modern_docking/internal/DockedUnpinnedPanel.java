@@ -22,7 +22,6 @@ SOFTWARE.
 package modern_docking.internal;
 
 import modern_docking.Dockable;
-import modern_docking.DockableToolbar;
 import modern_docking.Docking;
 import modern_docking.RootDockingPanel;
 import modern_docking.util.SlideBorder;
@@ -54,7 +53,7 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener, Mo
 		gbc.gridy = 0;
 
 
-		DockedSimplePanel panel = new DockedSimplePanel(Docking.getWrapper(dockable));
+		DockedSimplePanel panel = new DockedSimplePanel(DockingInternal.getWrapper(dockable));
 		SlideBorder slideBorder = new SlideBorder(toolbar.getDockedLocation());
 
 		if (toolbar.getDockedLocation() == DockableToolbar.Location.SOUTH) {

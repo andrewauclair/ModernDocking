@@ -22,11 +22,6 @@ SOFTWARE.
 package docking.ui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import modern_docking.Dockable;
-import modern_docking.Docking;
-import modern_docking.DockingListeners;
-import modern_docking.event.DockingListener;
-import modern_docking.event.MaximizeListener;
 import modern_docking.ui.DockingHeaderUI;
 import modern_docking.ui.HeaderController;
 import modern_docking.ui.HeaderModel;

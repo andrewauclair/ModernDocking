@@ -19,8 +19,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package modern_docking;
+package modern_docking.internal;
 
+import modern_docking.Dockable;
+import modern_docking.Docking;
+import modern_docking.RootDockingPanel;
 import modern_docking.internal.DockableWrapper;
 import modern_docking.internal.DockedUnpinnedPanel;
 import modern_docking.util.RotatedIcon;
@@ -131,7 +134,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 
 	public void addDockable(Dockable dockable) {
 		if (!hasDockable(dockable)) {
-			DockableWrapper wrapper = Docking.getWrapper(dockable);
+			DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
 
 			JToggleButton button = new JToggleButton();
 

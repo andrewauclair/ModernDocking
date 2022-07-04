@@ -23,6 +23,8 @@ package modern_docking.floating;
 
 import modern_docking.*;
 import modern_docking.internal.DockableWrapper;
+import modern_docking.internal.DockingPanel;
+import modern_docking.internal.FloatingFrame;
 import modern_docking.persist.AppState;
 import modern_docking.persist.RootDockState;
 

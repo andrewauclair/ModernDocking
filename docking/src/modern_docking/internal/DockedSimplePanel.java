@@ -23,7 +23,6 @@ package modern_docking.internal;
 
 import modern_docking.Dockable;
 import modern_docking.Docking;
-import modern_docking.DockingPanel;
 import modern_docking.DockingRegion;
 
 import javax.swing.*;
@@ -64,7 +63,7 @@ public class DockedSimplePanel extends DockingPanel implements MouseListener {
 	public void dock(Dockable dockable, DockingRegion region, double dividerProportion) {
 		// docking to CENTER: Simple -> Tabbed
 		// docking else where: Simple -> Split
-		DockableWrapper wrapper = Docking.getWrapper(dockable);
+		DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
 		wrapper.setFrame(this.dockable.getFrame());
 
 		if (region == DockingRegion.CENTER) {

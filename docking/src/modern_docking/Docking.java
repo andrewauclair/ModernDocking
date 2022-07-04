@@ -26,14 +26,14 @@ import modern_docking.floating.FloatListener;
 import modern_docking.internal.*;
 import modern_docking.layouts.*;
 import modern_docking.persist.*;
-import modern_docking.ui.DockingHeaderUI;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.List;
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static modern_docking.internal.DockingInternal.getDockable;
+import static modern_docking.internal.DockingInternal.getWrapper;
 
 // TODO find a good solution for where to dock new dockables. For example, I might select a view menu item which docks a certain dockable, that dockable should go in a logical location which is entirely app dependent (might depend on what other dockables are docked)
 
@@ -43,8 +43,6 @@ import java.util.stream.Collectors;
 // register and dock/undock dockables here
 public class Docking implements ComponentListener, WindowStateListener {
 	public static Insets frameBorderSizes = new Insets(0, 0, 0, 0);
-
-	private final Map<String, DockableWrapper> dockables = new HashMap<>();
 
 	private final Map<JFrame, RootDockingPanel> rootPanels = new HashMap<>();
 
@@ -113,17 +111,12 @@ public class Docking implements ComponentListener, WindowStateListener {
 	}
 
 	public static void registerDockable(Dockable dockable) {
-		if (instance.dockables.containsKey(dockable.persistentID())) {
-			throw new DockableRegistrationFailureException("Registration for Dockable failed. Persistent ID " + dockable.persistentID() + " already exists.");
-		}
-		((Component) dockable).setName(dockable.persistentID());
-		instance.dockables.put(dockable.persistentID(), new DockableWrapper(dockable));
+		DockingInternal.registerDockable(dockable);
 	}
 
 	// Dockables must be deregistered so it can be properly disposed
 	public static void deregisterDockable(Dockable dockable) {
-		getWrapper(dockable).removedListeners();
-		instance.dockables.remove(dockable.persistentID());
+		DockingInternal.deregisterDockable(dockable);
 	}
 
 	// registration function for DockingPanel
@@ -370,7 +363,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 	}
 
 	public static void dock(Dockable source, Dockable target, DockingRegion region, double dividerProportion) {
-		DockableWrapper wrapper = Docking.getWrapper(target);
+		DockableWrapper wrapper = getWrapper(target);
 		wrapper.getParent().dock(source, region, dividerProportion);
 
 		getWrapper(source).setFrame(wrapper.getFrame());
@@ -462,21 +455,6 @@ public class Docking implements ComponentListener, WindowStateListener {
 		return frame != instance.mainFrame && !instance.maximizeRestoreLayout.containsKey(frame);
 	}
 
-	public static Dockable getDockable(String persistentID) {
-		if (instance.dockables.containsKey(persistentID)) {
-			return instance.dockables.get(persistentID).getDockable();
-		}
-		throw new DockableRegistrationFailureException("Dockable with Persistent ID " + persistentID + " has not been registered.");
-	}
-
-	// internal function to get the dockable wrapper
-	public static DockableWrapper getWrapper(Dockable dockable) {
-		if (instance.dockables.containsKey(dockable.persistentID())) {
-			return instance.dockables.get(dockable.persistentID());
-		}
-		throw new DockableRegistrationFailureException("Dockable with Persistent ID " + dockable.persistentID() + " has not been registered.");
-	}
-
 	public static RootDockState getRootState(JFrame frame) {
 		RootDockingPanel root = rootForFrame(frame);
 
@@ -542,12 +520,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 		AppState.setPaused(false);
 		AppState.persist();
 
-		// everything has been restored, go through the list of dockables and fire docked events for the ones that are docked
-		for (DockableWrapper wrapper : instance.dockables.values()) {
-			if (isDocked(wrapper.getDockable())) {
-				DockingListeners.fireDockedEvent(wrapper.getDockable());
-			}
-		}
+		DockingInternal.fireDockedEventForAll();
 	}
 
 	private static void restoreLayoutFromFull(JFrame frame, DockingLayout layout) {
@@ -837,14 +810,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 
 			instance.maximizeRestoreLayout.remove(frame);
 
-			// everything has been restored, go through the list of dockables and fire docked events for the ones that are docked
-			List<DockableWrapper> dockables = instance.dockables.values().stream()
-					.filter(wrapper -> wrapper.getFrame() == frame)
-					.collect(Collectors.toList());
-
-			for (DockableWrapper wrapper : dockables) {
-				DockingListeners.fireDockedEvent(wrapper.getDockable());
-			}
+			DockingInternal.fireDockedEventForFrame(frame);
 		}
 	}
 
@@ -921,10 +887,5 @@ public class Docking implements ComponentListener, WindowStateListener {
 	@Override
 	public void windowStateChanged(WindowEvent e) {
 		AppState.persist();
-	}
-
-	// TODO this is temporary. I think the drag source will become the header UI, which is all internal to docking, which means we can simplify some stuff
-	public static DockingHeaderUI getUI(String persistentID) {
-		return getWrapper(getDockable(persistentID)).getUI();
 	}
 }

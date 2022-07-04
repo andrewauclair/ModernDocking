@@ -25,6 +25,7 @@ import modern_docking.*;
 import modern_docking.internal.DockedSimplePanel;
 import modern_docking.internal.DockedSplitPanel;
 import modern_docking.internal.DockedTabbedPanel;
+import modern_docking.internal.DockingPanel;
 
 import javax.swing.*;
 import java.util.ArrayList;

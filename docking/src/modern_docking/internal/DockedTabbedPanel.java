@@ -23,7 +23,6 @@ package modern_docking.internal;
 
 import modern_docking.Dockable;
 import modern_docking.Docking;
-import modern_docking.DockingPanel;
 import modern_docking.DockingRegion;
 
 import javax.swing.*;
@@ -81,7 +80,7 @@ public class DockedTabbedPanel extends DockingPanel {
 
 	@Override
 	public void dock(Dockable dockable, DockingRegion region, double dividerProportion) {
-		DockableWrapper wrapper = Docking.getWrapper(dockable);
+		DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
 		wrapper.setFrame(panels.get(0).getFrame());
 
 		if (region == DockingRegion.CENTER) {

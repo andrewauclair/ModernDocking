@@ -23,7 +23,7 @@ package modern_docking.ui;
 
 import modern_docking.Dockable;
 import modern_docking.Docking;
-import modern_docking.DockingListeners;
+import modern_docking.internal.DockingListeners;
 import modern_docking.event.DockingListener;
 import modern_docking.event.MaximizeListener;
 

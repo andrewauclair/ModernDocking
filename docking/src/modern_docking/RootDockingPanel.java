@@ -21,7 +21,10 @@ SOFTWARE.
  */
 package modern_docking;
 
+import modern_docking.internal.DockableToolbar;
 import modern_docking.internal.DockedSimplePanel;
+import modern_docking.internal.DockingInternal;
+import modern_docking.internal.DockingPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -124,8 +127,8 @@ public class RootDockingPanel extends DockingPanel {
 			panel.dock(dockable, region, dividerProportion);
 		}
 		else {
-			setPanel(new DockedSimplePanel(Docking.getWrapper(dockable)));
-			Docking.getWrapper(dockable).setFrame(frame);
+			setPanel(new DockedSimplePanel(DockingInternal.getWrapper(dockable)));
+			DockingInternal.getWrapper(dockable).setFrame(frame);
 		}
 	}
 
