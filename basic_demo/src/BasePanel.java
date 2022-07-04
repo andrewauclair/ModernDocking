@@ -19,8 +19,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-import docking.Dockable;
-import docking.Docking;
+import modern_docking.Dockable;
+import modern_docking.Docking;
 import docking.ui.FlatLafDragHeader;
 
 import javax.swing.*;

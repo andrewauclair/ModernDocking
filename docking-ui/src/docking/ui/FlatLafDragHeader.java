@@ -22,11 +22,11 @@ SOFTWARE.
 package docking.ui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import docking.Dockable;
-import docking.Docking;
-import docking.DockingListeners;
-import event.DockingListener;
-import event.MaximizeListener;
+import modern_docking.Dockable;
+import modern_docking.Docking;
+import modern_docking.DockingListeners;
+import modern_docking.event.DockingListener;
+import modern_docking.event.MaximizeListener;
 
 import javax.swing.*;
 import java.awt.*;

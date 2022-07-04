@@ -19,48 +19,22 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-import modern_docking.DockingRegion;
+package modern_docking.persist;
 
+import modern_docking.DockedTabbedPanel;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SimplePanel extends BasePanel {
-	public SimplePanel(String title, String persistentID) {
-		super(title, persistentID);
+public class TabState implements DockingState {
+	private final List<String> persistentIDs = new ArrayList<>();
+
+	public TabState(DockedTabbedPanel panel) {
+		persistentIDs.addAll(panel.persistentIDs());
 	}
 
-	@Override
-	public boolean floatingAllowed() {
-		return true;
-	}
-
-	@Override
-	public boolean limitToRoot() {
-		return false;
-	}
-
-	@Override
-	public List<DockingRegion> disallowedRegions() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public boolean allowClose() {
-		return true;
-	}
-
-	@Override
-	public boolean allowPinning() {
-		return false;
-	}
-
-	@Override
-	public boolean allowMinMax() {
-		return true;
-	}
-
-	@Override
-	public boolean hasMoreOptions() {
-		return false;
+	public List<String> getPersistentIDs() {
+		return Collections.unmodifiableList(persistentIDs);
 	}
 }

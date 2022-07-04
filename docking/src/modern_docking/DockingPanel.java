@@ -19,48 +19,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-import modern_docking.DockingRegion;
+package modern_docking;
 
-import java.util.Collections;
-import java.util.List;
+import javax.swing.*;
 
-public class SimplePanel extends BasePanel {
-	public SimplePanel(String title, String persistentID) {
-		super(title, persistentID);
-	}
+// Docking panel with docking regions of: north, south, east, west and center
+public abstract class DockingPanel extends JPanel {
+	public abstract void setParent(DockingPanel parent);
 
-	@Override
-	public boolean floatingAllowed() {
-		return true;
-	}
+	public abstract void dock(Dockable dockable, DockingRegion region, double dividerProportion);
 
-	@Override
-	public boolean limitToRoot() {
-		return false;
-	}
+	// undock the given dockable, returns true if the dockable was found and removed
+	public abstract void undock(Dockable dockable);
 
-	@Override
-	public List<DockingRegion> disallowedRegions() {
-		return Collections.emptyList();
-	}
+	public abstract void replaceChild(DockingPanel child, DockingPanel newChild);
 
-	@Override
-	public boolean allowClose() {
-		return true;
-	}
-
-	@Override
-	public boolean allowPinning() {
-		return false;
-	}
-
-	@Override
-	public boolean allowMinMax() {
-		return true;
-	}
-
-	@Override
-	public boolean hasMoreOptions() {
-		return false;
-	}
+	public abstract void removeChild(DockingPanel child);
 }

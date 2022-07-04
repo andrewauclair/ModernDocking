@@ -23,12 +23,12 @@ SOFTWARE.
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import docking.*;
-import event.DockingListener;
-import layouts.DockingLayout;
-import layouts.FullAppLayout;
-import layouts.FullAppLayoutXML;
-import persist.AppState;
+import modern_docking.event.DockingListener;
+import modern_docking.layouts.DockingLayout;
+import modern_docking.layouts.FullAppLayout;
+import modern_docking.layouts.FullAppLayoutXML;
+import modern_docking.*;
+import modern_docking.persist.AppState;
 
 import javax.swing.*;
 import java.awt.*;
