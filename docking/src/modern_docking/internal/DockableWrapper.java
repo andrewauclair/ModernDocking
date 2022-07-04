@@ -24,7 +24,6 @@ package modern_docking.internal;
 import modern_docking.Dockable;
 import modern_docking.DockingPanel;
 import modern_docking.floating.FloatListener;
-import modern_docking.internal.DisplayPanel;
 import modern_docking.ui.DockingHeaderUI;
 import modern_docking.ui.HeaderController;
 import modern_docking.ui.HeaderModel;
@@ -40,7 +39,7 @@ public class DockableWrapper {
 	private final Dockable dockable;
 
 	private FloatListener floatListener;
-	private DockingHeaderUI headerUI;
+	private final DockingHeaderUI headerUI;
 
 	private final DisplayPanel displayPanel;
 

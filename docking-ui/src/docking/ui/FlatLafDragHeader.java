@@ -27,6 +27,9 @@ import modern_docking.Docking;
 import modern_docking.DockingListeners;
 import modern_docking.event.DockingListener;
 import modern_docking.event.MaximizeListener;
+import modern_docking.ui.DockingHeaderUI;
+import modern_docking.ui.HeaderController;
+import modern_docking.ui.HeaderModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,9 +37,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 // TODO create a "model" of the header that this JPanel implements against. that way users can create their own and the logic that we want to happen is in the model
-public class FlatLafDragHeader extends JPanel implements MaximizeListener, DockingListener {
+public class FlatLafDragHeader extends JPanel implements DockingHeaderUI {
 	private final JPopupMenu settings = new JPopupMenu();
-	private final Dockable dockable;
+//	private final Dockable dockable;
 
 	private final JMenuItem pinned = new JMenuItem("Pinned");
 	private final JMenuItem unpinned = new JMenuItem("Unpinned");
@@ -44,13 +47,14 @@ public class FlatLafDragHeader extends JPanel implements MaximizeListener, Docki
 
 	private final JLabel maximizedIndicator = new JLabel("Maximized");
 	private final JCheckBoxMenuItem maximizeOption = new JCheckBoxMenuItem("Maximize");
+	private final HeaderController headerController;
+	private final HeaderModel headerModel;
 
-	public FlatLafDragHeader(Dockable dockable, String title) {
-		this.dockable = dockable;
+	public FlatLafDragHeader(HeaderController headerController, HeaderModel headerModel) {
+		this.headerController = headerController;
+		this.headerModel = headerModel;
+//		this.dockable = dockable;
 		setOpaque(true);
-
-		DockingListeners.addMaximizeListener(this);
-		DockingListeners.addDockingListener(this);
 
 		FlatSVGIcon settings = new FlatSVGIcon("icons/settings.svg");
 
@@ -60,7 +64,7 @@ public class FlatLafDragHeader extends JPanel implements MaximizeListener, Docki
 		FlatSVGIcon closeIcon = new FlatSVGIcon("icons/x.svg");
 		JButton close = new JButton(closeIcon);
 
-		close.addActionListener(e -> Docking.undock(dockable));
+		close.addActionListener(e -> headerController.close());
 
 		setupButton(more);
 		setupButton(close);
@@ -89,7 +93,7 @@ public class FlatLafDragHeader extends JPanel implements MaximizeListener, Docki
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 
-		JLabel label = new JLabel(title);
+		JLabel label = new JLabel(headerModel.titleText());
 		label.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 0));
 		label.setFont(label.getFont().deriveFont(Font.BOLD));
 
@@ -106,30 +110,30 @@ public class FlatLafDragHeader extends JPanel implements MaximizeListener, Docki
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.weightx = 0;
 
-		if (dockable.hasMoreOptions() || dockable.allowMinMax() || dockable.allowPinning()) {
+		if (headerModel.hasMoreOptions() || headerModel.isMaximizeAllowed() || headerModel.isPinnedAllowed()) {
 			addOptions();
 
 			add(more, gbc);
 			gbc.gridx++;
 		}
-		if (dockable.allowClose()) {
+		if (headerModel.isCloseAllowed()) {
 			add(close, gbc);
 			gbc.gridx++;
 		}
 	}
 
 	private void addOptions() {
-		dockable.addMoreOptions(settings);
+		headerModel.addMoreOptions(settings);
 
 		if (settings.getComponentCount() > 0) {
 			settings.addSeparator();
 		}
 
-		window.setEnabled(dockable.floatingAllowed());
+		window.setEnabled(headerModel.isFloatingAllowed());
 
-		pinned.addActionListener(e -> Docking.pinDockable(dockable));
-		unpinned.addActionListener(e -> Docking.unpinDockable(dockable));
-		window.addActionListener(e -> Docking.newWindow(dockable));
+		pinned.addActionListener(e -> headerController.pinDockable());
+		unpinned.addActionListener(e -> headerController.unpinDockable());
+		window.addActionListener(e -> headerController.newWindow());
 
 		JMenu viewMode = new JMenu("View Mode");
 		viewMode.add(pinned);
@@ -142,16 +146,16 @@ public class FlatLafDragHeader extends JPanel implements MaximizeListener, Docki
 		settings.add(maximizeOption);
 
 		maximizeOption.addActionListener(e -> {
-			boolean maxed = Docking.isMaximized(dockable);
+			boolean maxed = headerModel.isMaximized();
 
 			maximizeOption.setSelected(!maxed);
 			maximizedIndicator.setVisible(!maxed);
 
 			if (maxed) {
-				Docking.minimize(dockable);
+				headerController.minimize();
 			}
 			else {
-				Docking.maximize(dockable);
+				headerController.maximize();
 			}
 		});
 	}
@@ -180,30 +184,11 @@ public class FlatLafDragHeader extends JPanel implements MaximizeListener, Docki
 	}
 
 	@Override
-	public void maximized(Dockable dockable, boolean maximized) {
-		if (this.dockable == dockable) {
-			maximizedIndicator.setVisible(maximized);
-			maximizeOption.setSelected(maximized);
-		}
-	}
+	public void update() {
+		maximizedIndicator.setVisible(headerModel.isMaximized());
+		maximizeOption.setSelected(headerModel.isMaximized());
 
-	@Override
-	public void docked(String persistentID) {
-		if (dockable.persistentID().equals(persistentID)) {
-			pinned.setEnabled(Docking.pinningAllowed(dockable) && Docking.isUnpinned(dockable));
-			unpinned.setEnabled(Docking.pinningAllowed(dockable) && !Docking.isUnpinned(dockable));
-		}
-	}
-
-	@Override
-	public void undocked(String persistentID) {
-	}
-
-	@Override
-	public void unpinned(String persistentID) {
-		if (dockable.persistentID().equals(persistentID)) {
-			pinned.setEnabled(Docking.pinningAllowed(dockable) && Docking.isUnpinned(dockable));
-			unpinned.setEnabled(Docking.pinningAllowed(dockable) && !Docking.isUnpinned(dockable));
-		}
+		pinned.setEnabled(headerModel.isPinnedAllowed() && headerModel.isUnpinned());
+		unpinned.setEnabled(headerModel.isPinnedAllowed() && !headerModel.isUnpinned());
 	}
 }
