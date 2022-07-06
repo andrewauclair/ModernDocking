@@ -23,15 +23,16 @@ SOFTWARE.
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import modern_docking.event.DockingListener;
+import modern_docking.Dockable;
+import modern_docking.Docking;
+import modern_docking.DockingRegion;
+import modern_docking.RootDockingPanel;
 import modern_docking.internal.DockingColors;
-import modern_docking.internal.DockingInternal;
-import modern_docking.internal.DockingListeners;
 import modern_docking.layouts.DockingLayout;
 import modern_docking.layouts.FullAppLayout;
 import modern_docking.layouts.FullAppLayoutXML;
-import modern_docking.*;
 import modern_docking.persist.AppState;
+import modern_docking.ui.DockableMenuItem;
 
 import javax.swing.*;
 import java.awt.*;
@@ -127,17 +128,17 @@ public class MainFrame extends JFrame {
 		JMenu view = new JMenu("View");
 		menuBar.add(view);
 
-		view.add(actionListenDock("one"));
-		view.add(actionListenDock("two"));
-		view.add(actionListenDock("three"));
-		view.add(actionListenDock("four"));
-		view.add(actionListenDock("five"));
-		view.add(actionListenDock("six"));
-		view.add(actionListenDock("seven"));
-		view.add(actionListenDock("eight"));
-		view.add(actionListenDock("explorer"));
-		view.add(actionListenDock("output"));
-		view.add(actionListenDock("always-displayed"));
+		view.add(actionListenDock(one));
+		view.add(actionListenDock(two));
+		view.add(actionListenDock(three));
+		view.add(actionListenDock(four));
+		view.add(actionListenDock(five));
+		view.add(actionListenDock(six));
+		view.add(actionListenDock(seven));
+		view.add(actionListenDock(eight));
+		view.add(actionListenDock(explorer));
+		view.add(actionListenDock(output));
+		view.add(actionListenDock(alwaysDisplayed));
 
 		JToolBar toolBar = new JToolBar();
 		JButton test1 = new JButton("Test1");
@@ -217,41 +218,42 @@ public class MainFrame extends JFrame {
 		SwingUtilities.invokeLater(save::doClick);
 	}
 
-	private JMenuItem actionListenDock(String persistentID) {
-		JCheckBoxMenuItem item = new JCheckBoxMenuItem(persistentID);
-		item.addActionListener(e -> {
-			Dockable dockable = DockingInternal.getDockable(persistentID);
-
-			if (!Docking.isDocked(dockable)) {
-				Docking.dock(dockable, this, DockingRegion.SOUTH);
-			}
-			else {
-				Docking.bringToFront(dockable);
-			}
-			item.setSelected(Docking.isDocked(dockable));
-		});
-
-		final String id = persistentID;
-
-		DockingListeners.addDockingListener(new DockingListener() {
-			@Override
-			public void docked(String persistentID) {
-				if (id.equals(persistentID)) {
-					item.setSelected(true);
-				}
-			}
-
-			@Override
-			public void undocked(String persistentID) {
-				if (id.equals(persistentID)) {
-					item.setSelected(false);
-				}
-			}
-
-			@Override
-			public void unpinned(String persistentID) {
-			}
-		});
+	private JMenuItem actionListenDock(Dockable dockable) {
+//		JCheckBoxMenuItem item = new JCheckBoxMenuItem(persistentID);
+//		item.addActionListener(e -> {
+//			Dockable dockable = DockingInternal.getDockable(persistentID);
+//
+//			if (!Docking.isDocked(dockable)) {
+//				Docking.dock(dockable, this, DockingRegion.SOUTH);
+//			}
+//			else {
+//				Docking.bringToFront(dockable);
+//			}
+//			item.setSelected(Docking.isDocked(dockable));
+//		});
+//
+//		final String id = persistentID;
+//
+//		DockingListeners.addDockingListener(new DockingListener() {
+//			@Override
+//			public void docked(String persistentID) {
+//				if (id.equals(persistentID)) {
+//					item.setSelected(true);
+//				}
+//			}
+//
+//			@Override
+//			public void undocked(String persistentID) {
+//				if (id.equals(persistentID)) {
+//					item.setSelected(false);
+//				}
+//			}
+//
+//			@Override
+//			public void unpinned(String persistentID) {
+//			}
+//		});
+		JCheckBoxMenuItem item = new DockableMenuItem(dockable.persistentID(), dockable.tabText(), this);
 		return item;
 	}
 
