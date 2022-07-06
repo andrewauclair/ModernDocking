@@ -24,15 +24,13 @@ package modern_docking.ui;
 import modern_docking.Dockable;
 import modern_docking.Docking;
 import modern_docking.DockingRegion;
-import modern_docking.event.DockingListener;
 import modern_docking.internal.DockingInternal;
-import modern_docking.internal.DockingListeners;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListener, DockingListener {
+public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListener {
 	private final String persistentID;
 	private final JFrame frame;
 
@@ -42,17 +40,14 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 		this.frame = frame;
 
 		addActionListener(this);
-		DockingListeners.addDockingListener(this);
 	}
 
 	@Override
-	public void setVisible(boolean visible) {
-		super.setVisible(visible);
+	public void addNotify() {
+		super.addNotify();
 
-		if (visible) {
-			Dockable dockable = DockingInternal.getDockable(persistentID);
-			setSelected(Docking.isDocked(dockable));
-		}
+		Dockable dockable = DockingInternal.getDockable(persistentID);
+		setSelected(Docking.isDocked(dockable));
 	}
 
 	@Override
@@ -66,23 +61,5 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 			Docking.bringToFront(dockable);
 		}
 		setSelected(Docking.isDocked(dockable));
-	}
-
-	@Override
-	public void docked(String persistentID) {
-		if (this.persistentID.equals(persistentID)) {
-			setSelected(true);
-		}
-	}
-
-	@Override
-	public void undocked(String persistentID) {
-		if (this.persistentID.equals(persistentID)) {
-			setSelected(false);
-		}
-	}
-
-	@Override
-	public void unpinned(String persistentID) {
 	}
 }
