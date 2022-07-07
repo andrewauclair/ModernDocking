@@ -21,5 +21,5 @@ SOFTWARE.
  */
 package modern_docking.persist;
 
-public interface DockingState {
+public interface DockableState {
 }

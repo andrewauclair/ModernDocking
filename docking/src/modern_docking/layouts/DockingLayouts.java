@@ -22,10 +22,7 @@ SOFTWARE.
 package modern_docking.layouts;
 
 import modern_docking.*;
-import modern_docking.internal.DockedSimplePanel;
-import modern_docking.internal.DockedSplitPanel;
-import modern_docking.internal.DockedTabbedPanel;
-import modern_docking.internal.DockingPanel;
+import modern_docking.internal.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -51,7 +48,7 @@ public class DockingLayouts {
 
 
 	public static DockingLayout layoutFromRoot(RootDockingPanel root) {
-		return new DockingLayout(Docking.frameForRoot(root), panelToNode(root.getPanel()));
+		return new DockingLayout(DockingComponentUtils.frameForRoot(root), panelToNode(root.getPanel()));
 	}
 
 	private static DockingLayoutNode panelToNode(DockingPanel panel) {

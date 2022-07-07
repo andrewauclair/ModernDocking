@@ -25,9 +25,9 @@ import modern_docking.internal.DockedSimplePanel;
 import modern_docking.internal.DockedSplitPanel;
 import modern_docking.internal.DockedTabbedPanel;
 
-public class SplitState implements DockingState {
-	private final DockingState left;
-	private final DockingState right;
+public class SplitState implements DockableState {
+	private final DockableState left;
+	private final DockableState right;
 
 	private final int orientation;
 	private final int dividerLocation;
@@ -67,11 +67,11 @@ public class SplitState implements DockingState {
 		}
 	}
 
-	public DockingState getLeft() {
+	public DockableState getLeft() {
 		return left;
 	}
 
-	public DockingState getRight() {
+	public DockableState getRight() {
 		return right;
 	}
 

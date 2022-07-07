@@ -30,12 +30,20 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+// Special JCheckBoxMenuItem that handles updating the checkbox for us based on the docking state of the dockable
 public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListener {
 	private final String persistentID;
 	private final JFrame frame;
 
+	/**
+	 *
+	 * @param persistentID The dockable this menu item refers to
+	 * @param text The display text for this menu item
+	 * @param frame The frame to display this dockable on by default
+	 */
 	public DockableMenuItem(String persistentID, String text, JFrame frame) {
 		super(text);
+
 		this.persistentID = persistentID;
 		this.frame = frame;
 
@@ -46,6 +54,7 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 	public void addNotify() {
 		super.addNotify();
 
+		// update the menu item, it's about to be displayed
 		Dockable dockable = DockingInternal.getDockable(persistentID);
 		setSelected(Docking.isDocked(dockable));
 	}
@@ -54,12 +63,16 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 	public void actionPerformed(ActionEvent e) {
 		Dockable dockable = DockingInternal.getDockable(persistentID);
 
-		if (!Docking.isDocked(dockable)) {
-			Docking.dock(dockable, frame, DockingRegion.SOUTH);
-		}
-		else {
+		// if dockable is already docked then bring it to the front
+		// else, dock it
+		if (Docking.isDocked(dockable)) {
 			Docking.bringToFront(dockable);
 		}
+		else {
+			Docking.dock(dockable, frame, DockingRegion.SOUTH);
+		}
+
+		// set this menu item to the state of the dockable, should be docked at this point
 		setSelected(Docking.isDocked(dockable));
 	}
 }

@@ -23,6 +23,7 @@ package modern_docking.floating;
 
 import modern_docking.*;
 import modern_docking.internal.DockableWrapper;
+import modern_docking.internal.DockingComponentUtils;
 import modern_docking.internal.DockingPanel;
 import modern_docking.internal.FloatingFrame;
 import modern_docking.persist.AppState;
@@ -97,7 +98,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		floatingFrame.setLocation(framePos);
 
 		// find the frame at our current position
-		JFrame frame = Docking.findRootAtScreenPos(mousePos);
+		JFrame frame = DockingComponentUtils.findRootAtScreenPos(mousePos);
 
 		// findRootAtScreenPos has a tendency to find the last added frame at the position. meaning it ignores Z order. override it here because we know better.
 		if (currentTopFrame != null && currentTopFrame.getBounds().contains(mousePos)) {
@@ -120,7 +121,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			}
 		}
 
-		Dockable dockable = Docking.findDockableAtScreenPos(mousePos, currentTopFrame);
+		Dockable dockable = DockingComponentUtils.findDockableAtScreenPos(mousePos, currentTopFrame);
 
 		if (activeUtilsFrame != null) {
 			activeUtilsFrame.setFloating(floatingDockable.getDockable());
@@ -155,17 +156,17 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		dragOffset.x = Math.max(5, dragOffset.x);
 
 		currentTargetFrame = null;
-		originalFrame = Docking.findFrameForDockable(floatingDockable.getDockable());
+		originalFrame = DockingComponentUtils.findFrameForDockable(floatingDockable.getDockable());
 
-		rootState = Docking.getRootState(originalFrame);
+		rootState = DockingState.getRootState(originalFrame);
 
-		RootDockingPanel currentRoot = Docking.rootForFrame(originalFrame);
+		RootDockingPanel currentRoot = DockingComponentUtils.rootForFrame(originalFrame);
 
 		floatingFrame = new TempFloatingFrame(floatingDockable.getDockable(), (JComponent) floatingDockable.getUI());
 
 		floatingDockable.getParent().undock(floatingDockable.getDockable());
 
-		Docking.removeIllegalFloats(originalFrame);
+		DockingComponentUtils.removeIllegalFloats(originalFrame);
 
 		if (originalFrame != null && currentRoot != null && currentRoot.getPanel() == null && Docking.canDisposeFrame(originalFrame)) {
 			frameToDispose = originalFrame;
@@ -201,10 +202,10 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 		Point point = MouseInfo.getPointerInfo().getLocation();
 
-		RootDockingPanel root = currentTopFrame == null ? null : Docking.rootForFrame(currentTopFrame);
+		RootDockingPanel root = currentTopFrame == null ? null : DockingComponentUtils.rootForFrame(currentTopFrame);
 
-		DockingPanel dockingPanel = Docking.findDockingPanelAtScreenPos(point, currentTopFrame);
-		Dockable dockableAtPos = Docking.findDockableAtScreenPos(point, currentTopFrame);
+		DockingPanel dockingPanel = DockingComponentUtils.findDockingPanelAtScreenPos(point, currentTopFrame);
+		Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(point, currentTopFrame);
 
 		DockingRegion region = activeUtilsFrame != null ? activeUtilsFrame.getRegion(mousePos) : DockingRegion.CENTER;
 
@@ -218,7 +219,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			Docking.dock(floatingDockable.getDockable(), currentTopFrame, region);
 		}
 		else if (!floatingDockable.getDockable().floatingAllowed()) {
-			Docking.restoreState(originalFrame, rootState);
+			DockingState.restoreState(originalFrame, rootState);
 		}
 		else {
 			new FloatingFrame(floatingDockable.getDockable(), floatingFrame);

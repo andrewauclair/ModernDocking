@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TabState implements DockingState {
+public class TabState implements DockableState {
 	private final List<String> persistentIDs = new ArrayList<>();
 
 	public TabState(DockedTabbedPanel panel) {

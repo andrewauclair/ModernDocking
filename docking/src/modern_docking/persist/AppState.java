@@ -22,6 +22,7 @@ SOFTWARE.
 package modern_docking.persist;
 
 import modern_docking.Docking;
+import modern_docking.DockingState;
 import modern_docking.layouts.FullAppLayout;
 import modern_docking.layouts.FullAppLayoutXML;
 
@@ -78,7 +79,7 @@ public class AppState {
 					if (!paused) {
 						System.out.println("persist full docking layout");
 
-						FullAppLayout layout = Docking.getFullLayout();
+						FullAppLayout layout = DockingState.getFullLayout();
 
 						FullAppLayoutXML.saveLayoutToFile(autoPersistFile, layout);
 					}
@@ -103,7 +104,7 @@ public class AppState {
 		FullAppLayout layout = FullAppLayoutXML.loadLayoutFromFile(autoPersistFile);
 
 		if (layout != null) {
-			Docking.restoreFullLayout(layout);
+			DockingState.restoreFullLayout(layout);
 		}
 
 		return layout != null;

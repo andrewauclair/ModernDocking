@@ -21,7 +21,7 @@ SOFTWARE.
  */
 package modern_docking.persist;
 
-public class PanelState implements DockingState {
+public class PanelState implements DockableState {
 	private final String persistentID;
 
 	public PanelState(String persistentID) {

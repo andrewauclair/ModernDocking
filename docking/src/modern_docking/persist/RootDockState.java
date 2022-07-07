@@ -27,7 +27,7 @@ import modern_docking.internal.DockedTabbedPanel;
 import modern_docking.RootDockingPanel;
 
 public class RootDockState {
-	private final DockingState state;
+	private final DockableState state;
 
 	public RootDockState(RootDockingPanel panel) {
 		if (panel.getPanel() instanceof DockedSimplePanel) {
@@ -44,7 +44,7 @@ public class RootDockState {
 		}
 	}
 
-	public DockingState getState() {
+	public DockableState getState() {
 		return state;
 	}
 }

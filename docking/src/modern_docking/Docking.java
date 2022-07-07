@@ -41,73 +41,43 @@ import static modern_docking.internal.DockingInternal.getWrapper;
 
 // Main class for the docking framework
 // register and dock/undock dockables here
-public class Docking implements ComponentListener, WindowStateListener {
+public class Docking {
+	// cached size of the decorated frame border size
 	public static Insets frameBorderSizes = new Insets(0, 0, 0, 0);
 
+	// map of all the root panels in the application
 	private final Map<JFrame, RootDockingPanel> rootPanels = new HashMap<>();
 
-	private JFrame frameToDispose = null;
-
+	// the applications main frame
 	private final JFrame mainFrame;
 
 	private static Docking instance;
 
-	private DockingPanel activePanel = null;
+	private final ActiveDockableHighlighter activeDockableHighlighter = new ActiveDockableHighlighter();
 
-	private final Map<JFrame, DockingLayout> maximizeRestoreLayout = new HashMap<>();
+	private final AppStatePersister appStatePersister = new AppStatePersister();
 
+	/**
+	 * Create the one and only instance of the Docking class for the application
+	 * @param mainFrame The main frame of the application
+	 */
 	public Docking(JFrame mainFrame) {
 		this.mainFrame = mainFrame;
 		instance = this;
+
 		FloatListener.reset();
-
-		// use an AWT event listener to set a border around the dockable that the mouse is currently over
-		Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
-			if (e.getID() == MouseEvent.MOUSE_ENTERED || e.getID() == MouseEvent.MOUSE_EXITED) {
-				DockingPanel dockable = findDockingPanelAtScreenPos(((MouseEvent) e).getLocationOnScreen());
-
-				if (activePanel != null && dockable == null) {
-					setNotSelectedBorder();
-					activePanel = null;
-				}
-
-				if (activePanel != dockable && (dockable instanceof DockedSimplePanel || dockable instanceof DockedTabbedPanel)) {
-					if (activePanel != null) {
-						setNotSelectedBorder();
-					}
-					activePanel = dockable;
-					setSelectedBorder();
-				}
-
-			}
-			else if (e.getID() == MouseEvent.MOUSE_PRESSED) {
-				Dockable dockable = findDockableAtScreenPos(((MouseEvent) e).getLocationOnScreen());
-
-				if (dockable != null) {
-					JFrame frame = findFrameForDockable(dockable);
-
-					if (!getWrapper(dockable).isUnpinned()) {
-						rootForFrame(frame).hideUnpinnedPanels();
-					}
-				}
-			}
-		}, AWTEvent.MOUSE_EVENT_MASK);
 	}
 
-	private void setSelectedBorder() {
-		Color color = UIManager.getColor("Component.focusColor");
-		activePanel.setBorder(BorderFactory.createLineBorder(color, 2));
+	public static Docking getInstance() {
+		return instance;
 	}
 
-	private void setNotSelectedBorder() {
-		Color color = UIManager.getColor("Component.borderColor");
+	public Map<JFrame, RootDockingPanel> getRootPanels() {
+		return rootPanels;
+	}
 
-		activePanel.setBorder(
-				BorderFactory.createCompoundBorder(
-						BorderFactory.createEmptyBorder(1, 1, 1, 1),
-						BorderFactory.createLineBorder(color, 1)
-				)
-		);
+	public JFrame getMainFrame() {
+		return mainFrame;
 	}
 
 	public static void registerDockable(Dockable dockable) {
@@ -153,8 +123,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 		instance.rootPanels.put(parent, panel);
 		FloatListener.registerDockingFrame(parent, panel);
 
-		parent.addComponentListener(instance);
-		parent.addWindowStateListener(instance);
+		instance.appStatePersister.addFrame(parent);
 	}
 
 	// allows the user to configure pinning per frame. by default pinning is only enabled on the frames the docking framework creates
@@ -163,13 +132,13 @@ public class Docking implements ComponentListener, WindowStateListener {
 			throw new DockableRegistrationFailureException("No root panel for frame has been registered.");
 		}
 
-		RootDockingPanel root = rootForFrame(frame);
+		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
 		root.setPinningSupported(allow);
 		root.setPinningLayer(layer);
 	}
 
 	public static boolean pinningAllowed(Dockable dockable) {
-		RootDockingPanel root = rootForFrame(findFrameForDockable(dockable));
+		RootDockingPanel root = DockingComponentUtils.rootForFrame(DockingComponentUtils.findFrameForDockable(dockable));
 
 		return dockable.allowPinning() && root.isPinningSupported();
 	}
@@ -178,130 +147,12 @@ public class Docking implements ComponentListener, WindowStateListener {
 		if (instance.rootPanels.containsKey(parent)) {
 			RootDockingPanel root = instance.rootPanels.get(parent);
 
-			undockComponents(root);
+			DockingComponentUtils.undockComponents(root);
 		}
 
 		instance.rootPanels.remove(parent);
 
-		parent.removeComponentListener(instance);
-		parent.removeWindowStateListener(instance);
-	}
-
-	private static void undockComponents(Container container) {
-		for (Component component : container.getComponents()) {
-			if (component instanceof DisplayPanel) {
-				undock(((DisplayPanel) component).getWrapper().getDockable());
-			}
-			else if (component instanceof Container) {
-				undockComponents((Container) component);
-			}
-		}
-	}
-
-	public static JFrame findRootAtScreenPos(Point screenPos) {
-		for (JFrame frame : instance.rootPanels.keySet()) {
-			Rectangle bounds = new Rectangle(frame.getX(), frame.getY(), frame.getWidth(), frame.getHeight());
-
-			if (bounds.contains(screenPos) && frame.isVisible()) {
-				return frame;
-			}
-		}
-		return null;
-	}
-
-	public static JFrame findFrameForDockable(Dockable dockable) {
-		return getWrapper(dockable).getFrame();
-	}
-
-	public static RootDockingPanel rootForFrame(JFrame frame) {
-		if (instance.rootPanels.containsKey(frame)) {
-			return instance.rootPanels.get(frame);
-		}
-		throw new DockableRegistrationFailureException("No root panel for frame has been registered.");
-	}
-
-	public static JFrame frameForRoot(RootDockingPanel root) {
-		Optional<JFrame> first = instance.rootPanels.keySet().stream()
-				.filter(frame -> instance.rootPanels.get(frame) == root)
-				.findFirst();
-
-		return first.orElse(null);
-	}
-
-	public static Dockable findDockableAtScreenPos(Point screenPos) {
-		JFrame frame = findRootAtScreenPos(screenPos);
-
-		// no frame found at the location, return null
-		if (frame == null) {
-			return null;
-		}
-
-		return findDockableAtScreenPos(screenPos, frame);
-	}
-
-	public static Dockable findDockableAtScreenPos(Point screenPos, JFrame frame) {
-		// frame is null so there's no dockable to find
-		if (frame == null) {
-			return null;
-		}
-
-		Point framePoint = new Point(screenPos);
-		SwingUtilities.convertPointFromScreen(framePoint, frame);
-
-		Component component = SwingUtilities.getDeepestComponentAt(frame, framePoint.x, framePoint.y);
-
-		// no component found at the position, return null
-		if (component == null) {
-			return null;
-		}
-
-		while (!(component instanceof DisplayPanel) && component.getParent() != null) {
-			component = component.getParent();
-		}
-
-		// didn't find a Dockable, return null
-		if (!(component instanceof DisplayPanel)) {
-			return null;
-		}
-		return ((DisplayPanel) component).getWrapper().getDockable();
-	}
-
-	public static DockingPanel findDockingPanelAtScreenPos(Point screenPos) {
-		JFrame frame = findRootAtScreenPos(screenPos);
-
-		// no frame found at the location, return null
-		if (frame == null) {
-			return null;
-		}
-
-		return findDockingPanelAtScreenPos(screenPos, frame);
-	}
-
-	public static DockingPanel findDockingPanelAtScreenPos(Point screenPos, JFrame frame) {
-		// no frame found at the location, return null
-		if (frame == null) {
-			return null;
-		}
-
-		Point framePoint = new Point(screenPos);
-		SwingUtilities.convertPointFromScreen(framePoint, frame);
-
-		Component component = SwingUtilities.getDeepestComponentAt(frame, framePoint.x, framePoint.y);
-
-		// no component found at the position, return null
-		if (component == null) {
-			return null;
-		}
-
-		while (!(component instanceof DockingPanel) && component.getParent() != null) {
-			component = component.getParent();
-		}
-
-		// didn't find a Dockable, return null
-		if (!(component instanceof DockingPanel)) {
-			return null;
-		}
-		return (DockingPanel) component;
+		instance.appStatePersister.removeFrame(parent);
 	}
 
 	public static void dock(String persistentID, JFrame frame) {
@@ -325,11 +176,6 @@ public class Docking implements ComponentListener, WindowStateListener {
 	}
 
 	public static void dock(Dockable dockable, JFrame frame, DockingRegion region, double dividerProportion) {
-		if (instance.frameToDispose != null) {
-			instance.frameToDispose.dispose();
-			instance.frameToDispose = null;
-		}
-
 		RootDockingPanel root = instance.rootPanels.get(frame);
 
 		if (root == null) {
@@ -390,7 +236,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 			return;
 		}
 
-		JFrame frame = findFrameForDockable(dockable);
+		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
 		frame.setAlwaysOnTop(true);
 		frame.setAlwaysOnTop(false);
 
@@ -409,9 +255,9 @@ public class Docking implements ComponentListener, WindowStateListener {
 			return;
 		}
 
-		JFrame frame = findFrameForDockable(dockable);
+		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
 
-		RootDockingPanel root = rootForFrame(frame);
+		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
 
 		DockableWrapper wrapper = getWrapper(dockable);
 
@@ -452,326 +298,7 @@ public class Docking implements ComponentListener, WindowStateListener {
 	}
 
 	public static boolean canDisposeFrame(JFrame frame) {
-		return frame != instance.mainFrame && !instance.maximizeRestoreLayout.containsKey(frame);
-	}
-
-	public static RootDockState getRootState(JFrame frame) {
-		RootDockingPanel root = rootForFrame(frame);
-
-		if (root == null) {
-			throw new RuntimeException("Root for frame does not exist: " + frame);
-		}
-
-		return new RootDockState(root);
-	}
-
-	public static DockingLayout getCurrentLayout(JFrame frame) {
-		RootDockingPanel root = rootForFrame(frame);
-
-		if (root == null) {
-			throw new RuntimeException("Root for frame does not exist: " + frame);
-		}
-
-		DockingLayout maxLayout = instance.maximizeRestoreLayout.get(frame);
-
-		if (maxLayout != null) {
-			return maxLayout;
-		}
-
-		return DockingLayouts.layoutFromRoot(root);
-	}
-
-	public static FullAppLayout getFullLayout() {
-		FullAppLayout layout = new FullAppLayout();
-
-		layout.setMainFrame(getCurrentLayout(instance.mainFrame));
-
-		for (JFrame frame : instance.rootPanels.keySet()) {
-			if (frame != instance.mainFrame) {
-				layout.addFrame(getCurrentLayout(frame));
-			}
-		}
-
-		return layout;
-	}
-
-	public static void restoreFullLayout(FullAppLayout layout) {
-		// get rid of all existing frames and undock all dockables
-		Set<JFrame> frames = new HashSet<>(instance.rootPanels.keySet());
-		for (JFrame frame : frames) {
-			if (frame != instance.mainFrame) {
-				undockComponents(frame);
-				frame.dispose();
-			}
-		}
-
-		AppState.setPaused(true);
-
-		// setup main frame
-		restoreLayoutFromFull(instance.mainFrame, layout.getMainFrameLayout());
-
-		// setup rest of floating frames from layout
-		for (DockingLayout frameLayout : layout.getFloatingFrameLayouts()) {
-			FloatingFrame frame = new FloatingFrame(frameLayout.getLocation(), frameLayout.getSize(), frameLayout.getState());
-
-			restoreLayoutFromFull(frame, frameLayout);
-		}
-
-		AppState.setPaused(false);
-		AppState.persist();
-
-		DockingInternal.fireDockedEventForAll();
-	}
-
-	private static void restoreLayoutFromFull(JFrame frame, DockingLayout layout) {
-		RootDockingPanel root = rootForFrame(frame);
-
-		if (root == null) {
-			throw new RuntimeException("Root for frame does not exist: " + frame);
-		}
-
-		frame.setLocation(layout.getLocation());
-		frame.setSize(layout.getSize());
-		frame.setExtendedState(layout.getState());
-
-		undockComponents(root);
-
-		if (layout.getMaximizedDockable() != null) {
-			DockableWrapper wrapper = getWrapper(getDockable(layout.getMaximizedDockable()));
-			wrapper.setMaximized(true);
-			DockingListeners.fireMaximizeEvent(wrapper.getDockable(), true);
-
-			layout.setMaximizedDockable(null);
-
-			instance.maximizeRestoreLayout.put(frame, layout);
-
-			dock(wrapper.getDockable(), frame);
-		}
-		else {
-			root.setPanel(restoreState(layout.getRootNode(), frame));
-		}
-	}
-
-	public static void setLayout(JFrame frame, DockingLayout layout) {
-		RootDockingPanel root = rootForFrame(frame);
-
-		if (root == null) {
-			throw new RuntimeException("Root for frame does not exist: " + frame);
-		}
-
-		frame.setLocation(layout.getLocation());
-		frame.setSize(layout.getSize());
-		frame.setExtendedState(layout.getState());
-
-		undockComponents(root);
-
-		boolean paused = AppState.isPaused();
-		AppState.setPaused(true);
-
-		root.setPanel(restoreState(layout.getRootNode(), frame));
-
-		AppState.setPaused(paused);
-
-		if (!paused) {
-			AppState.persist();
-		}
-	}
-
-	public static void restoreState(JFrame frame, RootDockState state) {
-		RootDockingPanel root = rootForFrame(frame);
-
-		if (root == null) {
-			throw new RuntimeException("Root for frame does not exist: " + frame);
-		}
-
-		undockComponents(root);
-
-		boolean paused = AppState.isPaused();
-		AppState.setPaused(true);
-
-		root.setPanel(restoreState(state.getState(), frame));
-
-		AppState.setPaused(paused);
-
-		if (!paused) {
-			AppState.persist();
-		}
-	}
-
-	private static DockingPanel restoreState(DockingState state, JFrame frame) {
-		if (state instanceof PanelState) {
-			return restoreSimple((PanelState) state, frame);
-		}
-		else if (state instanceof SplitState) {
-			return restoreSplit((SplitState) state, frame);
-		}
-		else if (state instanceof TabState) {
-			return restoreTabbed((TabState) state, frame);
-		}
-		else {
-			throw new RuntimeException("Unknown state type");
-		}
-	}
-
-	private static DockedSplitPanel restoreSplit(SplitState state, JFrame frame) {
-		DockedSplitPanel panel = new DockedSplitPanel(frame);
-
-		panel.setLeft(restoreState(state.getLeft(), frame));
-		panel.setRight(restoreState(state.getRight(), frame));
-		panel.setOrientation(state.getOrientation());
-		panel.setDividerLocation(state.getDividerLocation());
-
-		return panel;
-	}
-
-	private static DockedTabbedPanel restoreTabbed(TabState state, JFrame frame) {
-		DockedTabbedPanel panel = new DockedTabbedPanel();
-
-		for (String persistentID : state.getPersistentIDs()) {
-			Dockable dockable = getDockable(persistentID);
-
-			if (dockable == null) {
-				throw new RuntimeException("Dockable with persistent ID " + persistentID + " does not exist.");
-			}
-
-			undock(dockable);
-
-			DockableWrapper wrapper = getWrapper(dockable);
-			wrapper.setFrame(frame);
-
-			panel.addPanel(wrapper);
-		}
-
-		return panel;
-	}
-
-	private static DockedSimplePanel restoreSimple(PanelState state, JFrame frame) {
-		Dockable dockable = getDockable(state.getPersistentID());
-
-		if (dockable == null) {
-			throw new RuntimeException("Dockable with persistent ID " + state.getPersistentID() + " does not exist.");
-		}
-
-		undock(dockable);
-
-		DockableWrapper wrapper = getWrapper(dockable);
-		wrapper.setFrame(frame);
-
-		return new DockedSimplePanel(wrapper);
-	}
-
-	private static DockingPanel restoreState(DockingLayoutNode node, JFrame frame) {
-		if (node instanceof DockingSimplePanelNode) {
-			return restoreSimple((DockingSimplePanelNode) node, frame);
-		}
-		else if (node instanceof DockingSplitPanelNode) {
-			return restoreSplit((DockingSplitPanelNode) node, frame);
-		}
-		else if (node instanceof DockingTabPanelNode) {
-			return restoreTabbed((DockingTabPanelNode) node, frame);
-		}
-		else if (node == null) {
-			// the main frame root can contain a null panel if nothing is docked
-			return null;
-		}
-		else {
-			throw new RuntimeException("Unknown state type");
-		}
-	}
-
-	private static DockedSplitPanel restoreSplit(DockingSplitPanelNode node, JFrame frame) {
-		DockedSplitPanel panel = new DockedSplitPanel(frame);
-
-		panel.setLeft(restoreState(node.getLeft(), frame));
-		panel.setRight(restoreState(node.getRight(), frame));
-		panel.setOrientation(node.getOrientation());
-		panel.setDividerLocation(node.getDividerProportion());
-
-		return panel;
-	}
-
-	private static DockedTabbedPanel restoreTabbed(DockingTabPanelNode node, JFrame frame) {
-		DockedTabbedPanel panel = new DockedTabbedPanel();
-
-		for (String persistentID : node.getPersistentIDs()) {
-			Dockable dockable = getDockable(persistentID);
-
-			if (dockable == null) {
-				throw new RuntimeException("Dockable with persistent ID " + persistentID + " does not exist.");
-			}
-
-			undock(dockable);
-
-			DockableWrapper wrapper = getWrapper(dockable);
-			wrapper.setFrame(frame);
-
-			panel.addPanel(wrapper);
-		}
-
-		return panel;
-	}
-
-	private static DockedSimplePanel restoreSimple(DockingSimplePanelNode node, JFrame frame) {
-		Dockable dockable = getDockable(node.persistentID());
-
-		if (dockable == null) {
-			throw new RuntimeException("Dockable with persistent ID " + node.persistentID() + " does not exist.");
-		}
-
-		undock(dockable);
-
-		DockableWrapper wrapper = getWrapper(dockable);
-		wrapper.setFrame(frame);
-
-		return new DockedSimplePanel(wrapper);
-	}
-
-	public static void removeIllegalFloats(JFrame frame) {
-		// remove panels from frame if they return false for allowFloating() and there are no other dockables in the frame
-		RootDockingPanel root = rootForFrame(frame);
-
-		if (Docking.canDisposeFrame(frame) && root != null) {
-			if (shouldUndock(root)) {
-				undockIllegalFloats(root);
-			}
-		}
-
-		AppState.persist();
-	}
-
-	private static boolean shouldUndock(Container container) {
-		for (Component component : container.getComponents()) {
-			if (component instanceof DisplayPanel) {
-				DisplayPanel panel = (DisplayPanel) component;
-				if (panel.getWrapper().getDockable().floatingAllowed()) {
-					return false;
-				}
-			}
-			else if (component instanceof Container) {
-				if (!shouldUndock((Container) component)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	private static void undockIllegalFloats(Container container) {
-		for (Component component : container.getComponents()) {
-			if (component instanceof DisplayPanel) {
-				DisplayPanel panel = (DisplayPanel) component;
-
-				DockableWrapper wrapper = panel.getWrapper();
-				Dockable dockable = wrapper.getDockable();
-				wrapper.getParent().undock(dockable);
-
-				DockingListeners.fireUndockedEvent(dockable);
-				DockingListeners.fireAutoUndockedEvent(dockable);
-			}
-			else if (component instanceof Container) {
-				undockIllegalFloats((Container) component);
-			}
-		}
+		return frame != instance.mainFrame && !DockingState.maximizeRestoreLayout.containsKey(frame);
 	}
 
 	public static boolean isMaximized(Dockable dockable) {
@@ -779,44 +306,44 @@ public class Docking implements ComponentListener, WindowStateListener {
 	}
 
 	public static void maximize(Dockable dockable) {
-		JFrame frame = findFrameForDockable(dockable);
-		RootDockingPanel root = rootForFrame(frame);
+		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
+		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
 
 		// can only maximize one panel per root
-		if (!instance.maximizeRestoreLayout.containsKey(frame) && root != null) {
+		if (!DockingState.maximizeRestoreLayout.containsKey(frame) && root != null) {
 			getWrapper(dockable).setMaximized(true);
 			DockingListeners.fireMaximizeEvent(dockable, true);
 
-			DockingLayout layout = getCurrentLayout(frame);
+			DockingLayout layout = DockingState.getCurrentLayout(frame);
 			layout.setMaximizedDockable(dockable.persistentID());
 
-			instance.maximizeRestoreLayout.put(frame, layout);
+			DockingState.maximizeRestoreLayout.put(frame, layout);
 
-			undockComponents(root);
+			DockingComponentUtils.undockComponents(root);
 
 			dock(dockable, frame);
 		}
 	}
 
 	public static void minimize(Dockable dockable) {
-		JFrame frame = findFrameForDockable(dockable);
+		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
 
 		// can only minimize if already maximized
-		if (instance.maximizeRestoreLayout.containsKey(frame)) {
+		if (DockingState.maximizeRestoreLayout.containsKey(frame)) {
 			getWrapper(dockable).setMaximized(false);
 			DockingListeners.fireMaximizeEvent(dockable, false);
 
-			setLayout(frame, instance.maximizeRestoreLayout.get(frame));
+			DockingState.setLayout(frame, DockingState.maximizeRestoreLayout.get(frame));
 
-			instance.maximizeRestoreLayout.remove(frame);
+			DockingState.maximizeRestoreLayout.remove(frame);
 
 			DockingInternal.fireDockedEventForFrame(frame);
 		}
 	}
 
 	public static void pinDockable(Dockable dockable) {
-		JFrame frame = findFrameForDockable(dockable);
-		RootDockingPanel root = rootForFrame(frame);
+		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
+		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
 
 		if (getWrapper(dockable).isUnpinned()) {
 			root.setDockablePinned(dockable);
@@ -827,8 +354,8 @@ public class Docking implements ComponentListener, WindowStateListener {
 	}
 
 	public static void unpinDockable(Dockable dockable) {
-		JFrame frame = findFrameForDockable(dockable);
-		RootDockingPanel root = rootForFrame(frame);
+		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
+		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
 
 		Component component = (Component) dockable;
 
@@ -864,28 +391,5 @@ public class Docking implements ComponentListener, WindowStateListener {
 			root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
 		}
 		DockingListeners.fireUnpinnedEvent(dockable);
-	}
-
-	@Override
-	public void componentResized(ComponentEvent e) {
-		AppState.persist();
-	}
-
-	@Override
-	public void componentMoved(ComponentEvent e) {
-		AppState.persist();
-	}
-
-	@Override
-	public void componentShown(ComponentEvent e) {
-	}
-
-	@Override
-	public void componentHidden(ComponentEvent e) {
-	}
-
-	@Override
-	public void windowStateChanged(WindowEvent e) {
-		AppState.persist();
 	}
 }

@@ -23,10 +23,7 @@ SOFTWARE.
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import modern_docking.Dockable;
-import modern_docking.Docking;
-import modern_docking.DockingRegion;
-import modern_docking.RootDockingPanel;
+import modern_docking.*;
 import modern_docking.internal.DockingColors;
 import modern_docking.layouts.DockingLayout;
 import modern_docking.layouts.FullAppLayout;
@@ -74,7 +71,7 @@ public class MainFrame extends JFrame {
 			if (result == JFileChooser.APPROVE_OPTION) {
 				File selectedFile = chooser.getSelectedFile();
 
-				FullAppLayout layout = Docking.getFullLayout();
+				FullAppLayout layout = DockingState.getFullLayout();
 
 				boolean saved = FullAppLayoutXML.saveLayoutToFile(selectedFile, layout);
 
@@ -98,7 +95,7 @@ public class MainFrame extends JFrame {
 
 				if (layout != null) {
 //					Docking.setLayout(MainFrame.this, layout);
-					Docking.restoreFullLayout(layout);
+					DockingState.restoreFullLayout(layout);
 				}
 			}
 		});
@@ -156,11 +153,11 @@ public class MainFrame extends JFrame {
 
 		save.addActionListener(e -> {
 //			state = Docking.getRootState(this);
-			currentLayout = Docking.getCurrentLayout(this);
+			currentLayout = DockingState.getCurrentLayout(this);
 		});
 		restore.addActionListener(e -> {
 //			Docking.restoreState(this, state);
-			Docking.setLayout(this, currentLayout);
+			DockingState.setLayout(this, currentLayout);
 		});
 
 		test2.addActionListener(e -> test.setVisible(false));
