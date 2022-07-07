@@ -10,7 +10,7 @@
 
   Copyright 2012-2015 the original author or authors.
  */
-package modern_docking.exception;
+package exception;
 
 import javax.swing.*;
 
