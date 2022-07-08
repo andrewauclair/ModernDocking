@@ -120,10 +120,7 @@ public class DockingOverlay {
 			this.size = size;
 		}
 		else if (targetDockable != null && dockableRegion != null) {
-			JComponent component = (JComponent) targetDockable;
-
-			// the actual component
-			component = DockingInternal.getWrapper(targetDockable).getDisplayPanel();
+			JComponent component = DockingInternal.getWrapper(targetDockable).getDisplayPanel();
 
 			Point point = component.getLocation();
 			Dimension size = component.getSize();
@@ -157,10 +154,7 @@ public class DockingOverlay {
 			this.size = size;
 		}
 		else if (targetDockable != null) {
-			JComponent component = (JComponent) targetDockable;
-
-			// the actual component
-			component = DockingInternal.getWrapper(targetDockable).getDisplayPanel();
+			JComponent component = DockingInternal.getWrapper(targetDockable).getDisplayPanel();
 
 			Point framePoint = new Point(screenPos);
 			SwingUtilities.convertPointFromScreen(framePoint, utilFrame);
@@ -241,7 +235,13 @@ public class DockingOverlay {
 		}
 
 		// use the target dockable if we have one, otherwise use the root
-		JComponent component = targetDockable != null ? (JComponent) targetDockable : targetRoot;
+		JComponent component;
+		if (targetDockable != null) {
+			component = DockingInternal.getWrapper(targetDockable).getDisplayPanel();
+		}
+		else {
+			component = targetRoot;
+		}
 
 		// find the mouse position over the component
 		Point framePoint = new Point(screenPos);

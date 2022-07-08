@@ -51,6 +51,7 @@ public class DockableWrapper {
 		HeaderModel headerModel = new HeaderModel(dockable);
 		headerController = new HeaderController(dockable, headerModel);
 		headerUI = dockable.createHeaderUI(headerController, headerModel);
+		headerController.setUI(headerUI);
 
 		floatListener = new FloatListener(this, (JComponent) headerUI);
 		displayPanel = new DisplayPanel(this);

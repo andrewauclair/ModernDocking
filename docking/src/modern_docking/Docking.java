@@ -220,8 +220,12 @@ public class Docking {
 	}
 
 	public static void newWindow(Dockable dockable) {
-		Point location = ((JComponent) dockable).getLocationOnScreen();
-		Dimension size = ((JComponent) dockable).getSize();
+		Point location = getWrapper(dockable).getDisplayPanel().getLocationOnScreen();
+		Dimension size = getWrapper(dockable).getDisplayPanel().getSize();
+
+		location.x -= frameBorderSizes.left;
+		location.y -= frameBorderSizes.top;
+
 		size.width += frameBorderSizes.left + frameBorderSizes.right;
 		size.height += frameBorderSizes.top + frameBorderSizes.bottom;
 

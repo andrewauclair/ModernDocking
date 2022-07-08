@@ -31,12 +31,18 @@ public class HeaderController implements MaximizeListener, DockingListener {
 	private final Dockable dockable;
 	private final HeaderModel model;
 
+	private DockingHeaderUI ui;
+
 	public HeaderController(Dockable dockable, HeaderModel model) {
 		this.dockable = dockable;
 		this.model = model;
 
 		DockingListeners.addMaximizeListener(this);
 		DockingListeners.addDockingListener(this);
+	}
+
+	public void setUI(DockingHeaderUI ui) {
+		this.ui = ui;
 	}
 
 	public void removeListeners() {
@@ -70,17 +76,21 @@ public class HeaderController implements MaximizeListener, DockingListener {
 
 	@Override
 	public void maximized(Dockable dockable, boolean maximized) {
+		ui.update();
 	}
 
 	@Override
 	public void docked(String persistentID) {
+		ui.update();
 	}
 
 	@Override
 	public void undocked(String persistentID) {
+		ui.update();
 	}
 
 	@Override
 	public void unpinned(String persistentID) {
+		ui.update();
 	}
 }

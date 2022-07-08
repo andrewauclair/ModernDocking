@@ -29,6 +29,8 @@ import modern_docking.floating.TempFloatingFrame;
 import javax.swing.*;
 import java.awt.*;
 
+import static modern_docking.internal.DockingInternal.getWrapper;
+
 public class FloatingFrame extends JFrame {
 	// create a new floating frame. this is used when calling Docking.newWindow or when restoring the layout from a file
 	public FloatingFrame(Point location, Dimension size, int state) {
@@ -57,7 +59,8 @@ public class FloatingFrame extends JFrame {
 		setLayout(new BorderLayout());
 
 		// size the frame to the dockable size + the border size of the frame
-		Dimension size = ((JComponent) dockable).getSize();
+		Dimension size = getWrapper(dockable).getDisplayPanel().getSize();
+
 		size.width += Docking.frameBorderSizes.left + Docking.frameBorderSizes.right;
 		size.height += Docking.frameBorderSizes.top + Docking.frameBorderSizes.bottom;
 

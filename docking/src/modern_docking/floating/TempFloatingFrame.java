@@ -28,6 +28,8 @@ import modern_docking.internal.DockingInternal;
 import javax.swing.*;
 import java.awt.*;
 
+import static modern_docking.internal.DockingInternal.getWrapper;
+
 // this is a frame used temporarily when floating a panel
 public class TempFloatingFrame extends JFrame {
 	private static final int BORDER_SIZE = 2;
@@ -39,7 +41,7 @@ public class TempFloatingFrame extends JFrame {
 		setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR)); //  this frame is only showing while moving
 
 		// size the frame to the dockable size
-		Dimension size = ((JComponent) dockable).getSize();
+		Dimension size = getWrapper(dockable).getDisplayPanel().getSize();
 		size.width += Docking.frameBorderSizes.right;
 		size.height += Docking.frameBorderSizes.bottom;
 		setSize(size);
