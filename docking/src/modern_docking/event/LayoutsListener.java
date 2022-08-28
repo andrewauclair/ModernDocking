@@ -19,30 +19,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+package modern_docking.event;
 
-// TODO current changes are breaking the intended functionality here
-public class AlwaysDisplayedPanel extends SimplePanel {
-	public AlwaysDisplayedPanel(String title, String persistentID) {
-		super(title, persistentID);
-	}
+import modern_docking.layouts.FullAppLayout;
 
-	@Override
-	public boolean allowClose() {
-		return false;
-	}
+public interface LayoutsListener {
+	void layoutAdded(String name, FullAppLayout layout);
 
-	@Override
-	public boolean allowPinning() {
-		return false;
-	}
-
-	@Override
-	public boolean allowMinMax() {
-		return false;
-	}
-
-	@Override
-	public boolean hasMoreOptions() {
-		return false;
-	}
+	void layoutRemoved(String name);
 }

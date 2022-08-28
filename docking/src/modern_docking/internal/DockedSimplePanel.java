@@ -22,16 +22,13 @@ SOFTWARE.
 package modern_docking.internal;
 
 import modern_docking.Dockable;
-import modern_docking.Docking;
 import modern_docking.DockingRegion;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 // simple docking panel that only has a single Dockable in the center
-public class DockedSimplePanel extends DockingPanel implements MouseListener {
+public class DockedSimplePanel extends DockingPanel {
 	private final DockableWrapper dockable;
 
 	private DockingPanel parent;
@@ -46,8 +43,6 @@ public class DockedSimplePanel extends DockingPanel implements MouseListener {
 		this.dockable = dockable;
 
 		add(dockable.getDisplayPanel(), BorderLayout.CENTER);
-
-//		((Component) dockable.getDockable()).addMouseListener(this);
 	}
 
 	public DockableWrapper getWrapper() {
@@ -107,7 +102,6 @@ public class DockedSimplePanel extends DockingPanel implements MouseListener {
 	@Override
 	public void undock(Dockable dockable) {
 		if (this.dockable.getDockable() == dockable) {
-//			System.out.println("Undocked panel from DockedSimplePanel");
 			remove(this.dockable.getDisplayPanel());
 
 			parent.removeChild(this);
@@ -127,29 +121,6 @@ public class DockedSimplePanel extends DockingPanel implements MouseListener {
 	@Override
 	public void removeChild(DockingPanel child) {
 		// no-op, simple panel has no children
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		Color color = UIManager.getColor("Component.focusColor");
-		setBorder(BorderFactory.createLineBorder(color, 2));
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-//		setNotSelectedBorder();
 	}
 
 	private void setNotSelectedBorder() {

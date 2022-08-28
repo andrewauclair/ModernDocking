@@ -31,10 +31,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-// TODO create a "model" of the header that this JPanel implements against. that way users can create their own and the logic that we want to happen is in the model
-public class FlatLafDragHeader extends JPanel implements DockingHeaderUI {
+public class FlatLafHeaderUI extends JPanel implements DockingHeaderUI {
 	private final JPopupMenu settings = new JPopupMenu();
-//	private final Dockable dockable;
 
 	private final JMenuItem pinned = new JMenuItem("Pinned");
 	private final JMenuItem unpinned = new JMenuItem("Unpinned");
@@ -45,15 +43,13 @@ public class FlatLafDragHeader extends JPanel implements DockingHeaderUI {
 	private final HeaderController headerController;
 	private final HeaderModel headerModel;
 
-	public FlatLafDragHeader(HeaderController headerController, HeaderModel headerModel) {
+	public FlatLafHeaderUI(HeaderController headerController, HeaderModel headerModel) {
 		this.headerController = headerController;
 		this.headerModel = headerModel;
-//		this.dockable = dockable;
+
 		setOpaque(true);
 
-		FlatSVGIcon settings = new FlatSVGIcon("icons/settings.svg");
-
-		JButton more = new JButton(settings);
+		JButton more = new JButton(new FlatSVGIcon("icons/settings.svg"));
 		more.addActionListener(e -> this.settings.show(more, more.getWidth(), more.getHeight()));
 
 		FlatSVGIcon closeIcon = new FlatSVGIcon("icons/x.svg");

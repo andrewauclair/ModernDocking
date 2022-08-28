@@ -19,30 +19,42 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+package modern_docking.ui;
 
-// TODO current changes are breaking the intended functionality here
-public class AlwaysDisplayedPanel extends SimplePanel {
-	public AlwaysDisplayedPanel(String title, String persistentID) {
-		super(title, persistentID);
+import modern_docking.DockingState;
+import modern_docking.event.LayoutsListener;
+import modern_docking.layouts.DockingLayouts;
+import modern_docking.layouts.FullAppLayout;
+
+import javax.swing.*;
+
+public class LayoutsMenu extends JMenu implements LayoutsListener {
+	public LayoutsMenu() {
+		super("Layouts");
+
+		DockingLayouts.addLayoutsListener(this);
+
+		rebuildOptions();
+	}
+
+	private void rebuildOptions() {
+		removeAll();
+
+		for (String name : DockingLayouts.getLayoutNames()) {
+			JMenuItem item = new JMenuItem(name);
+			item.addActionListener(e -> DockingState.restoreFullLayout(DockingLayouts.getLayout(name)));
+
+			add(item);
+		}
 	}
 
 	@Override
-	public boolean allowClose() {
-		return false;
+	public void layoutAdded(String name, FullAppLayout layout) {
+		rebuildOptions();
 	}
 
 	@Override
-	public boolean allowPinning() {
-		return false;
-	}
-
-	@Override
-	public boolean allowMinMax() {
-		return false;
-	}
-
-	@Override
-	public boolean hasMoreOptions() {
-		return false;
+	public void layoutRemoved(String name) {
+		rebuildOptions();
 	}
 }

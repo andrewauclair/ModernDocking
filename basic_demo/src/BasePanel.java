@@ -21,7 +21,7 @@ SOFTWARE.
  */
 import modern_docking.Dockable;
 import modern_docking.Docking;
-import docking.ui.FlatLafDragHeader;
+import docking.ui.FlatLafHeaderUI;
 import modern_docking.ui.DockingHeaderUI;
 import modern_docking.ui.HeaderController;
 import modern_docking.ui.HeaderModel;
@@ -57,7 +57,12 @@ public abstract class BasePanel extends JPanel implements Dockable {
 	}
 
 	@Override
+	public Icon tabIcon() {
+		return null;
+	}
+
+	@Override
 	public DockingHeaderUI createHeaderUI(HeaderController headerController, HeaderModel headerModel) {
-		return new FlatLafDragHeader(headerController, headerModel);
+		return new FlatLafHeaderUI(headerController, headerModel);
 	}
 }

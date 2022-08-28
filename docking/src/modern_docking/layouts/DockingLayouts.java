@@ -22,6 +22,7 @@ SOFTWARE.
 package modern_docking.layouts;
 
 import modern_docking.*;
+import modern_docking.event.LayoutsListener;
 import modern_docking.internal.*;
 
 import javax.swing.*;
@@ -31,17 +32,35 @@ import java.util.List;
 import java.util.Map;
 
 public class DockingLayouts {
-	private final Map<String, DockingLayout> layouts = new HashMap<>();
+	private static final List<LayoutsListener> listeners = new ArrayList<>();
+	private static final Map<String, FullAppLayout> layouts = new HashMap<>();
 
-	public void registerLayout(String name, DockingLayout layout) {
-		layouts.put(name, layout);
+	public static void addLayoutsListener(LayoutsListener listener) {
+		listeners.add(listener);
 	}
 
-	public DockingLayout getLayout(String name) {
+	public static void removeLayoutsListener(LayoutsListener listener) {
+		listeners.remove(listener);
+	}
+
+	public static void addLayout(String name, FullAppLayout layout) {
+		removeLayout(name);
+		layouts.put(name, layout);
+		listeners.forEach(l -> l.layoutAdded(name, layout));
+	}
+
+	public static void removeLayout(String name) {
+		if (layouts.containsKey(name)) {
+			layouts.remove(name);
+			listeners.forEach(l -> l.layoutRemoved(name));
+		}
+	}
+
+	public static FullAppLayout getLayout(String name) {
 		return layouts.get(name);
 	}
 
-	public List<String> getLayoutNames() {
+	public static List<String> getLayoutNames() {
 		return new ArrayList<>(layouts.keySet());
 	}
 

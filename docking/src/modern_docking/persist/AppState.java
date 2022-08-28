@@ -21,7 +21,6 @@ SOFTWARE.
  */
 package modern_docking.persist;
 
-import modern_docking.Docking;
 import modern_docking.DockingState;
 import modern_docking.layouts.FullAppLayout;
 import modern_docking.layouts.FullAppLayoutXML;

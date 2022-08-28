@@ -33,7 +33,10 @@ import java.util.Optional;
 
 import static modern_docking.internal.DockingInternal.getWrapper;
 
+// set of internal utilities for dealing with the component hierarchy of dockables
 public class DockingComponentUtils {
+	// used to undock all dockables in a container
+	// called when a frame is to be disposed
 	public static void undockComponents(Container container) {
 		for (Component component : container.getComponents()) {
 			if (component instanceof DisplayPanel) {
@@ -45,6 +48,7 @@ public class DockingComponentUtils {
 		}
 	}
 
+	// search for a root panel on the screen at a specific position
 	public static JFrame findRootAtScreenPos(Point screenPos) {
 		for (JFrame frame : Docking.getInstance().getRootPanels().keySet()) {
 			Rectangle bounds = new Rectangle(frame.getX(), frame.getY(), frame.getWidth(), frame.getHeight());
@@ -56,10 +60,14 @@ public class DockingComponentUtils {
 		return null;
 	}
 
+	// find the frame that a dockable is in
+	// returns null if the dockable is not docked
 	public static JFrame findFrameForDockable(Dockable dockable) {
 		return getWrapper(dockable).getFrame();
 	}
 
+	// find the root for the given frame
+	// throws an exception if the frame doesn't have a root panel
 	public static RootDockingPanel rootForFrame(JFrame frame) {
 		if (Docking.getInstance().getRootPanels().containsKey(frame)) {
 			return Docking.getInstance().getRootPanels().get(frame);
@@ -67,6 +75,7 @@ public class DockingComponentUtils {
 		throw new DockableRegistrationFailureException("No root panel for frame has been registered.");
 	}
 
+	// find the frame for a given root
 	public static JFrame frameForRoot(RootDockingPanel root) {
 		Optional<JFrame> first = Docking.getInstance().getRootPanels().keySet().stream()
 				.filter(frame -> Docking.getInstance().getRootPanels().get(frame) == root)
@@ -75,6 +84,7 @@ public class DockingComponentUtils {
 		return first.orElse(null);
 	}
 
+	// find a dockable at a given screen position
 	public static Dockable findDockableAtScreenPos(Point screenPos) {
 		JFrame frame = findRootAtScreenPos(screenPos);
 
@@ -86,6 +96,7 @@ public class DockingComponentUtils {
 		return findDockableAtScreenPos(screenPos, frame);
 	}
 
+	// find a dockable at a given screen position, limited to a single frame
 	public static Dockable findDockableAtScreenPos(Point screenPos, JFrame frame) {
 		// frame is null so there's no dockable to find
 		if (frame == null) {
@@ -113,6 +124,7 @@ public class DockingComponentUtils {
 		return ((DisplayPanel) component).getWrapper().getDockable();
 	}
 
+	// find a docking panel at a given screen position
 	public static DockingPanel findDockingPanelAtScreenPos(Point screenPos) {
 		JFrame frame = findRootAtScreenPos(screenPos);
 
@@ -124,6 +136,7 @@ public class DockingComponentUtils {
 		return findDockingPanelAtScreenPos(screenPos, frame);
 	}
 
+	// find a docking panel at a given screen position. limited to a single frame
 	public static DockingPanel findDockingPanelAtScreenPos(Point screenPos, JFrame frame) {
 		// no frame found at the location, return null
 		if (frame == null) {
@@ -151,8 +164,8 @@ public class DockingComponentUtils {
 		return (DockingPanel) component;
 	}
 
+	// remove panels from frame if they return false for allowFloating() and there are no other dockables in the frame
 	public static void removeIllegalFloats(JFrame frame) {
-		// remove panels from frame if they return false for allowFloating() and there are no other dockables in the frame
 		RootDockingPanel root = rootForFrame(frame);
 
 		if (Docking.canDisposeFrame(frame) && root != null) {

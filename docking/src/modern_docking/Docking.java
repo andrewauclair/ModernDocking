@@ -80,6 +80,7 @@ public class Docking {
 		return mainFrame;
 	}
 
+	// register a dockable with the framework
 	public static void registerDockable(Dockable dockable) {
 		DockingInternal.registerDockable(dockable);
 	}

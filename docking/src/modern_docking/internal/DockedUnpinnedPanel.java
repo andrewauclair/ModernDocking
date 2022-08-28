@@ -153,6 +153,7 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener, Mo
 
 	@Override
 	public void componentResized(ComponentEvent e) {
+		// component has resized, update the location and size of the unpinned panel
 		if (e.getComponent() == root) {
 			setLocationAndSize(0);
 		}
@@ -173,6 +174,7 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener, Mo
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		// dragging the divider, update the size and location of the unpinned panel
 		if (toolbar.getDockedLocation() == DockableToolbar.Location.SOUTH) {
 			setLocationAndSize(-e.getY());
 		}

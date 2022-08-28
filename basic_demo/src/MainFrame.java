@@ -30,6 +30,7 @@ import modern_docking.layouts.FullAppLayout;
 import modern_docking.layouts.FullAppLayoutXML;
 import modern_docking.persist.AppState;
 import modern_docking.ui.DockableMenuItem;
+import modern_docking.ui.LayoutsMenu;
 
 import javax.swing.*;
 import java.awt.*;
@@ -99,6 +100,9 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
+
+		JMenu window = new JMenu("Window");
+		window.add(new LayoutsMenu());
 
 		JLabel test = new JLabel("Test");
 		test.setOpaque(true);

@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 public class DockingInternal {
 	private static final Map<String, DockableWrapper> dockables = new HashMap<>();
 
+	// register a dockable with the framework
 	public static void registerDockable(Dockable dockable) {
 		if (dockables.containsKey(dockable.persistentID())) {
 			throw new DockableRegistrationFailureException("Registration for Dockable failed. Persistent ID " + dockable.persistentID() + " already exists.");

@@ -29,12 +29,12 @@ import modern_docking.ui.HeaderModel;
 import javax.swing.*;
 import java.util.List;
 
-public interface Dockable {
-	// provide the drag source to the docking framework
-	// this is usually a title bar JPanel
-	// return null if the dockable should not be relocatable
-//	JComponent dragSource();
+// this is the main interface for a dockable. Any panel that an application wishes to be dockable should implement
+// this interface and provide the appropriate values.
 
+// along with implementing this interface, the application will need to call Docking.registerDockable and Docking.dock
+// to use the dockable.
+public interface Dockable {
 	// provide the persistent ID to the docking framework
 	// this should be unique in the application (will be verified when adding dockable)
 	String persistentID();
@@ -43,6 +43,10 @@ public interface Dockable {
 	// the tab text to be displayed when Dockable is in a tabbed pane. Does not need to be unique
 	// NOTE: this text should be static. If it needs to change, then the Dockable needs to be undocked and docked again.
 	String tabText();
+
+	// provide the tab icon to the docking framework
+	// only used when dockable is 'unpinned'
+	Icon tabIcon();
 
 	// indicates that this dockable is allowed to be floated as its own new window.
 	// if floating is not allowed and an attempt is made to float the dockable, it will be returned to where it was undocked.
@@ -58,17 +62,18 @@ public interface Dockable {
 	// often used to prevent "vertical" style dockables from being dockabled horizontally (i.e. disallow "North" and "South" regions)
 	List<DockingRegion> disallowedRegions();
 
-	// helper function to determine if the header close button should be displayed
+	// helper function to determine if the header close option should be enabled
 	boolean allowClose();
 
-	// helper function to determine if the header pin button should be displayed
-	// NOTE: this is a suggestion. If the parent frame of the dockable does not support pinning then the button will be hidden regardless
+	// helper function to determine if the header pin option should be enabled
+	// NOTE: this is a suggestion. If the parent frame of the dockable does not support pinning then the button will be hidden regardless.
+	// pinning is supported on all Modern Docking FloatingFrames and can be enabled for other frames with configurePinning in Docking
 	boolean allowPinning();
 
-	// helper function to determine if the header min/max button should be displayed
+	// helper function to determine if the header min/max option should be enabled
 	boolean allowMinMax();
 
-	// helper function to determine if the header 'more' button should be displayed
+	// helper function to determine if the header 'more' option should be enabled
 	// NOTE: allowPinning() = true results in more options regardless of this return value
 	boolean hasMoreOptions();
 
@@ -76,6 +81,8 @@ public interface Dockable {
 	default void addMoreOptions(JPopupMenu menu) {
 	}
 
+	// create the header for the panel. default action is to create an instance of DefaultHeaderUI.
+	// this can be replaced using the docking-ui package and the FlatLafHeaderUI
 	default DockingHeaderUI createHeaderUI(HeaderController headerController, HeaderModel headerModel) {
 		return new DefaultHeaderUI(headerController, headerModel);
 	}
