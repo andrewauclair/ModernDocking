@@ -19,48 +19,42 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-import ModernDocking.DockingRegion;
+package ModernDocking.ui;
 
-import java.util.Collections;
-import java.util.List;
+import ModernDocking.DockingState;
+import ModernDocking.event.LayoutsListener;
+import ModernDocking.layouts.DockingLayouts;
+import ModernDocking.layouts.FullAppLayout;
 
-public class SimplePanel extends BasePanel {
-	public SimplePanel(String title, String persistentID) {
-		super(title, persistentID);
+import javax.swing.*;
+
+public class LayoutsMenu extends JMenu implements LayoutsListener {
+	public LayoutsMenu() {
+		super("Layouts");
+
+		DockingLayouts.addLayoutsListener(this);
+
+		rebuildOptions();
+	}
+
+	private void rebuildOptions() {
+		removeAll();
+
+		for (String name : DockingLayouts.getLayoutNames()) {
+			JMenuItem item = new JMenuItem(name);
+			item.addActionListener(e -> DockingState.restoreFullLayout(DockingLayouts.getLayout(name)));
+
+			add(item);
+		}
 	}
 
 	@Override
-	public boolean floatingAllowed() {
-		return true;
+	public void layoutAdded(String name, FullAppLayout layout) {
+		rebuildOptions();
 	}
 
 	@Override
-	public boolean limitToRoot() {
-		return false;
-	}
-
-	@Override
-	public List<DockingRegion> disallowedRegions() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public boolean allowClose() {
-		return true;
-	}
-
-	@Override
-	public boolean allowPinning() {
-		return false;
-	}
-
-	@Override
-	public boolean allowMinMax() {
-		return true;
-	}
-
-	@Override
-	public boolean hasMoreOptions() {
-		return false;
+	public void layoutRemoved(String name) {
+		rebuildOptions();
 	}
 }

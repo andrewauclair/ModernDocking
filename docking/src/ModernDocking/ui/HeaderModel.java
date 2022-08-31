@@ -19,48 +19,65 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-import ModernDocking.DockingRegion;
+package ModernDocking.ui;
 
-import java.util.Collections;
-import java.util.List;
+import ModernDocking.Dockable;
+import ModernDocking.Docking;
 
-public class SimplePanel extends BasePanel {
-	public SimplePanel(String title, String persistentID) {
-		super(title, persistentID);
+import javax.swing.*;
+
+public class HeaderModel {
+	private final Dockable dockable;
+
+	public HeaderModel(Dockable dockable) {
+		this.dockable = dockable;
 	}
 
-	@Override
-	public boolean floatingAllowed() {
-		return true;
+	public void update() {
+
 	}
 
-	@Override
-	public boolean limitToRoot() {
+	public String titleText() {
+		return dockable.tabText();
+	}
+
+	public boolean isPinnedAllowed() {
+		return dockable.allowPinning();
+	}
+
+	public boolean isPinned() {
 		return false;
 	}
 
-	@Override
-	public List<DockingRegion> disallowedRegions() {
-		return Collections.emptyList();
+	public boolean isUnpinnedAllowed() {
+		return dockable.allowPinning();
 	}
 
-	@Override
-	public boolean allowClose() {
-		return true;
+	public boolean isUnpinned() {
+		return Docking.isUnpinned(dockable);
 	}
 
-	@Override
-	public boolean allowPinning() {
-		return false;
+	public boolean isMaximizeAllowed() {
+		return dockable.allowMinMax();
 	}
 
-	@Override
-	public boolean allowMinMax() {
-		return true;
+	public boolean isMaximized() {
+		return Docking.isMaximized(dockable);
 	}
 
-	@Override
+	public boolean isCloseAllowed() {
+		return dockable.allowClose();
+	}
+
 	public boolean hasMoreOptions() {
-		return false;
+		return dockable.hasMoreOptions();
+	}
+
+	public boolean isFloatingAllowed() {
+		return dockable.floatingAllowed();
+	}
+
+	public void addMoreOptions(JPopupMenu menu) {
+		dockable.addMoreOptions(menu);
 	}
 }

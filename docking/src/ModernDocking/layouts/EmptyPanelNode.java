@@ -19,48 +19,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+package ModernDocking.layouts;
+
 import ModernDocking.DockingRegion;
 
-import java.util.Collections;
-import java.util.List;
-
-public class SimplePanel extends BasePanel {
-	public SimplePanel(String title, String persistentID) {
-		super(title, persistentID);
+public class EmptyPanelNode implements DockingLayoutNode {
+	@Override
+	public DockingLayoutNode findNode(String persistentID) {
+		return null;
 	}
 
 	@Override
-	public boolean floatingAllowed() {
-		return true;
+	public void dock(String persistentID, DockingRegion region) {
 	}
 
 	@Override
-	public boolean limitToRoot() {
-		return false;
+	public void replaceChild(DockingLayoutNode child, DockingLayoutNode newChild) {
 	}
 
 	@Override
-	public List<DockingRegion> disallowedRegions() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public boolean allowClose() {
-		return true;
-	}
-
-	@Override
-	public boolean allowPinning() {
-		return false;
-	}
-
-	@Override
-	public boolean allowMinMax() {
-		return true;
-	}
-
-	@Override
-	public boolean hasMoreOptions() {
-		return false;
+	public void setParent(DockingLayoutNode parent) {
 	}
 }

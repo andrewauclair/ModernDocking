@@ -19,19 +19,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package docking.ui;
-
-import com.formdev.flatlaf.extras.FlatSVGIcon;
-import ModernDocking.ui.DockingHeaderUI;
-import ModernDocking.ui.HeaderController;
-import ModernDocking.ui.HeaderModel;
+package ModernDocking.ui;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class FlatLafHeaderUI extends JPanel implements DockingHeaderUI {
+// this can be replaced by the user or with the docking-ui FlatLaf header UI
+public class DefaultHeaderUI extends JPanel implements DockingHeaderUI {
+	private final HeaderController controller;
+	private final HeaderModel model;
+
 	private final JPopupMenu settings = new JPopupMenu();
 
 	private final JMenuItem pinned = new JMenuItem("Pinned");
@@ -40,40 +39,19 @@ public class FlatLafHeaderUI extends JPanel implements DockingHeaderUI {
 
 	private final JLabel maximizedIndicator = new JLabel("Maximized");
 	private final JCheckBoxMenuItem maximizeOption = new JCheckBoxMenuItem("Maximize");
-	private final HeaderController headerController;
-	private final HeaderModel headerModel;
 
-	public FlatLafHeaderUI(HeaderController headerController, HeaderModel headerModel) {
-		this.headerController = headerController;
-		this.headerModel = headerModel;
+	public DefaultHeaderUI(HeaderController controller, HeaderModel model) {
+		this.controller = controller;
+		this.model = model;
 
-		setOpaque(true);
-
-		JButton more = new JButton(new FlatSVGIcon("icons/settings.svg"));
+		JButton more = new JButton("S");
 		more.addActionListener(e -> this.settings.show(more, more.getWidth(), more.getHeight()));
 
-		FlatSVGIcon closeIcon = new FlatSVGIcon("icons/x.svg");
-		JButton close = new JButton(closeIcon);
-
-		close.addActionListener(e -> headerController.close());
+		JButton close = new JButton("X");
+		close.addActionListener(e -> controller.close());
 
 		setupButton(more);
 		setupButton(close);
-
-		Color color = UIManager.getColor("Docking.titlebar.default");
-		setBackground(color);
-		close.setBackground(color);
-
-		UIManager.addPropertyChangeListener( e -> {
-			if ("lookAndFeel".equals(e.getPropertyName())) {
-				Color bg = UIManager.getColor("Docking.titlebar.default");
-				SwingUtilities.invokeLater(() -> {
-					setBackground(bg);
-					close.setBackground(bg);
-				});
-
-			}
-		});
 
 		setLayout(new GridBagLayout());
 
@@ -84,7 +62,7 @@ public class FlatLafHeaderUI extends JPanel implements DockingHeaderUI {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 
-		JLabel label = new JLabel(headerModel.titleText());
+		JLabel label = new JLabel(model.titleText());
 		label.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 0));
 		label.setFont(label.getFont().deriveFont(Font.BOLD));
 
@@ -101,30 +79,30 @@ public class FlatLafHeaderUI extends JPanel implements DockingHeaderUI {
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.weightx = 0;
 
-		if (headerModel.hasMoreOptions() || headerModel.isMaximizeAllowed() || headerModel.isPinnedAllowed()) {
+		if (model.hasMoreOptions() || model.isMaximizeAllowed() || model.isPinnedAllowed()) {
 			addOptions();
 
 			add(more, gbc);
 			gbc.gridx++;
 		}
-		if (headerModel.isCloseAllowed()) {
+		if (model.isCloseAllowed()) {
 			add(close, gbc);
 			gbc.gridx++;
 		}
 	}
 
 	private void addOptions() {
-		headerModel.addMoreOptions(settings);
+		model.addMoreOptions(settings);
 
 		if (settings.getComponentCount() > 0) {
 			settings.addSeparator();
 		}
 
-		window.setEnabled(headerModel.isFloatingAllowed());
+		window.setEnabled(model.isFloatingAllowed());
 
-		pinned.addActionListener(e -> headerController.pinDockable());
-		unpinned.addActionListener(e -> headerController.unpinDockable());
-		window.addActionListener(e -> headerController.newWindow());
+		pinned.addActionListener(e -> controller.pinDockable());
+		unpinned.addActionListener(e -> controller.unpinDockable());
+		window.addActionListener(e -> controller.newWindow());
 
 		JMenu viewMode = new JMenu("View Mode");
 		viewMode.add(pinned);
@@ -137,23 +115,23 @@ public class FlatLafHeaderUI extends JPanel implements DockingHeaderUI {
 		settings.add(maximizeOption);
 
 		maximizeOption.addActionListener(e -> {
-			boolean maxed = headerModel.isMaximized();
+			boolean maxed = model.isMaximized();
 
 			maximizeOption.setSelected(!maxed);
 			maximizedIndicator.setVisible(!maxed);
 
 			if (maxed) {
-				headerController.minimize();
+				controller.minimize();
 			}
 			else {
-				headerController.maximize();
+				controller.maximize();
 			}
 		});
 	}
 
 	private void setupButton(JButton button) {
-		Color color = UIManager.getColor("Docking.titlebar.default");
-		button.setBackground(color);
+//		Color color = UIManager.getColor("Docking.titlebar.default");
+//		button.setBackground(color);
 		button.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		button.setFocusable(false);
 		button.setOpaque(false);
@@ -176,10 +154,6 @@ public class FlatLafHeaderUI extends JPanel implements DockingHeaderUI {
 
 	@Override
 	public void update() {
-		maximizedIndicator.setVisible(headerModel.isMaximized());
-		maximizeOption.setSelected(headerModel.isMaximized());
 
-		pinned.setEnabled(headerModel.isPinnedAllowed() && headerModel.isUnpinned());
-		unpinned.setEnabled(headerModel.isPinnedAllowed() && !headerModel.isUnpinned());
 	}
 }

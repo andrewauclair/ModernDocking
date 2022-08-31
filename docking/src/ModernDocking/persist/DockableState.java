@@ -19,48 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-import ModernDocking.DockingRegion;
+package ModernDocking.persist;
 
-import java.util.Collections;
-import java.util.List;
-
-public class SimplePanel extends BasePanel {
-	public SimplePanel(String title, String persistentID) {
-		super(title, persistentID);
-	}
-
-	@Override
-	public boolean floatingAllowed() {
-		return true;
-	}
-
-	@Override
-	public boolean limitToRoot() {
-		return false;
-	}
-
-	@Override
-	public List<DockingRegion> disallowedRegions() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public boolean allowClose() {
-		return true;
-	}
-
-	@Override
-	public boolean allowPinning() {
-		return false;
-	}
-
-	@Override
-	public boolean allowMinMax() {
-		return true;
-	}
-
-	@Override
-	public boolean hasMoreOptions() {
-		return false;
-	}
+public interface DockableState {
 }

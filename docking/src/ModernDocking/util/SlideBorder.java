@@ -19,48 +19,42 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-import ModernDocking.DockingRegion;
+package ModernDocking.util;
 
-import java.util.Collections;
-import java.util.List;
+import ModernDocking.internal.DockableToolbar;
 
-public class SimplePanel extends BasePanel {
-	public SimplePanel(String title, String persistentID) {
-		super(title, persistentID);
+import javax.swing.*;
+import java.awt.*;
+
+public class SlideBorder extends JPanel {
+	private final DockableToolbar.Location location;
+
+	public SlideBorder(DockableToolbar.Location location) {
+		this.location = location;
+		setCursor(location == DockableToolbar.Location.SOUTH ? Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR) : Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
 	}
 
 	@Override
-	public boolean floatingAllowed() {
-		return true;
+	public Dimension getMinimumSize() {
+		Dimension size = super.getMinimumSize();
+		if (location == DockableToolbar.Location.SOUTH) {
+			size.height = 6;
+		}
+		else {
+			size.width = 6;
+		}
+		return size;
 	}
 
 	@Override
-	public boolean limitToRoot() {
-		return false;
-	}
-
-	@Override
-	public List<DockingRegion> disallowedRegions() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public boolean allowClose() {
-		return true;
-	}
-
-	@Override
-	public boolean allowPinning() {
-		return false;
-	}
-
-	@Override
-	public boolean allowMinMax() {
-		return true;
-	}
-
-	@Override
-	public boolean hasMoreOptions() {
-		return false;
+	public Dimension getPreferredSize() {
+		Dimension size = super.getPreferredSize();
+		if (location == DockableToolbar.Location.SOUTH) {
+			size.height = 6;
+		}
+		else {
+			size.width = 6;
+		}
+		return size;
 	}
 }

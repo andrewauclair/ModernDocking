@@ -23,14 +23,14 @@ SOFTWARE.
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import modern_docking.*;
-import modern_docking.internal.DockingColors;
-import modern_docking.layouts.DockingLayout;
-import modern_docking.layouts.FullAppLayout;
-import modern_docking.layouts.FullAppLayoutXML;
-import modern_docking.persist.AppState;
-import modern_docking.ui.DockableMenuItem;
-import modern_docking.ui.LayoutsMenu;
+import ModernDocking.*;
+import ModernDocking.internal.DockingColors;
+import ModernDocking.layouts.DockingLayout;
+import ModernDocking.layouts.FullAppLayout;
+import ModernDocking.layouts.FullAppLayoutXML;
+import ModernDocking.persist.AppState;
+import ModernDocking.ui.DockableMenuItem;
+import ModernDocking.ui.LayoutsMenu;
 
 import javax.swing.*;
 import java.awt.*;

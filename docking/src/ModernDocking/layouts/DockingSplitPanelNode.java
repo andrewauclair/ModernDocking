@@ -1,0 +1,86 @@
+/*
+Copyright (c) 2022 Andrew Auclair
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+ */
+package ModernDocking.layouts;
+
+import ModernDocking.DockingRegion;
+
+public class DockingSplitPanelNode implements DockingLayoutNode {
+	private DockingLayoutNode left;
+	private DockingLayoutNode right;
+	private final int orientation;
+	private final double dividerProportion;
+
+	public DockingSplitPanelNode(DockingLayoutNode left, DockingLayoutNode right, int orientation, double dividerProportion) {
+		this.left = left;
+		this.right = right;
+		this.orientation = orientation;
+		this.dividerProportion = dividerProportion;
+
+		this.left.setParent(this);
+		this.right.setParent(this);
+	}
+
+	@Override
+	public void setParent(DockingLayoutNode parent) {
+	}
+
+	@Override
+	public DockingLayoutNode findNode(String persistentID) {
+		DockingLayoutNode left = this.left.findNode(persistentID);
+
+		if (left != null) {
+			return left;
+		}
+
+		return this.right.findNode(persistentID);
+	}
+
+	@Override
+	public void dock(String persistentID, DockingRegion region) {
+	}
+
+	@Override
+	public void replaceChild(DockingLayoutNode child, DockingLayoutNode newChild) {
+		if (left == child) {
+			left = newChild;
+		}
+		else if (right == child) {
+			right = newChild;
+		}
+	}
+
+	public DockingLayoutNode getLeft() {
+		return left;
+	}
+
+	public DockingLayoutNode getRight() {
+		return right;
+	}
+
+	public int getOrientation() {
+		return orientation;
+	}
+
+	public double getDividerProportion() {
+		return dividerProportion;
+	}
+}

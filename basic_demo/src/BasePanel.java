@@ -19,12 +19,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-import modern_docking.Dockable;
-import modern_docking.Docking;
+import ModernDocking.Dockable;
+import ModernDocking.Docking;
 import docking.ui.FlatLafHeaderUI;
-import modern_docking.ui.DockingHeaderUI;
-import modern_docking.ui.HeaderController;
-import modern_docking.ui.HeaderModel;
+import ModernDocking.ui.DockingHeaderUI;
+import ModernDocking.ui.HeaderController;
+import ModernDocking.ui.HeaderModel;
 
 import javax.swing.*;
 import java.awt.*;
