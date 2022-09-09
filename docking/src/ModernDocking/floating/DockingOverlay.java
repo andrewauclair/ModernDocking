@@ -83,7 +83,7 @@ public class DockingOverlay {
 
 	// check if the floating dockable is allowed to dock to this region
 	private boolean isRegionAllowed(DockingRegion region) {
-		return !floating.disallowedRegions().contains(region);
+		return floating.disallowedRegions() == null || !floating.disallowedRegions().contains(region);
 	}
 
 	public void update(Point screenPos) {

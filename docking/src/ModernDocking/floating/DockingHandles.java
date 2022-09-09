@@ -148,7 +148,7 @@ public class DockingHandles {
 	}
 
 	private boolean isRegionAllowed(DockingRegion region) {
-		return !floating.disallowedRegions().contains(region);
+		return floating.disallowedRegions() == null || !floating.disallowedRegions().contains(region);
 	}
 
 	private void setDockableHandleLocations() {
