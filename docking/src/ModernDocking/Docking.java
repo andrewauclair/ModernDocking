@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking;
 
 import ModernDocking.exception.DockableRegistrationFailureException;
+import ModernDocking.exception.NotDockedException;
 import ModernDocking.floating.FloatListener;
 import ModernDocking.internal.*;
 import ModernDocking.layouts.*;
@@ -210,7 +211,11 @@ public class Docking {
 	}
 
 	public static void dock(Dockable source, Dockable target, DockingRegion region, double dividerProportion) {
+		if (!isDocked(target)) {
+			throw new NotDockedException(target);
+		}
 		DockableWrapper wrapper = getWrapper(target);
+
 		wrapper.getParent().dock(source, region, dividerProportion);
 
 		getWrapper(source).setFrame(wrapper.getFrame());
@@ -238,7 +243,7 @@ public class Docking {
 
 	public static void bringToFront(Dockable dockable) {
 		if (!isDocked(dockable)) {
-			return;
+			throw new NotDockedException(dockable);
 		}
 
 		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
@@ -257,7 +262,7 @@ public class Docking {
 
 	public static void undock(Dockable dockable) {
 		if (!isDocked(dockable)) {
-			return;
+			throw new NotDockedException(dockable);
 		}
 
 		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
