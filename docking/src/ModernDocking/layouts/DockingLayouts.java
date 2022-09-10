@@ -105,7 +105,7 @@ public class DockingLayouts {
 	}
 
 	private static DockingLayoutNode tabbedPanelToNode(DockedTabbedPanel panel) {
-		DockingTabPanelNode node = new DockingTabPanelNode();
+		DockingTabPanelNode node = new DockingTabPanelNode(panel.getSelectedTabID());
 
 		for (String persistentID : panel.persistentIDs()) {
 			node.addTab(persistentID);

@@ -48,7 +48,7 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 	@Override
 	public void dock(String persistentID, DockingRegion region) {
 		if (region == DockingRegion.CENTER) {
-			DockingTabPanelNode tab = new DockingTabPanelNode();
+			DockingTabPanelNode tab = new DockingTabPanelNode(persistentID);
 
 			tab.addTab(this.persistentID);
 			tab.addTab(persistentID);

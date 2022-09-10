@@ -292,6 +292,10 @@ public class DockingState {
 			panel.addPanel(wrapper);
 		}
 
+		if (!node.getSelectedTabID().isEmpty()) {
+			panel.bringToFront(getDockable(node.getSelectedTabID()));
+		}
+
 		return panel;
 	}
 

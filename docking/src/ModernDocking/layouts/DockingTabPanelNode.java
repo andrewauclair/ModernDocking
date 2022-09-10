@@ -29,7 +29,13 @@ import java.util.List;
 
 public class DockingTabPanelNode implements DockingLayoutNode {
 	private final List<DockingSimplePanelNode> tabs = new ArrayList<>();
+	private final String selectedTabID;
+
 	private DockingLayoutNode parent;
+
+	public DockingTabPanelNode(String selectedTabID) {
+		this.selectedTabID = selectedTabID;
+	}
 
 	public void addTab(String persistentID) {
 		DockingSimplePanelNode tab = new DockingSimplePanelNode(persistentID);
@@ -44,6 +50,10 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 			persistentIDs.add(tab.persistentID());
 		}
 		return persistentIDs;
+	}
+
+	public String getSelectedTabID() {
+		return selectedTabID;
 	}
 
 	@Override

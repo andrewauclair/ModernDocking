@@ -88,6 +88,7 @@ public class AppState {
 			});
 			persistTimer.setRepeats(false);
 			persistTimer.setCoalesce(false);
+			persistTimer.start();
 		}
 		else {
 			persistTimer.restart();

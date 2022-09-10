@@ -23,14 +23,17 @@ package ModernDocking.internal;
 
 import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
+import ModernDocking.persist.AppState;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 // DockingPanel that has a JTabbedPane inside its center
-public class DockedTabbedPanel extends DockingPanel {
+public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	private final List<DockableWrapper> panels = new ArrayList<>();
 
 	private final JTabbedPane tabs = new JTabbedPane();
@@ -45,6 +48,20 @@ public class DockedTabbedPanel extends DockingPanel {
 		tabs.setTabPlacement(JTabbedPane.BOTTOM);
 
 		add(tabs, BorderLayout.CENTER);
+	}
+
+	@Override
+	public void addNotify() {
+		super.addNotify();
+
+		tabs.addChangeListener(this);
+	}
+
+	@Override
+	public void removeNotify() {
+		tabs.removeChangeListener(this);
+
+		super.removeNotify();
 	}
 
 	public void addPanel(DockableWrapper dockable) {
@@ -163,5 +180,14 @@ public class DockedTabbedPanel extends DockingPanel {
 				tabs.setSelectedIndex(i);
 			}
 		}
+	}
+
+	public String getSelectedTabID() {
+		return panels.get(tabs.getSelectedIndex()).getDockable().persistentID();
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		AppState.persist();
 	}
 }

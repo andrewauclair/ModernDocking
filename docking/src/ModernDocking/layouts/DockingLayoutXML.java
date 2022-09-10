@@ -133,6 +133,12 @@ public class DockingLayoutXML {
 		writer.writeStartElement("tabbed");
 		writer.writeCharacters(NL);
 
+		writer.writeStartElement("selectedTab");
+		writer.writeAttribute("persistentID", node.getSelectedTabID());
+		writer.writeCharacters(NL);
+		writer.writeEndElement();
+		writer.writeCharacters(NL);
+
 		for (String persistentID : node.getPersistentIDs()) {
 			writer.writeStartElement("tab");
 			writer.writeAttribute("persistentID", persistentID);
@@ -260,12 +266,16 @@ public class DockingLayoutXML {
 	}
 
 	private static DockingTabPanelNode readTabNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
-		DockingTabPanelNode node = new DockingTabPanelNode();
+		DockingTabPanelNode node = new DockingTabPanelNode("");
 
 		while (reader.hasNext()) {
 			int next = reader.nextTag();
 
-			if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("tab")) {
+			if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("selectedTab")) {
+				String persistentID = reader.getAttributeValue(0);
+				node = new DockingTabPanelNode(persistentID);
+			}
+			else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("tab")) {
 				String persistentID = reader.getAttributeValue(0);
 				node.addTab(persistentID);
 			}
