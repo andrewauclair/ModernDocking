@@ -190,7 +190,6 @@ public class MainFrame extends JFrame {
 		gbc.fill = GridBagConstraints.BOTH;
 
 		RootDockingPanel dockingPanel = new RootDockingPanel(this);
-		Docking.registerDockingPanel(dockingPanel, this);
 
 		add(dockingPanel, gbc);
 

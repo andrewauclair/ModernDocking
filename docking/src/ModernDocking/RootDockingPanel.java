@@ -46,6 +46,8 @@ public class RootDockingPanel extends DockingPanel {
 	private final DockableToolbar eastToolbar;
 
 	public RootDockingPanel(JFrame frame) {
+		Docking.registerDockingPanel(this, frame);
+
 		setLayout(new GridBagLayout());
 		this.frame = frame;
 

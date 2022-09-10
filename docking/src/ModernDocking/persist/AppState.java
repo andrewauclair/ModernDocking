@@ -95,6 +95,7 @@ public class AppState {
 		}
 	}
 
+	// TODO catch any exceptions and return false
 	public static boolean restore() {
 		// don't restore if auto persist is disabled
 		if (autoPersistFile == null || !autoPersistFile.exists()) {
