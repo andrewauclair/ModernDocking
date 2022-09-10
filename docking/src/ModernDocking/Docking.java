@@ -404,6 +404,7 @@ public class Docking {
 		DockingListeners.fireUnpinnedEvent(dockable);
 	}
 
+	// display a dockable by persistentID
 	public static void display(String persistentID) {
 		display(getDockable(persistentID));
 	}
@@ -416,8 +417,15 @@ public class Docking {
 		}
 		else {
 			// go through all the dockables and find the first one that is the same type
+			Optional<Dockable> firstOfType = DockingComponentUtils.findFirstDockableOfType(dockable.type());
 
-			// if we didn't find any dockables of the same type, we'll dock to north
+			if (firstOfType.isPresent()) {
+				dock(dockable, firstOfType.get(), DockingRegion.CENTER);
+			}
+			else {
+				// if we didn't find any dockables of the same type, we'll dock to north
+				dock(dockable, instance.mainFrame, DockingRegion.NORTH);
+			}
 		}
 	}
 

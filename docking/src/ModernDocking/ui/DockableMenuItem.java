@@ -69,7 +69,7 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 			Docking.bringToFront(dockable);
 		}
 		else {
-			Docking.dock(dockable, frame, DockingRegion.SOUTH);
+			Docking.display(dockable);
 		}
 
 		// set this menu item to the state of the dockable, should be docked at this point

@@ -211,4 +211,47 @@ public class DockingComponentUtils {
 			}
 		}
 	}
+
+	public static Optional<Dockable> findFirstDockableOfType(int type) {
+		RootDockingPanel mainRoot = rootForFrame(Docking.getInstance().getMainFrame());
+
+		Optional<Dockable> mainPanelDockable = findDockableOfType(type, mainRoot.getPanel());
+
+		if (mainPanelDockable.isPresent()) {
+			return mainPanelDockable;
+		}
+
+		for (RootDockingPanel panel : Docking.getInstance().getRootPanels().values()) {
+			Optional<Dockable> dockable = findDockableOfType(type, panel);
+
+			if (dockable.isPresent()) {
+				return dockable;
+			}
+		}
+
+		return Optional.empty();
+	}
+
+	private static Optional<Dockable> findDockableOfType(int type, Container container) {
+		for (Component component : container.getComponents()) {
+			if (component instanceof DisplayPanel) {
+				DisplayPanel panel = (DisplayPanel) component;
+
+				DockableWrapper wrapper = panel.getWrapper();
+				Dockable dockable = wrapper.getDockable();
+
+				if (dockable.type() == type) {
+					return Optional.of(dockable);
+				}
+			}
+			else if (component instanceof Container) {
+				Optional<Dockable> dockableOfType = findDockableOfType(type, (Container) component);
+
+				if (dockableOfType.isPresent()) {
+					return dockableOfType;
+				}
+			}
+		}
+		return Optional.empty();
+	}
 }
