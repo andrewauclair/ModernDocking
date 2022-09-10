@@ -21,7 +21,9 @@ SOFTWARE.
  */
 
 // TODO current changes are breaking the intended functionality here
+// Docking panel that is always displayed and cannot be closed
 public class AlwaysDisplayedPanel extends SimplePanel {
+	// create a new AlwaysDisplayedPanel with the given title and persistentID
 	public AlwaysDisplayedPanel(String title, String persistentID) {
 		super(title, persistentID);
 	}
