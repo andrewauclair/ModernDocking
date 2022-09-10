@@ -420,4 +420,21 @@ public class Docking {
 			// if we didn't find any dockables of the same type, we'll dock to north
 		}
 	}
+
+	public static void updateTabText(String persistentID) {
+		updateTabText(getDockable(persistentID));
+	}
+
+	public static void updateTabText(Dockable dockable) {
+		if (!isDocked(dockable)) {
+			// if the dockable isn't docked then we don't have to do anything to update its tab text
+			return;
+		}
+
+		FullAppLayout layout = DockingState.getFullLayout();
+
+		Docking.undock(dockable);
+
+		DockingState.restoreFullLayout(layout);
+	}
 }

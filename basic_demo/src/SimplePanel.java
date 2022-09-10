@@ -23,10 +23,14 @@ import ModernDocking.DockingRegion;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class SimplePanel extends BasePanel {
+	private String tabText = "";
+
 	public SimplePanel(String title, String persistentID) {
 		super(title, persistentID);
+		tabText = "";
 	}
 
 	@Override
@@ -62,5 +66,18 @@ public class SimplePanel extends BasePanel {
 	@Override
 	public boolean hasMoreOptions() {
 		return false;
+	}
+
+	@Override
+	public String tabText() {
+		if (tabText == null || tabText.isEmpty()) {
+			return super.tabText();
+		}
+		return tabText;
+	}
+
+	public void setTabText(String tabText) {
+		Objects.requireNonNull(tabText);
+		this.tabText = tabText;
 	}
 }

@@ -126,6 +126,12 @@ public class MainFrame extends JFrame {
 		ToolPanel output = new ToolPanel("Output", "output", false);
 		AlwaysDisplayedPanel alwaysDisplayed = new AlwaysDisplayedPanel("always displayed", "always-displayed");
 
+		JMenuItem changeText = new JMenuItem("Change tab text");
+		changeText.addActionListener(e -> {
+			one.setTabText("test");
+			Docking.updateTabText("one");
+		});
+
 		JMenu view = new JMenu("View");
 		menuBar.add(view);
 
@@ -140,6 +146,7 @@ public class MainFrame extends JFrame {
 		view.add(actionListenDock(explorer));
 		view.add(actionListenDock(output));
 		view.add(actionListenDock(alwaysDisplayed));
+		view.add(changeText);
 
 		JToolBar toolBar = new JToolBar();
 		JButton test1 = new JButton("Test1");
