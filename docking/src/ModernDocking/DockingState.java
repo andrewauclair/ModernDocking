@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package ModernDocking;
 
+import ModernDocking.exception.DockableNotFoundException;
 import ModernDocking.internal.*;
 import ModernDocking.layouts.*;
 import ModernDocking.persist.*;
@@ -214,7 +215,7 @@ public class DockingState {
 			Dockable dockable = getDockable(persistentID);
 
 			if (dockable == null) {
-				throw new RuntimeException("Dockable with persistent ID " + persistentID + " does not exist.");
+				throw new DockableNotFoundException(persistentID);
 			}
 
 			Docking.undock(dockable);
@@ -232,7 +233,7 @@ public class DockingState {
 		Dockable dockable = getDockable(state.getPersistentID());
 
 		if (dockable == null) {
-			throw new RuntimeException("Dockable with persistent ID " + state.getPersistentID() + " does not exist.");
+			throw new DockableNotFoundException(state.getPersistentID());
 		}
 
 		Docking.undock(dockable);
@@ -280,7 +281,7 @@ public class DockingState {
 			Dockable dockable = getDockable(persistentID);
 
 			if (dockable == null) {
-				throw new RuntimeException("Dockable with persistent ID " + persistentID + " does not exist.");
+				throw new DockableNotFoundException(persistentID);
 			}
 
 			Docking.undock(dockable);
@@ -298,7 +299,7 @@ public class DockingState {
 		Dockable dockable = getDockable(node.persistentID());
 
 		if (dockable == null) {
-			throw new RuntimeException("Dockable with persistent ID " + node.persistentID() + " does not exist.");
+			throw new DockableNotFoundException(node.persistentID());
 		}
 
 		Docking.undock(dockable);

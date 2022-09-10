@@ -39,6 +39,10 @@ public interface Dockable {
 	// this should be unique in the application (will be verified when adding dockable)
 	String persistentID();
 
+	// tells the docking framework what type of dockable this is
+	// provided as a simple int, but it's best to create your own enum and return the ordinal
+	int type();
+
 	// provide the tab text to the docking framework
 	// the tab text to be displayed when Dockable is in a tabbed pane. Does not need to be unique
 	// NOTE: this text should be static. If it needs to change, then the Dockable needs to be undocked and docked again.

@@ -1,6 +1,8 @@
 plugins {
 	id 'java'
 	id 'idea'
+	id 'maven-publish'
+	id 'signing'
 	id "com.github.ben-manes.versions" version "0.33.0"
 }
 
@@ -12,12 +14,9 @@ allprojects {
 repositories {
 	mavenLocal()
 	mavenCentral()
-	maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 sourceSets.main.java.srcDirs = ['src']
-sourceSets.test.java.srcDirs = ['test']
-sourceSets.main.resources.srcDirs = ['resources']
 
 dependencies {
 	implementation project(':docking')
@@ -29,4 +28,70 @@ dependencies {
 
 repositories {
 	mavenCentral()
+}
+
+java {
+	withJavadocJar()
+	withSourcesJar()
+}
+
+group = "io.github.andrewauclair.ModernDocking"
+archivesBaseName = "ModernDockingUI"
+version = "0.0.2-SNAPSHOT"
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifactId = 'ModernDockingUI'
+			from components.java
+			versionMapping {
+				usage('java-api') {
+					fromResolutionOf('runtimeClasspath')
+				}
+				usage('java-runtime') {
+					fromResolutionResult()
+				}
+			}
+			pom {
+				name = 'Java Modern Docking UI'
+				description = 'UI extension to Modern Docking'
+				url = 'https://github.com/andrewauclair/ModernDocking'
+				licenses {
+					license {
+						name = 'The Apache License, Version 2.0'
+						url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+					}
+				}
+				developers {
+					developer {
+						id = 'mightymalakai33'
+						name = 'Andrew Auclair'
+						email = 'mightymalakai33@gmail.com'
+					}
+				}
+			}
+		}
+	}
+	repositories {
+		maven {
+			credentials {
+				username = "$sonatypeUsername"
+				password = "$sonatypePassword"
+			}
+
+			def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+			def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+			url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+		}
+	}
+}
+
+signing {
+	sign publishing.publications.mavenJava
+}
+
+javadoc {
+	if(JavaVersion.current().isJava9Compatible()) {
+		options.addBooleanOption('html5', true)
+	}
 }

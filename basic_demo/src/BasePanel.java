@@ -52,6 +52,11 @@ public abstract class BasePanel extends JPanel implements Dockable {
 	}
 
 	@Override
+	public int type() {
+		return 0;
+	}
+
+	@Override
 	public String tabText() {
 		return title;
 	}

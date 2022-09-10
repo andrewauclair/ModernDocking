@@ -262,7 +262,8 @@ public class Docking {
 
 	public static void undock(Dockable dockable) {
 		if (!isDocked(dockable)) {
-			throw new NotDockedException(dockable);
+			// nothing to undock
+			return;
 		}
 
 		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
@@ -401,5 +402,22 @@ public class Docking {
 			root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
 		}
 		DockingListeners.fireUnpinnedEvent(dockable);
+	}
+
+	public static void display(String persistentID) {
+		display(getDockable(persistentID));
+	}
+
+	// if the dockable is already docked, then bringToFront is called.
+	// if it is not docked, then dock is called, docking it with dockables of the same type
+	public static void display(Dockable dockable) {
+		if (isDocked(dockable)) {
+			bringToFront(dockable);
+		}
+		else {
+			// go through all the dockables and find the first one that is the same type
+
+			// if we didn't find any dockables of the same type, we'll dock to north
+		}
 	}
 }
