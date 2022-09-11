@@ -37,7 +37,7 @@ public class DockingColors {
 			color = UIManager.getColor(key);
 
 			if (color == null) {
-				throw new RuntimeException("Unable to find color: " + key);
+//				throw new RuntimeException("Unable to find color: " + key);
 			}
 		}
 	}

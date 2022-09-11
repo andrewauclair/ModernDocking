@@ -42,7 +42,7 @@ public class MainFrame extends JFrame {
 	static DockingLayout currentLayout;
 
 	public MainFrame() {
-		setTitle("Test Docking Framework");
+		setTitle("Modern Docking Basic Demo");
 
 		setSize(800, 600);
 
@@ -84,6 +84,11 @@ public class MainFrame extends JFrame {
 
 		JMenuItem loadLayout = new JMenuItem("Load Layout from File...");
 		file.add(loadLayout);
+
+		JMenuItem changeColor = new JMenuItem("Change Color");
+		changeColor.addActionListener(e -> new ColorChanger().setVisible(true));
+
+		file.add(changeColor);
 
 		loadLayout.addActionListener(e -> {
 			JFileChooser chooser = new JFileChooser();

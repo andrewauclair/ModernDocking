@@ -27,6 +27,7 @@ import ModernDocking.ui.HeaderController;
 import ModernDocking.ui.HeaderModel;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -60,18 +61,35 @@ public class FlatLafHeaderUI extends JPanel implements DockingHeaderUI {
 		setupButton(more);
 		setupButton(close);
 
-		Color color = UIManager.getColor("Docking.titlebar.default");
+		Color color = UIManager.getColor("Docking.titlebar.background");
 		setBackground(color);
 		close.setBackground(color);
 
+		if (UIManager.getBoolean("Docking.titlebar.border.enabled")) {
+			Border border = BorderFactory.createLineBorder(UIManager.getColor("Docking.titlebar.border.color"), UIManager.getInt("Docking.titlebar.border.size"));
+			setBorder(border);
+		}
+
 		UIManager.addPropertyChangeListener( e -> {
 			if ("lookAndFeel".equals(e.getPropertyName())) {
-				Color bg = UIManager.getColor("Docking.titlebar.default");
+				Color bg = UIManager.getColor("Docking.titlebar.background");
+				SwingUtilities.invokeLater(() -> {
+					setBackground(bg);
+					close.setBackground(bg);
+
+					if (UIManager.getBoolean("Docking.titlebar.border.enabled")) {
+						Border border = BorderFactory.createLineBorder(UIManager.getColor("Docking.titlebar.border.color"), UIManager.getInt("Docking.titlebar.border.size"));
+						setBorder(border);
+					}
+				});
+
+			}
+			else if (e.getPropertyName().equals("Docking.titlebar.background")) {
+				Color bg = UIManager.getColor("Docking.titlebar.background");
 				SwingUtilities.invokeLater(() -> {
 					setBackground(bg);
 					close.setBackground(bg);
 				});
-
 			}
 		});
 

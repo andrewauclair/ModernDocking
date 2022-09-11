@@ -233,6 +233,10 @@ public class DockingComponentUtils {
 	}
 
 	private static Optional<Dockable> findDockableOfType(int type, Container container) {
+		if (container == null) {
+			return Optional.empty();
+		}
+
 		for (Component component : container.getComponents()) {
 			if (component instanceof DisplayPanel) {
 				DisplayPanel panel = (DisplayPanel) component;
