@@ -111,7 +111,7 @@ public class MainFrame extends JFrame {
 
 		JLabel test = new JLabel("Test");
 		test.setOpaque(true);
-		test.setBackground(Color.RED);
+		test.setBackground(Color.BLACK);
 		test.setSize(100, 100);
 		test.setLocation(100, 100);
 

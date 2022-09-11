@@ -50,7 +50,8 @@ public class FlatLafHeaderUI extends JPanel implements DockingHeaderUI {
 
 		setOpaque(true);
 
-		JButton more = new JButton(new FlatSVGIcon("icons/settings.svg"));
+//		JButton more = new JButton(new ImageIcon(getClass().getResource("/icons/setting.png")));
+		JButton more = new JButton(new FlatSVGIcon("icons/dots-three-vertical.svg"));
 		more.addActionListener(e -> this.settings.show(more, more.getWidth(), more.getHeight()));
 
 		FlatSVGIcon closeIcon = new FlatSVGIcon("icons/x.svg");
@@ -64,6 +65,7 @@ public class FlatLafHeaderUI extends JPanel implements DockingHeaderUI {
 		Color color = UIManager.getColor("Docking.titlebar.background");
 		setBackground(color);
 		close.setBackground(color);
+		more.setBackground(color);
 
 		if (UIManager.getBoolean("Docking.titlebar.border.enabled")) {
 			Border border = BorderFactory.createLineBorder(UIManager.getColor("Docking.titlebar.border.color"), UIManager.getInt("Docking.titlebar.border.size"));
@@ -76,6 +78,7 @@ public class FlatLafHeaderUI extends JPanel implements DockingHeaderUI {
 				SwingUtilities.invokeLater(() -> {
 					setBackground(bg);
 					close.setBackground(bg);
+					more.setBackground(bg);
 
 					if (UIManager.getBoolean("Docking.titlebar.border.enabled")) {
 						Border border = BorderFactory.createLineBorder(UIManager.getColor("Docking.titlebar.border.color"), UIManager.getInt("Docking.titlebar.border.size"));
@@ -89,6 +92,7 @@ public class FlatLafHeaderUI extends JPanel implements DockingHeaderUI {
 				SwingUtilities.invokeLater(() -> {
 					setBackground(bg);
 					close.setBackground(bg);
+					more.setBackground(bg);
 				});
 			}
 		});

@@ -17,6 +17,7 @@ repositories {
 }
 
 sourceSets.main.java.srcDirs = ['src']
+sourceSets.main.resources.srcDirs = ['resources']
 
 dependencies {
 	implementation project(':docking')

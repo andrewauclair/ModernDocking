@@ -36,14 +36,19 @@ See basic-demo for a simple example in Example.java and a more complicated examp
 ![Adjusting Splits](img/adjusting_split.gif)
 
 ## Creating Tab Group
+![Creating Tab Group](img/creating_tab_group.gif)
 
 ## Closing Panels
+![Closing Panels](img/close_panel.gif)
 
 ## Floating a Panel
+![Floating Panels](img/floating_panel.gif)
 
 ## Pinning a Panel
 
+
 ## Has More Options
+
 
 -- TODO add some links to blog posts that I will eventually write
 

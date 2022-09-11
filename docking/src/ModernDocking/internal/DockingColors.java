@@ -27,7 +27,7 @@ import java.awt.*;
 public class DockingColors {
 	private static class Entry {
 		String key = ""; // key to look up color in UIManager
-		Color color = Color.RED; // the cached color, refreshed when UIManager l&f changes
+		Color color = Color.BLACK; // the cached color, refreshed when UIManager l&f changes
 
 		public void setColor(String key) {
 			this.key = key;
