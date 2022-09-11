@@ -45,10 +45,10 @@ See basic-demo for a simple example in Example.java and a more complicated examp
 ![Floating Panels](img/floating_panel.gif)
 
 ## Pinning a Panel
-
+![Pinning Panel](img/pinning_panel.gif)
 
 ## Has More Options
-
+![Has More Options](img/has_more_options.gif)
 
 -- TODO add some links to blog posts that I will eventually write
 
