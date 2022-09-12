@@ -16,7 +16,7 @@ If you use Maven or Gradle, add a dependency with the following coordinates to y
 
 Otherwise download `ModernDocking-<version>.jar` here:
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair.ModernDocking/ModernDocking/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair.ModernDocking)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair.ModernDocking/ModernDocking/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair.ModernDocking/ModernDocking)
 
 ### Snapshots
 
@@ -56,7 +56,7 @@ If you use Maven or Gradle, add a dependency with the following coordinates to y
 
 Otherwise download `ModernDockingUI-<version>.jar` here:
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair.ModernDocking/ModernDockingUI/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair.ModernDockingUI)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair.ModernDocking/ModernDockingUI/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair.ModernDocking/ModernDockingUI)
 
 
 ## Examples
