@@ -127,6 +127,8 @@ Panels can be opened in their own window using View Mode > Window.
 
 ## Additional Settings Options
 Display custom settings options on the settings menu.
+
+
 ![Additional Settings Options](img/has_more_options.gif)
 
 [//]: # "-- TODO add some links to blog posts that I will eventually write"
