@@ -120,19 +120,10 @@ public class DockingState {
 
 		DockingComponentUtils.undockComponents(root);
 
+		root.setPanel(restoreState(layout.getRootNode(), frame));
+
 		if (layout.getMaximizedDockable() != null) {
-			DockableWrapper wrapper = getWrapper(getDockable(layout.getMaximizedDockable()));
-			wrapper.setMaximized(true);
-			DockingListeners.fireMaximizeEvent(wrapper.getDockable(), true);
-
-			layout.setMaximizedDockable(null);
-
-			maximizeRestoreLayout.put(frame, layout);
-
-			Docking.dock(wrapper.getDockable(), frame);
-		}
-		else {
-			root.setPanel(restoreState(layout.getRootNode(), frame));
+			Docking.maximize(getDockable(layout.getMaximizedDockable()));
 		}
 	}
 
