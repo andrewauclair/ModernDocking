@@ -29,23 +29,37 @@ import ModernDocking.internal.DockingInternal;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.function.Supplier;
 
 // Special JCheckBoxMenuItem that handles updating the checkbox for us based on the docking state of the dockable
 public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListener {
+	private final Supplier<String> persistentIDProvider;
 	private final String persistentID;
-	private final JFrame frame;
 
 	/**
 	 *
 	 * @param persistentID The dockable this menu item refers to
 	 * @param text The display text for this menu item
-	 * @param frame The frame to display this dockable on by default
 	 */
-	public DockableMenuItem(String persistentID, String text, JFrame frame) {
+	public DockableMenuItem(String persistentID, String text) {
 		super(text);
 
+		this.persistentIDProvider = null;
 		this.persistentID = persistentID;
-		this.frame = frame;
+
+		addActionListener(this);
+	}
+
+	/**
+	 *
+	 * @param persistentIDProvider Provides the persistentID that will be displayed
+	 * @param text The display text for this menu item
+	 */
+	public DockableMenuItem(Supplier<String> persistentIDProvider, String text) {
+		super(text);
+
+		this.persistentIDProvider = persistentIDProvider;
+		this.persistentID = "";
 
 		addActionListener(this);
 	}
@@ -55,13 +69,13 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 		super.addNotify();
 
 		// update the menu item, it's about to be displayed
-		Dockable dockable = DockingInternal.getDockable(persistentID);
+		Dockable dockable = DockingInternal.getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
 		setSelected(Docking.isDocked(dockable));
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Dockable dockable = DockingInternal.getDockable(persistentID);
+		Dockable dockable = DockingInternal.getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
 
 		// if dockable is already docked then bring it to the front
 		// else, dock it

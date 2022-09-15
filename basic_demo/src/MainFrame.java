@@ -150,7 +150,7 @@ public class MainFrame extends JFrame {
 		view.add(actionListenDock(eight));
 		view.add(actionListenDock(explorer));
 		view.add(actionListenDock(output));
-		view.add(actionListenDock(alwaysDisplayed));
+		view.add(new DockableMenuItem(() -> ((Dockable) alwaysDisplayed).persistentID(), ((Dockable) alwaysDisplayed).tabText()));
 		view.add(changeText);
 
 		JToolBar toolBar = new JToolBar();
@@ -231,42 +231,7 @@ public class MainFrame extends JFrame {
 	}
 
 	private JMenuItem actionListenDock(Dockable dockable) {
-//		JCheckBoxMenuItem item = new JCheckBoxMenuItem(persistentID);
-//		item.addActionListener(e -> {
-//			Dockable dockable = DockingInternal.getDockable(persistentID);
-//
-//			if (!Docking.isDocked(dockable)) {
-//				Docking.dock(dockable, this, DockingRegion.SOUTH);
-//			}
-//			else {
-//				Docking.bringToFront(dockable);
-//			}
-//			item.setSelected(Docking.isDocked(dockable));
-//		});
-//
-//		final String id = persistentID;
-//
-//		DockingListeners.addDockingListener(new DockingListener() {
-//			@Override
-//			public void docked(String persistentID) {
-//				if (id.equals(persistentID)) {
-//					item.setSelected(true);
-//				}
-//			}
-//
-//			@Override
-//			public void undocked(String persistentID) {
-//				if (id.equals(persistentID)) {
-//					item.setSelected(false);
-//				}
-//			}
-//
-//			@Override
-//			public void unpinned(String persistentID) {
-//			}
-//		});
-		JCheckBoxMenuItem item = new DockableMenuItem(dockable.persistentID(), dockable.tabText(), this);
-		return item;
+		return new DockableMenuItem(dockable.persistentID(), dockable.tabText());
 	}
 
 	public static void main(String[] args) {
