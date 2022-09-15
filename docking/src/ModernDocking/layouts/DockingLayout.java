@@ -23,6 +23,8 @@ package ModernDocking.layouts;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 // layout of a single frame
 public class DockingLayout {
@@ -32,6 +34,10 @@ public class DockingLayout {
 	private final int state;
 	private final DockingLayoutNode rootNode;
 	private String maximizedDockable = null;
+
+	private final java.util.List<String> westUnpinnedToolbarIDs = new ArrayList<>();
+	private final java.util.List<String> eastUnpinnedToolbarIDs = new ArrayList<>();
+	private final List<String> southUnpinnedToolbarIDs = new ArrayList<>();
 
 	public DockingLayout(boolean isMainFrame, Point location, Dimension size, int state, DockingLayoutNode rootNode) {
 		this.isMainFrame = isMainFrame;
@@ -74,5 +80,32 @@ public class DockingLayout {
 
 	public String getMaximizedDockable() {
 		return maximizedDockable;
+	}
+
+	public void setWestUnpinnedToolbarIDs(List<String> ids) {
+		westUnpinnedToolbarIDs.clear();
+		westUnpinnedToolbarIDs.addAll(ids);
+	}
+
+	public List<String> getWestUnpinnedToolbarIDs() {
+		return westUnpinnedToolbarIDs;
+	}
+
+	public void setEastUnpinnedToolbarIDs(List<String> ids) {
+		eastUnpinnedToolbarIDs.clear();
+		eastUnpinnedToolbarIDs.addAll(ids);
+	}
+
+	public List<String> getEastUnpinnedToolbarIDs() {
+		return eastUnpinnedToolbarIDs;
+	}
+
+	public void setSouthUnpinnedToolbarIDs(List<String> ids) {
+		southUnpinnedToolbarIDs.clear();
+		southUnpinnedToolbarIDs.addAll(ids);
+	}
+
+	public List<String> getSouthUnpinnedToolbarIDs() {
+		return southUnpinnedToolbarIDs;
 	}
 }

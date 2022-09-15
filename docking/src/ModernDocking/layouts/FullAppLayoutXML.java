@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 
 public class FullAppLayoutXML {
 	private static final String NL = "\n";
@@ -46,7 +47,7 @@ public class FullAppLayoutXML {
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
 		XMLStreamWriter writer;
 		try {
-			writer = factory.createXMLStreamWriter(new FileOutputStream(file));
+			writer = factory.createXMLStreamWriter(Files.newOutputStream(file.toPath()));
 		}
 		catch (Exception e) {
 			e.printStackTrace();

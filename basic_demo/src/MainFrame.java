@@ -31,6 +31,7 @@ import ModernDocking.layouts.FullAppLayoutXML;
 import ModernDocking.persist.AppState;
 import ModernDocking.ui.DockableMenuItem;
 import ModernDocking.ui.LayoutsMenu;
+import exception.FailOnThreadViolationRepaintManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -280,6 +281,8 @@ public class MainFrame extends JFrame {
 			}
 			UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0,0,0,0));
 			UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
+
+			FailOnThreadViolationRepaintManager.install();
 
 			MainFrame mainFrame = new MainFrame();
 			mainFrame.setVisible(true);

@@ -64,14 +64,19 @@ public class DockingLayouts {
 		return new ArrayList<>(layouts.keySet());
 	}
 
-
-
 	public static DockingLayout layoutFromRoot(RootDockingPanel root) {
-		return new DockingLayout(DockingComponentUtils.frameForRoot(root), panelToNode(root.getPanel()));
+		DockingLayout layout = new DockingLayout(DockingComponentUtils.frameForRoot(root), panelToNode(root.getPanel()));
+
+		layout.setWestUnpinnedToolbarIDs(root.getWestUnpinnedToolbarIDs());
+		layout.setEastUnpinnedToolbarIDs(root.getEastUnpinnedToolbarIDs());
+		layout.setSouthUnpinnedToolbarIDs(root.getSouthUnpinnedToolbarIDs());
+
+		return layout;
 	}
 
 	private static DockingLayoutNode panelToNode(DockingPanel panel) {
 		DockingLayoutNode node;
+
 		if (panel instanceof DockedSimplePanel) {
 			node = new DockingSimplePanelNode(((DockedSimplePanel) panel).getWrapper().getDockable().persistentID());
 		}

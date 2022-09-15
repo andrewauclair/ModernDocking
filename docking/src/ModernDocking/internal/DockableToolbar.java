@@ -34,6 +34,7 @@ import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class DockableToolbar extends JPanel implements ComponentListener {
 	public enum Location {
@@ -196,6 +197,12 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 		buttonGroup.setSelected(buttonGroup.getSelection(), false);
 
 		updateButtons();
+	}
+
+	public List<String> getPersistentIDs() {
+		return dockables.stream()
+				.map(entry -> entry.dockable.persistentID())
+				.collect(Collectors.toList());
 	}
 
 	@Override

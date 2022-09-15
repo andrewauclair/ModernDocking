@@ -122,6 +122,24 @@ public class DockingState {
 
 		root.setPanel(restoreState(layout.getRootNode(), frame));
 
+		for (String id : layout.getWestUnpinnedToolbarIDs()) {
+			Dockable dockable = getDockable(id);
+			root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
+			getWrapper(dockable).setUnpinned(true);
+		}
+
+		for (String id : layout.getEastUnpinnedToolbarIDs()) {
+			Dockable dockable = getDockable(id);
+			root.setDockableUnpinned(dockable, DockableToolbar.Location.EAST);
+			getWrapper(dockable).setUnpinned(true);
+		}
+
+		for (String id : layout.getSouthUnpinnedToolbarIDs()) {
+			Dockable dockable = getDockable(id);
+			root.setDockableUnpinned(dockable, DockableToolbar.Location.SOUTH);
+			getWrapper(dockable).setUnpinned(true);
+		}
+
 		if (layout.getMaximizedDockable() != null) {
 			Docking.maximize(getDockable(layout.getMaximizedDockable()));
 		}

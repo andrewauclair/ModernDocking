@@ -28,6 +28,8 @@ import ModernDocking.internal.DockingPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Collections;
+import java.util.List;
 
 // only class that should be used by clients
 public class RootDockingPanel extends DockingPanel {
@@ -206,6 +208,15 @@ public class RootDockingPanel extends DockingPanel {
 		createContents();
 	}
 
+	public List<String> unpinnedPersistentIDs(DockableToolbar.Location location) {
+		switch (location) {
+			case WEST: return westToolbar.getPersistentIDs();
+			case EAST: return eastToolbar.getPersistentIDs();
+			case SOUTH: return southToolbar.getPersistentIDs();
+		}
+		return Collections.emptyList();
+	}
+
 	private void createContents() {
 		removeAll();
 
@@ -260,5 +271,17 @@ public class RootDockingPanel extends DockingPanel {
 		westToolbar.hideAll();
 		southToolbar.hideAll();
 		eastToolbar.hideAll();
+	}
+
+	public List<String> getWestUnpinnedToolbarIDs() {
+		return westToolbar.getPersistentIDs();
+	}
+
+	public List<String> getEastUnpinnedToolbarIDs() {
+		return eastToolbar.getPersistentIDs();
+	}
+
+	public List<String> getSouthUnpinnedToolbarIDs() {
+		return southToolbar.getPersistentIDs();
 	}
 }
