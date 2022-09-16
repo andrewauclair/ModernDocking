@@ -200,6 +200,7 @@ public class FlatLafHeaderUI extends JPanel implements DockingHeaderUI {
 	public void update() {
 		maximizedIndicator.setVisible(headerModel.isMaximized());
 		maximizeOption.setSelected(headerModel.isMaximized());
+		maximizeOption.setEnabled(headerModel.isMaximizeAllowed());
 
 		pinned.setEnabled(headerModel.isPinnedAllowed() && headerModel.isUnpinned());
 		unpinned.setEnabled(headerModel.isPinnedAllowed() && !headerModel.isUnpinned());

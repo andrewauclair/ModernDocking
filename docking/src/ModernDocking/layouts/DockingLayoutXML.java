@@ -76,6 +76,10 @@ public class DockingLayoutXML {
 		writer.writeAttribute("location", layout.getLocation().x + "," + layout.getLocation().y);
 		writer.writeAttribute("size", layout.getSize().width + "," + layout.getSize().height);
 		writer.writeAttribute("state", String.valueOf(layout.getState()));
+
+		if (layout.getMaximizedDockable() != null) {
+			writer.writeAttribute("max-dockable", layout.getMaximizedDockable());
+		}
 		writer.writeCharacters(NL);
 
 		writer.writeStartElement("westToolbar");
@@ -113,12 +117,6 @@ public class DockingLayoutXML {
 		}
 
 		writer.writeEndElement();
-		writer.writeCharacters(NL);
-
-		if (layout.getMaximizedDockable() != null) {
-			writer.writeAttribute("max-dockable", layout.getMaximizedDockable());
-		}
-
 		writer.writeCharacters(NL);
 
 		writeNodeToFile(writer, layout.getRootNode());
