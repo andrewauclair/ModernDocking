@@ -24,7 +24,6 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import ModernDocking.*;
-import ModernDocking.internal.DockingColors;
 import ModernDocking.layouts.DockingLayout;
 import ModernDocking.layouts.FullAppLayout;
 import ModernDocking.layouts.FullAppLayoutXML;
@@ -128,8 +127,8 @@ public class MainFrame extends JFrame {
 		SimplePanel six = new SimplePanel("six", "six");
 		SimplePanel seven = new SimplePanel("seven", "seven");
 		SimplePanel eight = new SimplePanel("eight", "eight");
-		ToolPanel explorer = new ToolPanel("Explorer", "explorer", true);
-		ToolPanel output = new ToolPanel("Output", "output", false);
+		ToolPanel explorer = new ToolPanel("Explorer", "explorer", DockableStyle.VERTICAL);
+		ToolPanel output = new ToolPanel("Output", "output", DockableStyle.HORIZONTAL);
 		AlwaysDisplayedPanel alwaysDisplayed = new AlwaysDisplayedPanel("always displayed", "always-displayed");
 
 		JMenuItem changeText = new JMenuItem("Change tab text");
@@ -168,14 +167,8 @@ public class MainFrame extends JFrame {
 		toolBar.add(restore);
 
 
-		save.addActionListener(e -> {
-//			state = Docking.getRootState(this);
-			currentLayout = DockingState.getCurrentLayout(this);
-		});
-		restore.addActionListener(e -> {
-//			Docking.restoreState(this, state);
-			DockingState.setLayout(this, currentLayout);
-		});
+		save.addActionListener(e -> currentLayout = DockingState.getCurrentLayout(this));
+		restore.addActionListener(e -> DockingState.setLayout(this, currentLayout));
 
 		test2.addActionListener(e -> test.setVisible(false));
 		test3.addActionListener(e -> test.setVisible(true));
@@ -214,7 +207,6 @@ public class MainFrame extends JFrame {
 				test.setVisible(!test.isVisible());
 			}
 		});
-//		add(tabs, gbc);
 
 		JToggleButton button = new JToggleButton("Test");
 		button.addActionListener(e -> test.setVisible(button.isSelected()));
@@ -236,14 +228,6 @@ public class MainFrame extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		DockingColors.setHandlesBackground("Docking.handles.background");
-		DockingColors.setHandlesBackgroundBorder("Docking.handles.background.border");
-		DockingColors.setHandlesOutline("Docking.handles.outline");
-		DockingColors.setHandlesFill("Docking.handles.fill");
-		DockingColors.setDockingOverlay("Docking.overlay.color");
-		DockingColors.setDockingOverlayBorder("Docking.overlay.border.color");
-		DockingColors.setDockingOverlayAlpha("Docking.overlay.alpha");
-
 		SwingUtilities.invokeLater(() -> {
 			try {
 				FlatLaf.registerCustomDefaultsSource( "docking" );

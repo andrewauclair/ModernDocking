@@ -19,19 +19,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package docking.ui;
+package ModernDocking;
 
-import ModernDocking.ui.DefaultHeaderUI;
-import ModernDocking.ui.DockingHeaderUI;
-import ModernDocking.ui.HeaderController;
-import ModernDocking.ui.HeaderModel;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
-
-public class FlatLafHeaderUI extends DefaultHeaderUI implements DockingHeaderUI {
-	public FlatLafHeaderUI(HeaderController headerController, HeaderModel headerModel) {
-		super(headerController, headerModel);
-
-		settings.setIcon(new FlatSVGIcon("icons/settings.svg"));
-		close.setIcon(new FlatSVGIcon("icons/close.svg"));
-	}
+public enum DockableStyle {
+	HORIZONTAL,
+	VERTICAL,
+	BOTH
 }

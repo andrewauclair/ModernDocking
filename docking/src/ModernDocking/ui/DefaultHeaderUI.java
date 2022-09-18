@@ -21,17 +21,23 @@ SOFTWARE.
  */
 package ModernDocking.ui;
 
+import ModernDocking.internal.DockingProperties;
+
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 // this can be replaced by the user or with the docking-ui FlatLaf header UI
 public class DefaultHeaderUI extends JPanel implements DockingHeaderUI {
-	private final HeaderController controller;
-	private final HeaderModel model;
+	private final HeaderController headerController;
+	private final HeaderModel headerModel;
 
-	private final JPopupMenu settings = new JPopupMenu();
+	protected final JButton settings = new JButton();
+	protected final JButton close = new JButton();
+
+	private final JPopupMenu settingsMenu = new JPopupMenu();
 
 	private final JMenuItem pinned = new JMenuItem("Pinned");
 	private final JMenuItem unpinned = new JMenuItem("Unpinned");
@@ -40,18 +46,68 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI {
 	private final JLabel maximizedIndicator = new JLabel("Maximized");
 	private final JCheckBoxMenuItem maximizeOption = new JCheckBoxMenuItem("Maximize");
 
-	public DefaultHeaderUI(HeaderController controller, HeaderModel model) {
-		this.controller = controller;
-		this.model = model;
+	public DefaultHeaderUI(HeaderController headerController, HeaderModel headerModel) {
+		this.headerController = headerController;
+		this.headerModel = headerModel;
 
-		JButton more = new JButton("S");
-		more.addActionListener(e -> this.settings.show(more, more.getWidth(), more.getHeight()));
+		setOpaque(true);
 
-		JButton close = new JButton("X");
-		close.addActionListener(e -> controller.close());
+		try {
+			settings.setIcon(new ImageIcon(getClass().getResource("/icons/settings.png")));
+		}
+		catch (Exception e) {
+		}
 
-		setupButton(more);
+		settings.addActionListener(e -> this.settingsMenu.show(settings, settings.getWidth(), settings.getHeight()));
+
+		try {
+			close.setIcon(new ImageIcon(getClass().getResource("/icons/close.png")));
+		}
+		catch (Exception e) {
+		}
+
+		close.addActionListener(e -> headerController.close());
+
+		setupButton(settings);
 		setupButton(close);
+
+		Color color = DockingProperties.getTitlebarBackgroundColor();
+		setBackground(color);
+		close.setBackground(color);
+		settings.setBackground(color);
+
+		if (DockingProperties.isTitlebarBorderEnabled()) {
+			Border border = BorderFactory.createLineBorder(DockingProperties.getTitlebarBorderColor(), DockingProperties.getTitlebarBorderSize());
+
+			Border bo = BorderFactory.createMatteBorder(0, 0, DockingProperties.getTitlebarBorderSize(), 0, DockingProperties.getTitlebarBorderColor());
+
+			setBorder(bo);
+		}
+
+		UIManager.addPropertyChangeListener( e -> {
+			if ("lookAndFeel".equals(e.getPropertyName())) {
+				Color bg = DockingProperties.getTitlebarBackgroundColor();
+				SwingUtilities.invokeLater(() -> {
+					setBackground(bg);
+					close.setBackground(bg);
+					settings.setBackground(bg);
+
+					if (DockingProperties.isTitlebarBorderEnabled()) {
+						Border border = BorderFactory.createLineBorder(DockingProperties.getTitlebarBorderColor(), DockingProperties.getTitlebarBorderSize());
+						setBorder(border);
+					}
+				});
+
+			}
+			else if (e.getPropertyName().equals("Docking.titlebar.background")) {
+				Color bg = DockingProperties.getTitlebarBackgroundColor();
+				SwingUtilities.invokeLater(() -> {
+					setBackground(bg);
+					close.setBackground(bg);
+					settings.setBackground(bg);
+				});
+			}
+		});
 
 		setLayout(new GridBagLayout());
 
@@ -62,7 +118,7 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 
-		JLabel label = new JLabel(model.titleText());
+		JLabel label = new JLabel(headerModel.titleText());
 		label.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 0));
 		label.setFont(label.getFont().deriveFont(Font.BOLD));
 
@@ -79,59 +135,59 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI {
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.weightx = 0;
 
-		if (model.hasMoreOptions() || model.isMaximizeAllowed() || model.isPinnedAllowed()) {
+		if (headerModel.hasMoreOptions() || headerModel.isMaximizeAllowed() || headerModel.isPinnedAllowed()) {
 			addOptions();
 
-			add(more, gbc);
+			add(settings, gbc);
 			gbc.gridx++;
 		}
-		if (model.isCloseAllowed()) {
+		if (headerModel.isCloseAllowed()) {
 			add(close, gbc);
 			gbc.gridx++;
 		}
 	}
 
 	private void addOptions() {
-		model.addMoreOptions(settings);
+		headerModel.addMoreOptions(settingsMenu);
 
-		if (settings.getComponentCount() > 0) {
-			settings.addSeparator();
+		if (settingsMenu.getComponentCount() > 0) {
+			settingsMenu.addSeparator();
 		}
 
-		window.setEnabled(model.isFloatingAllowed());
+		window.setEnabled(headerModel.isFloatingAllowed());
 
-		pinned.addActionListener(e -> controller.pinDockable());
-		unpinned.addActionListener(e -> controller.unpinDockable());
-		window.addActionListener(e -> controller.newWindow());
+		pinned.addActionListener(e -> headerController.pinDockable());
+		unpinned.addActionListener(e -> headerController.unpinDockable());
+		window.addActionListener(e -> headerController.newWindow());
 
 		JMenu viewMode = new JMenu("View Mode");
 		viewMode.add(pinned);
 		viewMode.add(unpinned);
 		viewMode.add(window);
 
-		settings.add(viewMode);
-		settings.addSeparator();
+		settingsMenu.add(viewMode);
+		settingsMenu.addSeparator();
 
-		settings.add(maximizeOption);
+		settingsMenu.add(maximizeOption);
 
 		maximizeOption.addActionListener(e -> {
-			boolean maxed = model.isMaximized();
+			boolean maxed = headerModel.isMaximized();
 
 			maximizeOption.setSelected(!maxed);
 			maximizedIndicator.setVisible(!maxed);
 
 			if (maxed) {
-				controller.minimize();
+				headerController.minimize();
 			}
 			else {
-				controller.maximize();
+				headerController.maximize();
 			}
 		});
 	}
 
 	private void setupButton(JButton button) {
-//		Color color = UIManager.getColor("Docking.titlebar.default");
-//		button.setBackground(color);
+		Color color = DockingProperties.getTitlebarBackgroundColor();
+		button.setBackground(color);
 		button.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		button.setFocusable(false);
 		button.setOpaque(false);
@@ -154,6 +210,11 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI {
 
 	@Override
 	public void update() {
+		maximizedIndicator.setVisible(headerModel.isMaximized());
+		maximizeOption.setSelected(headerModel.isMaximized());
+		maximizeOption.setEnabled(headerModel.isMaximizeAllowed());
 
+		pinned.setEnabled(headerModel.isPinnedAllowed() && headerModel.isUnpinned());
+		unpinned.setEnabled(headerModel.isPinnedAllowed() && !headerModel.isUnpinned());
 	}
 }

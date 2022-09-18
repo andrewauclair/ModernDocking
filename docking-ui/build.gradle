@@ -14,14 +14,20 @@ allprojects {
 repositories {
 	mavenLocal()
 	mavenCentral()
+	maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 sourceSets.main.java.srcDirs = ['src']
 sourceSets.main.resources.srcDirs = ['resources']
 
+group = "io.github.andrewauclair.ModernDocking"
+archivesBaseName = "ModernDockingUI"
+version = "0.2.1-SNAPSHOT"
+
 dependencies {
 	implementation project(':docking')
-	
+
+	implementation group + ":ModernDocking:" + version
 	implementation 'com.formdev:flatlaf:2.3'
 	implementation 'com.formdev:flatlaf-extras:2.3'
 	implementation 'com.formdev:svgSalamander:1.1.3'
@@ -35,10 +41,6 @@ java {
 	withJavadocJar()
 	withSourcesJar()
 }
-
-group = "io.github.andrewauclair.ModernDocking"
-archivesBaseName = "ModernDockingUI"
-version = "0.2.0-SNAPSHOT"
 
 publishing {
 	publications {
@@ -59,13 +61,13 @@ publishing {
 				url = 'https://github.com/andrewauclair/ModernDocking'
 				licenses {
 					license {
-						name = 'The Apache License, Version 2.0'
-						url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+						name = 'The MIT License'
+						url = 'https://opensource.org/licenses/MIT'
 					}
 				}
 				developers {
 					developer {
-						id = 'mightymalakai33'
+						id = 'andrewauclair'
 						name = 'Andrew Auclair'
 						email = 'mightymalakai33@gmail.com'
 					}

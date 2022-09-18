@@ -20,10 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-import ModernDocking.Dockable;
-import ModernDocking.Docking;
-import ModernDocking.DockingRegion;
-import ModernDocking.RootDockingPanel;
+import ModernDocking.*;
 import ModernDocking.persist.AppState;
 
 import javax.swing.*;
@@ -125,8 +122,8 @@ public class Example extends JFrame {
 		}
 
 		@Override
-		public List<DockingRegion> disallowedRegions() {
-			return null;
+		public DockableStyle style() {
+			return DockableStyle.BOTH;
 		}
 
 		@Override

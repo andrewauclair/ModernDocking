@@ -22,7 +22,7 @@ SOFTWARE.
 package ModernDocking.floating;
 
 import ModernDocking.*;
-import ModernDocking.internal.DockingColors;
+import ModernDocking.internal.DockingProperties;
 import ModernDocking.internal.DockingInternal;
 
 import javax.swing.*;
@@ -59,8 +59,11 @@ public class DockingOverlay {
 	// the utility frame that this overlay belongs to
 	private final JFrame utilFrame;
 
-	// whether to draw this overlay, different from swing visiblity because we're manually painting
+	// whether to draw this overlay, different from swing visibility because we're manually painting
 	private boolean visible = false;
+
+	// override for the visible flag, sometimes internally we don't want to draw but we might be active
+	private boolean visibleOverride = false;
 
 	public DockingOverlay(JFrame utilFrame, RootDockingPanel root) {
 		this.utilFrame = utilFrame;
@@ -83,7 +86,13 @@ public class DockingOverlay {
 
 	// check if the floating dockable is allowed to dock to this region
 	private boolean isRegionAllowed(DockingRegion region) {
-		return floating.disallowedRegions() == null || !floating.disallowedRegions().contains(region);
+		if (floating.style() == DockableStyle.BOTH) {
+			return true;
+		}
+		if (region == DockingRegion.NORTH || region == DockingRegion.SOUTH) {
+			return floating.style() == DockableStyle.HORIZONTAL;
+		}
+		return floating.style() == DockableStyle.VERTICAL;
 	}
 
 	public void update(Point screenPos) {
@@ -170,26 +179,23 @@ public class DockingOverlay {
 			double horizontalEdgeDist = horizontalPct > 0.5 ? 1.0 - horizontalPct : horizontalPct;
 			double verticalEdgeDist = verticalPct > 0.5 ? 1.0 - verticalPct : verticalPct;
 
-			boolean westAllowed = isRegionAllowed(DockingRegion.WEST);
-			boolean eastAllowed = isRegionAllowed(DockingRegion.EAST);
-
-			if (horizontalEdgeDist < verticalEdgeDist) {// && (westAllowed || eastAllowed)) {
-				if (horizontalPct < REGION_SENSITIVITY) {// && westAllowed) {
+			if (horizontalEdgeDist < verticalEdgeDist) {
+				if (horizontalPct < REGION_SENSITIVITY && isRegionAllowed(DockingRegion.WEST)) {
 					lastSelectedRegion = DockingRegion.WEST;
 					size = new Dimension(size.width / 2, size.height);
 				}
-				else if (horizontalPct > (1.0 - REGION_SENSITIVITY)) {// && eastAllowed) {
+				else if (horizontalPct > (1.0 - REGION_SENSITIVITY) && isRegionAllowed(DockingRegion.EAST)) {
 					lastSelectedRegion = DockingRegion.EAST;
 					point.x += size.width / 2;
 					size = new Dimension(size.width / 2, size.height);
 				}
 			}
 			else {
-				if (verticalPct < REGION_SENSITIVITY) {// && isRegionAllowed(DockingRegion.NORTH)) {
+				if (verticalPct < REGION_SENSITIVITY && isRegionAllowed(DockingRegion.NORTH)) {
 					lastSelectedRegion = DockingRegion.NORTH;
 					size = new Dimension(size.width, size.height / 2);
 				}
-				else if (verticalPct > (1.0 - REGION_SENSITIVITY)) {// && isRegionAllowed(DockingRegion.SOUTH)) {
+				else if (verticalPct > (1.0 - REGION_SENSITIVITY) && isRegionAllowed(DockingRegion.SOUTH)) {
 					lastSelectedRegion = DockingRegion.SOUTH;
 					point.y += size.height / 2;
 					size = new Dimension(size.width, size.height / 2);
@@ -261,22 +267,22 @@ public class DockingOverlay {
 		// if we're close to the sides than we are to the bottom or bottom, then we might be in the WEST or EAST region
 		if (horizontalEdgeDist < verticalEdgeDist) {
 			// horizontal percentage is less than our sensitivity for the edge, we're in the WEST region
-			if (horizontalPct < REGION_SENSITIVITY) {
+			if (horizontalPct < REGION_SENSITIVITY && isRegionAllowed(DockingRegion.WEST)) {
 				return DockingRegion.WEST;
 			}
 			// horizontal percentage is greater than our sensitivity for the edge, we're in the EAST region
-			else if (horizontalPct > (1.0 - REGION_SENSITIVITY)) {
+			else if (horizontalPct > (1.0 - REGION_SENSITIVITY) && isRegionAllowed(DockingRegion.EAST)) {
 				return DockingRegion.EAST;
 			}
 			// we didn't exceed the sensitivity in the WEST or EAST regions. we're in the CENTER region
 		}
 		else {
 			// vertical percentage is less than our sensitivity for the edge, we're in the NORTH region
-			if (verticalPct < REGION_SENSITIVITY) {
+			if (verticalPct < REGION_SENSITIVITY && isRegionAllowed(DockingRegion.NORTH)) {
 				return DockingRegion.NORTH;
 			}
 			// vertical percentage is greater than our sensitivity for the edge, we're in the SOUTH region
-			else if (verticalPct > (1.0 - REGION_SENSITIVITY)) {
+			else if (verticalPct > (1.0 - REGION_SENSITIVITY) && isRegionAllowed(DockingRegion.SOUTH)) {
 				return DockingRegion.SOUTH;
 			}
 			// we didn't exceed the sensitivity in the NORTH or SOUTH regions. we're in the CENTER region
@@ -299,19 +305,23 @@ public class DockingOverlay {
 	// set a region from the handles if we're moused over a root handle
 	public void setTargetRootRegion(DockingRegion region) {
 		rootRegion = region;
+
+		visibleOverride = !isDockingToRoot() && !isDockingToDockable();
 	}
 
 	// set a region from the handles if we're moused over a dockable handle
 	public void setTargetDockableRegion(DockingRegion region) {
 		dockableRegion = region;
+
+		visibleOverride = !isDockingToRoot() && !isDockingToDockable();
 	}
 
 	public void paint(Graphics g) {
-		if (visible && isRegionAllowed(lastSelectedRegion)) {
-			g.setColor(DockingColors.getDockingOverlay());
+		if (visible && !visibleOverride) {
+			g.setColor(DockingProperties.getDockingOverlay());
 			g.fillRect(location.x, location.y, size.width, size.height);
-			g.setColor(DockingColors.getDockingOverlayBorder());
-			g.fillRect(location.x, location.y, size.width, size.height);
+//			g.setColor(DockingProperties.getDockingOverlayBorder());
+//			g.drawRect(location.x, location.y, size.width, size.height);
 		}
 	}
 }

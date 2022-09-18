@@ -19,18 +19,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+import ModernDocking.DockableStyle;
 import ModernDocking.DockingRegion;
+import ModernDocking.DockingState;
 
 import javax.swing.*;
 import java.util.Arrays;
 import java.util.List;
 
 public class ToolPanel extends BasePanel {
-	private final boolean vertical;
+	private final DockableStyle style;
 
-	public ToolPanel(String title, String persistentID, boolean vertical) {
+	public ToolPanel(String title, String persistentID, DockableStyle style) {
 		super(title, persistentID);
-		this.vertical = vertical;
+		this.style = style;
 	}
 
 	@Override
@@ -44,8 +46,8 @@ public class ToolPanel extends BasePanel {
 	}
 
 	@Override
-	public List<DockingRegion> disallowedRegions() {
-		return vertical ? Arrays.asList(DockingRegion.NORTH, DockingRegion.SOUTH) : Arrays.asList(DockingRegion.WEST, DockingRegion.EAST);
+	public DockableStyle style() {
+		return style;
 	}
 
 	@Override

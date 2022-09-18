@@ -22,7 +22,8 @@ SOFTWARE.
 package ModernDocking.floating;
 
 import ModernDocking.Dockable;
-import ModernDocking.internal.DockingColors;
+import ModernDocking.DockableStyle;
+import ModernDocking.internal.DockingProperties;
 import ModernDocking.DockingRegion;
 import ModernDocking.RootDockingPanel;
 
@@ -148,7 +149,13 @@ public class DockingHandles {
 	}
 
 	private boolean isRegionAllowed(DockingRegion region) {
-		return floating.disallowedRegions() == null || !floating.disallowedRegions().contains(region);
+		if (floating.style() == DockableStyle.BOTH) {
+			return true;
+		}
+		if (region == DockingRegion.NORTH || region == DockingRegion.SOUTH) {
+			return floating.style() == DockableStyle.HORIZONTAL;
+		}
+		return floating.style() == DockableStyle.VERTICAL;
 	}
 
 	private void setDockableHandleLocations() {
@@ -273,8 +280,8 @@ public class DockingHandles {
 				17
 		);
 
-		Color background = DockingColors.getHandlesBackground();
-		Color border = DockingColors.getHandlesBackgroundBorder();
+		Color background = DockingProperties.getHandlesBackground();
+		Color border = DockingProperties.getHandlesBackgroundBorder();
 
 		Graphics2D g2 = (Graphics2D) g.create();
 		Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);

@@ -62,9 +62,9 @@ public interface Dockable {
 	// this is useful for having a new floating frame with many dockables that are only allowed in that one frame.
 	boolean limitToRoot();
 
-	// list of regions where the dockable is not allowed to be docked.
-	// often used to prevent "vertical" style dockables from being dockabled horizontally (i.e. disallow "North" and "South" regions)
-	List<DockingRegion> disallowedRegions();
+	// style of the dockable. vertical will disallow the east and west regions. horizontal will disallow the north and south regions.
+	// both will allow all 4 regions
+	DockableStyle style();
 
 	// helper function to determine if the header close option should be enabled
 	boolean allowClose();

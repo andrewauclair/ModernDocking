@@ -383,7 +383,7 @@ public class Docking {
 		getWrapper(dockable).setFrame(frame);
 		getWrapper(dockable).setUnpinned(true);
 
-		boolean allowedSouth = dockable.disallowedRegions() == null || !dockable.disallowedRegions().contains(DockingRegion.SOUTH);
+		boolean allowedSouth = dockable.style() == DockableStyle.BOTH || dockable.style() == DockableStyle.HORIZONTAL;
 
 		int westDist = posInFrame.x;
 		int eastDist = frame.getWidth() - posInFrame.x;
