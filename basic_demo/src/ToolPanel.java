@@ -19,9 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-import ModernDocking.DockableStyle;
-import ModernDocking.DockingRegion;
-import ModernDocking.DockingState;
+import ModernDocking.*;
 
 import javax.swing.*;
 import java.util.Arrays;
@@ -33,6 +31,11 @@ public class ToolPanel extends BasePanel {
 	public ToolPanel(String title, String persistentID, DockableStyle style) {
 		super(title, persistentID);
 		this.style = style;
+	}
+
+	@Override
+	public int type() {
+		return 0;
 	}
 
 	@Override
@@ -74,5 +77,20 @@ public class ToolPanel extends BasePanel {
 	public void addMoreOptions(JPopupMenu menu) {
 		menu.add(new JMenuItem("Something"));
 		menu.add(new JMenuItem("Else"));
+	}
+
+	@Override
+	public DockingStrategy strategy() {
+		return () -> {
+			if (style == DockableStyle.VERTICAL) {
+				Docking.dock(this, Docking.getInstance().getMainFrame(), DockingRegion.EAST);
+			}
+			else if (style == DockableStyle.HORIZONTAL) {
+				Docking.dock(this, Docking.getInstance().getMainFrame(), DockingRegion.SOUTH);
+			}
+			else {
+				Docking.dock(this, Docking.getInstance().getMainFrame(), DockingRegion.NORTH);
+			}
+		};
 	}
 }

@@ -35,6 +35,11 @@ public class SimplePanel extends BasePanel {
 	}
 
 	@Override
+	public int type() {
+		return 1;
+	}
+
+	@Override
 	public boolean floatingAllowed() {
 		return true;
 	}

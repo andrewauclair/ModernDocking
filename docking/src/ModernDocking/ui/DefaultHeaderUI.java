@@ -121,6 +121,8 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI {
 		JLabel label = new JLabel(headerModel.titleText());
 		label.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 0));
 		label.setFont(label.getFont().deriveFont(Font.BOLD));
+		label.setMinimumSize(new Dimension(0, 28));
+		label.setPreferredSize(new Dimension(0, 28));
 
 		add(label, gbc);
 

@@ -415,6 +415,9 @@ public class Docking {
 		if (isDocked(dockable)) {
 			bringToFront(dockable);
 		}
+		else if (dockable.strategy() != null) {
+			dockable.strategy().dock();
+		}
 		else {
 			// go through all the dockables and find the first one that is the same type
 			Optional<Dockable> firstOfType = DockingComponentUtils.findFirstDockableOfType(dockable.type());

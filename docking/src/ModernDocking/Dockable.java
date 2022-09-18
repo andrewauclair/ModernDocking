@@ -90,4 +90,8 @@ public interface Dockable {
 	default DockingHeaderUI createHeaderUI(HeaderController headerController, HeaderModel headerModel) {
 		return new DefaultHeaderUI(headerController, headerModel);
 	}
+
+	default DockingStrategy strategy() {
+		return null;
+	}
 }
