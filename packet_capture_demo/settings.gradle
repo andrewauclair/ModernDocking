@@ -1,7 +1,0 @@
-rootProject.name = 'packet-capture-demo'
-
-include ':docking'
-include ':docking-ui'
-
-project(':docking').projectDir = file('../docking')
-project(':docking-ui').projectDir = file('../docking-ui')
