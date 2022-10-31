@@ -48,14 +48,6 @@ public class MainFrame extends JFrame {
 
 		new Docking(this);
 
-		AppState.setAutoPersist(false);
-		AppState.setPersistFile(new File("auto_persist_layout.xml"));
-
-		SwingUtilities.invokeLater(() -> {
-			AppState.restore();
-			AppState.setAutoPersist(true);
-		});
-
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 
@@ -238,32 +230,32 @@ public class MainFrame extends JFrame {
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
-			try {
-				FlatLaf.registerCustomDefaultsSource( "docking" );
+			configureLookAndFeel(args);
 
-				if (args.length > 1) {
-					System.setProperty("flatlaf.uiScale", args[1]);
-				}
+			MainFrame mainFrame = new MainFrame();
+			mainFrame.setVisible(true);
 
-				if (args.length > 0 && args[0].equals("light")) {
-					UIManager.setLookAndFeel(new FlatLightLaf());
-				}
-				else if (args.length > 0 && args[0].equals("dark")) {
-					UIManager.setLookAndFeel(new FlatDarkLaf());
-				}
-				else {
-					try {
-						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					}
-					catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
-						   UnsupportedLookAndFeelException ex) {
-						throw new RuntimeException(ex);
-					}
-				}
-				FlatLaf.updateUI();
+			AppState.setPersistFile(new File("auto_persist_layout.xml"));
+			AppState.restore();
+			AppState.setAutoPersist(true);
+		});
+	}
+
+	private static void configureLookAndFeel(String[] args) {
+		try {
+			FlatLaf.registerCustomDefaultsSource( "docking" );
+
+			if (args.length > 1) {
+				System.setProperty("flatlaf.uiScale", args[1]);
 			}
-			catch (Exception e) {
-				e.printStackTrace();
+
+			if (args.length > 0 && args[0].equals("light")) {
+				UIManager.setLookAndFeel(new FlatLightLaf());
+			}
+			else if (args.length > 0 && args[0].equals("dark")) {
+				UIManager.setLookAndFeel(new FlatDarkLaf());
+			}
+			else {
 				try {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				}
@@ -272,13 +264,21 @@ public class MainFrame extends JFrame {
 					throw new RuntimeException(ex);
 				}
 			}
-			UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0,0,0,0));
-			UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
+			FlatLaf.updateUI();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			try {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			}
+			catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+				   UnsupportedLookAndFeelException ex) {
+				throw new RuntimeException(ex);
+			}
+		}
+		UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0,0,0,0));
+		UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
 
-			FailOnThreadViolationRepaintManager.install();
-
-			MainFrame mainFrame = new MainFrame();
-			mainFrame.setVisible(true);
-		});
+		FailOnThreadViolationRepaintManager.install();
 	}
 }
