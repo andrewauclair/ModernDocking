@@ -90,6 +90,15 @@ public class MainFrame extends JFrame {
 
 		file.add(changeColor);
 
+		JMenuItem createPanel = new JMenuItem("Create Panel...");
+		createPanel.addActionListener(e -> {
+			String panelName = JOptionPane.showInputDialog("Panel name");
+
+			SimplePanel panel = new SimplePanel(panelName, panelName);
+			Docking.dock(panel, MainFrame.this, DockingRegion.EAST);
+		});
+		file.add(createPanel);
+
 		loadLayout.addActionListener(e -> {
 			JFileChooser chooser = new JFileChooser();
 			int result = chooser.showOpenDialog(MainFrame.this);

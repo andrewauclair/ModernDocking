@@ -22,18 +22,17 @@ SOFTWARE.
 package ModernDocking;
 
 import ModernDocking.exception.DockableNotFoundException;
+import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.internal.*;
 import ModernDocking.layouts.*;
 import ModernDocking.persist.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import static ModernDocking.internal.DockingInternal.getDockable;
-import static ModernDocking.internal.DockingInternal.getWrapper;
 
 public class DockingState {
 	// cached layout for when a maximized dockable is minimized
@@ -122,22 +121,25 @@ public class DockingState {
 
 		root.setPanel(restoreState(layout.getRootNode(), frame));
 
+		// undock and destroy any failed dockables
+		undockFailedComponents(root);
+
 		for (String id : layout.getWestUnpinnedToolbarIDs()) {
 			Dockable dockable = getDockable(id);
 			root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
-			getWrapper(dockable).setUnpinned(true);
+			DockingInternal.getWrapper(dockable).setUnpinned(true);
 		}
 
 		for (String id : layout.getEastUnpinnedToolbarIDs()) {
 			Dockable dockable = getDockable(id);
 			root.setDockableUnpinned(dockable, DockableToolbar.Location.EAST);
-			getWrapper(dockable).setUnpinned(true);
+			DockingInternal.getWrapper(dockable).setUnpinned(true);
 		}
 
 		for (String id : layout.getSouthUnpinnedToolbarIDs()) {
 			Dockable dockable = getDockable(id);
 			root.setDockableUnpinned(dockable, DockableToolbar.Location.SOUTH);
-			getWrapper(dockable).setUnpinned(true);
+			DockingInternal.getWrapper(dockable).setUnpinned(true);
 		}
 
 		if (layout.getMaximizedDockable() != null) {
@@ -162,6 +164,9 @@ public class DockingState {
 		AppState.setPaused(true);
 
 		root.setPanel(restoreState(layout.getRootNode(), frame));
+
+		// undock and destroy any failed dockables
+		undockFailedComponents(root);
 
 		AppState.setPaused(paused);
 
@@ -229,7 +234,7 @@ public class DockingState {
 
 			Docking.undock(dockable);
 
-			DockableWrapper wrapper = getWrapper(dockable);
+			DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
 			wrapper.setFrame(frame);
 
 			panel.addPanel(wrapper);
@@ -247,7 +252,7 @@ public class DockingState {
 
 		Docking.undock(dockable);
 
-		DockableWrapper wrapper = getWrapper(dockable);
+		DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
 		wrapper.setFrame(frame);
 
 		return new DockedSimplePanel(wrapper);
@@ -295,7 +300,7 @@ public class DockingState {
 
 			Docking.undock(dockable);
 
-			DockableWrapper wrapper = getWrapper(dockable);
+			DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
 			wrapper.setFrame(frame);
 
 			panel.addPanel(wrapper);
@@ -317,9 +322,31 @@ public class DockingState {
 
 		Docking.undock(dockable);
 
-		DockableWrapper wrapper = getWrapper(dockable);
+		DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
 		wrapper.setFrame(frame);
 
 		return new DockedSimplePanel(wrapper);
+	}
+
+	private static Dockable getDockable(String persistentID) {
+		try {
+			return DockingInternal.getDockable(persistentID);
+		}
+		catch (DockableRegistrationFailureException ignore) {
+		}
+		return new FailedDockable(persistentID);
+	}
+
+	private static void undockFailedComponents(Container container) {
+		for (Component component : container.getComponents()) {
+			if (component instanceof FailedDockable) {
+				FailedDockable dockable = (FailedDockable) component;
+				Docking.undock(getDockable(dockable.persistentID()));
+				dockable.destroy();
+			}
+			else if (component instanceof Container) {
+				undockFailedComponents((Container) component);
+			}
+		}
 	}
 }

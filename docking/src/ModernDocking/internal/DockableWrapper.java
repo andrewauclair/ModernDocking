@@ -77,8 +77,11 @@ public class DockableWrapper {
 		if (floatListener != null) {
 			headerController.removeListeners();
 
-			floatListener.removeListeners();
+			// make sure we don't get a stackoverflow
+			FloatListener listener = floatListener;
 			floatListener = null;
+
+			listener.removeListeners();
 		}
 	}
 
