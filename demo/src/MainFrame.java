@@ -19,7 +19,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -235,6 +234,7 @@ public class MainFrame extends JFrame {
 			MainFrame mainFrame = new MainFrame();
 			mainFrame.setVisible(true);
 
+			// now that the main frame is setup with the defaults, we can restore the layout
 			AppState.setPersistFile(new File("auto_persist_layout.xml"));
 			AppState.restore();
 			AppState.setAutoPersist(true);

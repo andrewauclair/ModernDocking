@@ -54,6 +54,7 @@ public class Docking {
 
 	private static Docking instance;
 
+	// this may look unused, but we need to create an instance of it to make it work
 	private final ActiveDockableHighlighter activeDockableHighlighter = new ActiveDockableHighlighter();
 
 	private final AppStatePersister appStatePersister = new AppStatePersister();
@@ -157,26 +158,34 @@ public class Docking {
 		instance.appStatePersister.removeFrame(parent);
 	}
 
+	// docks a dockable to the center of the given frame
+	// NOTE: This will only work if the frame root docking node is empty. Otherwise this does nothing.
 	public static void dock(String persistentID, JFrame frame) {
 		dock(getDockable(persistentID), frame, DockingRegion.CENTER);
 	}
 
+	// docks a dockable to the center of the given frame
+	// NOTE: This will only work if the frame root docking node is empty. Otherwise this does nothing.
 	public static void dock(Dockable dockable, JFrame frame) {
 		dock(dockable, frame, DockingRegion.CENTER);
 	}
 
+	// docks a dockable into the specified region of the frame with 50% divider proportion
 	public static void dock(String persistentID, JFrame frame, DockingRegion region) {
 		dock(getDockable(persistentID), frame, region, 0.5);
 	}
 
+	// docks a dockable into the specified region of the frame with 50% divider proportion
 	public static void dock(Dockable dockable, JFrame frame, DockingRegion region) {
 		dock(dockable, frame, region, 0.5);
 	}
 
+	// docks a dockable into the specified region of the frame with the specified divider proportion
 	public static void dock(String persistentID, JFrame frame, DockingRegion region, double dividerProportion) {
 		dock(getDockable(persistentID), frame, region, dividerProportion);
 	}
 
+	// docks a dockable into the specified region of the frame with the specified divider proportion
 	public static void dock(Dockable dockable, JFrame frame, DockingRegion region, double dividerProportion) {
 		RootDockingPanel root = instance.rootPanels.get(frame);
 
@@ -194,22 +203,27 @@ public class Docking {
 		AppState.persist();
 	}
 
-	public static void dock(String source, String target, DockingRegion region) {
-		dock(getDockable(source), getDockable(target), region, 0.5);
+	// docks the target to the source in the specified region with 50% divider proportion
+	public static void dock(String sourcePersistentID, String targetPersistentID, DockingRegion region) {
+		dock(getDockable(sourcePersistentID), getDockable(targetPersistentID), region, 0.5);
 	}
 
-	public static void dock(String source, Dockable target, DockingRegion region) {
-		dock(getDockable(source), target, region, 0.5);
+	// docks the target to the source in the specified region with 50% divider proportion
+	public static void dock(String sourcePersistentID, Dockable target, DockingRegion region) {
+		dock(getDockable(sourcePersistentID), target, region, 0.5);
 	}
 
-	public static void dock(Dockable source, String target, DockingRegion region) {
-		dock(source, getDockable(target), region, 0.5);
+	// docks the target to the source in the specified region with 50% divider proportion
+	public static void dock(Dockable source, String targetPersistentID, DockingRegion region) {
+		dock(source, getDockable(targetPersistentID), region, 0.5);
 	}
 
+	// docks the target to the source in the specified region with 50% divider proportion
 	public static void dock(Dockable source, Dockable target, DockingRegion region) {
 		dock(source, target, region, 0.5);
 	}
 
+	// docks the target to the source in the specified region with the specified divider proportion
 	public static void dock(Dockable source, Dockable target, DockingRegion region, double dividerProportion) {
 		if (!isDocked(target)) {
 			throw new NotDockedException(target);
@@ -225,6 +239,7 @@ public class Docking {
 		AppState.persist();
 	}
 
+	// create a new FloatingFrame window for the given dockable, undock it from its current frame and dock it into the new frame
 	public static void newWindow(Dockable dockable) {
 		Point location = getWrapper(dockable).getDisplayPanel().getLocationOnScreen();
 		Dimension size = getWrapper(dockable).getDisplayPanel().getSize();
@@ -241,6 +256,7 @@ public class Docking {
 		dock(dockable, frame);
 	}
 
+	// bring the specified dockable to the front if it is in a tabbed panel
 	public static void bringToFront(Dockable dockable) {
 		if (!isDocked(dockable)) {
 			throw new NotDockedException(dockable);
@@ -256,10 +272,12 @@ public class Docking {
 		}
 	}
 
+	// undock a dockable
 	public static void undock(String persistentID) {
 		undock(getDockable(persistentID));
 	}
 
+	// undock a dockable
 	public static void undock(Dockable dockable) {
 		if (!isDocked(dockable)) {
 			// nothing to undock
@@ -292,30 +310,37 @@ public class Docking {
 		AppState.persist();
 	}
 
+	// check if a dockable is currently docked
 	public static boolean isDocked(String persistentID) {
 		return isDocked(getDockable(persistentID));
 	}
 
+	// check if a dockable is currently docked
 	public static boolean isDocked(Dockable dockable) {
 		return getWrapper(dockable).getParent() != null;
 	}
 
+	// check if a dockable is currently in the unpinned state
 	public static boolean isUnpinned(String persistentID) {
 		return isUnpinned(getDockable(persistentID));
 	}
 
+	// check if a dockable is currently in the unpinned state
 	public static boolean isUnpinned(Dockable dockable) {
 		return getWrapper(dockable).isUnpinned();
 	}
 
+	// check if the frame can be disposed. Frames can be disposed if they are not the main frame and are not maximized
 	public static boolean canDisposeFrame(JFrame frame) {
 		return frame != instance.mainFrame && !DockingState.maximizeRestoreLayout.containsKey(frame);
 	}
 
+	// checks if a dockable is currently maximized
 	public static boolean isMaximized(Dockable dockable) {
 		return getWrapper(dockable).isMaximized();
 	}
 
+	// maximizes a dockable
 	public static void maximize(Dockable dockable) {
 		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
 		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
@@ -336,6 +361,7 @@ public class Docking {
 		}
 	}
 
+	// minimize a dockable if it is currently maximized
 	public static void minimize(Dockable dockable) {
 		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
 
@@ -352,6 +378,7 @@ public class Docking {
 		}
 	}
 
+	// pin a dockable. only valid if the dockable is unpinned
 	public static void pinDockable(Dockable dockable) {
 		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
 		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
@@ -364,6 +391,8 @@ public class Docking {
 		}
 	}
 
+	// unpin a dockable. only valid if the dockable is pinned
+	// TODO looks like this could get called on an already unpinned dockable
 	public static void unpinDockable(Dockable dockable) {
 		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
 		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
@@ -432,10 +461,12 @@ public class Docking {
 		}
 	}
 
+	// update the tab text on a dockable if it is in a tabbed panel
 	public static void updateTabText(String persistentID) {
 		updateTabText(getDockable(persistentID));
 	}
 
+	// update the tab text on a dockable if it is in a tabbed panel
 	public static void updateTabText(Dockable dockable) {
 		if (!isDocked(dockable)) {
 			// if the dockable isn't docked then we don't have to do anything to update its tab text
