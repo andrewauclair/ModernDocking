@@ -127,18 +127,21 @@ public class DockingState {
 		for (String id : layout.getWestUnpinnedToolbarIDs()) {
 			Dockable dockable = getDockable(id);
 			root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
+			root.hideUnpinnedPanels();
 			DockingInternal.getWrapper(dockable).setUnpinned(true);
 		}
 
 		for (String id : layout.getEastUnpinnedToolbarIDs()) {
 			Dockable dockable = getDockable(id);
 			root.setDockableUnpinned(dockable, DockableToolbar.Location.EAST);
+			root.hideUnpinnedPanels();
 			DockingInternal.getWrapper(dockable).setUnpinned(true);
 		}
 
 		for (String id : layout.getSouthUnpinnedToolbarIDs()) {
 			Dockable dockable = getDockable(id);
 			root.setDockableUnpinned(dockable, DockableToolbar.Location.SOUTH);
+			root.hideUnpinnedPanels();
 			DockingInternal.getWrapper(dockable).setUnpinned(true);
 		}
 
