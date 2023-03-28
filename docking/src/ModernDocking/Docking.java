@@ -63,7 +63,11 @@ public class Docking {
 	 * Create the one and only instance of the Docking class for the application
 	 * @param mainFrame The main frame of the application
 	 */
-	public Docking(JFrame mainFrame) {
+	public static void initialize(JFrame mainFrame) {
+		new Docking(mainFrame);
+	}
+
+	private Docking(JFrame mainFrame) {
 		this.mainFrame = mainFrame;
 		instance = this;
 

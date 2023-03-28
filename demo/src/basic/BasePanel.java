@@ -1,4 +1,4 @@
-/*
+package basic;/*
 Copyright (c) 2022 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,71 +19,50 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-import ModernDocking.DockableStyle;
-import ModernDocking.DockingRegion;
+import ModernDocking.Dockable;
+import ModernDocking.Docking;
+import docking.ui.FlatLafHeaderUI;
+import ModernDocking.ui.DockingHeaderUI;
+import ModernDocking.ui.HeaderController;
+import ModernDocking.ui.HeaderModel;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import javax.swing.*;
+import java.awt.*;
 
-public class SimplePanel extends BasePanel {
-	private String tabText = "";
+public abstract class BasePanel extends JPanel implements Dockable {
+	private final String title;
+	private final String persistentID;
 
-	public SimplePanel(String title, String persistentID) {
-		super(title, persistentID);
-		tabText = "";
+	public BasePanel(String title, String persistentID) {
+		super(new BorderLayout());
+
+		this.title = title;
+		this.persistentID = persistentID;
+
+		Docking.registerDockable(this);
+
+		JPanel panel = new JPanel();
+
+		add(panel, BorderLayout.CENTER);
 	}
 
 	@Override
-	public int type() {
-		return 1;
-	}
-
-	@Override
-	public boolean floatingAllowed() {
-		return true;
-	}
-
-	@Override
-	public boolean limitToRoot() {
-		return false;
-	}
-
-	@Override
-	public DockableStyle style() {
-		return DockableStyle.BOTH;
-	}
-
-	@Override
-	public boolean allowClose() {
-		return true;
-	}
-
-	@Override
-	public boolean allowPinning() {
-		return false;
-	}
-
-	@Override
-	public boolean allowMinMax() {
-		return true;
-	}
-
-	@Override
-	public boolean hasMoreOptions() {
-		return false;
+	public String persistentID() {
+		return persistentID;
 	}
 
 	@Override
 	public String tabText() {
-		if (tabText == null || tabText.isEmpty()) {
-			return super.tabText();
-		}
-		return tabText;
+		return title;
 	}
 
-	public void setTabText(String tabText) {
-		Objects.requireNonNull(tabText);
-		this.tabText = tabText;
+	@Override
+	public Icon tabIcon() {
+		return null;
+	}
+
+	@Override
+	public DockingHeaderUI createHeaderUI(HeaderController headerController, HeaderModel headerModel) {
+		return new FlatLafHeaderUI(headerController, headerModel);
 	}
 }

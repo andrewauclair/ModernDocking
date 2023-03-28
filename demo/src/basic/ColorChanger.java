@@ -1,4 +1,4 @@
-/*
+package basic;/*
 Copyright (c) 2022 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

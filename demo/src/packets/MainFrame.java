@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,50 +19,26 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-import ModernDocking.Dockable;
+package packets;
+
 import ModernDocking.Docking;
-import docking.ui.FlatLafHeaderUI;
-import ModernDocking.ui.DockingHeaderUI;
-import ModernDocking.ui.HeaderController;
-import ModernDocking.ui.HeaderModel;
 
 import javax.swing.*;
-import java.awt.*;
 
-public abstract class BasePanel extends JPanel implements Dockable {
-	private final String title;
-	private final String persistentID;
+public class MainFrame extends JFrame {
+	public MainFrame() {
+		Docking.initialize(this);
 
-	public BasePanel(String title, String persistentID) {
-		super(new BorderLayout());
+		setTitle("Package Capture Demo");
 
-		this.title = title;
-		this.persistentID = persistentID;
+		setSize(800, 600);
 
-		Docking.registerDockable(this);
+		JMenuBar menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
 
-		JPanel panel = new JPanel();
 
-		add(panel, BorderLayout.CENTER);
 	}
+	public static void main(String[] args) {
 
-	@Override
-	public String persistentID() {
-		return persistentID;
-	}
-
-	@Override
-	public String tabText() {
-		return title;
-	}
-
-	@Override
-	public Icon tabIcon() {
-		return null;
-	}
-
-	@Override
-	public DockingHeaderUI createHeaderUI(HeaderController headerController, HeaderModel headerModel) {
-		return new FlatLafHeaderUI(headerController, headerModel);
 	}
 }

@@ -1,4 +1,4 @@
-/*
+package basic;/*
 Copyright (c) 2022 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,18 +19,44 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+import ModernDocking.DockableStyle;
+import ModernDocking.DockingRegion;
 
-// TODO current changes are breaking the intended functionality here
-// Docking panel that is always displayed and cannot be closed
-public class AlwaysDisplayedPanel extends SimplePanel {
-	// create a new AlwaysDisplayedPanel with the given title and persistentID
-	public AlwaysDisplayedPanel(String title, String persistentID) {
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+public class SimplePanel extends BasePanel {
+	private String tabText = "";
+
+	public SimplePanel(String title, String persistentID) {
 		super(title, persistentID);
+		tabText = "";
+	}
+
+	@Override
+	public int type() {
+		return 1;
+	}
+
+	@Override
+	public boolean floatingAllowed() {
+		return true;
+	}
+
+	@Override
+	public boolean limitToRoot() {
+		return false;
+	}
+
+	@Override
+	public DockableStyle style() {
+		return DockableStyle.BOTH;
 	}
 
 	@Override
 	public boolean allowClose() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -40,11 +66,24 @@ public class AlwaysDisplayedPanel extends SimplePanel {
 
 	@Override
 	public boolean allowMinMax() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean hasMoreOptions() {
 		return false;
+	}
+
+	@Override
+	public String tabText() {
+		if (tabText == null || tabText.isEmpty()) {
+			return super.tabText();
+		}
+		return tabText;
+	}
+
+	public void setTabText(String tabText) {
+		Objects.requireNonNull(tabText);
+		this.tabText = tabText;
 	}
 }

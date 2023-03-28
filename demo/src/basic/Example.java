@@ -1,4 +1,4 @@
-/*
+package basic;/*
 Copyright (c) 2022 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,17 +26,16 @@ import ModernDocking.persist.AppState;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.List;
 
 public class Example extends JFrame {
 	public Example() {
 		// common Java Swing setup
-		setTitle("Basic Modern Docking Example");
+		setTitle("Basic Modern Docking basic.Example");
 		setSize(300, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// create the single Docking instance for the life of the program
-		new Docking(this);
+		Docking.initialize(this);
 
 		// set the auto persist file
 		// auto persist is off by default and we will leave it that way until we're done configuring the default layout

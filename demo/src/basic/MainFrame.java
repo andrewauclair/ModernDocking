@@ -1,4 +1,4 @@
-/*
+package basic;/*
 Copyright (c) 2022 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -45,7 +45,7 @@ public class MainFrame extends JFrame {
 
 		setSize(800, 600);
 
-		new Docking(this);
+		Docking.initialize(this);
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -100,7 +100,6 @@ public class MainFrame extends JFrame {
 				FullAppLayout layout = FullAppLayoutXML.loadLayoutFromFile(selectedFile);
 
 				if (layout != null) {
-//					Docking.setLayout(MainFrame.this, layout);
 					DockingState.restoreFullLayout(layout);
 				}
 			}
@@ -114,8 +113,6 @@ public class MainFrame extends JFrame {
 		test.setBackground(Color.BLACK);
 		test.setSize(100, 100);
 		test.setLocation(100, 100);
-
-//		getLayeredPane().add(test, 2);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -279,6 +276,7 @@ public class MainFrame extends JFrame {
 		UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0,0,0,0));
 		UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
 
+		// this is an app to test the docking framework, we want to make sure we detect EDT violations as soon as possible
 		FailOnThreadViolationRepaintManager.install();
 	}
 }
