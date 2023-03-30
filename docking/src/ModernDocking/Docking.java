@@ -197,6 +197,12 @@ public class Docking {
 			throw new DockableRegistrationFailureException("Frame does not have a RootDockingPanel: " + frame);
 		}
 
+		// if the dockable has decided to do something else, skip out of this function
+		if (dockable.onDocking())
+		{
+			return;
+		}
+
 		root.dock(dockable, region, dividerProportion);
 
 		getWrapper(dockable).setFrame(frame);
@@ -205,6 +211,8 @@ public class Docking {
 		DockingListeners.fireDockedEvent(dockable);
 
 		AppState.persist();
+
+		dockable.onDocked();
 	}
 
 	// docks the target to the source in the specified region with 50% divider proportion
@@ -312,6 +320,8 @@ public class Docking {
 		}
 
 		AppState.persist();
+
+		dockable.onUndocked();
 	}
 
 	// check if a dockable is currently docked
