@@ -1,4 +1,4 @@
-package basic;/*
+/*
 Copyright (c) 2022 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,6 +19,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+package basic;
+
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -75,11 +77,6 @@ public class MainFrame extends JFrame {
 
 		JMenuItem loadLayout = new JMenuItem("Load Layout from File...");
 		file.add(loadLayout);
-
-		JMenuItem changeColor = new JMenuItem("Change Color");
-		changeColor.addActionListener(e -> new ColorChanger().setVisible(true));
-
-		file.add(changeColor);
 
 		JMenuItem createPanel = new JMenuItem("Create Panel...");
 		createPanel.addActionListener(e -> {

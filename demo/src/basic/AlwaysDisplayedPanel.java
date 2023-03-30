@@ -1,4 +1,4 @@
-package basic;/*
+/*
 Copyright (c) 2022 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,8 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-
-import basic.SimplePanel;
+package basic;
 
 // TODO current changes are breaking the intended functionality here
 // Docking panel that is always displayed and cannot be closed
@@ -28,25 +27,5 @@ public class AlwaysDisplayedPanel extends SimplePanel {
 	// create a new basic.AlwaysDisplayedPanel with the given title and persistentID
 	public AlwaysDisplayedPanel(String title, String persistentID) {
 		super(title, persistentID);
-	}
-
-	@Override
-	public boolean allowClose() {
-		return false;
-	}
-
-	@Override
-	public boolean allowPinning() {
-		return false;
-	}
-
-	@Override
-	public boolean allowMinMax() {
-		return false;
-	}
-
-	@Override
-	public boolean hasMoreOptions() {
-		return false;
 	}
 }

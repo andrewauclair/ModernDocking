@@ -1,4 +1,4 @@
-package basic;/*
+/*
 Copyright (c) 2022 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,6 +19,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+package basic;
+
 import ModernDocking.DockableStyle;
 import ModernDocking.DockingRegion;
 
@@ -45,11 +47,6 @@ public class SimplePanel extends BasePanel {
 	}
 
 	@Override
-	public boolean limitToRoot() {
-		return false;
-	}
-
-	@Override
 	public DockableStyle style() {
 		return DockableStyle.BOTH;
 	}
@@ -67,11 +64,6 @@ public class SimplePanel extends BasePanel {
 	@Override
 	public boolean allowMinMax() {
 		return true;
-	}
-
-	@Override
-	public boolean hasMoreOptions() {
-		return false;
 	}
 
 	@Override

@@ -29,7 +29,7 @@ import ModernDocking.ui.HeaderModel;
 import javax.swing.*;
 import java.util.List;
 
-// this is the main interface for a dockable. Any panel that an application wishes to be dockable should implement
+// this is the main interface for a Dockable. Any panel that an application wishes to be dockable must implement
 // this interface and provide the appropriate values.
 
 // along with implementing this interface, the application will need to call Docking.registerDockable and Docking.dock
@@ -50,7 +50,9 @@ public interface Dockable {
 
 	// provide the tab icon to the docking framework
 	// only used when dockable is 'unpinned'
-	Icon tabIcon();
+	default Icon tabIcon() {
+		return null;
+	}
 
 	// indicates that this dockable is allowed to be floated as its own new window.
 	// if floating is not allowed and an attempt is made to float the dockable, it will be returned to where it was undocked.
@@ -60,11 +62,15 @@ public interface Dockable {
 
 	// force the dockable to remain in the root it started in.
 	// this is useful for having a new floating frame with many dockables that are only allowed in that one frame.
-	boolean limitToRoot();
+	default boolean limitToRoot() {
+		return false;
+	}
 
 	// style of the dockable. vertical will disallow the east and west regions. horizontal will disallow the north and south regions.
 	// both will allow all 4 regions
-	DockableStyle style();
+	default DockableStyle style() {
+		return DockableStyle.BOTH;
+	}
 
 	// helper function to determine if the header close option should be enabled
 	boolean allowClose();
@@ -72,14 +78,20 @@ public interface Dockable {
 	// helper function to determine if the header pin option should be enabled
 	// NOTE: this is a suggestion. If the parent frame of the dockable does not support pinning then the button will be hidden regardless.
 	// pinning is supported on all Modern Docking FloatingFrames and can be enabled for other frames with configurePinning in Docking
-	boolean allowPinning();
+	default boolean allowPinning() {
+		return false;
+	}
 
 	// helper function to determine if the header min/max option should be enabled
-	boolean allowMinMax();
+	default boolean allowMinMax() {
+		return false;
+	}
 
 	// helper function to determine if the header 'more' option should be enabled
 	// NOTE: allowPinning() = true results in more options regardless of this return value
-	boolean hasMoreOptions();
+	default boolean hasMoreOptions() {
+		return false;
+	}
 
 	// add the more options to the popup menu. defaults to an empty block to handle the case of hasMoreOptions() = false
 	default void addMoreOptions(JPopupMenu menu) {
@@ -93,5 +105,19 @@ public interface Dockable {
 
 	default DockingStrategy strategy() {
 		return null;
+	}
+
+	// called when the Docking framework is about to dock this Dockable. Allows the action to be overridden.
+	// return true if the docking action has been performed separately.
+	default boolean onDocking() {
+		return false;
+	}
+
+	// called after the Dockable has been docked
+	default void onDocked() {
+	}
+
+	// called after the Dockable has been undocked
+	default void onUndocked() {
 	}
 }

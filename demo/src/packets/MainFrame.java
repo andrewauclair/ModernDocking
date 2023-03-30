@@ -22,10 +22,22 @@ SOFTWARE.
 package packets;
 
 import ModernDocking.Docking;
+import ModernDocking.RootDockingPanel;
+import ModernDocking.persist.AppState;
+import ModernDocking.ui.DockableMenuItem;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+import exception.FailOnThreadViolationRepaintManager;
 
 import javax.swing.*;
+import java.awt.*;
+import java.io.File;
 
 public class MainFrame extends JFrame {
+	private final PacketBytesPanel bytesPanel;
+	private final PacketInfoPanel infoPanel;
+
 	public MainFrame() {
 		Docking.initialize(this);
 
@@ -36,9 +48,86 @@ public class MainFrame extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 
+		JMenu view = new JMenu("View");
+		bytesPanel = new PacketBytesPanel();
+		view.add(new DockableMenuItem(bytesPanel));
+		infoPanel = new PacketInfoPanel();
+		view.add(new DockableMenuItem(infoPanel));
+		menuBar.add(view);
 
+		setLayout(new GridBagLayout());
+
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 1.0;
+
+//		add(toolBar, gbc);
+
+//		gbc.gridy++;
+		gbc.weighty = 1.0;
+		gbc.fill = GridBagConstraints.BOTH;
+
+		RootDockingPanel dockingPanel = new RootDockingPanel(this);
+
+		add(dockingPanel, gbc);
 	}
-	public static void main(String[] args) {
 
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> {
+			configureLookAndFeel(args);
+
+			MainFrame mainFrame = new MainFrame();
+			mainFrame.setVisible(true);
+
+			// now that the main frame is setup with the defaults, we can restore the layout
+			AppState.setPersistFile(new File("auto_persist_layout.xml"));
+			AppState.restore();
+			AppState.setAutoPersist(true);
+		});
+	}
+
+	private static void configureLookAndFeel(String[] args) {
+		try {
+			FlatLaf.registerCustomDefaultsSource( "docking" );
+
+			if (args.length > 1) {
+				System.setProperty("flatlaf.uiScale", args[1]);
+			}
+
+			if (args.length > 0 && args[0].equals("light")) {
+				UIManager.setLookAndFeel(new FlatLightLaf());
+			}
+			else if (args.length > 0 && args[0].equals("dark")) {
+				UIManager.setLookAndFeel(new FlatDarkLaf());
+			}
+			else {
+				try {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				}
+				catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+					   UnsupportedLookAndFeelException ex) {
+					throw new RuntimeException(ex);
+				}
+			}
+			FlatLaf.updateUI();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			try {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			}
+			catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+				   UnsupportedLookAndFeelException ex) {
+				throw new RuntimeException(ex);
+			}
+		}
+		UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0,0,0,0));
+		UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
+
+		// this is an app to test the docking framework, we want to make sure we detect EDT violations as soon as possible
+		FailOnThreadViolationRepaintManager.install();
 	}
 }

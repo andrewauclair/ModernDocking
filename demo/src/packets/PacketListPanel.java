@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,47 +19,77 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package basic;
+package packets;
 
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
-import docking.ui.FlatLafHeaderUI;
-import ModernDocking.ui.DockingHeaderUI;
-import ModernDocking.ui.HeaderController;
-import ModernDocking.ui.HeaderModel;
 
 import javax.swing.*;
-import java.awt.*;
 
-public abstract class BasePanel extends JPanel implements Dockable {
-	private final String title;
-	private final String persistentID;
+public class PacketListPanel extends JPanel implements Dockable {
+	private static int packetListCount = 0;
 
-	public BasePanel(String title, String persistentID) {
-		super(new BorderLayout());
-
-		this.title = title;
-		this.persistentID = persistentID;
-
+	public PacketListPanel() {
 		Docking.registerDockable(this);
-
-		JPanel panel = new JPanel();
-
-		add(panel, BorderLayout.CENTER);
 	}
 
 	@Override
 	public String persistentID() {
-		return persistentID;
+		return "packets";
+	}
+
+	@Override
+	public int type() {
+		return 0;
 	}
 
 	@Override
 	public String tabText() {
-		return title;
+		return "Packets";
 	}
 
 	@Override
-	public DockingHeaderUI createHeaderUI(HeaderController headerController, HeaderModel headerModel) {
-		return new FlatLafHeaderUI(headerController, headerModel);
+	public Icon tabIcon() {
+		return null;
+	}
+
+	@Override
+	public boolean floatingAllowed() {
+		return false;
+	}
+
+	@Override
+	public boolean limitToRoot() {
+		return true;
+	}
+
+	@Override
+	public boolean allowClose() {
+		return packetListCount > 1;
+	}
+
+	@Override
+	public boolean allowPinning() {
+		return false;
+	}
+
+	@Override
+	public boolean allowMinMax() {
+		return false;
+	}
+
+	@Override
+	public boolean hasMoreOptions() {
+		return false;
+	}
+
+	@Override
+	public void onDocked() {
+		packetListCount++;
+	}
+
+	@Override
+	public void onUndocked() {
+		packetListCount--;
 	}
 }
