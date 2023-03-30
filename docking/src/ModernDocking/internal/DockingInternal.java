@@ -39,6 +39,9 @@ public class DockingInternal {
 		if (dockables.containsKey(dockable.persistentID())) {
 			throw new DockableRegistrationFailureException("Registration for Dockable failed. Persistent ID " + dockable.persistentID() + " already exists.");
 		}
+		if (dockable.tabText() == null) {
+			throw new RuntimeException("Dockable '" + dockable.persistentID() + "' should not return 'null' for tabText()");
+		}
 		dockables.put(dockable.persistentID(), new DockableWrapper(dockable));
 	}
 

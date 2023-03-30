@@ -28,7 +28,7 @@ import ModernDocking.Docking;
 import javax.swing.*;
 
 public class FailedDockable extends JPanel implements Dockable {
-	private String persistentID;
+	private final String persistentID;
 
 	public FailedDockable(String persistentID) {
 		this.persistentID = persistentID;
@@ -56,42 +56,12 @@ public class FailedDockable extends JPanel implements Dockable {
 	}
 
 	@Override
-	public Icon tabIcon() {
-		return null;
-	}
-
-	@Override
 	public boolean floatingAllowed() {
 		return false;
 	}
 
 	@Override
-	public boolean limitToRoot() {
-		return false;
-	}
-
-	@Override
-	public DockableStyle style() {
-		return null;
-	}
-
-	@Override
 	public boolean allowClose() {
-		return false;
-	}
-
-	@Override
-	public boolean allowPinning() {
-		return false;
-	}
-
-	@Override
-	public boolean allowMinMax() {
-		return false;
-	}
-
-	@Override
-	public boolean hasMoreOptions() {
 		return false;
 	}
 }

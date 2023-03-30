@@ -36,6 +36,9 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 	private final Supplier<String> persistentIDProvider;
 	private final String persistentID;
 
+	public DockableMenuItem(Dockable dockable) {
+		this(dockable.persistentID(), dockable.tabText());
+	}
 	/**
 	 *
 	 * @param persistentID The dockable this menu item refers to
