@@ -95,19 +95,24 @@ public class AppState {
 		}
 	}
 
-	// TODO catch any exceptions and return false
 	public static boolean restore() {
 		// don't restore if auto persist is disabled
 		if (autoPersistFile == null || !autoPersistFile.exists()) {
 			return false;
 		}
 
-		FullAppLayout layout = FullAppLayoutXML.loadLayoutFromFile(autoPersistFile);
+		try {
+			FullAppLayout layout = FullAppLayoutXML.loadLayoutFromFile(autoPersistFile);
 
-		if (layout != null) {
-			DockingState.restoreFullLayout(layout);
+			if (layout != null) {
+				DockingState.restoreFullLayout(layout);
+			}
+
+			return layout != null;
 		}
-
-		return layout != null;
+		catch (Exception e) {
+			// TODO provide a way to see this error or log it for users
+			return false;
+		}
 	}
 }
