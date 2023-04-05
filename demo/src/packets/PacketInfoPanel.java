@@ -74,7 +74,7 @@ public class PacketInfoPanel extends JPanel implements Dockable {
 
 	@Override
 	public boolean allowPinning() {
-		return false;
+		return true;
 	}
 
 	@Override

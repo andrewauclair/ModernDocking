@@ -111,6 +111,9 @@ public class AppState {
 			return layout != null;
 		}
 		catch (Exception e) {
+			// make sure that we turn persistance back on
+			AppState.setPaused(false);
+
 			// TODO provide a way to see this error or log it for users
 			return false;
 		}
