@@ -136,6 +136,8 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 
 			JToggleButton button = new JToggleButton();
 
+			button.setIcon(dockable.icon());
+
 			if (isVertical()) {
 				TextIcon textIcon = new TextIcon(button, dockable.tabText(), TextIcon.Layout.HORIZONTAL);
 				RotatedIcon rotatedIcon = new RotatedIcon(textIcon, location == Location.WEST ? RotatedIcon.Rotate.UP : RotatedIcon.Rotate.DOWN);

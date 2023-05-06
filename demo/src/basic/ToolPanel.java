@@ -1,4 +1,4 @@
-package basic;/*
+/*
 Copyright (c) 2022 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,23 +19,41 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-import ModernDocking.*;
+package basic;
+
+import ModernDocking.DockableStyle;
+import ModernDocking.Docking;
+import ModernDocking.DockingRegion;
+import ModernDocking.DockingStrategy;
 
 import javax.swing.*;
-import java.util.Arrays;
-import java.util.List;
 
 public class ToolPanel extends BasePanel {
 	private final DockableStyle style;
+	private final Icon icon;
 
 	public ToolPanel(String title, String persistentID, DockableStyle style) {
 		super(title, persistentID);
 		this.style = style;
+		this.icon = null;
+	}
+
+	public ToolPanel(String title, String persistentID, DockableStyle style, Icon icon) {
+		super(title, persistentID);
+		this.style = style;
+		this.icon = icon;
+
+
 	}
 
 	@Override
 	public int type() {
 		return 0;
+	}
+
+	@Override
+	public Icon icon() {
+		return icon;
 	}
 
 	@Override

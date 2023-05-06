@@ -48,9 +48,9 @@ public interface Dockable {
 	// NOTE: this text should be static. If it needs to change, then the Dockable needs to be undocked and docked again.
 	String tabText();
 
-	// provide the tab icon to the docking framework
-	// only used when dockable is 'unpinned'
-	default Icon tabIcon() {
+	// provide the dockable icon to the docking framework
+	// used in the default header UI, when displayed on in a JTabbedPane and when unpinned
+	default Icon icon() {
 		return null;
 	}
 

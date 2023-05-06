@@ -22,10 +22,7 @@ SOFTWARE.
 package basic;
 
 import ModernDocking.DockableStyle;
-import ModernDocking.DockingRegion;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 public class SimplePanel extends BasePanel {

@@ -106,7 +106,7 @@ public class Example extends JFrame {
 		}
 
 		@Override
-		public Icon tabIcon() {
+		public Icon icon() {
 			return null;
 		}
 

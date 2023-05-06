@@ -49,7 +49,7 @@ public class PacketListPanel extends JPanel implements Dockable {
 	}
 
 	@Override
-	public Icon tabIcon() {
+	public Icon icon() {
 		return null;
 	}
 

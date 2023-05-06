@@ -122,7 +122,7 @@ public class MainFrame extends JFrame {
 		SimplePanel seven = new SimplePanel("seven", "seven");
 		SimplePanel eight = new SimplePanel("eight", "eight");
 		ToolPanel explorer = new ToolPanel("Explorer", "explorer", DockableStyle.VERTICAL);
-		ToolPanel output = new ToolPanel("Output", "output", DockableStyle.HORIZONTAL);
+		ToolPanel output = new ToolPanel("Output", "output", DockableStyle.HORIZONTAL, new ImageIcon(getClass().getResource("/icons/light/icons8-vga-16.png")));
 		AlwaysDisplayedPanel alwaysDisplayed = new AlwaysDisplayedPanel("always displayed", "always-displayed");
 
 		JMenuItem changeText = new JMenuItem("Change tab text");

@@ -28,4 +28,19 @@ public class AlwaysDisplayedPanel extends SimplePanel {
 	public AlwaysDisplayedPanel(String title, String persistentID) {
 		super(title, persistentID);
 	}
+
+	@Override
+	public boolean allowClose() {
+		return false;
+	}
+
+	@Override
+	public boolean floatingAllowed() {
+		return false;
+	}
+
+	@Override
+	public boolean limitToRoot() {
+		return true;
+	}
 }

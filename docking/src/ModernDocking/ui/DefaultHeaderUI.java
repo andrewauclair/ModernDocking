@@ -25,12 +25,14 @@ import ModernDocking.internal.DockingProperties;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 // this can be replaced by the user or with the docking-ui FlatLaf header UI
-public class DefaultHeaderUI extends JPanel implements DockingHeaderUI {
+public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, AncestorListener {
 	private final HeaderController headerController;
 	private final HeaderModel headerModel;
 
@@ -46,11 +48,24 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI {
 	private final JLabel maximizedIndicator = new JLabel("Maximized");
 	private final JCheckBoxMenuItem maximizeOption = new JCheckBoxMenuItem("Maximize");
 
+	private boolean initialized = false;
+
 	public DefaultHeaderUI(HeaderController headerController, HeaderModel headerModel) {
 		this.headerController = headerController;
 		this.headerModel = headerModel;
 
 		setOpaque(true);
+
+		// delay the actual init of the UI in case the dockable object is partially constructed
+		JComponent component = (JComponent) headerModel.dockable;
+		component.addAncestorListener(this);
+	}
+
+	private void init() {
+		if (initialized) {
+			return;
+		}
+		initialized = true;
 
 		try {
 			settings.setIcon(new ImageIcon(getClass().getResource("/icons/settings.png")));
@@ -115,6 +130,11 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI {
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+
+		JLabel iconLabel = new JLabel(headerModel.icon());
+		add(iconLabel, gbc);
+		gbc.gridx++;
+
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 
@@ -218,5 +238,20 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI {
 
 		pinned.setEnabled(headerModel.isPinnedAllowed() && headerModel.isUnpinned());
 		unpinned.setEnabled(headerModel.isPinnedAllowed() && !headerModel.isUnpinned());
+	}
+
+	@Override
+	public void ancestorAdded(AncestorEvent event) {
+		init();
+	}
+
+	@Override
+	public void ancestorRemoved(AncestorEvent event) {
+
+	}
+
+	@Override
+	public void ancestorMoved(AncestorEvent event) {
+
 	}
 }

@@ -27,18 +27,18 @@ import ModernDocking.Docking;
 import javax.swing.*;
 
 public class HeaderModel {
-	private final Dockable dockable;
+	public final Dockable dockable;
 
 	public HeaderModel(Dockable dockable) {
 		this.dockable = dockable;
 	}
 
-	public void update() {
-
-	}
-
 	public String titleText() {
 		return dockable.tabText();
+	}
+
+	public Icon icon() {
+		return dockable.icon();
 	}
 
 	public boolean isPinnedAllowed() {

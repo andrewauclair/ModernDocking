@@ -41,11 +41,12 @@ public abstract class BasePanel extends JPanel implements Dockable {
 		this.title = title;
 		this.persistentID = persistentID;
 
-		Docking.registerDockable(this);
-
 		JPanel panel = new JPanel();
 
 		add(panel, BorderLayout.CENTER);
+
+		// the single call to register any docking panel extending this abstract class
+		Docking.registerDockable(this);
 	}
 
 	@Override

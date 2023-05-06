@@ -70,6 +70,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		panels.add(dockable);
 		tabs.add(dockable.getDockable().tabText(), dockable.getDisplayPanel());
 
+		tabs.setIconAt(tabs.getTabCount() - 1, dockable.getDockable().icon());
 		tabs.setSelectedIndex(tabs.getTabCount() - 1);
 	}
 
