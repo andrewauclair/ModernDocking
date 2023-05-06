@@ -43,7 +43,7 @@ docs).
 ## Modern Docking UI Extension
 - Requires FlatLaf L&F
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.formdev/flatlaf/badge.svg?style=flat-square&color=007ec6&version=2.4)](https://maven-badges.herokuapp.com/maven-central/com.formdev/flatlaf)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.formdev/flatlaf/badge.svg?style=flat-square&color=007ec6&version=3.1.1)](https://maven-badges.herokuapp.com/maven-central/com.formdev/flatlaf)
 
 ### Download
 Modern Docking UI binaries are available on <b>Maven Central.</b>
