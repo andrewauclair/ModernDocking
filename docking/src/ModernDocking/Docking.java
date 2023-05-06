@@ -302,6 +302,8 @@ public class Docking {
 
 		DockableWrapper wrapper = getWrapper(dockable);
 
+		wrapper.setRoot(root);
+
 		if (isUnpinned(dockable)) {
 			root.undock(dockable);
 			wrapper.setParent(null);

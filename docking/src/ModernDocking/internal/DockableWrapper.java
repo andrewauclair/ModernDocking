@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.RootDockingPanel;
 import ModernDocking.floating.FloatListener;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
@@ -44,6 +45,7 @@ public class DockableWrapper {
 
 	private boolean maximized = false;
 	private boolean unpinned = false;
+	private RootDockingPanel root;
 
 	public DockableWrapper(Dockable dockable) {
 		this.dockable = dockable;
@@ -111,5 +113,13 @@ public class DockableWrapper {
 
 	public DisplayPanel getDisplayPanel() {
 		return displayPanel;
+	}
+
+	public void setRoot(RootDockingPanel root) {
+		this.root = root;
+	}
+
+	public RootDockingPanel getRoot() {
+		return root;
 	}
 }
