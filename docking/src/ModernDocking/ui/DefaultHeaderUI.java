@@ -130,11 +130,13 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.insets = new Insets(1, 6, 1, 2);
 
 		JLabel iconLabel = new JLabel(headerModel.icon());
 		add(iconLabel, gbc);
 		gbc.gridx++;
 
+		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 

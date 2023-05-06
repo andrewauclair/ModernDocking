@@ -28,8 +28,8 @@ dependencies {
 	implementation project(':docking')
 
 	implementation group + ":ModernDocking:" + version
-	implementation 'com.formdev:flatlaf:2.3'
-	implementation 'com.formdev:flatlaf-extras:2.3'
+	implementation 'com.formdev:flatlaf:3.1.1'
+	implementation 'com.formdev:flatlaf-extras:3.1.1'
 	implementation 'com.formdev:svgSalamander:1.1.3'
 }
 
