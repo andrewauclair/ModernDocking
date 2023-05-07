@@ -22,7 +22,7 @@ sourceSets.main.resources.srcDirs = ['resources']
 
 group = "io.github.andrewauclair.ModernDocking"
 archivesBaseName = "ModernDockingUI"
-version = "0.2.1"
+version = "0.3.0"
 
 dependencies {
 	implementation project(':docking')
