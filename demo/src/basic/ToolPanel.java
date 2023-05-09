@@ -101,13 +101,13 @@ public class ToolPanel extends BasePanel {
 	public DockingStrategy strategy() {
 		return () -> {
 			if (style == DockableStyle.VERTICAL) {
-				Docking.dock(this, Docking.getInstance().getMainFrame(), DockingRegion.EAST);
+				Docking.dock(this, Docking.getInstance().getMainWindow(), DockingRegion.EAST);
 			}
 			else if (style == DockableStyle.HORIZONTAL) {
-				Docking.dock(this, Docking.getInstance().getMainFrame(), DockingRegion.SOUTH);
+				Docking.dock(this, Docking.getInstance().getMainWindow(), DockingRegion.SOUTH);
 			}
 			else {
-				Docking.dock(this, Docking.getInstance().getMainFrame(), DockingRegion.NORTH);
+				Docking.dock(this, Docking.getInstance().getMainWindow(), DockingRegion.NORTH);
 			}
 		};
 	}

@@ -23,22 +23,25 @@ package ModernDocking.internal;
 
 import ModernDocking.persist.AppState;
 
-import javax.swing.*;
-import java.awt.event.*;
+import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 
 // simple internal class that calls AppState.persist() whenever a frame resizes, moves or changes state
 public class AppStatePersister extends ComponentAdapter implements WindowStateListener {
 	public AppStatePersister() {
 	}
 
-	public void addFrame(JFrame frame) {
-		frame.addComponentListener(this);
-		frame.addWindowStateListener(this);
+	public void addFrame(Window window) {
+		window.addComponentListener(this);
+		window.addWindowStateListener(this);
 	}
 
-	public void removeFrame(JFrame frame) {
-		frame.removeComponentListener(this);
-		frame.removeWindowStateListener(this);
+	public void removeFrame(Window window) {
+		window.removeComponentListener(this);
+		window.removeWindowStateListener(this);
 	}
 
 	@Override

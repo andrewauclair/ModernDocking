@@ -57,10 +57,10 @@ public class ActiveDockableHighlighter {
 				Dockable dockable = DockingComponentUtils.findDockableAtScreenPos(((MouseEvent) e).getLocationOnScreen());
 
 				if (dockable != null) {
-					JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
+					Window window = DockingComponentUtils.findWindowForDockable(dockable);
 
 					if (!getWrapper(dockable).isUnpinned()) {
-						DockingComponentUtils.rootForFrame(frame).hideUnpinnedPanels();
+						DockingComponentUtils.rootForWindow(window).hideUnpinnedPanels();
 					}
 				}
 			}

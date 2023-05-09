@@ -47,10 +47,10 @@ public class Docking {
 	public static Insets frameBorderSizes = new Insets(0, 0, 0, 0);
 
 	// map of all the root panels in the application
-	private final Map<JFrame, RootDockingPanel> rootPanels = new HashMap<>();
+	private final Map<Window, RootDockingPanel> rootPanels = new HashMap<>();
 
 	// the applications main frame
-	private final JFrame mainFrame;
+	private final Window mainWindow;
 
 	private static Docking instance;
 
@@ -61,14 +61,14 @@ public class Docking {
 
 	/**
 	 * Create the one and only instance of the Docking class for the application
-	 * @param mainFrame The main frame of the application
+	 * @param mainWindow The main window of the application
 	 */
-	public static void initialize(JFrame mainFrame) {
-		new Docking(mainFrame);
+	public static void initialize(Window mainWindow) {
+		new Docking(mainWindow);
 	}
 
-	private Docking(JFrame mainFrame) {
-		this.mainFrame = mainFrame;
+	private Docking(Window mainWindow) {
+		this.mainWindow = mainWindow;
 		instance = this;
 
 		FloatListener.reset();
@@ -78,12 +78,12 @@ public class Docking {
 		return instance;
 	}
 
-	public Map<JFrame, RootDockingPanel> getRootPanels() {
+	public Map<Window, RootDockingPanel> getRootPanels() {
 		return rootPanels;
 	}
 
-	public JFrame getMainFrame() {
-		return mainFrame;
+	public Window getMainWindow() {
+		return mainWindow;
 	}
 
 	// register a dockable with the framework
@@ -133,24 +133,24 @@ public class Docking {
 		instance.appStatePersister.addFrame(parent);
 	}
 
-	// allows the user to configure pinning per frame. by default pinning is only enabled on the frames the docking framework creates
-	public static void configurePinning(JFrame frame, int layer, boolean allow) {
-		if (!instance.rootPanels.containsKey(frame)) {
-			throw new DockableRegistrationFailureException("No root panel for frame has been registered.");
+	// allows the user to configure pinning per window. by default pinning is only enabled on the frames the docking framework creates
+	public static void configurePinning(Window window, int layer, boolean allow) {
+		if (!instance.rootPanels.containsKey(window)) {
+			throw new DockableRegistrationFailureException("No root panel for window has been registered.");
 		}
 
-		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
+		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
 		root.setPinningSupported(allow);
 		root.setPinningLayer(layer);
 	}
 
 	public static boolean pinningAllowed(Dockable dockable) {
-		RootDockingPanel root = DockingComponentUtils.rootForFrame(DockingComponentUtils.findFrameForDockable(dockable));
+		RootDockingPanel root = DockingComponentUtils.rootForWindow(DockingComponentUtils.findWindowForDockable(dockable));
 
 		return dockable.allowPinning() && root.isPinningSupported();
 	}
 
-	public static void deregisterDockingPanel(JFrame parent) {
+	public static void deregisterDockingPanel(Window parent) {
 		if (instance.rootPanels.containsKey(parent)) {
 			RootDockingPanel root = instance.rootPanels.get(parent);
 
@@ -162,39 +162,39 @@ public class Docking {
 		instance.appStatePersister.removeFrame(parent);
 	}
 
-	// docks a dockable to the center of the given frame
-	// NOTE: This will only work if the frame root docking node is empty. Otherwise this does nothing.
-	public static void dock(String persistentID, JFrame frame) {
-		dock(getDockable(persistentID), frame, DockingRegion.CENTER);
+	// docks a dockable to the center of the given window
+	// NOTE: This will only work if the window root docking node is empty. Otherwise this does nothing.
+	public static void dock(String persistentID, Window window) {
+		dock(getDockable(persistentID), window, DockingRegion.CENTER);
 	}
 
-	// docks a dockable to the center of the given frame
-	// NOTE: This will only work if the frame root docking node is empty. Otherwise this does nothing.
-	public static void dock(Dockable dockable, JFrame frame) {
-		dock(dockable, frame, DockingRegion.CENTER);
+	// docks a dockable to the center of the given window
+	// NOTE: This will only work if the window root docking node is empty. Otherwise this does nothing.
+	public static void dock(Dockable dockable, Window window) {
+		dock(dockable, window, DockingRegion.CENTER);
 	}
 
-	// docks a dockable into the specified region of the frame with 50% divider proportion
-	public static void dock(String persistentID, JFrame frame, DockingRegion region) {
-		dock(getDockable(persistentID), frame, region, 0.5);
+	// docks a dockable into the specified region of the window with 50% divider proportion
+	public static void dock(String persistentID, Window window, DockingRegion region) {
+		dock(getDockable(persistentID), window, region, 0.5);
 	}
 
-	// docks a dockable into the specified region of the frame with 50% divider proportion
-	public static void dock(Dockable dockable, JFrame frame, DockingRegion region) {
-		dock(dockable, frame, region, 0.5);
+	// docks a dockable into the specified region of the window with 50% divider proportion
+	public static void dock(Dockable dockable, Window window, DockingRegion region) {
+		dock(dockable, window, region, 0.5);
 	}
 
-	// docks a dockable into the specified region of the frame with the specified divider proportion
-	public static void dock(String persistentID, JFrame frame, DockingRegion region, double dividerProportion) {
-		dock(getDockable(persistentID), frame, region, dividerProportion);
+	// docks a dockable into the specified region of the window with the specified divider proportion
+	public static void dock(String persistentID, Window window, DockingRegion region, double dividerProportion) {
+		dock(getDockable(persistentID), window, region, dividerProportion);
 	}
 
-	// docks a dockable into the specified region of the frame with the specified divider proportion
-	public static void dock(Dockable dockable, JFrame frame, DockingRegion region, double dividerProportion) {
-		RootDockingPanel root = instance.rootPanels.get(frame);
+	// docks a dockable into the specified region of the window with the specified divider proportion
+	public static void dock(Dockable dockable, Window window, DockingRegion region, double dividerProportion) {
+		RootDockingPanel root = instance.rootPanels.get(window);
 
 		if (root == null) {
-			throw new DockableRegistrationFailureException("Frame does not have a RootDockingPanel: " + frame);
+			throw new DockableRegistrationFailureException("Window does not have a RootDockingPanel: " + window);
 		}
 
 		// if the dockable has decided to do something else, skip out of this function
@@ -205,7 +205,7 @@ public class Docking {
 
 		root.dock(dockable, region, dividerProportion);
 
-		getWrapper(dockable).setFrame(frame);
+		getWrapper(dockable).setWindow(window);
 
 		// fire a docked event when the component is actually added
 		DockingListeners.fireDockedEvent(dockable);
@@ -244,7 +244,7 @@ public class Docking {
 
 		wrapper.getParent().dock(source, region, dividerProportion);
 
-		getWrapper(source).setFrame(wrapper.getFrame());
+		getWrapper(source).setWindow(wrapper.getWindow());
 
 		DockingListeners.fireDockedEvent(source);
 
@@ -274,9 +274,9 @@ public class Docking {
 			throw new NotDockedException(dockable);
 		}
 
-		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
-		frame.setAlwaysOnTop(true);
-		frame.setAlwaysOnTop(false);
+		Window window = DockingComponentUtils.findWindowForDockable(dockable);
+		window.setAlwaysOnTop(true);
+		window.setAlwaysOnTop(false);
 
 		if (getWrapper(dockable).getParent() instanceof DockedTabbedPanel) {
 			DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) getWrapper(dockable).getParent();
@@ -296,9 +296,9 @@ public class Docking {
 			return;
 		}
 
-		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
+		Window window = DockingComponentUtils.findWindowForDockable(dockable);
 
-		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
+		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
 
 		DockableWrapper wrapper = getWrapper(dockable);
 
@@ -312,13 +312,13 @@ public class Docking {
 		else {
 			wrapper.getParent().undock(dockable);
 		}
-		wrapper.setFrame(null);
+		wrapper.setWindow(null);
 
 		DockingListeners.fireUndockedEvent(dockable);
 
-		if (frame != null && root != null && canDisposeFrame(frame) && root.isEmpty()) {
-			deregisterDockingPanel(frame);
-			frame.dispose();
+		if (window != null && root != null && canDisposeWindow(window) && root.isEmpty()) {
+			deregisterDockingPanel(window);
+			window.dispose();
 		}
 
 		AppState.persist();
@@ -346,9 +346,9 @@ public class Docking {
 		return getWrapper(dockable).isUnpinned();
 	}
 
-	// check if the frame can be disposed. Frames can be disposed if they are not the main frame and are not maximized
-	public static boolean canDisposeFrame(JFrame frame) {
-		return frame != instance.mainFrame && !DockingState.maximizeRestoreLayout.containsKey(frame);
+	// check if the window can be disposed. Frames can be disposed if they are not the main window and are not maximized
+	public static boolean canDisposeWindow(Window window) {
+		return window != instance.mainWindow && !DockingState.maximizeRestoreLayout.containsKey(window);
 	}
 
 	// checks if a dockable is currently maximized
@@ -358,46 +358,46 @@ public class Docking {
 
 	// maximizes a dockable
 	public static void maximize(Dockable dockable) {
-		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
-		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
+		Window window = DockingComponentUtils.findWindowForDockable(dockable);
+		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
 
 		// can only maximize one panel per root
-		if (!DockingState.maximizeRestoreLayout.containsKey(frame) && root != null) {
+		if (!DockingState.maximizeRestoreLayout.containsKey(window) && root != null) {
 			getWrapper(dockable).setMaximized(true);
 			DockingListeners.fireMaximizeEvent(dockable, true);
 
-			DockingLayout layout = DockingState.getCurrentLayout(frame);
+			DockingLayout layout = DockingState.getCurrentLayout(window);
 			layout.setMaximizedDockable(dockable.persistentID());
 
-			DockingState.maximizeRestoreLayout.put(frame, layout);
+			DockingState.maximizeRestoreLayout.put(window, layout);
 
 			DockingComponentUtils.undockComponents(root);
 
-			dock(dockable, frame);
+			dock(dockable, window);
 		}
 	}
 
 	// minimize a dockable if it is currently maximized
 	public static void minimize(Dockable dockable) {
-		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
+		Window window = DockingComponentUtils.findWindowForDockable(dockable);
 
 		// can only minimize if already maximized
-		if (DockingState.maximizeRestoreLayout.containsKey(frame)) {
+		if (DockingState.maximizeRestoreLayout.containsKey(window)) {
 			getWrapper(dockable).setMaximized(false);
 			DockingListeners.fireMaximizeEvent(dockable, false);
 
-			DockingState.setLayout(frame, DockingState.maximizeRestoreLayout.get(frame));
+			DockingState.setLayout(window, DockingState.maximizeRestoreLayout.get(window));
 
-			DockingState.maximizeRestoreLayout.remove(frame);
+			DockingState.maximizeRestoreLayout.remove(window);
 
-			DockingInternal.fireDockedEventForFrame(frame);
+			DockingInternal.fireDockedEventForFrame(window);
 		}
 	}
 
 	// pin a dockable. only valid if the dockable is unpinned
 	public static void pinDockable(Dockable dockable) {
-		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
-		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
+		Window window = DockingComponentUtils.findWindowForDockable(dockable);
+		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
 
 		if (getWrapper(dockable).isUnpinned()) {
 			root.setDockablePinned(dockable);
@@ -410,8 +410,8 @@ public class Docking {
 	// unpin a dockable. only valid if the dockable is pinned
 	// TODO looks like this could get called on an already unpinned dockable
 	public static void unpinDockable(Dockable dockable) {
-		JFrame frame = DockingComponentUtils.findFrameForDockable(dockable);
-		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
+		Window window = DockingComponentUtils.findWindowForDockable(dockable);
+		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
 
 		Component component = (Component) dockable;
 
@@ -424,15 +424,15 @@ public class Docking {
 
 		undock(dockable);
 
-		// reset the frame, undocking the dockable sets it to null
-		getWrapper(dockable).setFrame(frame);
+		// reset the window, undocking the dockable sets it to null
+		getWrapper(dockable).setWindow(window);
 		getWrapper(dockable).setUnpinned(true);
 
 		boolean allowedSouth = dockable.style() == DockableStyle.BOTH || dockable.style() == DockableStyle.HORIZONTAL;
 
 		int westDist = posInFrame.x;
-		int eastDist = frame.getWidth() - posInFrame.x;
-		int southDist = frame.getHeight() - posInFrame.y;
+		int eastDist = window.getWidth() - posInFrame.x;
+		int southDist = window.getHeight() - posInFrame.y;
 
 		boolean east = eastDist <= westDist;
 		boolean south = southDist < westDist && southDist < eastDist;
@@ -472,7 +472,7 @@ public class Docking {
 			}
 			else {
 				// if we didn't find any dockables of the same type, we'll dock to north
-				dock(dockable, instance.mainFrame, DockingRegion.NORTH);
+				dock(dockable, instance.mainWindow, DockingRegion.NORTH);
 			}
 		}
 	}

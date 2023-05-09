@@ -59,7 +59,7 @@ public class DockedSimplePanel extends DockingPanel {
 		// docking to CENTER: Simple -> Tabbed
 		// docking else where: Simple -> Split
 		DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
-		wrapper.setFrame(this.dockable.getFrame());
+		wrapper.setWindow(this.dockable.getWindow());
 
 		if (region == DockingRegion.CENTER) {
 			DockedTabbedPanel tabbedPanel = new DockedTabbedPanel();
@@ -70,7 +70,7 @@ public class DockedSimplePanel extends DockingPanel {
 			parent.replaceChild(this, tabbedPanel);
 		}
 		else {
-			DockedSplitPanel split = new DockedSplitPanel(this.dockable.getFrame());
+			DockedSplitPanel split = new DockedSplitPanel(this.dockable.getWindow());
 			parent.replaceChild(this, split);
 
 			DockedSimplePanel newPanel = new DockedSimplePanel(wrapper);
