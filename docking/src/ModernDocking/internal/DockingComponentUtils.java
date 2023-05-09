@@ -166,6 +166,11 @@ public class DockingComponentUtils {
 
 	// remove panels from window if they return false for allowFloating() and there are no other dockables in the window
 	public static void removeIllegalFloats(Window window) {
+		// don't touch any dockables on a JDialog, they are their own little environment
+		if (window instanceof JDialog) {
+			return;
+		}
+
 		RootDockingPanel root = rootForWindow(window);
 
 		if (Docking.canDisposeWindow(window) && root != null) {
