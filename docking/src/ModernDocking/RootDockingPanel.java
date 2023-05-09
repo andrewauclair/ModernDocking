@@ -33,7 +33,7 @@ import java.util.List;
 
 // only class that should be used by clients
 public class RootDockingPanel extends DockingPanel {
-	private final JFrame frame;
+	private final Window window;
 
 	DockingPanel panel;
 
@@ -47,19 +47,19 @@ public class RootDockingPanel extends DockingPanel {
 	private final DockableToolbar westToolbar;
 	private final DockableToolbar eastToolbar;
 
-	public RootDockingPanel(JFrame frame) {
-		Docking.registerDockingPanel(this, frame);
+	public RootDockingPanel(Window window) {
+		Docking.registerDockingPanel(this, (JFrame) window);
 
 		setLayout(new GridBagLayout());
-		this.frame = frame;
+		this.window = window;
 
-		southToolbar = new DockableToolbar(frame, this, DockableToolbar.Location.SOUTH);
-		westToolbar = new DockableToolbar(frame, this, DockableToolbar.Location.WEST);
-		eastToolbar = new DockableToolbar(frame, this, DockableToolbar.Location.EAST);
+		southToolbar = new DockableToolbar((JFrame) window, this, DockableToolbar.Location.SOUTH);
+		westToolbar = new DockableToolbar((JFrame) window, this, DockableToolbar.Location.WEST);
+		eastToolbar = new DockableToolbar((JFrame) window, this, DockableToolbar.Location.EAST);
 	}
 
-	public JFrame getFrame() {
-		return frame;
+	public Window getWindow() {
+		return window;
 	}
 
 	public void setEmptyPanel(JPanel panel) {
@@ -113,8 +113,8 @@ public class RootDockingPanel extends DockingPanel {
 
 	@Override
 	public void removeNotify() {
-		JFrame frame = (JFrame) SwingUtilities.getRoot(this);
-		Docking.deregisterDockingPanel(frame);
+		Window rootWindow = (Window) SwingUtilities.getRoot(this);
+		Docking.deregisterDockingPanel(rootWindow);
 
 		super.removeNotify();
 	}
@@ -132,7 +132,7 @@ public class RootDockingPanel extends DockingPanel {
 		}
 		else {
 			setPanel(new DockedSimplePanel(DockingInternal.getWrapper(dockable)));
-			DockingInternal.getWrapper(dockable).setFrame(frame);
+			DockingInternal.getWrapper(dockable).setWindow(window);
 		}
 	}
 

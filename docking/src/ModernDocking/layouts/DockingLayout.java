@@ -47,11 +47,17 @@ public class DockingLayout {
 		this.rootNode = rootNode;
 	}
 
-	public DockingLayout(JFrame frame, DockingLayoutNode rootNode) {
+	public DockingLayout(Window window, DockingLayoutNode rootNode) {
 		this.rootNode = rootNode;
-		this.location = frame.getLocation();
-		this.size = frame.getSize();
-		this.state = frame.getExtendedState();
+		this.location = window.getLocation();
+		this.size = window.getSize();
+
+		if (window instanceof JFrame) {
+			this.state = ((JFrame) window).getExtendedState();
+		}
+		else {
+			this.state = Frame.NORMAL;
+		}
 	}
 
 	public boolean isMainFrame() {

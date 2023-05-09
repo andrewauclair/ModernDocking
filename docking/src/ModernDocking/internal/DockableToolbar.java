@@ -155,7 +155,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 
 			DockedUnpinnedPanel panel = new DockedUnpinnedPanel(dockable, root, this);
 
-			wrapper.setFrame(frame);
+			wrapper.setWindow(frame);
 
 			// update all the buttons and panels
 			button.addActionListener(e -> updateButtons());

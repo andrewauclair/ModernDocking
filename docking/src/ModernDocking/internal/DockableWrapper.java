@@ -29,12 +29,13 @@ import ModernDocking.ui.HeaderController;
 import ModernDocking.ui.HeaderModel;
 
 import javax.swing.*;
+import java.awt.*;
 
 // internal wrapper around the Dockable implemented by the application.
 // lets us provide access to the dockable and its parent in the hierarchy
 public class DockableWrapper {
 	private final HeaderController headerController;
-	private JFrame frame;
+	private Window window;
 	private DockingPanel parent = null;
 	private final Dockable dockable;
 
@@ -59,12 +60,12 @@ public class DockableWrapper {
 		displayPanel = new DisplayPanel(this);
 	}
 
-	public JFrame getFrame() {
-		return frame;
+	public Window getWindow() {
+		return window;
 	}
 
-	public void setFrame(JFrame frame) {
-		this.frame = frame;
+	public void setWindow(Window window) {
+		this.window = window;
 	}
 
 	public void setParent(DockingPanel parent) {

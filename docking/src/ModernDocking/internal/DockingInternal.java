@@ -25,7 +25,7 @@ import ModernDocking.Dockable;
 import ModernDocking.Docking;
 import ModernDocking.exception.DockableRegistrationFailureException;
 
-import javax.swing.*;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,10 +66,10 @@ public class DockingInternal {
 		throw new DockableRegistrationFailureException("Dockable with Persistent ID " + persistentID + " has not been registered.");
 	}
 
-	public static void fireDockedEventForFrame(JFrame frame) {
+	public static void fireDockedEventForFrame(Window window) {
 		// everything has been restored, go through the list of dockables and fire docked events for the ones that are docked
 		List<DockableWrapper> wrappers = dockables.values().stream()
-				.filter(wrapper -> wrapper.getFrame() == frame)
+				.filter(wrapper -> wrapper.getWindow() == window)
 				.collect(Collectors.toList());
 
 		for (DockableWrapper wrapper : wrappers) {

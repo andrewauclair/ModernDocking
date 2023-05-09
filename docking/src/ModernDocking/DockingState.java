@@ -36,26 +36,26 @@ import java.util.Set;
 
 public class DockingState {
 	// cached layout for when a maximized dockable is minimized
-	public static final Map<JFrame, DockingLayout> maximizeRestoreLayout = new HashMap<>();
+	public static final Map<Window, DockingLayout> maximizeRestoreLayout = new HashMap<>();
 
-	public static RootDockState getRootState(JFrame frame) {
-		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
+	public static RootDockState getRootState(Window window) {
+		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
 
 		if (root == null) {
-			throw new RuntimeException("Root for frame does not exist: " + frame);
+			throw new RuntimeException("Root for window does not exist: " + window);
 		}
 
 		return new RootDockState(root);
 	}
 
-	public static DockingLayout getCurrentLayout(JFrame frame) {
-		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
+	public static DockingLayout getCurrentLayout(Window window) {
+		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
 
 		if (root == null) {
-			throw new RuntimeException("Root for frame does not exist: " + frame);
+			throw new RuntimeException("Root for frame does not exist: " + window);
 		}
 
-		DockingLayout maxLayout = maximizeRestoreLayout.get(frame);
+		DockingLayout maxLayout = maximizeRestoreLayout.get(window);
 
 		if (maxLayout != null) {
 			return maxLayout;
@@ -67,10 +67,10 @@ public class DockingState {
 	public static FullAppLayout getFullLayout() {
 		FullAppLayout layout = new FullAppLayout();
 
-		layout.setMainFrame(getCurrentLayout(Docking.getInstance().getMainFrame()));
+		layout.setMainFrame(getCurrentLayout(Docking.getInstance().getMainWindow()));
 
-		for (JFrame frame : Docking.getInstance().getRootPanels().keySet()) {
-			if (frame != Docking.getInstance().getMainFrame()) {
+		for (Window frame : Docking.getInstance().getRootPanels().keySet()) {
+			if (frame != Docking.getInstance().getMainWindow()) {
 				layout.addFrame(getCurrentLayout(frame));
 			}
 		}
@@ -79,21 +79,21 @@ public class DockingState {
 	}
 
 	public static void restoreFullLayout(FullAppLayout layout) {
-		// get rid of all existing frames and undock all dockables
-		Set<JFrame> frames = new HashSet<>(Docking.getInstance().getRootPanels().keySet());
-		for (JFrame frame : frames) {
-			if (frame != Docking.getInstance().getMainFrame()) {
-				DockingComponentUtils.undockComponents(frame);
-				frame.dispose();
+		// get rid of all existing windows and undock all dockables
+		Set<Window> windows = new HashSet<>(Docking.getInstance().getRootPanels().keySet());
+		for (Window window : windows) {
+			if (window != Docking.getInstance().getMainWindow()) {
+				DockingComponentUtils.undockComponents(window);
+				window.dispose();
 			}
 		}
 
 		AppState.setPaused(true);
 
 		// setup main frame
-		restoreLayoutFromFull(Docking.getInstance().getMainFrame(), layout.getMainFrameLayout());
+		restoreLayoutFromFull(Docking.getInstance().getMainWindow(), layout.getMainFrameLayout());
 
-		// setup rest of floating frames from layout
+		// setup rest of floating windows from layout
 		for (DockingLayout frameLayout : layout.getFloatingFrameLayouts()) {
 			FloatingFrame frame = new FloatingFrame(frameLayout.getLocation(), frameLayout.getSize(), frameLayout.getState());
 
@@ -106,20 +106,23 @@ public class DockingState {
 		DockingInternal.fireDockedEventForAll();
 	}
 
-	private static void restoreLayoutFromFull(JFrame frame, DockingLayout layout) {
-		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
+	private static void restoreLayoutFromFull(Window window, DockingLayout layout) {
+		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
 
 		if (root == null) {
-			throw new RuntimeException("Root for frame does not exist: " + frame);
+			throw new RuntimeException("Root for window does not exist: " + window);
 		}
 
-		frame.setLocation(layout.getLocation());
-		frame.setSize(layout.getSize());
-		frame.setExtendedState(layout.getState());
+		window.setLocation(layout.getLocation());
+		window.setSize(layout.getSize());
+
+		if (window instanceof JFrame) {
+			((JFrame) window).setExtendedState(layout.getState());
+		}
 
 		DockingComponentUtils.undockComponents(root);
 
-		root.setPanel(restoreState(layout.getRootNode(), frame));
+		root.setPanel(restoreState(layout.getRootNode(), window));
 
 		// undock and destroy any failed dockables
 		undockFailedComponents(root);
@@ -150,23 +153,26 @@ public class DockingState {
 		}
 	}
 
-	public static void setLayout(JFrame frame, DockingLayout layout) {
-		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
+	public static void setLayout(Window window, DockingLayout layout) {
+		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
 
 		if (root == null) {
-			throw new RuntimeException("Root for frame does not exist: " + frame);
+			throw new RuntimeException("Root for window does not exist: " + window);
 		}
 
-		frame.setLocation(layout.getLocation());
-		frame.setSize(layout.getSize());
-		frame.setExtendedState(layout.getState());
+		window.setLocation(layout.getLocation());
+		window.setSize(layout.getSize());
+
+		if (window instanceof JFrame) {
+			((JFrame) window).setExtendedState(layout.getState());
+		}
 
 		DockingComponentUtils.undockComponents(root);
 
 		boolean paused = AppState.isPaused();
 		AppState.setPaused(true);
 
-		root.setPanel(restoreState(layout.getRootNode(), frame));
+		root.setPanel(restoreState(layout.getRootNode(), window));
 
 		// undock and destroy any failed dockables
 		undockFailedComponents(root);
@@ -178,11 +184,11 @@ public class DockingState {
 		}
 	}
 
-	public static void restoreState(JFrame frame, RootDockState state) {
-		RootDockingPanel root = DockingComponentUtils.rootForFrame(frame);
+	public static void restoreState(Window window, RootDockState state) {
+		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
 
 		if (root == null) {
-			throw new RuntimeException("Root for frame does not exist: " + frame);
+			throw new RuntimeException("Root for window does not exist: " + window);
 		}
 
 		DockingComponentUtils.undockComponents(root);
@@ -190,7 +196,7 @@ public class DockingState {
 		boolean paused = AppState.isPaused();
 		AppState.setPaused(true);
 
-		root.setPanel(restoreState(state.getState(), frame));
+		root.setPanel(restoreState(state.getState(), window));
 
 		AppState.setPaused(paused);
 
@@ -199,33 +205,33 @@ public class DockingState {
 		}
 	}
 
-	private static DockingPanel restoreState(DockableState state, JFrame frame) {
+	private static DockingPanel restoreState(DockableState state, Window window) {
 		if (state instanceof PanelState) {
-			return restoreSimple((PanelState) state, frame);
+			return restoreSimple((PanelState) state, window);
 		}
 		else if (state instanceof SplitState) {
-			return restoreSplit((SplitState) state, frame);
+			return restoreSplit((SplitState) state, window);
 		}
 		else if (state instanceof TabState) {
-			return restoreTabbed((TabState) state, frame);
+			return restoreTabbed((TabState) state, window);
 		}
 		else {
 			throw new RuntimeException("Unknown state type");
 		}
 	}
 
-	private static DockedSplitPanel restoreSplit(SplitState state, JFrame frame) {
-		DockedSplitPanel panel = new DockedSplitPanel(frame);
+	private static DockedSplitPanel restoreSplit(SplitState state, Window window) {
+		DockedSplitPanel panel = new DockedSplitPanel(window);
 
-		panel.setLeft(restoreState(state.getLeft(), frame));
-		panel.setRight(restoreState(state.getRight(), frame));
+		panel.setLeft(restoreState(state.getLeft(), window));
+		panel.setRight(restoreState(state.getRight(), window));
 		panel.setOrientation(state.getOrientation());
 		panel.setDividerLocation(state.getDividerLocation());
 
 		return panel;
 	}
 
-	private static DockedTabbedPanel restoreTabbed(TabState state, JFrame frame) {
+	private static DockedTabbedPanel restoreTabbed(TabState state, Window window) {
 		DockedTabbedPanel panel = new DockedTabbedPanel();
 
 		for (String persistentID : state.getPersistentIDs()) {
@@ -238,7 +244,7 @@ public class DockingState {
 			Docking.undock(dockable);
 
 			DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
-			wrapper.setFrame(frame);
+			wrapper.setWindow(window);
 
 			panel.addPanel(wrapper);
 		}
@@ -246,7 +252,7 @@ public class DockingState {
 		return panel;
 	}
 
-	private static DockedSimplePanel restoreSimple(PanelState state, JFrame frame) {
+	private static DockedSimplePanel restoreSimple(PanelState state, Window window) {
 		Dockable dockable = getDockable(state.getPersistentID());
 
 		if (dockable == null) {
@@ -256,23 +262,23 @@ public class DockingState {
 		Docking.undock(dockable);
 
 		DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
-		wrapper.setFrame(frame);
+		wrapper.setWindow(window);
 
 		return new DockedSimplePanel(wrapper);
 	}
 
-	private static DockingPanel restoreState(DockingLayoutNode node, JFrame frame) {
+	private static DockingPanel restoreState(DockingLayoutNode node, Window window) {
 		if (node instanceof DockingSimplePanelNode) {
-			return restoreSimple((DockingSimplePanelNode) node, frame);
+			return restoreSimple((DockingSimplePanelNode) node, window);
 		}
 		else if (node instanceof DockingSplitPanelNode) {
-			return restoreSplit((DockingSplitPanelNode) node, frame);
+			return restoreSplit((DockingSplitPanelNode) node, window);
 		}
 		else if (node instanceof DockingTabPanelNode) {
-			return restoreTabbed((DockingTabPanelNode) node, frame);
+			return restoreTabbed((DockingTabPanelNode) node, window);
 		}
 		else if (node == null) {
-			// the main frame root can contain a null panel if nothing is docked
+			// the main window root can contain a null panel if nothing is docked
 			return null;
 		}
 		else {
@@ -280,18 +286,18 @@ public class DockingState {
 		}
 	}
 
-	private static DockedSplitPanel restoreSplit(DockingSplitPanelNode node, JFrame frame) {
-		DockedSplitPanel panel = new DockedSplitPanel(frame);
+	private static DockedSplitPanel restoreSplit(DockingSplitPanelNode node, Window window) {
+		DockedSplitPanel panel = new DockedSplitPanel(window);
 
-		panel.setLeft(restoreState(node.getLeft(), frame));
-		panel.setRight(restoreState(node.getRight(), frame));
+		panel.setLeft(restoreState(node.getLeft(), window));
+		panel.setRight(restoreState(node.getRight(), window));
 		panel.setOrientation(node.getOrientation());
 		panel.setDividerLocation(node.getDividerProportion());
 
 		return panel;
 	}
 
-	private static DockedTabbedPanel restoreTabbed(DockingTabPanelNode node, JFrame frame) {
+	private static DockedTabbedPanel restoreTabbed(DockingTabPanelNode node, Window window) {
 		DockedTabbedPanel panel = new DockedTabbedPanel();
 
 		for (String persistentID : node.getPersistentIDs()) {
@@ -304,7 +310,7 @@ public class DockingState {
 			Docking.undock(dockable);
 
 			DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
-			wrapper.setFrame(frame);
+			wrapper.setWindow(window);
 
 			panel.addPanel(wrapper);
 		}
@@ -316,7 +322,7 @@ public class DockingState {
 		return panel;
 	}
 
-	private static DockedSimplePanel restoreSimple(DockingSimplePanelNode node, JFrame frame) {
+	private static DockedSimplePanel restoreSimple(DockingSimplePanelNode node, Window window) {
 		Dockable dockable = getDockable(node.persistentID());
 
 		if (dockable == null) {
@@ -326,7 +332,7 @@ public class DockingState {
 		Docking.undock(dockable);
 
 		DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
-		wrapper.setFrame(frame);
+		wrapper.setWindow(window);
 
 		return new DockedSimplePanel(wrapper);
 	}

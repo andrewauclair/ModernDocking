@@ -98,13 +98,13 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	@Override
 	public void dock(Dockable dockable, DockingRegion region, double dividerProportion) {
 		DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
-		wrapper.setFrame(panels.get(0).getFrame());
+		wrapper.setWindow(panels.get(0).getWindow());
 
 		if (region == DockingRegion.CENTER) {
 			addPanel(wrapper);
 		}
 		else {
-			DockedSplitPanel split = new DockedSplitPanel(panels.get(0).getFrame());
+			DockedSplitPanel split = new DockedSplitPanel(panels.get(0).getWindow());
 			parent.replaceChild(this, split);
 
 			DockedSimplePanel newPanel = new DockedSimplePanel(wrapper);

@@ -65,7 +65,7 @@ public class DockingLayouts {
 	}
 
 	public static DockingLayout layoutFromRoot(RootDockingPanel root) {
-		DockingLayout layout = new DockingLayout(DockingComponentUtils.frameForRoot(root), panelToNode(root.getPanel()));
+		DockingLayout layout = new DockingLayout(DockingComponentUtils.windowForRoot(root), panelToNode(root.getPanel()));
 
 		layout.setWestUnpinnedToolbarIDs(root.getWestUnpinnedToolbarIDs());
 		layout.setEastUnpinnedToolbarIDs(root.getEastUnpinnedToolbarIDs());
