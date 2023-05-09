@@ -105,6 +105,16 @@ public class MainFrame extends JFrame {
 		JMenu window = new JMenu("Window");
 		window.add(new LayoutsMenu());
 
+		menuBar.add(window);
+
+		JMenuItem dialogTest = new JMenuItem("Dialog Test");
+		dialogTest.addActionListener(e -> {
+			DialogWithDocking dialog = new DialogWithDocking();
+			dialog.setVisible(true);
+			dialog.setLocation(getLocation());
+		});
+		window.add(dialogTest);
+
 		JLabel test = new JLabel("Test");
 		test.setOpaque(true);
 		test.setBackground(Color.BLACK);

@@ -48,14 +48,19 @@ public class RootDockingPanel extends DockingPanel {
 	private final DockableToolbar eastToolbar;
 
 	public RootDockingPanel(Window window) {
-		Docking.registerDockingPanel(this, (JFrame) window);
+		if (window instanceof JFrame) {
+			Docking.registerDockingPanel(this, (JFrame) window);
+		}
+		else {
+			Docking.registerDockingPanel(this, (JDialog) window);
+		}
 
 		setLayout(new GridBagLayout());
 		this.window = window;
 
-		southToolbar = new DockableToolbar((JFrame) window, this, DockableToolbar.Location.SOUTH);
-		westToolbar = new DockableToolbar((JFrame) window, this, DockableToolbar.Location.WEST);
-		eastToolbar = new DockableToolbar((JFrame) window, this, DockableToolbar.Location.EAST);
+		southToolbar = new DockableToolbar(window, this, DockableToolbar.Location.SOUTH);
+		westToolbar = new DockableToolbar(window, this, DockableToolbar.Location.WEST);
+		eastToolbar = new DockableToolbar(window, this, DockableToolbar.Location.EAST);
 	}
 
 	public Window getWindow() {

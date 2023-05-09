@@ -88,8 +88,8 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		floatingDockable.removedListeners();
 	}
 
-	public static void registerDockingFrame(JFrame frame, RootDockingPanel root) {
-		utilFrames.put(frame, new DockingUtilsFrame(frame, root));
+	public static void registerDockingWindow(Window window, RootDockingPanel root) {
+		utilFrames.put(window, new DockingUtilsFrame(window, root));
 	}
 
 	private void updateFramePosition(Point mousePos) {

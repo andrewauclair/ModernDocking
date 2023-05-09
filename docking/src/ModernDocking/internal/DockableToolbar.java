@@ -43,7 +43,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 		EAST
 	}
 
-	private final JFrame frame;
+	private final Window window;
 	private final RootDockingPanel root;
 	private final Location location;
 
@@ -52,7 +52,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 		private final JToggleButton button;
 		private final DockedUnpinnedPanel panel;
 
-		public Entry(Dockable dockable, JToggleButton button, DockedUnpinnedPanel panel) {
+		private Entry(Dockable dockable, JToggleButton button, DockedUnpinnedPanel panel) {
 			this.dockable = dockable;
 			this.button = button;
 			this.panel = panel;
@@ -79,9 +79,13 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	private final List<Entry> dockables = new ArrayList<>();
 	private final UnselectableButtonGroup buttonGroup = new UnselectableButtonGroup();
 
-	public DockableToolbar(JFrame frame, RootDockingPanel root, Location location) {
+	public DockableToolbar(Window window, RootDockingPanel root, Location location) {
 		super(new GridBagLayout());
-		this.frame = frame;
+
+		// the window must be a JFrame or a JDialog to support pinning (we need a JLayeredPane)
+		assert window instanceof JFrame || window instanceof JDialog;
+
+		this.window = window;
 		this.root = root;
 		this.location = location;
 
@@ -155,7 +159,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 
 			DockedUnpinnedPanel panel = new DockedUnpinnedPanel(dockable, root, this);
 
-			wrapper.setWindow(frame);
+			wrapper.setWindow(window);
 
 			// update all the buttons and panels
 			button.addActionListener(e -> updateButtons());
@@ -164,7 +168,14 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 
 			dockables.add(new Entry(dockable, button, panel));
 
-			JLayeredPane layeredPane = frame.getLayeredPane();
+			JLayeredPane layeredPane;
+
+			if (window instanceof JFrame) {
+				layeredPane = ((JFrame) window).getLayeredPane();
+			}
+			else {
+				layeredPane = ((JDialog) window).getLayeredPane();
+			}
 
 			layeredPane.add(panel, root.getPinningLayer());
 
@@ -175,7 +186,14 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	public void removeDockable(Dockable dockable) {
 		for (Entry entry : dockables) {
 			if (entry.dockable == dockable) {
-				JLayeredPane layeredPane = frame.getLayeredPane();
+				JLayeredPane layeredPane;
+
+				if (window instanceof JFrame) {
+					layeredPane = ((JFrame) window).getLayeredPane();
+				}
+				else {
+					layeredPane = ((JDialog) window).getLayeredPane();
+				}
 
 				layeredPane.remove(entry.panel);
 				break;
