@@ -382,7 +382,7 @@ public class Docking {
 		return getWrapper(dockable).isUnpinned();
 	}
 
-	// check if the window can be disposed. Frames can be disposed if they are not the main window and are not maximized
+	// check if the window can be disposed. Windows can be disposed if they are not the main window and are not maximized
 	public static boolean canDisposeWindow(Window window) {
 		return window != instance.mainWindow && !DockingState.maximizeRestoreLayout.containsKey(window);
 	}

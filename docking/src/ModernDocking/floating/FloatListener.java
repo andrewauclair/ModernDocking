@@ -68,6 +68,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			this.dragSource.addDragSourceMotionListener(FloatListener.this);
 
 			this.dragSource.createDefaultDragGestureRecognizer(dragSource, DnDConstants.ACTION_MOVE, dge -> {
+				// unpinned dockables are not floatable. They must be pinned again
 				if (!Docking.isUnpinned(floatingDockable.getDockable())) {
 					this.dragSource.startDrag(dge, Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR), transferable, FloatListener.this);
 					mouseDragged(dge.getDragOrigin());
