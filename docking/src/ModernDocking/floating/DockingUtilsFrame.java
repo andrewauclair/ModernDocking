@@ -34,10 +34,10 @@ import java.awt.event.ComponentListener;
 public class DockingUtilsFrame extends JFrame implements ComponentListener {
 	private final DockingHandles handles;
 	private final DockingOverlay overlay;
-	private final JFrame referenceDockingFrame;
+	private final Window referenceDockingWindow;
 
 	// create a new DockingUtilsFrame with a frame and its root panel
-	public DockingUtilsFrame(JFrame referenceDockingFrame, RootDockingPanel root) {
+	public DockingUtilsFrame(Window referenceDockingWindow, RootDockingPanel root) {
 		setLayout(null); // don't use a layout manager for this custom painted frame
 		setUndecorated(true); // don't want to see a frame border
 		setType(Type.UTILITY); // hide this frame from the task bar
@@ -45,11 +45,11 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR)); // always moving a dockable when this frame is visible. use the moving cursor to indicate such
 
 		// set location and size based on the reference docking frame
-		setLocation(referenceDockingFrame.getLocation());
-		setSize(referenceDockingFrame.getSize());
+		setLocation(referenceDockingWindow.getLocation());
+		setSize(referenceDockingWindow.getSize());
 
 		// remember the reference docking frame and create the handles and over components
-		this.referenceDockingFrame = referenceDockingFrame;
+		this.referenceDockingWindow = referenceDockingWindow;
 		handles = new DockingHandles(this, root);
 		overlay = new DockingOverlay(this, root);
 	}
@@ -59,12 +59,12 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		super.addNotify();
 
 		// listen for the reference frame to move and resize. this frame must match it exactly
-		referenceDockingFrame.addComponentListener(this);
+		referenceDockingWindow.addComponentListener(this);
 	}
 
 	@Override
 	public void removeNotify() {
-		referenceDockingFrame.removeComponentListener(this);
+		referenceDockingWindow.removeComponentListener(this);
 
 		super.removeNotify();
 	}
@@ -114,12 +114,12 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		setSize(referenceDockingFrame.getSize());
+		setSize(referenceDockingWindow.getSize());
 	}
 
 	@Override
 	public void componentMoved(ComponentEvent e) {
-		setLocation(referenceDockingFrame.getLocation());
+		setLocation(referenceDockingWindow.getLocation());
 	}
 
 	@Override
