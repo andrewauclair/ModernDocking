@@ -83,13 +83,17 @@ publishing {
 	repositories {
 		maven {
 			credentials {
-				username = "$sonatypeUsername"
-				password = "$sonatypePassword"
+				if (project.hasProperty('sonatypeUsername')) {
+					username = "$sonatypeUsername"
+				}
+				if (project.hasProperty('sonatypePassword')) {
+					password = "$sonatypePassword"
+				}
 			}
 
-			def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
-			def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
-			url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+			url = version.endsWith('SNAPSHOT') ?
+					'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+					: 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
 		}
 	}
 }

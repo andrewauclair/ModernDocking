@@ -32,6 +32,8 @@ public class ToolPanel extends BasePanel {
 	private final DockableStyle style;
 	private final Icon icon;
 
+	public boolean limitToRoot = false;
+
 	public ToolPanel(String title, String persistentID, DockableStyle style) {
 		super(title, persistentID);
 		this.style = style;
@@ -63,7 +65,7 @@ public class ToolPanel extends BasePanel {
 
 	@Override
 	public boolean limitToRoot() {
-		return false;
+		return limitToRoot;
 	}
 
 	@Override

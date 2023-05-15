@@ -108,10 +108,23 @@ public class MainFrame extends JFrame {
 		menuBar.add(window);
 
 		JMenuItem dialogTest = new JMenuItem("Dialog Test");
+
 		dialogTest.addActionListener(e -> {
 			DialogWithDocking dialog = new DialogWithDocking();
+			Point loc = getLocation();
+
+			//SwingUtilities.convertPointToScreen(loc, MainFrame.this);
+			loc.x -= 250;
+			loc.y -= 250;
+
+			loc.x += getSize().width / 2;
+			loc.y += getSize().height / 2;
+			dialog.setLocation(loc);
+
+			dialog.setSize(500, 500);
+
 			dialog.setVisible(true);
-			dialog.setLocation(getLocation());
+
 		});
 		window.add(dialogTest);
 

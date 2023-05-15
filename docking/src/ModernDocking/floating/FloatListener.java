@@ -31,6 +31,7 @@ import ModernDocking.persist.RootDockState;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.Dialog.ModalityType;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
@@ -61,6 +62,8 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 	private RootDockState rootState;
 
+	private ModalityType modalityType = ModalityType.MODELESS;
+
 	public FloatListener(DockableWrapper dockable, JComponent dragSource) {
 		this.floatingDockable = dockable;
 
@@ -72,6 +75,16 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 				if (!Docking.isUnpinned(floatingDockable.getDockable())) {
 					this.dragSource.startDrag(dge, Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR), transferable, FloatListener.this);
 					mouseDragged(dge.getDragOrigin());
+
+					if (originalWindow instanceof JDialog) {
+						modalityType = ((JDialog) originalWindow).getModalityType();
+
+						((JDialog) originalWindow).setModalityType(ModalityType.MODELESS);
+
+//						SwingUtilities.invokeLater(() -> currentTopWindow.toFront());
+						SwingUtilities.invokeLater(() -> floatingFrame.toFront());
+						SwingUtilities.invokeLater(() -> activeUtilsFrame.toFront());
+					}
 				}
 			});
 		}
@@ -106,8 +119,10 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			frame = currentTopWindow;
 		}
 
+		boolean isModal = modalityType == ModalityType.TOOLKIT_MODAL || modalityType == ModalityType.APPLICATION_MODAL;
+
 		// change overlays and bring frames to front if we move over a new frame
-		if (frame != currentTargetWindow) {
+		if (frame != currentTargetWindow && !isModal) {
 			currentTargetWindow = frame;
 			currentTopWindow = frame;
 
@@ -228,6 +243,10 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 		// auto persist the new layout to the file
 		AppState.persist();
+
+		if (originalWindow instanceof JDialog) {
+			((JDialog) originalWindow).setModalityType(modalityType);
+		}
 
 		originalWindow = null;
 

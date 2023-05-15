@@ -384,6 +384,10 @@ public class Docking {
 
 	// check if the window can be disposed. Windows can be disposed if they are not the main window and are not maximized
 	public static boolean canDisposeWindow(Window window) {
+		// don't dispose of any docking windows that are JDialogs
+		if (window instanceof JDialog) {
+			return false;
+		}
 		return window != instance.mainWindow && !DockingState.maximizeRestoreLayout.containsKey(window);
 	}
 

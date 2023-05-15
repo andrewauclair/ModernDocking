@@ -29,17 +29,27 @@ import ModernDocking.RootDockingPanel;
 import javax.swing.*;
 
 public class DialogWithDocking extends JDialog {
+
+	private final RootDockingPanel root;
+	private final ToolPanel output;
+	private final ToolPanel explorer;
+	private final SimplePanel one;
+
 	DialogWithDocking() {
-		RootDockingPanel root = new RootDockingPanel(this);
+		root = new RootDockingPanel(this);
 
 		setModalityType(ModalityType.TOOLKIT_MODAL);
 
 		add(root);
 
-		ToolPanel output = new ToolPanel("output", "output-dialog", DockableStyle.HORIZONTAL);
-		ToolPanel explorer = new ToolPanel("explorer", "explorer-dialog", DockableStyle.VERTICAL);
+		output = new ToolPanel("output", "output-dialog", DockableStyle.HORIZONTAL);
+		explorer = new ToolPanel("explorer", "explorer-dialog", DockableStyle.VERTICAL);
 
-		SimplePanel one = new SimplePanel("one", "one-dialog");
+		one = new SimplePanel("one", "one-dialog");
+
+		output.limitToRoot = true;
+		explorer.limitToRoot = true;
+		one.limitToRoot = true;
 
 		Docking.dock(one, this);
 		Docking.dock(explorer, one, DockingRegion.EAST);
@@ -47,5 +57,18 @@ public class DialogWithDocking extends JDialog {
 
 		setSize(500, 500);
 		pack();
+
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	}
+
+	@Override
+	public void removeNotify() {
+		Docking.deregisterDockingPanel(this);
+
+		Docking.deregisterDockable(output);
+		Docking.deregisterDockable(explorer);
+		Docking.deregisterDockable(one);
+
+		super.removeNotify();
 	}
 }
