@@ -28,6 +28,8 @@ import java.util.Objects;
 public class SimplePanel extends BasePanel {
 	private String tabText = "";
 
+	public boolean limitToRoot = false;
+
 	public SimplePanel(String title, String persistentID) {
 		super(title, persistentID);
 		tabText = "";
@@ -61,6 +63,11 @@ public class SimplePanel extends BasePanel {
 	@Override
 	public boolean allowMinMax() {
 		return true;
+	}
+
+	@Override
+	public boolean limitToRoot() {
+		return limitToRoot;
 	}
 
 	@Override

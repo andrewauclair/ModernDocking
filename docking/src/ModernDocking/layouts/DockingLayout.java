@@ -23,6 +23,7 @@ package ModernDocking.layouts;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.Dialog.ModalityType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,11 +33,12 @@ public class DockingLayout {
 	private final Point location;
 	private final Dimension size;
 	private final int state;
+	private final ModalityType modalityType;
 	private final DockingLayoutNode rootNode;
 	private String maximizedDockable = null;
 
-	private final java.util.List<String> westUnpinnedToolbarIDs = new ArrayList<>();
-	private final java.util.List<String> eastUnpinnedToolbarIDs = new ArrayList<>();
+	private final List<String> westUnpinnedToolbarIDs = new ArrayList<>();
+	private final List<String> eastUnpinnedToolbarIDs = new ArrayList<>();
 	private final List<String> southUnpinnedToolbarIDs = new ArrayList<>();
 
 	public DockingLayout(boolean isMainFrame, Point location, Dimension size, int state, DockingLayoutNode rootNode) {
@@ -45,6 +47,7 @@ public class DockingLayout {
 		this.size = size;
 		this.state = state;
 		this.rootNode = rootNode;
+		this.modalityType = ModalityType.MODELESS;
 	}
 
 	public DockingLayout(Window window, DockingLayoutNode rootNode) {
@@ -54,9 +57,11 @@ public class DockingLayout {
 
 		if (window instanceof JFrame) {
 			this.state = ((JFrame) window).getExtendedState();
+			this.modalityType = ModalityType.MODELESS;
 		}
 		else {
 			this.state = Frame.NORMAL;
+			this.modalityType = ((JDialog) window).getModalityType();
 		}
 	}
 
@@ -74,6 +79,10 @@ public class DockingLayout {
 
 	public int getState() {
 		return state;
+	}
+
+	public ModalityType getModalityType() {
+		return modalityType;
 	}
 
 	public DockingLayoutNode getRootNode() {
