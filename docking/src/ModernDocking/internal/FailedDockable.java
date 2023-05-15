@@ -41,27 +41,27 @@ public class FailedDockable extends JPanel implements Dockable {
 	}
 
 	@Override
-	public String persistentID() {
+	public String getPersistentID() {
 		return persistentID;
 	}
 
 	@Override
-	public int type() {
+	public int getType() {
 		return 0;
 	}
 
 	@Override
-	public String tabText() {
+	public String getTabText() {
 		return null;
 	}
 
 	@Override
-	public boolean floatingAllowed() {
+	public boolean isFloatingAllowed() {
 		return false;
 	}
 
 	@Override
-	public boolean allowClose() {
+	public boolean canBeClosed() {
 		return false;
 	}
 }

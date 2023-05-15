@@ -59,20 +59,20 @@ public class DockingListeners {
 
 	// package private function to fire docked event
 	public static void fireDockedEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.docked(dockable.persistentID()));
+		dockingListeners.forEach(listener -> listener.docked(dockable.getPersistentID()));
 	}
 
 	// package private function to fire undocked event
 	public static void fireUndockedEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.undocked(dockable.persistentID()));
+		dockingListeners.forEach(listener -> listener.undocked(dockable.getPersistentID()));
 	}
 
 	// package private function to fire auto undocked event
 	public static void fireAutoUndockedEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.autoUndocked(dockable.persistentID()));
+		dockingListeners.forEach(listener -> listener.autoUndocked(dockable.getPersistentID()));
 	}
 
 	public static void fireUnpinnedEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.unpinned(dockable.persistentID()));
+		dockingListeners.forEach(listener -> listener.unpinned(dockable.getPersistentID()));
 	}
 }

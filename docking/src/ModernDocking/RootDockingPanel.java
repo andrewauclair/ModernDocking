@@ -33,9 +33,9 @@ import java.util.List;
 
 // only class that should be used by clients
 public class RootDockingPanel extends DockingPanel {
-	private final Window window;
+	private Window window;
 
-	DockingPanel panel;
+	private DockingPanel panel;
 
 	private JPanel emptyPanel = new JPanel();
 
@@ -43,24 +43,22 @@ public class RootDockingPanel extends DockingPanel {
 	private int pinningLayer = JLayeredPane.MODAL_LAYER;
 
 	// "toolbar" panels for unpinned dockables
-	private final DockableToolbar southToolbar;
-	private final DockableToolbar westToolbar;
-	private final DockableToolbar eastToolbar;
+	private DockableToolbar southToolbar;
+	private DockableToolbar westToolbar;
+	private DockableToolbar eastToolbar;
+
+	public RootDockingPanel() {
+		setLayout(new GridBagLayout());
+	}
 
 	public RootDockingPanel(Window window) {
-		if (window instanceof JFrame) {
-			Docking.registerDockingPanel(this, (JFrame) window);
-		}
-		else {
-			Docking.registerDockingPanel(this, (JDialog) window);
-		}
-
 		setLayout(new GridBagLayout());
-		this.window = window;
 
-		southToolbar = new DockableToolbar(window, this, DockableToolbar.Location.SOUTH);
-		westToolbar = new DockableToolbar(window, this, DockableToolbar.Location.WEST);
-		eastToolbar = new DockableToolbar(window, this, DockableToolbar.Location.EAST);
+		this.window = window;
+	}
+
+	public void setWindow(Window window) {
+		this.window = window;
 	}
 
 	public Window getWindow() {
@@ -114,6 +112,22 @@ public class RootDockingPanel extends DockingPanel {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void addNotify() {
+		super.addNotify();
+
+		if (window instanceof JFrame) {
+			Docking.registerDockingPanel(this, (JFrame) window);
+		}
+		else {
+			Docking.registerDockingPanel(this, (JDialog) window);
+		}
+
+		southToolbar = new DockableToolbar(window, this, DockableToolbar.Location.SOUTH);
+		westToolbar = new DockableToolbar(window, this, DockableToolbar.Location.WEST);
+		eastToolbar = new DockableToolbar(window, this, DockableToolbar.Location.EAST);
 	}
 
 	@Override

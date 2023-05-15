@@ -91,42 +91,42 @@ public class Example extends JFrame {
 		}
 
 		@Override
-		public String persistentID() {
+		public String getPersistentID() {
 			return name;
 		}
 
 		@Override
-		public int type() {
+		public int getType() {
 			return 0;
 		}
 
 		@Override
-		public String tabText() {
+		public String getTabText() {
 			return name;
 		}
 
 		@Override
-		public Icon icon() {
+		public Icon getIcon() {
 			return null;
 		}
 
 		@Override
-		public boolean floatingAllowed() {
+		public boolean isFloatingAllowed() {
 			return false;
 		}
 
 		@Override
-		public boolean limitToRoot() {
+		public boolean shouldLimitToRoot() {
 			return false;
 		}
 
 		@Override
-		public DockableStyle style() {
+		public DockableStyle getStyle() {
 			return DockableStyle.BOTH;
 		}
 
 		@Override
-		public boolean allowClose() {
+		public boolean canBeClosed() {
 			return false;
 		}
 

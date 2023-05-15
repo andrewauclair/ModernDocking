@@ -49,32 +49,32 @@ public class ToolPanel extends BasePanel {
 	}
 
 	@Override
-	public int type() {
+	public int getType() {
 		return 0;
 	}
 
 	@Override
-	public Icon icon() {
+	public Icon getIcon() {
 		return icon;
 	}
 
 	@Override
-	public boolean floatingAllowed() {
+	public boolean isFloatingAllowed() {
 		return false;
 	}
 
 	@Override
-	public boolean limitToRoot() {
+	public boolean shouldLimitToRoot() {
 		return limitToRoot;
 	}
 
 	@Override
-	public DockableStyle style() {
+	public DockableStyle getStyle() {
 		return style;
 	}
 
 	@Override
-	public boolean allowClose() {
+	public boolean canBeClosed() {
 		return true;
 	}
 

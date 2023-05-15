@@ -25,6 +25,6 @@ import ModernDocking.Dockable;
 
 public class NotDockedException extends RuntimeException {
 	public NotDockedException(Dockable dockable) {
-		super("Dockable '" + dockable.persistentID() + "' is not docked.");
+		super("Dockable '" + dockable.getPersistentID() + "' is not docked.");
 	}
 }

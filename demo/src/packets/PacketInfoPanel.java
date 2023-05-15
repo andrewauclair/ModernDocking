@@ -33,42 +33,42 @@ public class PacketInfoPanel extends JPanel implements Dockable {
 	}
 
 	@Override
-	public String persistentID() {
+	public String getPersistentID() {
 		return "packet-info";
 	}
 
 	@Override
-	public int type() {
+	public int getType() {
 		return 0;
 	}
 
 	@Override
-	public String tabText() {
+	public String getTabText() {
 		return "Info";
 	}
 
 	@Override
-	public Icon icon() {
+	public Icon getIcon() {
 		return null;
 	}
 
 	@Override
-	public boolean floatingAllowed() {
+	public boolean isFloatingAllowed() {
 		return false;
 	}
 
 	@Override
-	public boolean limitToRoot() {
+	public boolean shouldLimitToRoot() {
 		return true;
 	}
 
 	@Override
-	public DockableStyle style() {
+	public DockableStyle getStyle() {
 		return null;
 	}
 
 	@Override
-	public boolean allowClose() {
+	public boolean canBeClosed() {
 		return true;
 	}
 

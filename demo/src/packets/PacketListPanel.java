@@ -34,37 +34,37 @@ public class PacketListPanel extends JPanel implements Dockable {
 	}
 
 	@Override
-	public String persistentID() {
+	public String getPersistentID() {
 		return "packets";
 	}
 
 	@Override
-	public int type() {
+	public int getType() {
 		return 0;
 	}
 
 	@Override
-	public String tabText() {
+	public String getTabText() {
 		return "Packets";
 	}
 
 	@Override
-	public Icon icon() {
+	public Icon getIcon() {
 		return null;
 	}
 
 	@Override
-	public boolean floatingAllowed() {
+	public boolean isFloatingAllowed() {
 		return false;
 	}
 
 	@Override
-	public boolean limitToRoot() {
+	public boolean shouldLimitToRoot() {
 		return true;
 	}
 
 	@Override
-	public boolean allowClose() {
+	public boolean canBeClosed() {
 		return packetListCount > 1;
 	}
 

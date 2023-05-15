@@ -27,7 +27,6 @@ import ModernDocking.ui.HeaderController;
 import ModernDocking.ui.HeaderModel;
 
 import javax.swing.*;
-import java.util.List;
 
 // this is the main interface for a Dockable. Any panel that an application wishes to be dockable must implement
 // this interface and provide the appropriate values.
@@ -37,20 +36,20 @@ import java.util.List;
 public interface Dockable {
 	// provide the persistent ID to the docking framework
 	// this should be unique in the application (will be verified when adding dockable)
-	String persistentID();
+	String getPersistentID();
 
 	// tells the docking framework what type of dockable this is
 	// provided as a simple int, but it's best to create your own enum and return the ordinal
-	int type();
+	int getType();
 
 	// provide the tab text to the docking framework
 	// the tab text to be displayed when Dockable is in a tabbed pane. Does not need to be unique
 	// NOTE: this text should be static. If it needs to change, then the Dockable needs to be undocked and docked again.
-	String tabText();
+	String getTabText();
 
 	// provide the dockable icon to the docking framework
 	// used in the default header UI, when displayed on in a JTabbedPane and when unpinned
-	default Icon icon() {
+	default Icon getIcon() {
 		return null;
 	}
 
@@ -58,22 +57,22 @@ public interface Dockable {
 	// if floating is not allowed and an attempt is made to float the dockable, it will be returned to where it was undocked.
 	// Note that this is independent of limitToRoot(). Returning false for floatingAllowed() and false for limitToRoot() will still
 	//    allow the dockable to be moved between roots, but it can't be used to start a new floating root.
-	boolean floatingAllowed();
+	boolean isFloatingAllowed();
 
 	// force the dockable to remain in the root it started in.
 	// this is useful for having a new floating frame with many dockables that are only allowed in that one frame.
-	default boolean limitToRoot() {
+	default boolean shouldLimitToRoot() {
 		return false;
 	}
 
 	// style of the dockable. vertical will disallow the east and west regions. horizontal will disallow the north and south regions.
 	// both will allow all 4 regions
-	default DockableStyle style() {
+	default DockableStyle getStyle() {
 		return DockableStyle.BOTH;
 	}
 
 	// helper function to determine if the header close option should be enabled
-	boolean allowClose();
+	boolean canBeClosed();
 
 	// helper function to determine if the header pin option should be enabled
 	// NOTE: this is a suggestion. If the parent frame of the dockable does not support pinning then the button will be hidden regardless.

@@ -407,7 +407,7 @@ public class Docking {
 			DockingListeners.fireMaximizeEvent(dockable, true);
 
 			DockingLayout layout = DockingState.getCurrentLayout(window);
-			layout.setMaximizedDockable(dockable.persistentID());
+			layout.setMaximizedDockable(dockable.getPersistentID());
 
 			DockingState.maximizeRestoreLayout.put(window, layout);
 
@@ -468,7 +468,7 @@ public class Docking {
 		getWrapper(dockable).setWindow(window);
 		getWrapper(dockable).setUnpinned(true);
 
-		boolean allowedSouth = dockable.style() == DockableStyle.BOTH || dockable.style() == DockableStyle.HORIZONTAL;
+		boolean allowedSouth = dockable.getStyle() == DockableStyle.BOTH || dockable.getStyle() == DockableStyle.HORIZONTAL;
 
 		int westDist = posInFrame.x;
 		int eastDist = window.getWidth() - posInFrame.x;
@@ -505,7 +505,7 @@ public class Docking {
 		}
 		else {
 			// go through all the dockables and find the first one that is the same type
-			Optional<Dockable> firstOfType = DockingComponentUtils.findFirstDockableOfType(dockable.type());
+			Optional<Dockable> firstOfType = DockingComponentUtils.findFirstDockableOfType(dockable.getType());
 
 			if (firstOfType.isPresent()) {
 				dock(dockable, firstOfType.get(), DockingRegion.CENTER);

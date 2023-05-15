@@ -86,13 +86,13 @@ public class DockingOverlay {
 
 	// check if the floating dockable is allowed to dock to this region
 	private boolean isRegionAllowed(DockingRegion region) {
-		if (floating.style() == DockableStyle.BOTH) {
+		if (floating.getStyle() == DockableStyle.BOTH) {
 			return true;
 		}
 		if (region == DockingRegion.NORTH || region == DockingRegion.SOUTH) {
-			return floating.style() == DockableStyle.HORIZONTAL;
+			return floating.getStyle() == DockableStyle.HORIZONTAL;
 		}
-		return floating.style() == DockableStyle.VERTICAL;
+		return floating.getStyle() == DockableStyle.VERTICAL;
 	}
 
 	public void update(Point screenPos) {

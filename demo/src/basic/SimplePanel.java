@@ -36,22 +36,22 @@ public class SimplePanel extends BasePanel {
 	}
 
 	@Override
-	public int type() {
+	public int getType() {
 		return 1;
 	}
 
 	@Override
-	public boolean floatingAllowed() {
+	public boolean isFloatingAllowed() {
 		return true;
 	}
 
 	@Override
-	public DockableStyle style() {
+	public DockableStyle getStyle() {
 		return DockableStyle.BOTH;
 	}
 
 	@Override
-	public boolean allowClose() {
+	public boolean canBeClosed() {
 		return true;
 	}
 
@@ -66,14 +66,14 @@ public class SimplePanel extends BasePanel {
 	}
 
 	@Override
-	public boolean limitToRoot() {
+	public boolean shouldLimitToRoot() {
 		return limitToRoot;
 	}
 
 	@Override
-	public String tabText() {
+	public String getTabText() {
 		if (tabText == null || tabText.isEmpty()) {
-			return super.tabText();
+			return super.getTabText();
 		}
 		return tabText;
 	}

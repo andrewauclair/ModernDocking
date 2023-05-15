@@ -50,12 +50,12 @@ public abstract class BasePanel extends JPanel implements Dockable {
 	}
 
 	@Override
-	public String persistentID() {
+	public String getPersistentID() {
 		return persistentID;
 	}
 
 	@Override
-	public String tabText() {
+	public String getTabText() {
 		return title;
 	}
 

@@ -34,11 +34,11 @@ public class HeaderModel {
 	}
 
 	public String titleText() {
-		return dockable.tabText();
+		return dockable.getTabText();
 	}
 
 	public Icon icon() {
-		return dockable.icon();
+		return dockable.getIcon();
 	}
 
 	public boolean isPinnedAllowed() {
@@ -66,7 +66,7 @@ public class HeaderModel {
 	}
 
 	public boolean isCloseAllowed() {
-		return dockable.allowClose();
+		return dockable.canBeClosed();
 	}
 
 	public boolean hasMoreOptions() {
@@ -74,7 +74,7 @@ public class HeaderModel {
 	}
 
 	public boolean isFloatingAllowed() {
-		return dockable.floatingAllowed();
+		return dockable.isFloatingAllowed();
 	}
 
 	public void addMoreOptions(JPopupMenu menu) {

@@ -44,7 +44,7 @@ public class SplitState implements DockableState {
 			left = new TabState((DockedTabbedPanel) panel.getLeft());
 		}
 		else if (panel.getLeft() instanceof DockedSimplePanel) {
-			left = new PanelState(((DockedSimplePanel) panel.getLeft()).getWrapper().getDockable().persistentID());
+			left = new PanelState(((DockedSimplePanel) panel.getLeft()).getWrapper().getDockable().getPersistentID());
 		}
 		else if (panel.getLeft() instanceof DockedSplitPanel) {
 			left = new SplitState((DockedSplitPanel) panel.getLeft());
@@ -57,7 +57,7 @@ public class SplitState implements DockableState {
 			right = new TabState((DockedTabbedPanel) panel.getRight());
 		}
 		else if (panel.getRight() instanceof DockedSimplePanel) {
-			right = new PanelState(((DockedSimplePanel) panel.getRight()).getWrapper().getDockable().persistentID());
+			right = new PanelState(((DockedSimplePanel) panel.getRight()).getWrapper().getDockable().getPersistentID());
 		}
 		else if (panel.getRight() instanceof DockedSplitPanel) {
 			right = new SplitState((DockedSplitPanel) panel.getRight());

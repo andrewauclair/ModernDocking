@@ -140,10 +140,10 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 
 			JToggleButton button = new JToggleButton();
 
-			button.setIcon(dockable.icon());
+			button.setIcon(dockable.getIcon());
 
 			if (isVertical()) {
-				TextIcon textIcon = new TextIcon(button, dockable.tabText(), TextIcon.Layout.HORIZONTAL);
+				TextIcon textIcon = new TextIcon(button, dockable.getTabText(), TextIcon.Layout.HORIZONTAL);
 				RotatedIcon rotatedIcon = new RotatedIcon(textIcon, location == Location.WEST ? RotatedIcon.Rotate.UP : RotatedIcon.Rotate.DOWN);
 				button.setIcon(rotatedIcon);
 
@@ -154,7 +154,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 				button.setMargin(margin);
 			}
 			else {
-				button.setText(dockable.tabText());
+				button.setText(dockable.getTabText());
 			}
 
 			DockedUnpinnedPanel panel = new DockedUnpinnedPanel(dockable, root, this);
@@ -221,7 +221,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 
 	public List<String> getPersistentIDs() {
 		return dockables.stream()
-				.map(entry -> entry.dockable.persistentID())
+				.map(entry -> entry.dockable.getPersistentID())
 				.collect(Collectors.toList());
 	}
 

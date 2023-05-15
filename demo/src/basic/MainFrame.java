@@ -167,7 +167,7 @@ public class MainFrame extends JFrame {
 		view.add(actionListenDock(eight));
 		view.add(actionListenDock(explorer));
 		view.add(actionListenDock(output));
-		view.add(new DockableMenuItem(() -> ((Dockable) alwaysDisplayed).persistentID(), ((Dockable) alwaysDisplayed).tabText()));
+		view.add(new DockableMenuItem(() -> ((Dockable) alwaysDisplayed).getPersistentID(), ((Dockable) alwaysDisplayed).getTabText()));
 		view.add(changeText);
 
 		JToolBar toolBar = new JToolBar();
@@ -241,7 +241,7 @@ public class MainFrame extends JFrame {
 	}
 
 	private JMenuItem actionListenDock(Dockable dockable) {
-		return new DockableMenuItem(dockable.persistentID(), dockable.tabText());
+		return new DockableMenuItem(dockable.getPersistentID(), dockable.getTabText());
 	}
 
 	public static void main(String[] args) {

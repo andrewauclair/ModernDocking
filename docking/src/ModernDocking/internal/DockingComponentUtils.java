@@ -186,7 +186,7 @@ public class DockingComponentUtils {
 		for (Component component : container.getComponents()) {
 			if (component instanceof DisplayPanel) {
 				DisplayPanel panel = (DisplayPanel) component;
-				if (panel.getWrapper().getDockable().floatingAllowed()) {
+				if (panel.getWrapper().getDockable().isFloatingAllowed()) {
 					return false;
 				}
 			}
@@ -249,7 +249,7 @@ public class DockingComponentUtils {
 				DockableWrapper wrapper = panel.getWrapper();
 				Dockable dockable = wrapper.getDockable();
 
-				if (dockable.type() == type) {
+				if (dockable.getType() == type) {
 					return Optional.of(dockable);
 				}
 			}

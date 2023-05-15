@@ -31,7 +31,7 @@ public class RootDockState {
 
 	public RootDockState(RootDockingPanel panel) {
 		if (panel.getPanel() instanceof DockedSimplePanel) {
-			state = new PanelState(((DockedSimplePanel) panel.getPanel()).getWrapper().getDockable().persistentID());
+			state = new PanelState(((DockedSimplePanel) panel.getPanel()).getWrapper().getDockable().getPersistentID());
 		}
 		else if (panel.getPanel() instanceof DockedSplitPanel) {
 			state = new SplitState((DockedSplitPanel) panel.getPanel());

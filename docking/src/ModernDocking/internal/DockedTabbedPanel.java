@@ -68,9 +68,9 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		dockable.setParent(this);
 
 		panels.add(dockable);
-		tabs.add(dockable.getDockable().tabText(), dockable.getDisplayPanel());
+		tabs.add(dockable.getDockable().getTabText(), dockable.getDisplayPanel());
 
-		tabs.setIconAt(tabs.getTabCount() - 1, dockable.getDockable().icon());
+		tabs.setIconAt(tabs.getTabCount() - 1, dockable.getDockable().getIcon());
 		tabs.setSelectedIndex(tabs.getTabCount() - 1);
 	}
 
@@ -85,7 +85,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		List<String> ids = new ArrayList<>();
 
 		for (DockableWrapper panel : panels) {
-			ids.add(panel.getDockable().persistentID());
+			ids.add(panel.getDockable().getPersistentID());
 		}
 		return ids;
 	}
@@ -184,7 +184,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	}
 
 	public String getSelectedTabID() {
-		return panels.get(tabs.getSelectedIndex()).getDockable().persistentID();
+		return panels.get(tabs.getSelectedIndex()).getDockable().getPersistentID();
 	}
 
 	@Override

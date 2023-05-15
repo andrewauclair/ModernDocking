@@ -23,7 +23,6 @@ package ModernDocking.ui;
 
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
-import ModernDocking.DockingRegion;
 import ModernDocking.internal.DockingInternal;
 
 import javax.swing.*;
@@ -37,7 +36,7 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 	private final String persistentID;
 
 	public DockableMenuItem(Dockable dockable) {
-		this(dockable.persistentID(), dockable.tabText());
+		this(dockable.getPersistentID(), dockable.getTabText());
 	}
 	/**
 	 *

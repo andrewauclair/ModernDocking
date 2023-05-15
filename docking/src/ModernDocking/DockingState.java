@@ -357,7 +357,7 @@ public class DockingState {
 		for (Component component : container.getComponents()) {
 			if (component instanceof FailedDockable) {
 				FailedDockable dockable = (FailedDockable) component;
-				Docking.undock(getDockable(dockable.persistentID()));
+				Docking.undock(getDockable(dockable.getPersistentID()));
 				dockable.destroy();
 			}
 			else if (component instanceof Container) {

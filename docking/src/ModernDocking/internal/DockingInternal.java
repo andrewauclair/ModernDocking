@@ -36,27 +36,27 @@ public class DockingInternal {
 
 	// register a dockable with the framework
 	public static void registerDockable(Dockable dockable) {
-		if (dockables.containsKey(dockable.persistentID())) {
-			throw new DockableRegistrationFailureException("Registration for Dockable failed. Persistent ID " + dockable.persistentID() + " already exists.");
+		if (dockables.containsKey(dockable.getPersistentID())) {
+			throw new DockableRegistrationFailureException("Registration for Dockable failed. Persistent ID " + dockable.getPersistentID() + " already exists.");
 		}
-		if (dockable.tabText() == null) {
-			throw new RuntimeException("Dockable '" + dockable.persistentID() + "' should not return 'null' for tabText()");
+		if (dockable.getTabText() == null) {
+			throw new RuntimeException("Dockable '" + dockable.getPersistentID() + "' should not return 'null' for tabText()");
 		}
-		dockables.put(dockable.persistentID(), new DockableWrapper(dockable));
+		dockables.put(dockable.getPersistentID(), new DockableWrapper(dockable));
 	}
 
 	// Dockables must be deregistered so it can be properly disposed
 	public static void deregisterDockable(Dockable dockable) {
 		getWrapper(dockable).removedListeners();
-		dockables.remove(dockable.persistentID());
+		dockables.remove(dockable.getPersistentID());
 	}
 
 	// internal function to get the dockable wrapper
 	public static DockableWrapper getWrapper(Dockable dockable) {
-		if (dockables.containsKey(dockable.persistentID())) {
-			return dockables.get(dockable.persistentID());
+		if (dockables.containsKey(dockable.getPersistentID())) {
+			return dockables.get(dockable.getPersistentID());
 		}
-		throw new DockableRegistrationFailureException("Dockable with Persistent ID " + dockable.persistentID() + " has not been registered.");
+		throw new DockableRegistrationFailureException("Dockable with Persistent ID " + dockable.getPersistentID() + " has not been registered.");
 	}
 
 	public static Dockable getDockable(String persistentID) {

@@ -224,7 +224,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		if (root != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToRoot()) {
 			Docking.dock(floatingDockable.getDockable(), currentTopWindow, region);
 		}
-		else if (floatingDockable.getDockable().limitToRoot() && floatingDockable.getRoot() != root) {
+		else if (floatingDockable.getDockable().shouldLimitToRoot() && floatingDockable.getRoot() != root) {
 			DockingState.restoreState(originalWindow, rootState);
 		}
 		else if (currentTopWindow != null && dockingPanel != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToDockable()) {
@@ -233,7 +233,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		else if (root != null && region != DockingRegion.CENTER && activeUtilsFrame == null) {
 			Docking.dock(floatingDockable.getDockable(), currentTopWindow, region);
 		}
-		else if (!floatingDockable.getDockable().floatingAllowed()) {
+		else if (!floatingDockable.getDockable().isFloatingAllowed()) {
 			DockingState.restoreState(originalWindow, rootState);
 		}
 
