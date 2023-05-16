@@ -27,18 +27,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DockingProperties {
-	private static final String handlesBackgroundColorKey = "Docking.handles.background";
-	private static final String handlesBackgroundBorderColorKey = "Docking.handles.background.border";
-	private static final String handlesOutlineColorKey = "Docking.handles.outline";
-	private static final String handlesFillColorKey = "Docking.handles.fill";
-	private static final String overlayBackgroundColorKey = "Docking.overlay.color";
-	private static final String overlayBorderColorKey = "Docking.overlay.border.color";
-	private static final String overlayAlphaKey = "Docking.overlay.alpha";
+	private static final String handlesBackgroundColorKey = "ModernDocking.handles.background";
+	private static final String handlesBackgroundBorderColorKey = "ModernDocking.handles.background.border";
+	private static final String handlesOutlineColorKey = "ModernDocking.handles.outline";
+	private static final String handlesFillColorKey = "ModernDocking.handles.fill";
+	private static final String overlayBackgroundColorKey = "ModernDocking.overlay.color";
+	private static final String overlayBorderColorKey = "ModernDocking.overlay.border.color";
+	private static final String overlayAlphaKey = "ModernDocking.overlay.alpha";
 
-	private static final String titlebarBackgroundEnabledKey = "Docking.titlebar.border.enabled";
-	private static final String titlebarBackgroundColorKey = "Docking.titlebar.background.color";
-	private static final String titlebarBorderColorKey = "Docking.titlebar.border.color";
-	private static final String titlebarBorderSizeKey = "Docking.titlebar.border.size";
+	private static final String titlebarBackgroundEnabledKey = "ModernDocking.titlebar.border.enabled";
+	private static final String titlebarBackgroundColorKey = "ModernDocking.titlebar.background.color";
+	private static final String titlebarBorderColorKey = "ModernDocking.titlebar.border.color";
+	private static final String titlebarBorderSizeKey = "ModernDocking.titlebar.border.size";
 
 	private final Map<String, Color> lightColors = Map.ofEntries(
 			Map.entry(handlesBackgroundColorKey, new Color(0xf2f2f2)),

@@ -104,7 +104,7 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 				});
 
 			}
-			else if (e.getPropertyName().equals("Docking.titlebar.background")) {
+			else if (e.getPropertyName().equals("ModernDocking.titlebar.background")) {
 				Color bg = DockingProperties.getTitlebarBackgroundColor();
 				SwingUtilities.invokeLater(() -> setBackground(bg));
 			}
