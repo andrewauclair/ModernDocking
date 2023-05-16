@@ -55,10 +55,35 @@ public class RootDockingPanel extends DockingPanel {
 		setLayout(new GridBagLayout());
 
 		this.window = window;
+
+		if (window instanceof JFrame) {
+			Docking.registerDockingPanel(this, (JFrame) window);
+		}
+		else {
+			Docking.registerDockingPanel(this, (JDialog) window);
+		}
+
+		southToolbar = new DockableToolbar(window, this, DockableToolbar.Location.SOUTH);
+		westToolbar = new DockableToolbar(window, this, DockableToolbar.Location.WEST);
+		eastToolbar = new DockableToolbar(window, this, DockableToolbar.Location.EAST);
 	}
 
 	public void setWindow(Window window) {
+		if (this.window != null) {
+			Docking.deregisterDockingPanel(this.window);
+		}
 		this.window = window;
+
+		if (window instanceof JFrame) {
+			Docking.registerDockingPanel(this, (JFrame) window);
+		}
+		else {
+			Docking.registerDockingPanel(this, (JDialog) window);
+		}
+
+		southToolbar = new DockableToolbar(window, this, DockableToolbar.Location.SOUTH);
+		westToolbar = new DockableToolbar(window, this, DockableToolbar.Location.WEST);
+		eastToolbar = new DockableToolbar(window, this, DockableToolbar.Location.EAST);
 	}
 
 	public Window getWindow() {
@@ -112,22 +137,6 @@ public class RootDockingPanel extends DockingPanel {
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public void addNotify() {
-		super.addNotify();
-
-		if (window instanceof JFrame) {
-			Docking.registerDockingPanel(this, (JFrame) window);
-		}
-		else {
-			Docking.registerDockingPanel(this, (JDialog) window);
-		}
-
-		southToolbar = new DockableToolbar(window, this, DockableToolbar.Location.SOUTH);
-		westToolbar = new DockableToolbar(window, this, DockableToolbar.Location.WEST);
-		eastToolbar = new DockableToolbar(window, this, DockableToolbar.Location.EAST);
 	}
 
 	@Override

@@ -36,7 +36,7 @@ import java.util.Set;
 
 public class DockingState {
 	// cached layout for when a maximized dockable is minimized
-	public static final Map<Window, DockingLayout> maximizeRestoreLayout = new HashMap<>();
+	public static final Map<Window, WindowLayout> maximizeRestoreLayout = new HashMap<>();
 
 	public static RootDockState getRootState(Window window) {
 		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
@@ -48,14 +48,14 @@ public class DockingState {
 		return new RootDockState(root);
 	}
 
-	public static DockingLayout getCurrentLayout(Window window) {
+	public static WindowLayout getWindowLayout(Window window) {
 		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
 
 		if (root == null) {
 			throw new RuntimeException("Root for frame does not exist: " + window);
 		}
 
-		DockingLayout maxLayout = maximizeRestoreLayout.get(window);
+		WindowLayout maxLayout = maximizeRestoreLayout.get(window);
 
 		if (maxLayout != null) {
 			return maxLayout;
@@ -64,21 +64,21 @@ public class DockingState {
 		return DockingLayouts.layoutFromRoot(root);
 	}
 
-	public static FullAppLayout getFullLayout() {
-		FullAppLayout layout = new FullAppLayout();
+	public static ApplicationLayout getApplicationLayout() {
+		ApplicationLayout layout = new ApplicationLayout();
 
-		layout.setMainFrame(getCurrentLayout(Docking.getInstance().getMainWindow()));
+		layout.setMainFrame(getWindowLayout(Docking.getInstance().getMainWindow()));
 
 		for (Window frame : Docking.getInstance().getRootPanels().keySet()) {
 			if (frame != Docking.getInstance().getMainWindow()) {
-				layout.addFrame(getCurrentLayout(frame));
+				layout.addFrame(getWindowLayout(frame));
 			}
 		}
 
 		return layout;
 	}
 
-	public static void restoreFullLayout(FullAppLayout layout) {
+	public static void restoreApplicationLayout(ApplicationLayout layout) {
 		// get rid of all existing windows and undock all dockables
 		Set<Window> windows = new HashSet<>(Docking.getInstance().getRootPanels().keySet());
 		for (Window window : windows) {
@@ -91,13 +91,13 @@ public class DockingState {
 		AppState.setPaused(true);
 
 		// setup main frame
-		restoreLayoutFromFull(Docking.getInstance().getMainWindow(), layout.getMainFrameLayout());
+		restoreWindowLayout(Docking.getInstance().getMainWindow(), layout.getMainFrameLayout());
 
 		// setup rest of floating windows from layout
-		for (DockingLayout frameLayout : layout.getFloatingFrameLayouts()) {
+		for (WindowLayout frameLayout : layout.getFloatingFrameLayouts()) {
 			FloatingFrame frame = new FloatingFrame(frameLayout.getLocation(), frameLayout.getSize(), frameLayout.getState());
 
-			restoreLayoutFromFull(frame, frameLayout);
+			restoreWindowLayout(frame, frameLayout);
 		}
 
 		AppState.setPaused(false);
@@ -106,7 +106,7 @@ public class DockingState {
 		DockingInternal.fireDockedEventForAll();
 	}
 
-	private static void restoreLayoutFromFull(Window window, DockingLayout layout) {
+	public static void restoreWindowLayout(Window window, WindowLayout layout) {
 		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
 
 		if (root == null) {
@@ -153,38 +153,14 @@ public class DockingState {
 		}
 	}
 
-	public static void setLayout(Window window, DockingLayout layout) {
-		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
+	public static void restoreWindowLayout_PreserveSizeAndPos(Window window, WindowLayout layout) {
+		Point location = window.getLocation();
+		Dimension size = window.getSize();
 
-		if (root == null) {
-			throw new RuntimeException("Root for window does not exist: " + window);
-		}
+		restoreWindowLayout(window, layout);
 
-		window.setLocation(layout.getLocation());
-		window.setSize(layout.getSize());
-
-		if (window instanceof JFrame) {
-			((JFrame) window).setExtendedState(layout.getState());
-		}
-		else {
-			((JDialog) window).setModalityType(layout.getModalityType());
-		}
-
-		DockingComponentUtils.undockComponents(root);
-
-		boolean paused = AppState.isPaused();
-		AppState.setPaused(true);
-
-		root.setPanel(restoreState(layout.getRootNode(), window));
-
-		// undock and destroy any failed dockables
-		undockFailedComponents(root);
-
-		AppState.setPaused(paused);
-
-		if (!paused) {
-			AppState.persist();
-		}
+		window.setLocation(location);
+		window.setSize(size);
 	}
 
 	public static void restoreState(Window window, RootDockState state) {

@@ -21,10 +21,10 @@ SOFTWARE.
  */
 package ModernDocking.event;
 
-import ModernDocking.layouts.FullAppLayout;
+import ModernDocking.layouts.ApplicationLayout;
 
 public interface LayoutsListener {
-	void layoutAdded(String name, FullAppLayout layout);
+	void layoutAdded(String name, ApplicationLayout layout);
 
 	void layoutRemoved(String name);
 }

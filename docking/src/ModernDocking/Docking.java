@@ -234,8 +234,7 @@ public class Docking {
 		}
 
 		// if the dockable has decided to do something else, skip out of this function
-		if (dockable.onDocking())
-		{
+		if (dockable.onDocking()) {
 			return;
 		}
 
@@ -406,7 +405,7 @@ public class Docking {
 			getWrapper(dockable).setMaximized(true);
 			DockingListeners.fireMaximizeEvent(dockable, true);
 
-			DockingLayout layout = DockingState.getCurrentLayout(window);
+			WindowLayout layout = DockingState.getWindowLayout(window);
 			layout.setMaximizedDockable(dockable.getPersistentID());
 
 			DockingState.maximizeRestoreLayout.put(window, layout);
@@ -426,7 +425,7 @@ public class Docking {
 			getWrapper(dockable).setMaximized(false);
 			DockingListeners.fireMaximizeEvent(dockable, false);
 
-			DockingState.setLayout(window, DockingState.maximizeRestoreLayout.get(window));
+			DockingState.restoreWindowLayout(window, DockingState.maximizeRestoreLayout.get(window));
 
 			DockingState.maximizeRestoreLayout.remove(window);
 
@@ -529,10 +528,10 @@ public class Docking {
 			return;
 		}
 
-		FullAppLayout layout = DockingState.getFullLayout();
+		ApplicationLayout layout = DockingState.getApplicationLayout();
 
 		Docking.undock(dockable);
 
-		DockingState.restoreFullLayout(layout);
+		DockingState.restoreApplicationLayout(layout);
 	}
 }

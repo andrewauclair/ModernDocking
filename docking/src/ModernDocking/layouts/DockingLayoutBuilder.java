@@ -110,8 +110,8 @@ public class DockingLayoutBuilder {
 		return this;
 	}
 
-	public DockingLayout build() {
-		return new DockingLayout(frame, rootNode);
+	public WindowLayout build() {
+		return new WindowLayout(frame, rootNode);
 	}
 
 	private DockingLayoutNode findNode(String persistentID) {

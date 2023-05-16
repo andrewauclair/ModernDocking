@@ -25,9 +25,9 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import ModernDocking.*;
-import ModernDocking.layouts.DockingLayout;
-import ModernDocking.layouts.FullAppLayout;
-import ModernDocking.layouts.FullAppLayoutXML;
+import ModernDocking.layouts.WindowLayout;
+import ModernDocking.layouts.ApplicationLayout;
+import ModernDocking.layouts.ApplicationLayoutXML;
 import ModernDocking.persist.AppState;
 import ModernDocking.ui.DockableMenuItem;
 import ModernDocking.ui.LayoutsMenu;
@@ -40,7 +40,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 
 public class MainFrame extends JFrame {
-	static DockingLayout currentLayout;
+	static WindowLayout currentLayout;
 
 	public MainFrame() {
 		setTitle("Modern Docking Basic Demo");
@@ -65,9 +65,9 @@ public class MainFrame extends JFrame {
 			if (result == JFileChooser.APPROVE_OPTION) {
 				File selectedFile = chooser.getSelectedFile();
 
-				FullAppLayout layout = DockingState.getFullLayout();
+				ApplicationLayout layout = DockingState.getApplicationLayout();
 
-				boolean saved = FullAppLayoutXML.saveLayoutToFile(selectedFile, layout);
+				boolean saved = ApplicationLayoutXML.saveLayoutToFile(selectedFile, layout);
 
 				if (!saved) {
 					JOptionPane.showMessageDialog(MainFrame.this, "Failed to save layout");
@@ -94,10 +94,10 @@ public class MainFrame extends JFrame {
 			if (result == JFileChooser.APPROVE_OPTION) {
 				File selectedFile = chooser.getSelectedFile();
 
-				FullAppLayout layout = FullAppLayoutXML.loadLayoutFromFile(selectedFile);
+				ApplicationLayout layout = ApplicationLayoutXML.loadLayoutFromFile(selectedFile);
 
 				if (layout != null) {
-					DockingState.restoreFullLayout(layout);
+					DockingState.restoreApplicationLayout(layout);
 				}
 			}
 		});
@@ -184,8 +184,8 @@ public class MainFrame extends JFrame {
 		toolBar.add(restore);
 
 
-		save.addActionListener(e -> currentLayout = DockingState.getCurrentLayout(this));
-		restore.addActionListener(e -> DockingState.setLayout(this, currentLayout));
+		save.addActionListener(e -> currentLayout = DockingState.getWindowLayout(this));
+		restore.addActionListener(e -> DockingState.restoreWindowLayout(this, currentLayout));
 
 		test2.addActionListener(e -> test.setVisible(false));
 		test3.addActionListener(e -> test.setVisible(true));

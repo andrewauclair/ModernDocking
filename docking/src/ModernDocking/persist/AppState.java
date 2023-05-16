@@ -22,8 +22,8 @@ SOFTWARE.
 package ModernDocking.persist;
 
 import ModernDocking.DockingState;
-import ModernDocking.layouts.FullAppLayout;
-import ModernDocking.layouts.FullAppLayoutXML;
+import ModernDocking.layouts.ApplicationLayout;
+import ModernDocking.layouts.ApplicationLayoutXML;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -78,9 +78,9 @@ public class AppState {
 					if (!paused) {
 						System.out.println("persist full docking layout");
 
-						FullAppLayout layout = DockingState.getFullLayout();
+						ApplicationLayout layout = DockingState.getApplicationLayout();
 
-						FullAppLayoutXML.saveLayoutToFile(autoPersistFile, layout);
+						ApplicationLayoutXML.saveLayoutToFile(autoPersistFile, layout);
 					}
 					// we're done with the timer for now. null it out
 					persistTimer = null;
@@ -102,10 +102,10 @@ public class AppState {
 		}
 
 		try {
-			FullAppLayout layout = FullAppLayoutXML.loadLayoutFromFile(autoPersistFile);
+			ApplicationLayout layout = ApplicationLayoutXML.loadLayoutFromFile(autoPersistFile);
 
 			if (layout != null) {
-				DockingState.restoreFullLayout(layout);
+				DockingState.restoreApplicationLayout(layout);
 			}
 
 			return layout != null;

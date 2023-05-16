@@ -24,7 +24,7 @@ package ModernDocking.ui;
 import ModernDocking.DockingState;
 import ModernDocking.event.LayoutsListener;
 import ModernDocking.layouts.DockingLayouts;
-import ModernDocking.layouts.FullAppLayout;
+import ModernDocking.layouts.ApplicationLayout;
 
 import javax.swing.*;
 
@@ -42,14 +42,14 @@ public class LayoutsMenu extends JMenu implements LayoutsListener {
 
 		for (String name : DockingLayouts.getLayoutNames()) {
 			JMenuItem item = new JMenuItem(name);
-			item.addActionListener(e -> DockingState.restoreFullLayout(DockingLayouts.getLayout(name)));
+			item.addActionListener(e -> DockingState.restoreApplicationLayout(DockingLayouts.getLayout(name)));
 
 			add(item);
 		}
 	}
 
 	@Override
-	public void layoutAdded(String name, FullAppLayout layout) {
+	public void layoutAdded(String name, ApplicationLayout layout) {
 		rebuildOptions();
 	}
 

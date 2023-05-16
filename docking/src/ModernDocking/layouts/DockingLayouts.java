@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class DockingLayouts {
 	private static final List<LayoutsListener> listeners = new ArrayList<>();
-	private static final Map<String, FullAppLayout> layouts = new HashMap<>();
+	private static final Map<String, ApplicationLayout> layouts = new HashMap<>();
 
 	public static void addLayoutsListener(LayoutsListener listener) {
 		listeners.add(listener);
@@ -43,7 +43,7 @@ public class DockingLayouts {
 		listeners.remove(listener);
 	}
 
-	public static void addLayout(String name, FullAppLayout layout) {
+	public static void addLayout(String name, ApplicationLayout layout) {
 		removeLayout(name);
 		layouts.put(name, layout);
 		listeners.forEach(l -> l.layoutAdded(name, layout));
@@ -56,7 +56,7 @@ public class DockingLayouts {
 		}
 	}
 
-	public static FullAppLayout getLayout(String name) {
+	public static ApplicationLayout getLayout(String name) {
 		return layouts.get(name);
 	}
 
@@ -64,8 +64,8 @@ public class DockingLayouts {
 		return new ArrayList<>(layouts.keySet());
 	}
 
-	public static DockingLayout layoutFromRoot(RootDockingPanel root) {
-		DockingLayout layout = new DockingLayout(DockingComponentUtils.windowForRoot(root), panelToNode(root.getPanel()));
+	public static WindowLayout layoutFromRoot(RootDockingPanel root) {
+		WindowLayout layout = new WindowLayout(DockingComponentUtils.windowForRoot(root), panelToNode(root.getPanel()));
 
 		layout.setWestUnpinnedToolbarIDs(root.getWestUnpinnedToolbarIDs());
 		layout.setEastUnpinnedToolbarIDs(root.getEastUnpinnedToolbarIDs());
