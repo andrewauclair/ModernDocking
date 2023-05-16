@@ -23,6 +23,7 @@ package ModernDocking.internal;
 
 import ModernDocking.Dockable;
 import ModernDocking.RootDockingPanel;
+import ModernDocking.util.CombinedIcon;
 import ModernDocking.util.RotatedIcon;
 import ModernDocking.util.TextIcon;
 import ModernDocking.util.UnselectableButtonGroup;
@@ -145,7 +146,13 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 			if (isVertical()) {
 				TextIcon textIcon = new TextIcon(button, dockable.getTabText(), TextIcon.Layout.HORIZONTAL);
 				RotatedIcon rotatedIcon = new RotatedIcon(textIcon, location == Location.WEST ? RotatedIcon.Rotate.UP : RotatedIcon.Rotate.DOWN);
-				button.setIcon(rotatedIcon);
+
+				if (wrapper.getDockable().getIcon() != null) {
+					button.setIcon(new CombinedIcon(wrapper.getDockable().getIcon(), rotatedIcon));
+				}
+				else {
+					button.setIcon(rotatedIcon);
+				}
 
 				Insets insets = UIManager.getInsets("Button.margin");
 				// purposefully putting them in this order to set the margins of a vertical button
