@@ -44,6 +44,7 @@ public class FloatingFrame extends JFrame {
 
 		// create and add the root
 		RootDockingPanel root = new RootDockingPanel(this);
+		root.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
 		add(root, BorderLayout.CENTER);
 
 		// allow pinning for this frame

@@ -148,6 +148,11 @@ public class MainFrame extends JFrame {
 		ToolPanel output = new ToolPanel("Output", "output", DockableStyle.HORIZONTAL, new ImageIcon(getClass().getResource("/icons/light/icons8-vga-16.png")));
 		AlwaysDisplayedPanel alwaysDisplayed = new AlwaysDisplayedPanel("always displayed", "always-displayed");
 
+		one.setTitleBackground(new Color(0xa1f2ff));
+		two.setTitleBackground(new Color(0xdda1ff));
+		three.setTitleBackground(new Color(0xffaea1));
+		four.setTitleBackground(new Color(0xc3ffa1));
+
 		JMenuItem changeText = new JMenuItem("Change tab text");
 		changeText.addActionListener(e -> {
 			one.setTabText("test");
@@ -206,6 +211,7 @@ public class MainFrame extends JFrame {
 		gbc.fill = GridBagConstraints.BOTH;
 
 		RootDockingPanel dockingPanel = new RootDockingPanel(this);
+		dockingPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
 
 		add(dockingPanel, gbc);
 

@@ -22,7 +22,12 @@ SOFTWARE.
 package basic;
 
 import ModernDocking.DockableStyle;
+import ModernDocking.ui.DockingHeaderUI;
+import ModernDocking.ui.HeaderController;
+import ModernDocking.ui.HeaderModel;
+import docking.ui.FlatLafHeaderUI;
 
+import java.awt.*;
 import java.util.Objects;
 
 public class SimplePanel extends BasePanel {
@@ -30,9 +35,25 @@ public class SimplePanel extends BasePanel {
 
 	public boolean limitToRoot = false;
 
+	private Color color = Color.WHITE;
+
 	public SimplePanel(String title, String persistentID) {
 		super(title, persistentID);
 		tabText = "";
+	}
+
+	public void setTitleBackground(Color color) {
+		this.color = color;
+	}
+
+	@Override
+	public DockingHeaderUI createHeaderUI(HeaderController headerController, HeaderModel headerModel) {
+		return new FlatLafHeaderUI(headerController, headerModel) {
+			@Override
+			public void setBackground(Color bg) {
+				super.setBackground(color);
+			}
+		};
 	}
 
 	@Override

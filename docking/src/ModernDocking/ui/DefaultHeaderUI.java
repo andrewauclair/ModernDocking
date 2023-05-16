@@ -36,16 +36,16 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 	private final HeaderController headerController;
 	private final HeaderModel headerModel;
 
+	protected final JLabel titleLabel = new JLabel();
 	protected final JButton settings = new JButton();
 	protected final JButton close = new JButton();
+	protected final JLabel maximizedIndicator = new JLabel("Maximized");
 
 	private final JPopupMenu settingsMenu = new JPopupMenu();
 
 	private final JMenuItem pinned = new JMenuItem("Pinned");
 	private final JMenuItem unpinned = new JMenuItem("Unpinned");
 	private final JMenuItem window = new JMenuItem("Window");
-
-	private final JLabel maximizedIndicator = new JLabel("Maximized");
 	private final JCheckBoxMenuItem maximizeOption = new JCheckBoxMenuItem("Maximize");
 
 	private boolean initialized = false;
@@ -69,18 +69,12 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 
 		try {
 			settings.setIcon(new ImageIcon(getClass().getResource("/icons/settings.png")));
+			close.setIcon(new ImageIcon(getClass().getResource("/icons/close.png")));
 		}
-		catch (Exception e) {
+		catch (Exception ignored) {
 		}
 
 		settings.addActionListener(e -> this.settingsMenu.show(settings, settings.getWidth(), settings.getHeight()));
-
-		try {
-			close.setIcon(new ImageIcon(getClass().getResource("/icons/close.png")));
-		}
-		catch (Exception e) {
-		}
-
 		close.addActionListener(e -> headerController.close());
 
 		setupButton(settings);
@@ -88,8 +82,6 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 
 		Color color = DockingProperties.getTitlebarBackgroundColor();
 		setBackground(color);
-		close.setBackground(color);
-		settings.setBackground(color);
 
 		if (DockingProperties.isTitlebarBorderEnabled()) {
 			Border border = BorderFactory.createLineBorder(DockingProperties.getTitlebarBorderColor(), DockingProperties.getTitlebarBorderSize());
@@ -99,13 +91,11 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 			setBorder(bo);
 		}
 
-		UIManager.addPropertyChangeListener( e -> {
+		UIManager.addPropertyChangeListener(e -> {
 			if ("lookAndFeel".equals(e.getPropertyName())) {
 				Color bg = DockingProperties.getTitlebarBackgroundColor();
 				SwingUtilities.invokeLater(() -> {
 					setBackground(bg);
-					close.setBackground(bg);
-					settings.setBackground(bg);
 
 					if (DockingProperties.isTitlebarBorderEnabled()) {
 						Border border = BorderFactory.createLineBorder(DockingProperties.getTitlebarBorderColor(), DockingProperties.getTitlebarBorderSize());
@@ -116,11 +106,7 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 			}
 			else if (e.getPropertyName().equals("Docking.titlebar.background")) {
 				Color bg = DockingProperties.getTitlebarBackgroundColor();
-				SwingUtilities.invokeLater(() -> {
-					setBackground(bg);
-					close.setBackground(bg);
-					settings.setBackground(bg);
-				});
+				SwingUtilities.invokeLater(() -> setBackground(bg));
 			}
 		});
 
@@ -140,13 +126,13 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 
-		JLabel label = new JLabel(headerModel.titleText());
-		label.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 0));
-		label.setFont(label.getFont().deriveFont(Font.BOLD));
-		label.setMinimumSize(new Dimension(0, 28));
-		label.setPreferredSize(new Dimension(0, 28));
+		titleLabel.setText(headerModel.titleText());
+		titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 0));
+		titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
+		titleLabel.setMinimumSize(new Dimension(0, 28));
+		titleLabel.setPreferredSize(new Dimension(0, 28));
 
-		add(label, gbc);
+		add(titleLabel, gbc);
 
 		gbc.gridx++;
 		gbc.weightx = 0.2;
@@ -230,6 +216,14 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 				button.setOpaque(false);
 			}
 		});
+	}
+
+	@Override
+	public void setBackground(Color bg) {
+		super.setBackground(bg);
+
+		if (close != null) close.setBackground(bg);
+		if (settings != null) settings.setBackground(bg);
 	}
 
 	@Override
