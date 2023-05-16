@@ -41,6 +41,7 @@ import java.io.File;
 
 public class MainFrame extends JFrame {
 	static WindowLayout currentLayout;
+	private final ApplicationLayout applicationLayout;
 
 	public MainFrame() {
 		setTitle("Modern Docking Basic Demo");
@@ -185,9 +186,11 @@ public class MainFrame extends JFrame {
 		toolBar.add(test3);
 		JButton save = new JButton("save");
 		JButton restore = new JButton("restore");
+		JButton restoreDefaultLayout = new JButton("Restore Default Layout");
+
 		toolBar.add(save);
 		toolBar.add(restore);
-
+		toolBar.add(restoreDefaultLayout);
 
 		save.addActionListener(e -> currentLayout = DockingState.getWindowLayout(this));
 		restore.addActionListener(e -> DockingState.restoreWindowLayout(this, currentLayout));
@@ -211,7 +214,9 @@ public class MainFrame extends JFrame {
 		gbc.fill = GridBagConstraints.BOTH;
 
 		RootDockingPanel dockingPanel = new RootDockingPanel(this);
-		dockingPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
+//		dockingPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
+
+		gbc.insets = new Insets(0, 5, 5, 5);
 
 		add(dockingPanel, gbc);
 
@@ -241,6 +246,10 @@ public class MainFrame extends JFrame {
 		Docking.dock(four, two, DockingRegion.CENTER);
 		Docking.dock(output, this, DockingRegion.SOUTH);
 		Docking.dock(explorer, this, DockingRegion.EAST);
+
+		applicationLayout = DockingState.getApplicationLayout();
+
+		restoreDefaultLayout.addActionListener(e -> DockingState.restoreApplicationLayout(applicationLayout));
 
 		// save the default layout so that we have something to restore, do it later so that the split is set up properly
 		SwingUtilities.invokeLater(save::doClick);

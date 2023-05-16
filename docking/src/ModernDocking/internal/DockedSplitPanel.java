@@ -61,8 +61,9 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	}
 
 	public void setDividerLocation(final double proportion) {
+		// calling setDividerLocation on a JSplitPane that isn't visible does nothing, so we need to check if it is showing first
 		if (splitPane.isShowing()) {
-			if ((splitPane.getWidth() > 0) && (splitPane.getHeight() > 0)) {
+			if (splitPane.getWidth() > 0 && splitPane.getHeight() > 0) {
 				splitPane.setDividerLocation(proportion);
 			}
 			else {
@@ -177,6 +178,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 			// grab the divider from the UI and remove the border from it
 			BasicSplitPaneDivider divider = ((BasicSplitPaneUI) splitPane.getUI())
 					.getDivider();
+
 			if (divider != null && divider.getBorder() != null) {
 				divider.setBorder(null);
 			}
