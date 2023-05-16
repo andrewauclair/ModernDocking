@@ -271,6 +271,11 @@ public class Docking {
 	}
 
 	// docks the target to the source in the specified region with the specified divider proportion
+	public static void dock(String sourcePersistentID, String targetPersistentID, DockingRegion region, double dividerProportion) {
+		dock(getDockable(sourcePersistentID), getDockable(targetPersistentID), region, dividerProportion);
+	}
+
+	// docks the target to the source in the specified region with the specified divider proportion
 	public static void dock(Dockable source, Dockable target, DockingRegion region, double dividerProportion) {
 		if (!isDocked(target)) {
 			throw new NotDockedException(target);
