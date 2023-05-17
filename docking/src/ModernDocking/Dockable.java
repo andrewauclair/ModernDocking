@@ -102,10 +102,6 @@ public interface Dockable {
 		return new DefaultHeaderUI(headerController, headerModel);
 	}
 
-	default DockingStrategy strategy() {
-		return null;
-	}
-
 	// called when the Docking framework is about to dock this Dockable. Allows the action to be overridden.
 	// return true if the docking action has been performed separately.
 	default boolean onDocking() {

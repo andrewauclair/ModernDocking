@@ -59,6 +59,8 @@ public class Docking {
 
 	private final AppStatePersister appStatePersister = new AppStatePersister();
 
+	private static boolean isInOnDockingCallback = false;
+
 	/**
 	 * Create the one and only instance of the Docking class for the application
 	 * @param mainWindow The main window of the application
@@ -234,8 +236,16 @@ public class Docking {
 		}
 
 		// if the dockable has decided to do something else, skip out of this function
-		if (dockable.onDocking()) {
-			return;
+		if (!isInOnDockingCallback)  {
+			isInOnDockingCallback = true;
+
+			boolean dockingHandled = dockable.onDocking();
+
+			isInOnDockingCallback = false;
+
+			if (dockingHandled) {
+				return;
+			}
 		}
 
 		root.dock(dockable, region, dividerProportion);
@@ -280,6 +290,20 @@ public class Docking {
 		if (!isDocked(target)) {
 			throw new NotDockedException(target);
 		}
+
+		// if the source dockable has decided to do something else, skip out of this function
+		if (!isInOnDockingCallback)  {
+			isInOnDockingCallback = true;
+
+			boolean dockingHandled = source.onDocking();
+
+			isInOnDockingCallback = false;
+
+			if (dockingHandled) {
+				return;
+			}
+		}
+
 		DockableWrapper wrapper = getWrapper(target);
 
 		wrapper.getParent().dock(source, region, dividerProportion);
@@ -503,9 +527,6 @@ public class Docking {
 	public static void display(Dockable dockable) {
 		if (isDocked(dockable)) {
 			bringToFront(dockable);
-		}
-		else if (dockable.strategy() != null) {
-			dockable.strategy().dock();
 		}
 		else {
 			// go through all the dockables and find the first one that is the same type

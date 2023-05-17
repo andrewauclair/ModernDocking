@@ -24,7 +24,6 @@ package basic;
 import ModernDocking.DockableStyle;
 import ModernDocking.Docking;
 import ModernDocking.DockingRegion;
-import ModernDocking.DockingStrategy;
 
 import javax.swing.*;
 
@@ -100,17 +99,16 @@ public class ToolPanel extends BasePanel {
 	}
 
 	@Override
-	public DockingStrategy strategy() {
-		return () -> {
-			if (style == DockableStyle.VERTICAL) {
-				Docking.dock(this, Docking.getInstance().getMainWindow(), DockingRegion.EAST);
-			}
-			else if (style == DockableStyle.HORIZONTAL) {
-				Docking.dock(this, Docking.getInstance().getMainWindow(), DockingRegion.SOUTH);
-			}
-			else {
-				Docking.dock(this, Docking.getInstance().getMainWindow(), DockingRegion.NORTH);
-			}
-		};
+	public boolean onDocking() {
+		if (style == DockableStyle.VERTICAL) {
+			Docking.dock(this, Docking.getInstance().getMainWindow(), DockingRegion.EAST);
+		}
+		else if (style == DockableStyle.HORIZONTAL) {
+			Docking.dock(this, Docking.getInstance().getMainWindow(), DockingRegion.SOUTH);
+		}
+		else {
+			Docking.dock(this, Docking.getInstance().getMainWindow(), DockingRegion.NORTH);
+		}
+		return true;
 	}
 }
