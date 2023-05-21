@@ -47,7 +47,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 		List<String> persistentIDs = new ArrayList<>();
 
 		for (DockingSimplePanelNode tab : tabs) {
-			persistentIDs.add(tab.persistentID());
+			persistentIDs.add(tab.getPersistentID());
 		}
 		return persistentIDs;
 	}
@@ -64,7 +64,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	@Override
 	public DockingLayoutNode findNode(String persistentID) {
 		for (DockingSimplePanelNode tab : tabs) {
-			if (persistentID.equals(tab.persistentID())) {
+			if (persistentID.equals(tab.getPersistentID())) {
 				return tab;
 			}
 		}

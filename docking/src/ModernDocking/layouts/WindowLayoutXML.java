@@ -27,7 +27,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WindowLayoutXML {
 	private static final String NL = "\n";
@@ -139,7 +141,23 @@ public class WindowLayoutXML {
 
 	private static void writeSimpleNodeToFile(XMLStreamWriter writer, DockingSimplePanelNode node) throws XMLStreamException {
 		writer.writeStartElement("simple");
-		writer.writeAttribute("persistentID", node.persistentID());
+		writer.writeAttribute("persistentID", node.getPersistentID());
+		writer.writeCharacters(NL);
+
+		writer.writeStartElement("properties");
+
+		Map<String, String> properties = node.getProperties();
+
+		for (String key : properties.keySet()) {
+			String value = properties.get(key);
+
+			writer.writeAttribute(key, value);
+//			writer.writeCharacters(NL);
+		}
+
+		writer.writeEndElement();
+		writer.writeCharacters(NL);
+
 		writer.writeCharacters(NL);
 		writer.writeEndElement();
 		writer.writeCharacters(NL);
@@ -292,9 +310,32 @@ public class WindowLayoutXML {
 		return node;
 	}
 
-	private static DockingSimplePanelNode readSimpleNodeFromFile(XMLStreamReader reader) {
+	private static DockingSimplePanelNode readSimpleNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
 		String persistentID = reader.getAttributeValue(0);
-		return new DockingSimplePanelNode(persistentID);
+
+
+		return new DockingSimplePanelNode(persistentID, readProperties(reader));
+	}
+
+	private static Map<String, String> readProperties(XMLStreamReader reader) throws XMLStreamException {
+		Map<String, String> properties = new HashMap<>();
+
+		while (reader.hasNext()) {
+			int next = reader.nextTag();
+
+			if (next == XMLStreamConstants.START_ELEMENT) {
+				if (reader.getLocalName().equals("properties")) {
+					for (int i = 0; i < reader.getAttributeCount(); i++) {
+						properties.put(String.valueOf(reader.getAttributeName(i)), reader.getAttributeValue(i));
+					}
+//					return properties;
+				}
+			}
+			else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("properties")) {
+				break;
+			}
+		}
+		return properties;
 	}
 
 	private static DockingSplitPanelNode readSplitNodeFromFile(XMLStreamReader reader) throws XMLStreamException {

@@ -28,6 +28,8 @@ import ModernDocking.ui.HeaderModel;
 import docking.ui.FlatLafHeaderUI;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class SimplePanel extends BasePanel {
@@ -102,5 +104,23 @@ public class SimplePanel extends BasePanel {
 	public void setTabText(String tabText) {
 		Objects.requireNonNull(tabText);
 		this.tabText = tabText;
+	}
+
+	@Override
+	public Map<String, String> getProperties() {
+		Map<String, String> props = new HashMap<>();
+		props.put("test", "one");
+		props.put("test1", "two");
+		props.put("test2", "three");
+		props.put("test3", "four");
+		props.put("test4", "yak");
+		props.put("test5", "six");
+		props.put("test6", "seven");
+		props.put("test7", "eight");
+		props.put("test8", "nine");
+		props.put("test9", "ten");
+		props.put("test10", "eleven");
+		props.put("test11", "twelve");
+		return props;
 	}
 }

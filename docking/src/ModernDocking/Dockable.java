@@ -27,6 +27,8 @@ import ModernDocking.ui.HeaderController;
 import ModernDocking.ui.HeaderModel;
 
 import javax.swing.*;
+import java.util.HashMap;
+import java.util.Map;
 
 // this is the main interface for a Dockable. Any panel that an application wishes to be dockable must implement
 // this interface and provide the appropriate values.
@@ -114,5 +116,12 @@ public interface Dockable {
 
 	// called after the Dockable has been undocked
 	default void onUndocked() {
+	}
+
+    default Map<String, String> getProperties() {
+		return new HashMap<>();
+	}
+
+	default void setProperties(Map<String, String> properties) {
 	}
 }

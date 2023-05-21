@@ -24,13 +24,21 @@ package ModernDocking.layouts;
 import ModernDocking.DockingRegion;
 
 import javax.swing.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DockingSimplePanelNode implements DockingLayoutNode {
 	private final String persistentID;
+	private final Map<String, String> properties = new HashMap<>();
 	private DockingLayoutNode parent;
 
 	public DockingSimplePanelNode(String persistentID) {
 		this.persistentID = persistentID;
+	}
+
+	public DockingSimplePanelNode(String persistentID, Map<String, String> properties) {
+		this.persistentID = persistentID;
+		this.properties.putAll(properties);
 	}
 
 	public void setParent(DockingLayoutNode parent) {
@@ -66,10 +74,19 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 	}
 
 	@Override
+	public void dock(String persistentID, Map<String, String> properties, DockingRegion region) {
+
+	}
+
+	@Override
 	public void replaceChild(DockingLayoutNode child, DockingLayoutNode newChild) {
 	}
 
-	public String persistentID() {
+	public String getPersistentID() {
 		return persistentID;
+	}
+
+	public Map<String, String> getProperties() {
+		return properties;
 	}
 }

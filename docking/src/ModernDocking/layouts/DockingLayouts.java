@@ -78,7 +78,8 @@ public class DockingLayouts {
 		DockingLayoutNode node;
 
 		if (panel instanceof DockedSimplePanel) {
-			node = new DockingSimplePanelNode(((DockedSimplePanel) panel).getWrapper().getDockable().getPersistentID());
+			Dockable dockable = ((DockedSimplePanel) panel).getWrapper().getDockable();
+			node = new DockingSimplePanelNode(dockable.getPersistentID(), dockable.getProperties());
 		}
 		else if (panel instanceof DockedSplitPanel) {
 			node = splitPanelToNode((DockedSplitPanel) panel);

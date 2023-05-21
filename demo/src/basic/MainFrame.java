@@ -146,7 +146,7 @@ public class MainFrame extends JFrame {
 		SimplePanel seven = new SimplePanel("seven", "seven");
 		SimplePanel eight = new SimplePanel("eight", "eight");
 		ToolPanel explorer = new ToolPanel("Explorer", "explorer", DockableStyle.VERTICAL, new ImageIcon(getClass().getResource("/icons/light/icons8-vga-16.png")));
-		ToolPanel output = new ToolPanel("Output", "output", DockableStyle.HORIZONTAL, new ImageIcon(getClass().getResource("/icons/light/icons8-vga-16.png")));
+		ToolPanel output = new OutputPanel("Output", "output", DockableStyle.HORIZONTAL, new ImageIcon(getClass().getResource("/icons/light/icons8-vga-16.png")));
 		AlwaysDisplayedPanel alwaysDisplayed = new AlwaysDisplayedPanel("always displayed", "always-displayed");
 
 		one.setTitleBackground(new Color(0xa1f2ff));

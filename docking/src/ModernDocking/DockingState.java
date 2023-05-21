@@ -306,11 +306,13 @@ public class DockingState {
 	}
 
 	private static DockedSimplePanel restoreSimple(DockingSimplePanelNode node, Window window) {
-		Dockable dockable = getDockable(node.persistentID());
+		Dockable dockable = getDockable(node.getPersistentID());
 
 		if (dockable == null) {
-			throw new DockableNotFoundException(node.persistentID());
+			throw new DockableNotFoundException(node.getPersistentID());
 		}
+
+		dockable.setProperties(node.getProperties());
 
 		Docking.undock(dockable);
 
