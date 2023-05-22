@@ -3,7 +3,7 @@ plugins {
 	id 'idea'
 	id 'maven-publish'
 	id 'signing'
-	id "com.github.ben-manes.versions" version "0.33.0"
+	id "com.github.ben-manes.versions" version "0.46.0"
 }
 
 allprojects {
@@ -30,7 +30,7 @@ java {
 
 group = "io.github.andrewauclair.ModernDocking"
 archivesBaseName = "ModernDocking"
-version = "0.3.0"
+version = "0.4.0"
 
 publishing {
 	publications {
