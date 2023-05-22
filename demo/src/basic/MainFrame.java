@@ -164,6 +164,11 @@ public class MainFrame extends JFrame {
 		menuBar.add(view);
 
 		view.add(actionListenDock(one));
+//		JMenuItem oneItem = new JMenuItem("one");
+//		oneItem.addActionListener(e -> {
+//			Docking.dock(one, MainFrame.this, DockingRegion.WEST);
+//		});
+//		view.add(oneItem);
 		view.add(actionListenDock(two));
 		view.add(actionListenDock(three));
 		view.add(actionListenDock(four));

@@ -212,14 +212,14 @@ public class Docking {
 		dock(dockable, window, DockingRegion.CENTER);
 	}
 
-	// docks a dockable into the specified region of the window with 50% divider proportion
+	// docks a dockable into the specified region of the root of the window with 25% divider proportion
 	public static void dock(String persistentID, Window window, DockingRegion region) {
-		dock(getDockable(persistentID), window, region, 0.5);
+		dock(getDockable(persistentID), window, region, 0.25);
 	}
 
-	// docks a dockable into the specified region of the window with 50% divider proportion
+	// docks a dockable into the specified region of the root of the window with 25% divider proportion
 	public static void dock(Dockable dockable, Window window, DockingRegion region) {
-		dock(dockable, window, region, 0.5);
+		dock(dockable, window, region, 0.25);
 	}
 
 	// docks a dockable into the specified region of the window with the specified divider proportion
