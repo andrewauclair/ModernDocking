@@ -302,14 +302,23 @@ public class RootDockingPanel extends DockingPanel {
 	}
 
 	public List<String> getWestUnpinnedToolbarIDs() {
+		if (westToolbar == null) {
+			return Collections.emptyList();
+		}
 		return westToolbar.getPersistentIDs();
 	}
 
 	public List<String> getEastUnpinnedToolbarIDs() {
+		if (eastToolbar == null) {
+			return Collections.emptyList();
+		}
 		return eastToolbar.getPersistentIDs();
 	}
 
 	public List<String> getSouthUnpinnedToolbarIDs() {
+		if (southToolbar == null) {
+			return Collections.emptyList();
+		}
 		return southToolbar.getPersistentIDs();
 	}
 }
