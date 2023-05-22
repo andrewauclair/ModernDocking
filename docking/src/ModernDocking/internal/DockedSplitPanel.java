@@ -196,33 +196,35 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 
 		// docking to the center of a split isn't something we allow
 		// wouldn't be difficult to support, but isn't a complication we want in this framework
-		if (region != DockingRegion.CENTER) {
-			wrapper.setWindow(window);
-
-			DockedSplitPanel split = new DockedSplitPanel(window);
-			parent.replaceChild(this, split);
-
-			DockedSimplePanel newPanel = new DockedSimplePanel(wrapper);
-
-			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
-				split.setLeft(this);
-				split.setRight(newPanel);
-				dividerProportion = 1.0 - dividerProportion;
-			}
-			else {
-				split.setLeft(newPanel);
-				split.setRight(this);
-			}
-
-			if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
-				split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-			}
-			else {
-				split.setOrientation(JSplitPane.VERTICAL_SPLIT);
-			}
-
-			split.setDividerLocation(dividerProportion);
+		if (region == DockingRegion.CENTER) {
+			region = splitPane.getOrientation() == JSplitPane.HORIZONTAL_SPLIT ? DockingRegion.WEST : DockingRegion.NORTH;
 		}
+
+		wrapper.setWindow(window);
+
+		DockedSplitPanel split = new DockedSplitPanel(window);
+		parent.replaceChild(this, split);
+
+		DockedSimplePanel newPanel = new DockedSimplePanel(wrapper);
+
+		if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
+			split.setLeft(this);
+			split.setRight(newPanel);
+			dividerProportion = 1.0 - dividerProportion;
+		}
+		else {
+			split.setLeft(newPanel);
+			split.setRight(this);
+		}
+
+		if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
+			split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+		}
+		else {
+			split.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		}
+
+		split.setDividerLocation(dividerProportion);
 	}
 
 	@Override
