@@ -28,11 +28,7 @@ import java.util.Map;
 public interface DockingLayoutNode {
 	DockingLayoutNode findNode(String persistentID);
 
-	void dock(String persistentID, DockingRegion region);
-
-	default void dock(String persistentID, Map<String, String> properties,DockingRegion region) {
-
-	}
+	void dock(String persistentID, DockingRegion region, double dividerProportion);
 
 	void replaceChild(DockingLayoutNode child, DockingLayoutNode newChild);
 

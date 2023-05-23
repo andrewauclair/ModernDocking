@@ -113,11 +113,13 @@ public class DockingState {
 			throw new RuntimeException("Root for window does not exist: " + window);
 		}
 
-		window.setLocation(layout.getLocation());
-		window.setSize(layout.getSize());
+		if (layout.hasSizeAndLocationInformation()) {
+			window.setLocation(layout.getLocation());
+			window.setSize(layout.getSize());
 
-		if (window instanceof JFrame) {
-			((JFrame) window).setExtendedState(layout.getState());
+			if (window instanceof JFrame) {
+				((JFrame) window).setExtendedState(layout.getState());
+			}
 		}
 
 		DockingComponentUtils.undockComponents(root);

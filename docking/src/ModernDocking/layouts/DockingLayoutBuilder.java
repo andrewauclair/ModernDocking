@@ -26,101 +26,75 @@ import ModernDocking.DockingRegion;
 import javax.swing.*;
 
 // Utility to help create layouts without directly applying them to the actual app
-public class DockingLayoutBuilder {
-	private final JFrame frame;
+public class DockingLayoutBuilder implements DockingLayoutNode {
 	private DockingLayoutNode rootNode;
 
-	public DockingLayoutBuilder(JFrame frame, String firstID) {
-		this.frame = frame;
+	public DockingLayoutBuilder(String firstID) {
 		rootNode = new DockingSimplePanelNode(firstID);
+		rootNode.setParent(this);
+	}
+
+	public DockingLayoutBuilder dock(String targetID, String sourceID) {
+		return dock(targetID, sourceID, DockingRegion.CENTER);
 	}
 
 	public DockingLayoutBuilder dock(String targetID, String sourceID, DockingRegion region) {
+		return dock(targetID, sourceID, region, 0.5);
+	}
+
+	public DockingLayoutBuilder dock(String targetID, String sourceID, DockingRegion region, double dividerProportion) {
 		DockingLayoutNode node = findNode(targetID);
 
 		if (exists(sourceID)) {
 			throw new RuntimeException("Dockable already in layout: " + sourceID);
 		}
-		node.dock(sourceID, region);
+		node.dock(sourceID, region, dividerProportion);
 
 		return this;
 	}
 
-	public DockingLayoutBuilder dockToRootNorth(String persistentID) {
-		if (exists(persistentID)) {
-			throw new RuntimeException("Dockable already in layout: " + persistentID);
-		}
-		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, JSplitPane.VERTICAL_SPLIT, 0.5);
-		return this;
+	public DockingLayoutBuilder dockToRoot(String persistentID, DockingRegion region) {
+		return dockToRoot(persistentID, region, 0.25);
 	}
 
-	public DockingLayoutBuilder dockToRootNorth(String persistentID, double dividerProportion) {
+	public DockingLayoutBuilder dockToRoot(String persistentID, DockingRegion region, double dividerProportion) {
 		if (exists(persistentID)) {
 			throw new RuntimeException("Dockable already in layout: " + persistentID);
 		}
-		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, JSplitPane.VERTICAL_SPLIT, dividerProportion);
-		return this;
-	}
 
-	public DockingLayoutBuilder dockToRootSouth(String persistentID) {
-		if (exists(persistentID)) {
-			throw new RuntimeException("Dockable already in layout: " + persistentID);
-		}
-		rootNode = new DockingSplitPanelNode(rootNode, new DockingSimplePanelNode(persistentID), JSplitPane.VERTICAL_SPLIT, 0.5);
-		return this;
-	}
+		int orientation = region == DockingRegion.EAST || region == DockingRegion.WEST ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
 
-	public DockingLayoutBuilder dockToRootSouth(String persistentID, double dividerProportion) {
-		if (exists(persistentID)) {
-			throw new RuntimeException("Dockable already in layout: " + persistentID);
-		}
-		rootNode = new DockingSplitPanelNode(rootNode, new DockingSimplePanelNode(persistentID), JSplitPane.VERTICAL_SPLIT, dividerProportion);
-		return this;
-	}
-
-	public DockingLayoutBuilder dockToRootWest(String persistentID) {
-		if (exists(persistentID)) {
-			throw new RuntimeException("Dockable already in layout: " + persistentID);
-		}
-		rootNode = new DockingSplitPanelNode(rootNode, new DockingSimplePanelNode(persistentID), JSplitPane.HORIZONTAL_SPLIT, 0.5);
-		return this;
-	}
-
-	public DockingLayoutBuilder dockToRootWest(String persistentID, double dividerProportion) {
-		if (exists(persistentID)) {
-			throw new RuntimeException("Dockable already in layout: " + persistentID);
-		}
-		rootNode = new DockingSplitPanelNode(rootNode, new DockingSimplePanelNode(persistentID), JSplitPane.HORIZONTAL_SPLIT, dividerProportion);
-		return this;
-	}
-
-	public DockingLayoutBuilder dockToRootEast(String persistentID) {
-		if (exists(persistentID)) {
-			throw new RuntimeException("Dockable already in layout: " + persistentID);
-		}
-		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, JSplitPane.HORIZONTAL_SPLIT, 0.5);
-		return this;
-	}
-
-	public DockingLayoutBuilder dockToRootEast(String persistentID, double dividerProportion) {
-		if (exists(persistentID)) {
-			throw new RuntimeException("Dockable already in layout: " + persistentID);
-		}
-		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, JSplitPane.HORIZONTAL_SPLIT, dividerProportion);
+		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, orientation, dividerProportion);
 		return this;
 	}
 
 	public WindowLayout build() {
-		return new WindowLayout(frame, rootNode);
+		return new WindowLayout(rootNode);
 	}
 
-	private DockingLayoutNode findNode(String persistentID) {
+	public DockingLayoutNode findNode(String persistentID) {
 		DockingLayoutNode node = rootNode.findNode(persistentID);
 
 		if (node == null) {
 			throw new RuntimeException("No node for dockable ID found: " + persistentID);
 		}
 		return node;
+	}
+
+	@Override
+	public void dock(String persistentID, DockingRegion region, double dividerProportion) {
+		dockToRoot(persistentID, region, dividerProportion);
+	}
+
+	@Override
+	public void replaceChild(DockingLayoutNode child, DockingLayoutNode newChild) {
+		if (child == rootNode) {
+			rootNode = newChild;
+		}
+	}
+
+	@Override
+	public void setParent(DockingLayoutNode parent) {
 	}
 
 	private boolean exists(String persistentID) {

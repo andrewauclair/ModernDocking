@@ -23,11 +23,15 @@ package ModernDocking.layouts;
 
 import ModernDocking.DockingRegion;
 
+import javax.swing.*;
+
 public class DockingSplitPanelNode implements DockingLayoutNode {
 	private DockingLayoutNode left;
 	private DockingLayoutNode right;
-	private final int orientation;
-	private final double dividerProportion;
+	private int orientation;
+	private double dividerProportion;
+
+	private DockingLayoutNode parent;
 
 	public DockingSplitPanelNode(DockingLayoutNode left, DockingLayoutNode right, int orientation, double dividerProportion) {
 		this.left = left;
@@ -41,6 +45,7 @@ public class DockingSplitPanelNode implements DockingLayoutNode {
 
 	@Override
 	public void setParent(DockingLayoutNode parent) {
+		this.parent = parent;
 	}
 
 	@Override
@@ -55,16 +60,40 @@ public class DockingSplitPanelNode implements DockingLayoutNode {
 	}
 
 	@Override
-	public void dock(String persistentID, DockingRegion region) {
+	public void dock(String persistentID, DockingRegion region, double dividerProportion) {
+		if (region == DockingRegion.CENTER) {
+			region = orientation == JSplitPane.HORIZONTAL_SPLIT ? DockingRegion.WEST : DockingRegion.NORTH;
+		}
+
+		DockingSimplePanelNode newPanel = new DockingSimplePanelNode(persistentID);
+
+		int orientation = region == DockingRegion.EAST || region == DockingRegion.WEST ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
+		DockingLayoutNode left;
+		DockingLayoutNode right;
+
+		if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
+			dividerProportion = 1.0 - dividerProportion;
+			left = this;
+			right = newPanel;
+		}
+		else {
+			left = newPanel;
+			right = this;
+		}
+		DockingSplitPanelNode split = new DockingSplitPanelNode(left, right, orientation, dividerProportion);
+
+		parent.replaceChild(this, split);
 	}
 
 	@Override
 	public void replaceChild(DockingLayoutNode child, DockingLayoutNode newChild) {
 		if (left == child) {
 			left = newChild;
+			left.setParent(this);
 		}
 		else if (right == child) {
 			right = newChild;
+			right.setParent(this);
 		}
 	}
 

@@ -30,7 +30,7 @@ public class EmptyPanelNode implements DockingLayoutNode {
 	}
 
 	@Override
-	public void dock(String persistentID, DockingRegion region) {
+	public void dock(String persistentID, DockingRegion region, double dividerProportion) {
 	}
 
 	@Override

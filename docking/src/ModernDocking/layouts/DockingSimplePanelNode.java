@@ -54,7 +54,7 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 	}
 
 	@Override
-	public void dock(String persistentID, DockingRegion region) {
+	public void dock(String persistentID, DockingRegion region, double dividerProportion) {
 		if (region == DockingRegion.CENTER) {
 			DockingTabPanelNode tab = new DockingTabPanelNode(persistentID);
 
@@ -68,14 +68,10 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 			DockingLayoutNode left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(persistentID);
 			DockingLayoutNode right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(persistentID) : this;
 
+			DockingLayoutNode oldParent = parent;
 			DockingSplitPanelNode split = new DockingSplitPanelNode(left, right, orientation, 0.5);
-			parent.replaceChild(this, split);
+			oldParent.replaceChild(this, split);
 		}
-	}
-
-	@Override
-	public void dock(String persistentID, Map<String, String> properties, DockingRegion region) {
-
 	}
 
 	@Override

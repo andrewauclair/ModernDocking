@@ -39,6 +39,13 @@ public class ApplicationLayout {
 
 	private final List<FrameLayout> layouts = new ArrayList<>();
 
+	public ApplicationLayout() {
+	}
+
+	public ApplicationLayout(WindowLayout mainFrame) {
+		layouts.add(new FrameLayout(mainFrame, true));
+	}
+
 	public void setMainFrame(WindowLayout layout) {
 		for (FrameLayout frameLayout : layouts) {
 			if (frameLayout.isMainFrame) {

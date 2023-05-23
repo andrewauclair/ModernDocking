@@ -31,6 +31,7 @@ import java.util.List;
 public class WindowLayout {
 	private boolean isMainFrame;
 	private final Point location;
+	private final boolean hasSizeAndLocationInformation;
 	private final Dimension size;
 	private final int state;
 	private final ModalityType modalityType;
@@ -48,6 +49,19 @@ public class WindowLayout {
 		this.state = state;
 		this.rootNode = rootNode;
 		this.modalityType = ModalityType.MODELESS;
+
+		hasSizeAndLocationInformation = true;
+	}
+
+	public WindowLayout(DockingLayoutNode rootNode) {
+		this.rootNode = rootNode;
+		this.state = Frame.NORMAL;
+
+		hasSizeAndLocationInformation = false;
+
+		location = new Point();
+		size = new Dimension();
+		modalityType = ModalityType.MODELESS;
 	}
 
 	public WindowLayout(Window window, DockingLayoutNode rootNode) {
@@ -63,6 +77,8 @@ public class WindowLayout {
 			this.state = Frame.NORMAL;
 			this.modalityType = ((JDialog) window).getModalityType();
 		}
+
+		hasSizeAndLocationInformation = true;
 	}
 
 	public boolean isMainFrame() {
@@ -122,5 +138,9 @@ public class WindowLayout {
 
 	public List<String> getSouthUnpinnedToolbarIDs() {
 		return southUnpinnedToolbarIDs;
+	}
+
+	public boolean hasSizeAndLocationInformation() {
+		return hasSizeAndLocationInformation;
 	}
 }

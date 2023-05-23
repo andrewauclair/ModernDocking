@@ -87,20 +87,22 @@ public class OutputPanel extends ToolPanel {
 
     @Override
     public void setProperties(Map<String, String> properties) {
-        String[] columns = properties.get("columns").split(",");
-        String[] columnSizes = properties.get("column-sizes").split(",");
+        if (properties.get("columns") != null && properties.get("column-sizes") != null) {
+            String[] columns = properties.get("columns").split(",");
+            String[] columnSizes = properties.get("column-sizes").split(",");
 
 
+            List<TableColumn> tableColumns = Collections.list(table.getColumnModel().getColumns());
 
+            for (int i = 0; i < columns.length; i++) {
+                int location = table.getColumnModel().getColumnIndex(columns[i]);
 
-        List<TableColumn> tableColumns = Collections.list(table.getColumnModel().getColumns());
-
-        for (int i = 0; i < columns.length; i++) {
-            int location = table.getColumnModel().getColumnIndex(columns[i]);
-
-            table.getColumnModel().moveColumn(location, i);
-            final int index = i;
-            SwingUtilities.invokeLater(() -> {            table.getColumnModel().getColumn(index).setPreferredWidth(Integer.parseInt(columnSizes[index]));});
+                table.getColumnModel().moveColumn(location, i);
+                final int index = i;
+                SwingUtilities.invokeLater(() -> {
+                    table.getColumnModel().getColumn(index).setPreferredWidth(Integer.parseInt(columnSizes[index]));
+                });
+            }
         }
     }
 }

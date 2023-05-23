@@ -35,6 +35,8 @@ public class AppState {
 	private static boolean autoPersist = false;
 	private static File autoPersistFile = null;
 
+	private static ApplicationLayout defaultAppLayout = null;
+
 	private static boolean paused = false;
 
 	private static Timer persistTimer = null;
@@ -102,20 +104,32 @@ public class AppState {
 		}
 
 		try {
+			AppState.setPaused(true);
+
 			ApplicationLayout layout = ApplicationLayoutXML.loadLayoutFromFile(autoPersistFile);
 
 			if (layout != null) {
 				DockingState.restoreApplicationLayout(layout);
 			}
+			else {
+				DockingState.restoreApplicationLayout(defaultAppLayout);
+			}
 
 			return layout != null;
 		}
 		catch (Exception e) {
-			// make sure that we turn persistance back on
-			AppState.setPaused(false);
+			DockingState.restoreApplicationLayout(defaultAppLayout);
 
 			// TODO provide a way to see this error or log it for users
 			return false;
 		}
+		finally {
+			// make sure that we turn persistance back on
+			AppState.setPaused(false);
+		}
+	}
+
+	public static void setDefaultApplicationLayout(ApplicationLayout layout) {
+		defaultAppLayout = layout;
 	}
 }

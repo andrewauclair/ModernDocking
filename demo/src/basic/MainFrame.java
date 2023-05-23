@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package basic;
 
+import ModernDocking.layouts.DockingLayoutBuilder;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -219,7 +220,6 @@ public class MainFrame extends JFrame {
 		gbc.fill = GridBagConstraints.BOTH;
 
 		RootDockingPanel dockingPanel = new RootDockingPanel(this);
-//		dockingPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
 
 		gbc.insets = new Insets(0, 5, 5, 5);
 
@@ -244,15 +244,14 @@ public class MainFrame extends JFrame {
 		JToggleButton button = new JToggleButton("Test");
 		button.addActionListener(e -> test.setVisible(button.isSelected()));
 
-		Docking.dock(alwaysDisplayed, this);
-		Docking.dock(one, alwaysDisplayed, DockingRegion.EAST);
-		Docking.dock(two, one, DockingRegion.SOUTH);
-		Docking.dock(three, this, DockingRegion.WEST);
-		Docking.dock(four, two, DockingRegion.CENTER);
-		Docking.dock(output, this, DockingRegion.SOUTH);
-		Docking.dock(explorer, this, DockingRegion.EAST);
-
-		applicationLayout = DockingState.getApplicationLayout();
+		applicationLayout = new ApplicationLayout(new DockingLayoutBuilder(alwaysDisplayed.getPersistentID())
+				.dock(alwaysDisplayed.getPersistentID(), one.getPersistentID(), DockingRegion.EAST)
+				.dock(one.getPersistentID(), two.getPersistentID(), DockingRegion.SOUTH)
+				.dockToRoot(three.getPersistentID(), DockingRegion.WEST)
+				.dock(two.getPersistentID(), four.getPersistentID(), DockingRegion.CENTER)
+				.dockToRoot(output.getPersistentID(), DockingRegion.SOUTH)
+				.dockToRoot(explorer.getPersistentID(), DockingRegion.EAST)
+				.build());
 
 		restoreDefaultLayout.addActionListener(e -> DockingState.restoreApplicationLayout(applicationLayout));
 
@@ -273,6 +272,7 @@ public class MainFrame extends JFrame {
 
 			// now that the main frame is setup with the defaults, we can restore the layout
 			AppState.setPersistFile(new File("auto_persist_layout.xml"));
+			AppState.setDefaultApplicationLayout(mainFrame.applicationLayout);
 			AppState.restore();
 			AppState.setAutoPersist(true);
 		});
