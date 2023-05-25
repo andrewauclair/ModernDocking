@@ -26,23 +26,22 @@ import ModernDocking.DockingRegion;
 import javax.swing.*;
 
 // Utility to help create layouts without directly applying them to the actual app
-public class DockingLayoutBuilder implements DockingLayoutNode {
-	private DockingLayoutNode rootNode;
+public class DockingLayoutBuilder {
+	private DockingLayoutRootNode rootNode = new DockingLayoutRootNode();
 
 	public DockingLayoutBuilder(String firstID) {
-		rootNode = new DockingSimplePanelNode(firstID);
-		rootNode.setParent(this);
+		rootNode.dock(firstID, DockingRegion.CENTER, 0.0);
 	}
 
-	public DockingLayoutBuilder dock(String targetID, String sourceID) {
-		return dock(targetID, sourceID, DockingRegion.CENTER);
+	public DockingLayoutBuilder dock(String sourceID, String targetID) {
+		return dock(sourceID, targetID, DockingRegion.CENTER);
 	}
 
-	public DockingLayoutBuilder dock(String targetID, String sourceID, DockingRegion region) {
-		return dock(targetID, sourceID, region, 0.5);
+	public DockingLayoutBuilder dock(String sourceID, String targetID, DockingRegion region) {
+		return dock(sourceID, targetID, region, 0.5);
 	}
 
-	public DockingLayoutBuilder dock(String targetID, String sourceID, DockingRegion region, double dividerProportion) {
+	public DockingLayoutBuilder dock(String sourceID, String targetID, DockingRegion region, double dividerProportion) {
 		DockingLayoutNode node = findNode(targetID);
 
 		if (exists(sourceID)) {
@@ -64,12 +63,13 @@ public class DockingLayoutBuilder implements DockingLayoutNode {
 
 		int orientation = region == DockingRegion.EAST || region == DockingRegion.WEST ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
 
-		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, orientation, dividerProportion);
+//		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, orientation, dividerProportion);
+		rootNode.dock(persistentID, region, dividerProportion);
 		return this;
 	}
 
 	public WindowLayout build() {
-		return new WindowLayout(rootNode);
+		return new WindowLayout(rootNode.getNode());
 	}
 
 	public DockingLayoutNode findNode(String persistentID) {
@@ -79,22 +79,6 @@ public class DockingLayoutBuilder implements DockingLayoutNode {
 			throw new RuntimeException("No node for dockable ID found: " + persistentID);
 		}
 		return node;
-	}
-
-	@Override
-	public void dock(String persistentID, DockingRegion region, double dividerProportion) {
-		dockToRoot(persistentID, region, dividerProportion);
-	}
-
-	@Override
-	public void replaceChild(DockingLayoutNode child, DockingLayoutNode newChild) {
-		if (child == rootNode) {
-			rootNode = newChild;
-		}
-	}
-
-	@Override
-	public void setParent(DockingLayoutNode parent) {
 	}
 
 	private boolean exists(String persistentID) {

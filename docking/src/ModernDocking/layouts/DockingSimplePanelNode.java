@@ -41,6 +41,11 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 		this.properties.putAll(properties);
 	}
 
+	@Override
+	public DockingLayoutNode getParent() {
+		return parent;
+	}
+
 	public void setParent(DockingLayoutNode parent) {
 		this.parent = parent;
 	}
@@ -55,7 +60,8 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 
 	@Override
 	public void dock(String persistentID, DockingRegion region, double dividerProportion) {
-		if (region == DockingRegion.CENTER) {
+
+		 if (region == DockingRegion.CENTER) {
 			DockingTabPanelNode tab = new DockingTabPanelNode(persistentID);
 
 			tab.addTab(this.persistentID);
@@ -63,10 +69,26 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 
 			parent.replaceChild(this, tab);
 		}
+		 else if (getParent() instanceof DockingTabPanelNode) {
+			 getParent().dock(persistentID, region, dividerProportion);
+		 }
+//		 else if (getParent() instanceof DockingSplitPanelNode) {
+//			 getParent().dock(persistentID, region, dividerProportion);
+//		 }
 		else {
-			int orientation = region == DockingRegion.NORTH || region == DockingRegion.SOUTH ? JSplitPane.VERTICAL_SPLIT : JSplitPane.HORIZONTAL_SPLIT;
-			DockingLayoutNode left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(persistentID);
-			DockingLayoutNode right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(persistentID) : this;
+			int orientation = region == DockingRegion.EAST || region == DockingRegion.WEST ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
+
+			DockingLayoutNode left;
+			DockingLayoutNode right;
+
+			if (orientation == JSplitPane.HORIZONTAL_SPLIT) {
+				left = region == DockingRegion.EAST ? this : new DockingSimplePanelNode(persistentID);
+				right = region == DockingRegion.EAST ? new DockingSimplePanelNode(persistentID) : this;
+			}
+			else {
+				left = region == DockingRegion.SOUTH ? this : new DockingSimplePanelNode(persistentID);
+				right = region == DockingRegion.SOUTH ? new DockingSimplePanelNode(persistentID) : this;
+			}
 
 			DockingLayoutNode oldParent = parent;
 			DockingSplitPanelNode split = new DockingSplitPanelNode(left, right, orientation, dividerProportion);

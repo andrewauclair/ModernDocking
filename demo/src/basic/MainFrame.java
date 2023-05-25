@@ -164,12 +164,13 @@ public class MainFrame extends JFrame {
 		JMenu view = new JMenu("View");
 		menuBar.add(view);
 
-		view.add(actionListenDock(one));
-//		JMenuItem oneItem = new JMenuItem("one");
-//		oneItem.addActionListener(e -> {
+//		view.add(actionListenDock(one));
+		JMenuItem oneItem = new JMenuItem("one");
+		oneItem.addActionListener(e -> {
 //			Docking.dock(one, MainFrame.this, DockingRegion.WEST);
-//		});
-//		view.add(oneItem);
+			Docking.dock(one, two, DockingRegion.SOUTH);
+		});
+		view.add(oneItem);
 		view.add(actionListenDock(two));
 		view.add(actionListenDock(three));
 		view.add(actionListenDock(four));
@@ -245,10 +246,10 @@ public class MainFrame extends JFrame {
 		button.addActionListener(e -> test.setVisible(button.isSelected()));
 
 		applicationLayout = new ApplicationLayout(new DockingLayoutBuilder(alwaysDisplayed.getPersistentID())
-				.dock(alwaysDisplayed.getPersistentID(), one.getPersistentID(), DockingRegion.EAST)
-				.dock(one.getPersistentID(), two.getPersistentID(), DockingRegion.SOUTH)
+				.dock(one.getPersistentID(), alwaysDisplayed.getPersistentID())
+				.dock(two.getPersistentID(), one.getPersistentID(), DockingRegion.SOUTH)
 				.dockToRoot(three.getPersistentID(), DockingRegion.WEST)
-				.dock(two.getPersistentID(), four.getPersistentID(), DockingRegion.CENTER)
+				.dock(four.getPersistentID(), two.getPersistentID(), DockingRegion.CENTER)
 				.dockToRoot(output.getPersistentID(), DockingRegion.SOUTH)
 				.dockToRoot(explorer.getPersistentID(), DockingRegion.EAST)
 				.build());

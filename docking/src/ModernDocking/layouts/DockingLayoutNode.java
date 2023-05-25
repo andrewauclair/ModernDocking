@@ -32,5 +32,7 @@ public interface DockingLayoutNode {
 
 	void replaceChild(DockingLayoutNode child, DockingLayoutNode newChild);
 
+	DockingLayoutNode getParent();
+
 	void setParent(DockingLayoutNode parent);
 }

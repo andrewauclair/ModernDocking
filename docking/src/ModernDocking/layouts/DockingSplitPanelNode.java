@@ -44,6 +44,11 @@ public class DockingSplitPanelNode implements DockingLayoutNode {
 	}
 
 	@Override
+	public DockingLayoutNode getParent() {
+		return parent;
+	}
+
+	@Override
 	public void setParent(DockingLayoutNode parent) {
 		this.parent = parent;
 	}
@@ -80,9 +85,10 @@ public class DockingSplitPanelNode implements DockingLayoutNode {
 			left = newPanel;
 			right = this;
 		}
+		DockingLayoutNode oldParent = parent;
 		DockingSplitPanelNode split = new DockingSplitPanelNode(left, right, orientation, dividerProportion);
 
-		parent.replaceChild(this, split);
+//		oldParent.replaceChild(this, split);
 	}
 
 	@Override

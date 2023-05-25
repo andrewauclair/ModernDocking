@@ -57,6 +57,11 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	}
 
 	@Override
+	public DockingLayoutNode getParent() {
+		return parent;
+	}
+
+	@Override
 	public void setParent(DockingLayoutNode parent) {
 		this.parent = parent;
 	}
@@ -77,12 +82,13 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 			addTab(persistentID);
 		}
 		else {
-			int orientation = region == DockingRegion.NORTH || region == DockingRegion.SOUTH ? JSplitPane.VERTICAL_SPLIT : JSplitPane.HORIZONTAL_SPLIT;
-			DockingLayoutNode left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(persistentID);
-			DockingLayoutNode right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(persistentID) : this;
+			int orientation = region == DockingRegion.EAST || region == DockingRegion.WEST ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
+			DockingLayoutNode left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(persistentID) : this;
+			DockingLayoutNode right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(persistentID);
 
+			DockingLayoutNode oldParent = parent;
 			DockingSplitPanelNode split = new DockingSplitPanelNode(left, right, orientation, 0.5);
-			parent.replaceChild(this, split);
+			oldParent.replaceChild(this, split);
 		}
 	}
 

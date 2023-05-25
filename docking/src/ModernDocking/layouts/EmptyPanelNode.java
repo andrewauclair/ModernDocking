@@ -38,6 +38,11 @@ public class EmptyPanelNode implements DockingLayoutNode {
 	}
 
 	@Override
+	public DockingLayoutNode getParent() {
+		return null;
+	}
+
+	@Override
 	public void setParent(DockingLayoutNode parent) {
 	}
 }
