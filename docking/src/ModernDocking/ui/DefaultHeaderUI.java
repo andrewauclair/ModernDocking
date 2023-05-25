@@ -145,7 +145,7 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.weightx = 0;
 
-		if (headerModel.hasMoreOptions() || headerModel.isMaximizeAllowed() || headerModel.isPinnedAllowed()) {
+		if (headerModel.hasMoreOptions() || headerModel.isMaximizeAllowed() || headerModel.isPinnedAllowed() || headerModel.isFloatingAllowed()) {
 			addOptions();
 
 			add(settings, gbc);

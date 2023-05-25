@@ -21,7 +21,6 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.DockableStyle;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
 import ModernDocking.ui.HeaderModel;
@@ -69,18 +68,8 @@ public class SimplePanel extends BasePanel {
 	}
 
 	@Override
-	public DockableStyle getStyle() {
-		return DockableStyle.BOTH;
-	}
-
-	@Override
 	public boolean canBeClosed() {
 		return true;
-	}
-
-	@Override
-	public boolean allowPinning() {
-		return false;
 	}
 
 	@Override
