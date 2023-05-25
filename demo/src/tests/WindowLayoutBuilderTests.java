@@ -23,16 +23,12 @@ package tests;
 
 import ModernDocking.Docking;
 import ModernDocking.DockingRegion;
-import ModernDocking.DockingState;
 import ModernDocking.RootDockingPanel;
 import ModernDocking.event.LayoutsListener;
 import ModernDocking.layouts.ApplicationLayout;
-import ModernDocking.layouts.DockingLayoutBuilder;
-import ModernDocking.layouts.DockingLayoutRootNode;
+import ModernDocking.layouts.WindowLayoutBuilder;
 import ModernDocking.layouts.DockingLayouts;
-import ModernDocking.persist.AppState;
 import ModernDocking.ui.ApplicationLayoutMenuItem;
-import basic.MainFrame;
 import basic.SimplePanel;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
@@ -41,15 +37,14 @@ import exception.FailOnThreadViolationRepaintManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DockingLayoutBuilderTests extends JFrame implements LayoutsListener {
+public class WindowLayoutBuilderTests extends JFrame implements LayoutsListener {
 
     private final JMenu layout;
 
-    DockingLayoutBuilderTests() {
+    WindowLayoutBuilderTests() {
         setTitle("DockingLayoutBuilder Tests");
 
         setSize(500, 500);
@@ -76,52 +71,52 @@ public class DockingLayoutBuilderTests extends JFrame implements LayoutsListener
     }
 
     private void buildLayouts() {
-        DockingLayouts.addLayout("simple (1)", new ApplicationLayout(new DockingLayoutBuilder("1")
-                .build()));
+        DockingLayouts.addLayout("simple (1)", new WindowLayoutBuilder("1")
+                .buildApplicationLayout());
 
-        DockingLayouts.addLayout("tabs (1, 2)", new ApplicationLayout(new DockingLayoutBuilder("1")
+        DockingLayouts.addLayout("tabs (1, 2)", new WindowLayoutBuilder("1")
                 .dock("2", "1")
-                .build()));
+                .buildApplicationLayout());
 
-        DockingLayouts.addLayout("split( west (2), east (1) )", new ApplicationLayout(new DockingLayoutBuilder("1")
+        DockingLayouts.addLayout("split( west (2), east (1) )", new WindowLayoutBuilder("1")
                 .dock("2", "1", DockingRegion.WEST)
-                .build()));
+                .buildApplicationLayout());
 
-        DockingLayouts.addLayout("split( north (1), south (2) )", new ApplicationLayout(new DockingLayoutBuilder("1")
+        DockingLayouts.addLayout("split( north (1), south (2) )", new WindowLayoutBuilder("1")
                 .dock("2", "1", DockingRegion.SOUTH)
-                .build()));
+                .buildApplicationLayout());
 
-        DockingLayouts.addLayout("split( west (1), east (2) )", new ApplicationLayout(new DockingLayoutBuilder("1")
+        DockingLayouts.addLayout("split( west (1), east (2) )", new WindowLayoutBuilder("1")
                 .dock("2", "1", DockingRegion.EAST)
-                .build()));
+                .buildApplicationLayout());
 
-        DockingLayouts.addLayout("split( north (2), south (1) )", new ApplicationLayout(new DockingLayoutBuilder("1")
+        DockingLayouts.addLayout("split( north (2), south (1) )", new WindowLayoutBuilder("1")
                 .dock("2", "1", DockingRegion.NORTH)
-                .build()));
+                .buildApplicationLayout());
 
-        DockingLayouts.addLayout("split( west (2) east (1) south (3) )", new ApplicationLayout(new DockingLayoutBuilder("1")
+        DockingLayouts.addLayout("split( west (2) east (1) south (3) )", new WindowLayoutBuilder("1")
                 .dock("2", "1", DockingRegion.WEST)
                 .dockToRoot("3", DockingRegion.SOUTH)
-                .build()));
+                .buildApplicationLayout());
 
-        DockingLayouts.addLayout("split( west( simple (2) ), east( split( north (1), south (3) ) ) )", new ApplicationLayout(new DockingLayoutBuilder("1")
+        DockingLayouts.addLayout("split( west( simple (2) ), east( split( north (1), south (3) ) ) )", new WindowLayoutBuilder("1")
                 .dock("2", "1", DockingRegion.WEST)
                 .dock("3", "1", DockingRegion.SOUTH)
-                .build()));
+                .buildApplicationLayout());
 
-        DockingLayouts.addLayout("split( west( tabs (1, 2) ), east( split( north (3), south ( split( west (4), east (5) ) ) ) ) )", new ApplicationLayout(new DockingLayoutBuilder("1")
+        DockingLayouts.addLayout("split( west( tabs (1, 2) ), east( split( north (3), south ( split( west (4), east (5) ) ) ) ) )", new WindowLayoutBuilder("1")
                 .dock("2", "1")
                 .dock("3", "2", DockingRegion.EAST)
                 .dock("4", "3", DockingRegion.SOUTH)
                 .dock("5", "4", DockingRegion.EAST)
-                .build()));
+                .buildApplicationLayout());
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             configureLookAndFeel(args);
 
-            DockingLayoutBuilderTests mainFrame = new DockingLayoutBuilderTests();
+            WindowLayoutBuilderTests mainFrame = new WindowLayoutBuilderTests();
             mainFrame.setVisible(true);
 
             // now that the main frame is setup with the defaults, we can restore the layout

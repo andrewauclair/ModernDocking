@@ -21,7 +21,7 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.layouts.DockingLayoutBuilder;
+import ModernDocking.layouts.WindowLayoutBuilder;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -245,14 +245,14 @@ public class MainFrame extends JFrame {
 		JToggleButton button = new JToggleButton("Test");
 		button.addActionListener(e -> test.setVisible(button.isSelected()));
 
-		applicationLayout = new ApplicationLayout(new DockingLayoutBuilder(alwaysDisplayed.getPersistentID())
+		applicationLayout = new WindowLayoutBuilder(alwaysDisplayed.getPersistentID())
 				.dock(one.getPersistentID(), alwaysDisplayed.getPersistentID())
 				.dock(two.getPersistentID(), one.getPersistentID(), DockingRegion.SOUTH)
 				.dockToRoot(three.getPersistentID(), DockingRegion.WEST)
 				.dock(four.getPersistentID(), two.getPersistentID(), DockingRegion.CENTER)
 				.dockToRoot(output.getPersistentID(), DockingRegion.SOUTH)
 				.dockToRoot(explorer.getPersistentID(), DockingRegion.EAST)
-				.build());
+				.buildApplicationLayout();
 
 		restoreDefaultLayout.addActionListener(e -> DockingState.restoreApplicationLayout(applicationLayout));
 
