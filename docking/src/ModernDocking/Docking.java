@@ -43,9 +43,6 @@ import static ModernDocking.internal.DockingInternal.getWrapper;
 // Main class for the docking framework
 // register and dock/undock dockables here
 public class Docking {
-	// cached size of the decorated frame border size
-	public static Insets frameBorderSizes = new Insets(0, 0, 0, 0);
-
 	// map of all the root panels in the application
 	private final Map<Window, RootDockingPanel> rootPanels = new HashMap<>();
 
@@ -100,31 +97,6 @@ public class Docking {
 
 	// registration function for DockingPanel
 	public static void registerDockingPanel(RootDockingPanel panel, JFrame parent) {
-		// calculate the frame border size, used when dropping a dockable and changing from an undecorated frame (TempFloatingFrame) to a FloatingFrame
-		if (frameBorderSizes.top == 0) {
-			parent.addComponentListener(new ComponentAdapter() {
-				@Override
-				public void componentShown(ComponentEvent e) {
-					Point location = parent.getLocation();
-					Point contentsLocation = parent.getContentPane().getLocation();
-
-					// convert content point to screen, location is already in screen coordinates because it's the location of a frame
-					SwingUtilities.convertPointToScreen(contentsLocation, parent.getContentPane().getParent());
-
-					Dimension size = parent.getSize();
-					Dimension contentsSize = parent.getContentPane().getSize();
-
-					// frame border size is the difference between the content's location and size on screen and the frame's location and size on screen
-					int top = contentsLocation.y - location.y;
-					int left = contentsLocation.x - location.x;
-					frameBorderSizes = new Insets(top, left, size.height - contentsSize.height - top, size.width - contentsSize.width - left);
-
-					// finally, remove this listener now that we've calculated the size
-					parent.removeComponentListener(this);
-				}
-			});
-		}
-
 		if (instance.rootPanels.containsKey(parent)) {
 			throw new DockableRegistrationFailureException("RootDockingPanel already registered for frame: " + parent);
 		}
@@ -136,31 +108,6 @@ public class Docking {
 	}
 
 	public static void registerDockingPanel(RootDockingPanel panel, JDialog parent) {
-		// calculate the frame border size, used when dropping a dockable and changing from an undecorated frame (TempFloatingFrame) to a FloatingFrame
-		if (frameBorderSizes.top == 0) {
-			parent.addComponentListener(new ComponentAdapter() {
-				@Override
-				public void componentShown(ComponentEvent e) {
-					Point location = parent.getLocation();
-					Point contentsLocation = parent.getContentPane().getLocation();
-
-					// convert content point to screen, location is already in screen coordinates because it's the location of a frame
-					SwingUtilities.convertPointToScreen(contentsLocation, parent.getContentPane().getParent());
-
-					Dimension size = parent.getSize();
-					Dimension contentsSize = parent.getContentPane().getSize();
-
-					// frame border size is the difference between the content's location and size on screen and the frame's location and size on screen
-					int top = contentsLocation.y - location.y;
-					int left = contentsLocation.x - location.x;
-					frameBorderSizes = new Insets(top, left, size.height - contentsSize.height - top, size.width - contentsSize.width - left);
-
-					// finally, remove this listener now that we've calculated the size
-					parent.removeComponentListener(this);
-				}
-			});
-		}
-
 		if (instance.rootPanels.containsKey(parent)) {
 			throw new DockableRegistrationFailureException("RootDockingPanel already registered for frame: " + parent);
 		}
@@ -317,16 +264,11 @@ public class Docking {
 
 	// create a new FloatingFrame window for the given dockable, undock it from its current frame and dock it into the new frame
 	public static void newWindow(Dockable dockable) {
-		Point location = getWrapper(dockable).getDisplayPanel().getLocationOnScreen();
-		Dimension size = getWrapper(dockable).getDisplayPanel().getSize();
+		DisplayPanel displayPanel = getWrapper(dockable).getDisplayPanel();
+		Point location = displayPanel.getLocationOnScreen();
+		Dimension size = displayPanel.getSize();
 
-		location.x -= frameBorderSizes.left;
-		location.y -= frameBorderSizes.top;
-
-		size.width += frameBorderSizes.left + frameBorderSizes.right;
-		size.height += frameBorderSizes.top + frameBorderSizes.bottom;
-
-		FloatingFrame frame = new FloatingFrame(location, size, JFrame.NORMAL);
+		FloatingFrame frame = new FloatingFrame(dockable, location, size, JFrame.NORMAL);
 
 		undock(dockable);
 		dock(dockable, frame);

@@ -42,8 +42,8 @@ public class TempFloatingFrame extends JFrame {
 
 		// size the frame to the dockable size
 		Dimension size = getWrapper(dockable).getDisplayPanel().getSize();
-		size.width += Docking.frameBorderSizes.right;
-		size.height += Docking.frameBorderSizes.bottom;
+//		size.width += Docking.frameBorderSizes.right;
+//		size.height += Docking.frameBorderSizes.bottom;
 		setSize(size);
 
 		// set the frame position to match the current dockable position

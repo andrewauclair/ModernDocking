@@ -32,7 +32,6 @@ import java.awt.*;
 import static ModernDocking.internal.DockingInternal.getWrapper;
 
 public class FloatingFrame extends JFrame {
-	// create a new floating frame. this is used when calling Docking.newWindow or when restoring the layout from a file
 	public FloatingFrame(Point location, Dimension size, int state) {
 		setLocation(location);
 		setSize(size);
@@ -51,6 +50,35 @@ public class FloatingFrame extends JFrame {
 		Docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
 
 		setVisible(true);
+
+	}
+
+		// create a new floating frame. this is used when calling Docking.newWindow or when restoring the layout from a file
+	public FloatingFrame(Dockable dockable, Point location, Dimension size, int state) {
+		DisplayPanel displayPanel = getWrapper(dockable).getDisplayPanel();
+
+		Point point = displayPanel.getLocation();
+		SwingUtilities.convertPointToScreen(point, displayPanel.getParent());
+
+		setLocation(location);
+		setSize(size);
+		setExtendedState(state);
+
+		setLayout(new BorderLayout());
+
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+		// create and add the root
+		RootDockingPanel root = new RootDockingPanel(this);
+		root.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
+		add(root, BorderLayout.CENTER);
+
+		// allow pinning for this frame
+		Docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
+
+		setVisible(true);
+
+		finalizeSize(dockable, location, size);
 	}
 
 	// create a floating frame from a temporary frame as a result of docking
@@ -60,21 +88,13 @@ public class FloatingFrame extends JFrame {
 		// size the frame to the dockable size + the border size of the frame
 		Dimension size = getWrapper(dockable).getDisplayPanel().getSize();
 
-		size.width += Docking.frameBorderSizes.left + Docking.frameBorderSizes.right;
-		size.height += Docking.frameBorderSizes.top + Docking.frameBorderSizes.bottom;
-
 		setSize(size);
 
 		// dispose this frame when it closes
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-		// set the location of this frame to the floating frame location - the frame border size
-		// do this because the undecorated frame is a different size
-		Point location = floatingFrame.getLocation();
-		location.x -= Docking.frameBorderSizes.left;
-		location.y -= Docking.frameBorderSizes.top;
-
-		setLocation(location);
+		// set the location of this frame to the floating frame location
+		setLocation(floatingFrame.getLocation());
 
 		// create and add the root
 		RootDockingPanel root = new RootDockingPanel(this);
@@ -87,6 +107,36 @@ public class FloatingFrame extends JFrame {
 		Docking.dock(dockable, this);
 
 		setVisible(true);
+
+		Point onScreenPoint = floatingFrame.getLocation();
+		Dimension onScreenSize = floatingFrame.getSize();
+
+		finalizeSize(dockable, onScreenPoint, onScreenSize);
+	}
+
+	private void finalizeSize(Dockable dockable, Point onScreenPoint, Dimension onScreenSize) {
+		SwingUtilities.invokeLater(() -> {
+			// adjust the floating frame such that the dockable is in the correct location
+			DisplayPanel displayPanel = getWrapper(dockable).getDisplayPanel();
+
+			Point point = displayPanel.getLocation();
+			SwingUtilities.convertPointToScreen(point, displayPanel.getParent());
+
+			Point finalPoint = new Point(FloatingFrame.this.getX() - (point.x - onScreenPoint.x), FloatingFrame.this.getY() - (point.y - onScreenPoint.y));
+
+			// make sure we keep the new frame on the screen
+			finalPoint.x = Math.max(0, finalPoint.x);
+			finalPoint.y = Math.max(0, finalPoint.y);
+
+			setLocation(finalPoint);
+
+			// adjust the floating frame such that the dockable is the correct size (doesn't really make it perfect, but it's pretty close)
+			// (I don't suspect that someone is going to float and drop the same dockable over and over and notice the 3 pixel increase each time)
+			Insets frameInsets = getInsets();
+
+			Dimension newSize = new Dimension(onScreenSize.width + frameInsets.left + frameInsets.right, onScreenSize.height + frameInsets.top + frameInsets.bottom);
+			setSize(newSize);
+		});
 	}
 
 	@Override
