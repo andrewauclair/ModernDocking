@@ -46,9 +46,16 @@ public abstract class DefaultDockingPanel implements Dockable {
         return persistentID;
     }
 
+    public void setPersistentID(String persistentID) {
+        this.persistentID = persistentID;
+    }
     @Override
     public int getType() {
         return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     @Override
@@ -56,9 +63,17 @@ public abstract class DefaultDockingPanel implements Dockable {
         return tabText;
     }
 
+    public void setTabText(String tabText) {
+        this.tabText = tabText;
+    }
+
     @Override
     public Icon getIcon() {
         return icon;
+    }
+
+    public void setIcon(Icon icon) {
+        this.icon = icon;
     }
 
     @Override
@@ -66,9 +81,17 @@ public abstract class DefaultDockingPanel implements Dockable {
         return floatingAllowed;
     }
 
+    public void setIsFloatingAllowed(boolean isFloatingAllowed) {
+        this.floatingAllowed = isFloatingAllowed;
+    }
+
     @Override
     public boolean shouldLimitToRoot() {
         return limitToRoot;
+    }
+
+    public void setShouldLimitToRoot(boolean limitToRoot) {
+        this.limitToRoot = limitToRoot;
     }
 
     @Override
@@ -76,9 +99,17 @@ public abstract class DefaultDockingPanel implements Dockable {
         return style;
     }
 
+    public void setStyle(DockableStyle style) {
+        this.style = style;
+    }
+
     @Override
     public boolean canBeClosed() {
         return canBeClosed;
+    }
+
+    public void setCanBeClosed(boolean canBeClosed) {
+        this.canBeClosed = canBeClosed;
     }
 
     @Override
@@ -86,14 +117,26 @@ public abstract class DefaultDockingPanel implements Dockable {
         return allowPinning;
     }
 
+    public void setAllowPinning(boolean allowPinning) {
+        this.allowPinning = allowPinning;
+    }
+
     @Override
     public boolean allowMinMax() {
         return allowMinMax;
     }
 
+    public void setAllowMinMax(boolean allowMinMax) {
+        this.allowMinMax = allowMinMax;
+    }
+
     @Override
     public boolean hasMoreOptions() {
         return moreOptions.size() > 0;
+    }
+
+    public void setMoreOptions(List<JMenu> options) {
+        moreOptions = options;
     }
 
     @Override
