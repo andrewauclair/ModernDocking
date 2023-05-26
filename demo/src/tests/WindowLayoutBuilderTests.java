@@ -76,6 +76,7 @@ public class WindowLayoutBuilderTests extends JFrame implements LayoutsListener 
 
         DockingLayouts.addLayout("tabs (1, 2)", new WindowLayoutBuilder("1")
                 .dock("2", "1")
+                .display("1")
                 .buildApplicationLayout());
 
         DockingLayouts.addLayout("split( west (2), east (1) )", new WindowLayoutBuilder("1")
@@ -129,7 +130,7 @@ public class WindowLayoutBuilderTests extends JFrame implements LayoutsListener 
 
     private static void configureLookAndFeel(String[] args) {
         try {
-            FlatLaf.registerCustomDefaultsSource( "docking" );
+            FlatLaf.registerCustomDefaultsSource("docking");
 
             if (args.length > 1) {
                 System.setProperty("flatlaf.uiScale", args[1]);
@@ -137,32 +138,27 @@ public class WindowLayoutBuilderTests extends JFrame implements LayoutsListener 
 
             if (args.length > 0 && args[0].equals("light")) {
                 UIManager.setLookAndFeel(new FlatLightLaf());
-            }
-            else if (args.length > 0 && args[0].equals("dark")) {
+            } else if (args.length > 0 && args[0].equals("dark")) {
                 UIManager.setLookAndFeel(new FlatDarkLaf());
-            }
-            else {
+            } else {
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                }
-                catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
-                       UnsupportedLookAndFeelException ex) {
+                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+                         UnsupportedLookAndFeelException ex) {
                     throw new RuntimeException(ex);
                 }
             }
             FlatLaf.updateUI();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            }
-            catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
-                   UnsupportedLookAndFeelException ex) {
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+                     UnsupportedLookAndFeelException ex) {
                 throw new RuntimeException(ex);
             }
         }
-        UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0,0,0,0));
+        UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0, 0, 0, 0));
         UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
 
         // this is an app to test the docking framework, we want to make sure we detect EDT violations as soon as possible

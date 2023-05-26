@@ -61,10 +61,17 @@ public class WindowLayoutBuilder {
 			throw new RuntimeException("Dockable already in layout: " + persistentID);
 		}
 
-		int orientation = region == DockingRegion.EAST || region == DockingRegion.WEST ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
-
-//		rootNode = new DockingSplitPanelNode(new DockingSimplePanelNode(persistentID), rootNode, orientation, dividerProportion);
 		rootNode.dock(persistentID, region, dividerProportion);
+		return this;
+	}
+
+	public WindowLayoutBuilder display(String persistentID) {
+		DockingLayoutNode node = findNode(persistentID);
+
+		if (node.getParent() != null && node.getParent() instanceof DockingTabPanelNode) {
+			((DockingTabPanelNode) node.getParent()).bringToFront(node);
+		}
+
 		return this;
 	}
 

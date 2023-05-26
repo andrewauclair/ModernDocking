@@ -36,10 +36,6 @@ import java.util.*;
 import static ModernDocking.internal.DockingInternal.getDockable;
 import static ModernDocking.internal.DockingInternal.getWrapper;
 
-// TODO find a good solution for where to dock new dockables. For example, I might select a view menu item which docks a certain dockable, that dockable should go in a logical location which is entirely app dependent (might depend on what other dockables are docked)
-
-// TODO support pinning dockables, this should also support icons so that text or an icon can be shown on the toolbar button
-
 // Main class for the docking framework
 // register and dock/undock dockables here
 public class Docking {
