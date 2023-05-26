@@ -90,6 +90,10 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 				right = region == DockingRegion.SOUTH ? new DockingSimplePanelNode(persistentID) : this;
 			}
 
+			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
+				dividerProportion = 1.0 - dividerProportion;
+			}
+
 			DockingLayoutNode oldParent = parent;
 			DockingSplitPanelNode split = new DockingSplitPanelNode(left, right, orientation, dividerProportion);
 			oldParent.replaceChild(this, split);

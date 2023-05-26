@@ -111,6 +111,42 @@ public class WindowLayoutBuilderTests extends JFrame implements LayoutsListener 
                 .dock("4", "3", DockingRegion.SOUTH)
                 .dock("5", "4", DockingRegion.EAST)
                 .buildApplicationLayout());
+
+        DockingLayouts.addLayout("split( west (1, .25), east (2) )", new WindowLayoutBuilder("2")
+                .dock("1", "2", DockingRegion.WEST, .25)
+                .buildApplicationLayout());
+
+        DockingLayouts.addLayout("split( west (1), east (2, .25) )", new WindowLayoutBuilder("1")
+                .dock("2", "1", DockingRegion.EAST, .25)
+                .buildApplicationLayout());
+
+        DockingLayouts.addLayout("split( north (1, .25), south (2) )", new WindowLayoutBuilder("2")
+                .dock("1", "2", DockingRegion.NORTH, .25)
+                .buildApplicationLayout());
+
+        DockingLayouts.addLayout("split( north (1), south (2, .25) )", new WindowLayoutBuilder("1")
+                .dock("2", "1", DockingRegion.SOUTH, .25)
+                .buildApplicationLayout());
+
+        DockingLayouts.addLayout("split( west (1, .25), east ( tab( 2, 3 ) ) )", new WindowLayoutBuilder("2")
+                .dock("3", "2")
+                .dock("1", "2", DockingRegion.WEST, .25)
+                .buildApplicationLayout());
+
+        DockingLayouts.addLayout("split( west ( tabs( 1, 3 ) ), east (2, .25) )", new WindowLayoutBuilder("1")
+                .dock("3", "1")
+                .dock("2", "1", DockingRegion.EAST, .25)
+                .buildApplicationLayout());
+
+        DockingLayouts.addLayout("split( north (1, .25), south ( tabs( 2, 3 ) ) )", new WindowLayoutBuilder("2")
+                .dock("3", "2")
+                .dock("1", "2", DockingRegion.NORTH, .25)
+                .buildApplicationLayout());
+
+        DockingLayouts.addLayout("split( north ( tabs( 1, 3 ) ), south (2, .25) )", new WindowLayoutBuilder("1")
+                .dock("3", "1")
+                .dock("2", "1", DockingRegion.SOUTH, .25)
+                .buildApplicationLayout());
     }
 
     public static void main(String[] args) {

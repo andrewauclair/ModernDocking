@@ -1,4 +1,4 @@
-/*
+ /*
 Copyright (c) 2022 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -66,29 +66,6 @@ public class DockingSplitPanelNode implements DockingLayoutNode {
 
 	@Override
 	public void dock(String persistentID, DockingRegion region, double dividerProportion) {
-		if (region == DockingRegion.CENTER) {
-			region = orientation == JSplitPane.HORIZONTAL_SPLIT ? DockingRegion.WEST : DockingRegion.NORTH;
-		}
-
-		DockingSimplePanelNode newPanel = new DockingSimplePanelNode(persistentID);
-
-		int orientation = region == DockingRegion.EAST || region == DockingRegion.WEST ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
-		DockingLayoutNode left;
-		DockingLayoutNode right;
-
-		if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
-			dividerProportion = 1.0 - dividerProportion;
-			left = this;
-			right = newPanel;
-		}
-		else {
-			left = newPanel;
-			right = this;
-		}
-		DockingLayoutNode oldParent = parent;
-		DockingSplitPanelNode split = new DockingSplitPanelNode(left, right, orientation, dividerProportion);
-
-//		oldParent.replaceChild(this, split);
 	}
 
 	@Override
