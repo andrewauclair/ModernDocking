@@ -40,6 +40,13 @@ public class ApplicationLayoutMenuItem extends JMenuItem implements ActionListen
         addActionListener(this);
     }
 
+    public ApplicationLayoutMenuItem(String layoutName, String text) {
+        super(text);
+
+        this.layoutName = layoutName;
+        addActionListener(this);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         ApplicationLayout layout = DockingLayouts.getLayout(layoutName);
