@@ -111,14 +111,16 @@ public class AppState {
 			if (layout != null) {
 				DockingState.restoreApplicationLayout(layout);
 			}
-			else {
+			else if (defaultAppLayout != null) {
 				DockingState.restoreApplicationLayout(defaultAppLayout);
 			}
 
 			return layout != null;
 		}
 		catch (Exception e) {
-			DockingState.restoreApplicationLayout(defaultAppLayout);
+			if (defaultAppLayout != null) {
+				DockingState.restoreApplicationLayout(defaultAppLayout);
+			}
 
 			// TODO provide a way to see this error or log it for users
 			return false;
