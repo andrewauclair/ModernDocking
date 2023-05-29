@@ -21,14 +21,12 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.layouts.WindowLayoutBuilder;
+import ModernDocking.layouts.*;
+import ModernDocking.ui.ApplicationLayoutMenuItem;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import ModernDocking.*;
-import ModernDocking.layouts.WindowLayout;
-import ModernDocking.layouts.ApplicationLayout;
-import ModernDocking.layouts.ApplicationLayoutXML;
 import ModernDocking.persist.AppState;
 import ModernDocking.ui.DockableMenuItem;
 import ModernDocking.ui.LayoutsMenu;
@@ -42,7 +40,7 @@ import java.io.File;
 
 public class MainFrame extends JFrame {
 	static WindowLayout currentLayout;
-	private final ApplicationLayout applicationLayout;
+	private final ApplicationLayout defaultLayout;
 
 	public MainFrame() {
 		setTitle("Modern Docking Basic Demo");
@@ -193,11 +191,13 @@ public class MainFrame extends JFrame {
 		toolBar.add(test3);
 		JButton save = new JButton("save");
 		JButton restore = new JButton("restore");
-		JButton restoreDefaultLayout = new JButton("Restore Default Layout");
+
+		JMenuItem restoreDefaultLayout = new ApplicationLayoutMenuItem("default", "Restore Default Layout");
+
+		window.add(restoreDefaultLayout);
 
 		toolBar.add(save);
 		toolBar.add(restore);
-		toolBar.add(restoreDefaultLayout);
 
 		save.addActionListener(e -> currentLayout = DockingState.getWindowLayout(this));
 		restore.addActionListener(e -> DockingState.restoreWindowLayout(this, currentLayout));
@@ -245,7 +245,7 @@ public class MainFrame extends JFrame {
 		JToggleButton button = new JToggleButton("Test");
 		button.addActionListener(e -> test.setVisible(button.isSelected()));
 
-		applicationLayout = new WindowLayoutBuilder(alwaysDisplayed.getPersistentID())
+		defaultLayout = new WindowLayoutBuilder(alwaysDisplayed.getPersistentID())
 				.dock(one.getPersistentID(), alwaysDisplayed.getPersistentID())
 				.dock(two.getPersistentID(), one.getPersistentID(), DockingRegion.SOUTH)
 				.dockToRoot(three.getPersistentID(), DockingRegion.WEST)
@@ -254,7 +254,7 @@ public class MainFrame extends JFrame {
 				.dockToRoot(explorer.getPersistentID(), DockingRegion.EAST)
 				.buildApplicationLayout();
 
-		restoreDefaultLayout.addActionListener(e -> DockingState.restoreApplicationLayout(applicationLayout));
+		DockingLayouts.addLayout("default", defaultLayout);
 
 		// save the default layout so that we have something to restore, do it later so that the split is set up properly
 		SwingUtilities.invokeLater(save::doClick);
@@ -273,7 +273,7 @@ public class MainFrame extends JFrame {
 
 			// now that the main frame is setup with the defaults, we can restore the layout
 			AppState.setPersistFile(new File("auto_persist_layout.xml"));
-			AppState.setDefaultApplicationLayout(mainFrame.applicationLayout);
+			AppState.setDefaultApplicationLayout(mainFrame.defaultLayout);
 			AppState.restore();
 			AppState.setAutoPersist(true);
 		});
