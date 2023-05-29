@@ -137,7 +137,7 @@ public class AppState {
 			throw new DockingLayoutException(e);
 		}
 		finally {
-			// make sure that we turn persistance back on
+			// make sure that we turn persistence back on
 			AppState.setPaused(false);
 		}
 	}
