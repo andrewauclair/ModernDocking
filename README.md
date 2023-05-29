@@ -4,6 +4,7 @@ This Java library is my take on a docking framework for Java Swing. There are ma
 but none of them (that I'm aware of) are maintained and are complicated. Modern Docking was developed to be a far
 simpler docking framework to replace the usage of FlexDock. I'm open to suggestions if anyone has ideas to improve the framework.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Download
 Modern Docking binaries are available on <b>Maven Central.</b>
