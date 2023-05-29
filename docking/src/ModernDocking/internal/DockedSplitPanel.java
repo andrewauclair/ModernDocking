@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2022-2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -243,6 +243,11 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 
 	@Override
 	public void removeChild(DockingPanel child) {
+		// safety against partially configured layout restorations
+		if (parent == null) {
+			return;
+		}
+
 		if (left == child) {
 			parent.replaceChild(this, right);
 		}

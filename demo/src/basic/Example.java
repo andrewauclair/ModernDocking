@@ -1,5 +1,5 @@
-package basic;/*
-Copyright (c) 2022 Andrew Auclair
+/*
+Copyright (c) 2022-2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,8 +19,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+package basic;
 
 import ModernDocking.*;
+import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.persist.AppState;
 
 import javax.swing.*;
@@ -44,7 +46,12 @@ public class Example extends JFrame {
 
 		// restore the layout from the auto persist file after the UI has loaded
 		SwingUtilities.invokeLater(() -> {
-			AppState.restore();
+			try {
+				AppState.restore();
+			}
+			catch (DockingLayoutException e) {
+				e.printStackTrace();
+			}
 			// now that we've restored the layout we can turn on auto persist
 			AppState.setAutoPersist(true);
 		});

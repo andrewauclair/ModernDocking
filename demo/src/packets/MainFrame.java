@@ -23,6 +23,7 @@ package packets;
 
 import ModernDocking.Docking;
 import ModernDocking.RootDockingPanel;
+import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.persist.AppState;
 import ModernDocking.ui.DockableMenuItem;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -84,7 +85,14 @@ public class MainFrame extends JFrame {
 
 			// now that the main frame is setup with the defaults, we can restore the layout
 			AppState.setPersistFile(new File("auto_persist_layout.xml"));
-			AppState.restore();
+
+			try {
+				AppState.restore();
+			}
+			catch (DockingLayoutException e) {
+				e.printStackTrace();
+			}
+
 			AppState.setAutoPersist(true);
 		});
 	}

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2022-2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -152,7 +152,6 @@ public class WindowLayoutXML {
 			String value = properties.get(key);
 
 			writer.writeAttribute(key, value);
-//			writer.writeCharacters(NL);
 		}
 
 		writer.writeEndElement();
@@ -328,7 +327,6 @@ public class WindowLayoutXML {
 					for (int i = 0; i < reader.getAttributeCount(); i++) {
 						properties.put(String.valueOf(reader.getAttributeName(i)), reader.getAttributeValue(i));
 					}
-//					return properties;
 				}
 			}
 			else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("properties")) {

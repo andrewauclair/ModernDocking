@@ -1,5 +1,5 @@
  /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2022-2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,8 +39,12 @@ public class DockingSplitPanelNode implements DockingLayoutNode {
 		this.orientation = orientation;
 		this.dividerProportion = dividerProportion;
 
-		this.left.setParent(this);
-		this.right.setParent(this);
+		if (this.left != null) {
+			this.left.setParent(this);
+		}
+		if (this.right != null) {
+			this.right.setParent(this);
+		}
 	}
 
 	@Override
@@ -55,12 +59,17 @@ public class DockingSplitPanelNode implements DockingLayoutNode {
 
 	@Override
 	public DockingLayoutNode findNode(String persistentID) {
-		DockingLayoutNode left = this.left.findNode(persistentID);
+		if (this.left != null) {
+			DockingLayoutNode left = this.left.findNode(persistentID);
 
-		if (left != null) {
-			return left;
+			if (left != null) {
+				return left;
+			}
 		}
 
+		if (this.right == null) {
+			return null;
+		}
 		return this.right.findNode(persistentID);
 	}
 

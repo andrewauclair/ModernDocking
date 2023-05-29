@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2022-2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -147,7 +147,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			removePanel(toRemove);
 		}
 
-		if (tabs.getTabCount() == 1) {
+		if (tabs.getTabCount() == 1 && parent != null) {
 			parent.replaceChild(this, new DockedSimplePanel(panels.get(0)));
 		}
 	}

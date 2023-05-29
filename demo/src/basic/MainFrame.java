@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2022-2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package basic;
 
+import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.layouts.*;
 import ModernDocking.ui.ApplicationLayoutMenuItem;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -67,7 +68,14 @@ public class MainFrame extends JFrame {
 
 				ApplicationLayout layout = DockingState.getApplicationLayout();
 
-				boolean saved = ApplicationLayoutXML.saveLayoutToFile(selectedFile, layout);
+				boolean saved = false;
+				try {
+					saved = ApplicationLayoutXML.saveLayoutToFile(selectedFile, layout);
+				}
+				catch (DockingLayoutException ex) {
+					ex.printStackTrace();
+					saved = false;
+				}
 
 				if (!saved) {
 					JOptionPane.showMessageDialog(MainFrame.this, "Failed to save layout");
@@ -94,7 +102,13 @@ public class MainFrame extends JFrame {
 			if (result == JFileChooser.APPROVE_OPTION) {
 				File selectedFile = chooser.getSelectedFile();
 
-				ApplicationLayout layout = ApplicationLayoutXML.loadLayoutFromFile(selectedFile);
+				ApplicationLayout layout = null;
+				try {
+					layout = ApplicationLayoutXML.loadLayoutFromFile(selectedFile);
+				}
+				catch (DockingLayoutException ex) {
+					ex.printStackTrace();
+				}
 
 				if (layout != null) {
 					DockingState.restoreApplicationLayout(layout);
@@ -255,6 +269,7 @@ public class MainFrame extends JFrame {
 				.buildApplicationLayout();
 
 		DockingLayouts.addLayout("default", defaultLayout);
+		AppState.setDefaultApplicationLayout(defaultLayout);
 
 		// save the default layout so that we have something to restore, do it later so that the split is set up properly
 		SwingUtilities.invokeLater(save::doClick);
@@ -272,9 +287,15 @@ public class MainFrame extends JFrame {
 			mainFrame.setVisible(true);
 
 			// now that the main frame is setup with the defaults, we can restore the layout
-			AppState.setPersistFile(new File("auto_persist_layout.xml"));
-			AppState.setDefaultApplicationLayout(mainFrame.defaultLayout);
-			AppState.restore();
+			AppState.setPersistFile(new File("basic_demo_layout.xml"));
+
+			try {
+				AppState.restore();
+			} catch (DockingLayoutException e) {
+				// something happened trying to load the layout file, record it here
+				e.printStackTrace();
+			}
+
 			AppState.setAutoPersist(true);
 		});
 	}

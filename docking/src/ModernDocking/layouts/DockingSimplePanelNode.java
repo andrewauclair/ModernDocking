@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2022-2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -72,9 +72,6 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 		 else if (getParent() instanceof DockingTabPanelNode) {
 			 getParent().dock(persistentID, region, dividerProportion);
 		 }
-//		 else if (getParent() instanceof DockingSplitPanelNode) {
-//			 getParent().dock(persistentID, region, dividerProportion);
-//		 }
 		else {
 			int orientation = region == DockingRegion.EAST || region == DockingRegion.WEST ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
 

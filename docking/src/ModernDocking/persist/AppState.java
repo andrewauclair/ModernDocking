@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2022-2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,14 +22,18 @@ SOFTWARE.
 package ModernDocking.persist;
 
 import ModernDocking.DockingState;
+import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.ApplicationLayoutXML;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AppState {
+	private static final Logger logger = Logger.getLogger(AppState.class.getPackageName());
 	private static final int PERSIST_TIMER_DELAY_MS = 500;
 
 	private static boolean autoPersist = false;
@@ -82,7 +86,12 @@ public class AppState {
 
 						ApplicationLayout layout = DockingState.getApplicationLayout();
 
-						ApplicationLayoutXML.saveLayoutToFile(autoPersistFile, layout);
+						try {
+							ApplicationLayoutXML.saveLayoutToFile(autoPersistFile, layout);
+						}
+						catch (DockingLayoutException ex) {
+							logger.log(Level.INFO, ex.getMessage(), ex);
+						}
 					}
 					// we're done with the timer for now. null it out
 					persistTimer = null;
@@ -97,9 +106,14 @@ public class AppState {
 		}
 	}
 
-	public static boolean restore() {
+	// returns true if and only if a layout is restored from a file. Restoring from the default layout will return false.
+	public static boolean restore() throws DockingLayoutException {
 		// don't restore if auto persist is disabled
 		if (autoPersistFile == null || !autoPersistFile.exists()) {
+			// restore the default layout if we have one
+			if (defaultAppLayout != null) {
+				DockingState.restoreApplicationLayout(defaultAppLayout);
+			}
 			return false;
 		}
 
@@ -108,22 +122,19 @@ public class AppState {
 
 			ApplicationLayout layout = ApplicationLayoutXML.loadLayoutFromFile(autoPersistFile);
 
-			if (layout != null) {
-				DockingState.restoreApplicationLayout(layout);
-			}
-			else if (defaultAppLayout != null) {
-				DockingState.restoreApplicationLayout(defaultAppLayout);
-			}
+			DockingState.restoreApplicationLayout(layout);
 
-			return layout != null;
+			return true;
 		}
 		catch (Exception e) {
 			if (defaultAppLayout != null) {
 				DockingState.restoreApplicationLayout(defaultAppLayout);
 			}
 
-			// TODO provide a way to see this error or log it for users
-			return false;
+			if (e instanceof DockingLayoutException) {
+				throw e;
+			}
+			throw new DockingLayoutException(e);
 		}
 		finally {
 			// make sure that we turn persistance back on

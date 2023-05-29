@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2022-2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,39 +21,35 @@ SOFTWARE.
  */
 package ModernDocking.layouts;
 
+import ModernDocking.exception.DockingLayoutException;
+
 import javax.xml.stream.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 
 public class ApplicationLayoutXML {
 	private static final String NL = "\n";
 
 	// saves a docking layout to the given file, returns true if successful, false otherwise
-	public static boolean saveLayoutToFile(File file, ApplicationLayout layout) {
+	public static boolean saveLayoutToFile(File file, ApplicationLayout layout) throws DockingLayoutException {
+		// create the file if it doens't exist
 		try {
 			file.createNewFile();
 		}
 		catch (IOException e) {
-			e.printStackTrace();
-			return false;
+			throw new DockingLayoutException(e);
 		}
+
+		// make sure all the required directories exist
 		if (file.getParentFile() != null) {
 			file.getParentFile().mkdirs();
 		}
 
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
-		XMLStreamWriter writer;
-		try {
-			writer = factory.createXMLStreamWriter(Files.newOutputStream(file.toPath()));
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
 
-		try {
+		try (OutputStream out = Files.newOutputStream(file.toPath())) {
+			XMLStreamWriter writer = factory.createXMLStreamWriter(out);
+
 			writer.writeStartDocument();
 			writer.writeCharacters(NL);
 			writer.writeStartElement("app-layout");
@@ -68,36 +64,25 @@ public class ApplicationLayoutXML {
 			writer.writeEndElement();
 
 			writer.writeEndDocument();
+
+			writer.close();
 		}
-		catch (XMLStreamException e) {
-			e.printStackTrace();
-			return false;
-		}
-		finally {
-			try {
-				writer.close();
-			}
-			catch (XMLStreamException e) {
-				e.printStackTrace();
-			}
+		catch (Exception e) {
+			throw new DockingLayoutException(e);
 		}
 		return true;
 	}
 
-	public static ApplicationLayout loadLayoutFromFile(File file) {
+	public static ApplicationLayout loadLayoutFromFile(File file) throws DockingLayoutException {
 		XMLInputFactory factory = XMLInputFactory.newInstance();
-		XMLStreamReader reader;
-		try {
-			reader = factory.createXMLStreamReader(new FileInputStream(file));
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
 
-		ApplicationLayout layout = new ApplicationLayout();
+		XMLStreamReader reader = null;
 
-		try {
+		try (InputStream in = Files.newInputStream(file.toPath())) {
+			reader = factory.createXMLStreamReader(in);
+
+			ApplicationLayout layout = new ApplicationLayout();
+
 			while (reader.hasNext()) {
 				int next = reader.nextTag();
 
@@ -108,19 +93,21 @@ public class ApplicationLayoutXML {
 					break;
 				}
 			}
+
+			return layout;
 		}
-		catch (XMLStreamException e) {
-			e.printStackTrace();
-			layout = null;
+		catch (Exception e) {
+			throw new DockingLayoutException(e);
 		}
 		finally {
 			try {
-				reader.close();
+				if (reader != null) {
+					reader.close();
+				}
 			}
 			catch (XMLStreamException e) {
 				e.printStackTrace();
 			}
 		}
-		return layout;
 	}
 }
