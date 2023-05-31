@@ -26,10 +26,7 @@ import ModernDocking.event.LayoutsListener;
 import ModernDocking.internal.*;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DockingLayouts {
 	private static final List<LayoutsListener> listeners = new ArrayList<>();

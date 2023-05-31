@@ -41,7 +41,6 @@ import java.io.File;
 
 public class MainFrame extends JFrame {
 	static WindowLayout currentLayout;
-	private final ApplicationLayout defaultLayout;
 
 	public MainFrame() {
 		setTitle("Modern Docking Basic Demo");
@@ -74,7 +73,6 @@ public class MainFrame extends JFrame {
 				}
 				catch (DockingLayoutException ex) {
 					ex.printStackTrace();
-					saved = false;
 				}
 
 				if (!saved) {
@@ -206,8 +204,15 @@ public class MainFrame extends JFrame {
 		JButton save = new JButton("save");
 		JButton restore = new JButton("restore");
 
-		JMenuItem restoreDefaultLayout = new ApplicationLayoutMenuItem("default", "Restore Default Layout");
+		JMenuItem storeCurrentLayout = new JMenuItem("Store Current Layout...");
+		storeCurrentLayout.addActionListener(e -> {
+			String layoutName = JOptionPane.showInputDialog("Name of Layout");
 
+			DockingLayouts.addLayout(layoutName, DockingState.getApplicationLayout());
+		});
+		window.add(storeCurrentLayout);
+
+		JMenuItem restoreDefaultLayout = new ApplicationLayoutMenuItem("default", "Restore Default Layout");
 		window.add(restoreDefaultLayout);
 
 		toolBar.add(save);
@@ -259,7 +264,7 @@ public class MainFrame extends JFrame {
 		JToggleButton button = new JToggleButton("Test");
 		button.addActionListener(e -> test.setVisible(button.isSelected()));
 
-		defaultLayout = new WindowLayoutBuilder(alwaysDisplayed.getPersistentID())
+		ApplicationLayout defaultLayout = new WindowLayoutBuilder(alwaysDisplayed.getPersistentID())
 				.dock(one.getPersistentID(), alwaysDisplayed.getPersistentID())
 				.dock(two.getPersistentID(), one.getPersistentID(), DockingRegion.SOUTH)
 				.dockToRoot(three.getPersistentID(), DockingRegion.WEST)
