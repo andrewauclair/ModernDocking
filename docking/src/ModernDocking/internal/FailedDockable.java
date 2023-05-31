@@ -22,7 +22,6 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
-import ModernDocking.DockableStyle;
 import ModernDocking.Docking;
 
 import javax.swing.*;

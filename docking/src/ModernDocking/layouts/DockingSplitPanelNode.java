@@ -21,9 +21,7 @@ SOFTWARE.
  */
 package ModernDocking.layouts;
 
-import ModernDocking.DockingRegion;
-
-import javax.swing.*;
+ import ModernDocking.DockingRegion;
 
 public class DockingSplitPanelNode implements DockingLayoutNode {
 	private DockingLayoutNode left;

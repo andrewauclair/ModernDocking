@@ -21,8 +21,8 @@ SOFTWARE.
  */
 package ModernDocking.floating;
 
-import ModernDocking.internal.DockingProperties;
 import ModernDocking.DockingRegion;
+import ModernDocking.internal.DockingProperties;
 
 import javax.swing.*;
 import java.awt.*;

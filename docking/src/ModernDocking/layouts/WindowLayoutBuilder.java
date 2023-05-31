@@ -23,8 +23,6 @@ package ModernDocking.layouts;
 
 import ModernDocking.DockingRegion;
 
-import javax.swing.*;
-
 // Utility to help create layouts without directly applying them to the actual app
 public class WindowLayoutBuilder {
 	private final DockingLayoutRootNode rootNode = new DockingLayoutRootNode();

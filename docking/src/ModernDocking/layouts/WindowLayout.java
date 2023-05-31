@@ -22,8 +22,8 @@ SOFTWARE.
 package ModernDocking.layouts;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.Dialog.ModalityType;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -24,7 +24,10 @@ package ModernDocking.layouts;
 import ModernDocking.exception.DockingLayoutException;
 
 import javax.xml.stream.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 
 public class ApplicationLayoutXML {

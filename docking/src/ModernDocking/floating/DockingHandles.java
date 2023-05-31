@@ -23,9 +23,9 @@ package ModernDocking.floating;
 
 import ModernDocking.Dockable;
 import ModernDocking.DockableStyle;
-import ModernDocking.internal.DockingProperties;
 import ModernDocking.DockingRegion;
 import ModernDocking.RootDockingPanel;
+import ModernDocking.internal.DockingProperties;
 
 import javax.swing.*;
 import java.awt.*;

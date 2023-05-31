@@ -25,13 +25,15 @@ import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.exception.NotDockedException;
 import ModernDocking.floating.FloatListener;
 import ModernDocking.internal.*;
-import ModernDocking.layouts.*;
-import ModernDocking.persist.*;
+import ModernDocking.layouts.ApplicationLayout;
+import ModernDocking.layouts.WindowLayout;
+import ModernDocking.persist.AppState;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import static ModernDocking.internal.DockingInternal.getDockable;
 import static ModernDocking.internal.DockingInternal.getWrapper;

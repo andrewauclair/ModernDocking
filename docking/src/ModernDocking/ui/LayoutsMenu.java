@@ -23,8 +23,8 @@ package ModernDocking.ui;
 
 import ModernDocking.DockingState;
 import ModernDocking.event.LayoutsListener;
-import ModernDocking.layouts.DockingLayouts;
 import ModernDocking.layouts.ApplicationLayout;
+import ModernDocking.layouts.DockingLayouts;
 
 import javax.swing.*;
 

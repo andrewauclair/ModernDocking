@@ -21,12 +21,16 @@ SOFTWARE.
  */
 package ModernDocking.layouts;
 
-import ModernDocking.*;
+import ModernDocking.Dockable;
+import ModernDocking.RootDockingPanel;
 import ModernDocking.event.LayoutsListener;
 import ModernDocking.internal.*;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DockingLayouts {
 	private static final List<LayoutsListener> listeners = new ArrayList<>();

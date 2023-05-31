@@ -23,8 +23,6 @@ package ModernDocking.layouts;
 
 import ModernDocking.DockingRegion;
 
-import java.util.Map;
-
 public interface DockingLayoutNode {
 	DockingLayoutNode findNode(String persistentID);
 

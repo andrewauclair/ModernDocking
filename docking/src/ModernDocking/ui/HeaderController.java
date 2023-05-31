@@ -23,9 +23,9 @@ package ModernDocking.ui;
 
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
-import ModernDocking.internal.DockingListeners;
 import ModernDocking.event.DockingListener;
 import ModernDocking.event.MaximizeListener;
+import ModernDocking.internal.DockingListeners;
 
 public class HeaderController implements MaximizeListener, DockingListener {
 	private final Dockable dockable;

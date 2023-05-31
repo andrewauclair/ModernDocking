@@ -21,27 +21,27 @@ SOFTWARE.
  */
 package basic;
 
+import ModernDocking.*;
 import ModernDocking.exception.DockingLayoutException;
-import ModernDocking.layouts.*;
+import ModernDocking.layouts.ApplicationLayout;
+import ModernDocking.layouts.ApplicationLayoutXML;
+import ModernDocking.layouts.DockingLayouts;
+import ModernDocking.layouts.WindowLayoutBuilder;
+import ModernDocking.persist.AppState;
 import ModernDocking.ui.ApplicationLayoutMenuItem;
+import ModernDocking.ui.DockableMenuItem;
+import ModernDocking.ui.LayoutsMenu;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import ModernDocking.*;
-import ModernDocking.persist.AppState;
-import ModernDocking.ui.DockableMenuItem;
-import ModernDocking.ui.LayoutsMenu;
 import exception.FailOnThreadViolationRepaintManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.Objects;
 
 public class MainFrame extends JFrame {
-	static WindowLayout currentLayout;
-
 	public MainFrame() {
 		setTitle("Modern Docking Basic Demo");
 
@@ -140,12 +140,6 @@ public class MainFrame extends JFrame {
 		});
 		window.add(dialogTest);
 
-		JLabel test = new JLabel("Test");
-		test.setOpaque(true);
-		test.setBackground(Color.BLACK);
-		test.setSize(100, 100);
-		test.setLocation(100, 100);
-
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		SimplePanel one = new SimplePanel("one", "one");
@@ -156,8 +150,8 @@ public class MainFrame extends JFrame {
 		SimplePanel six = new SimplePanel("six", "six");
 		SimplePanel seven = new SimplePanel("seven", "seven");
 		SimplePanel eight = new SimplePanel("eight", "eight");
-		ToolPanel explorer = new ToolPanel("Explorer", "explorer", DockableStyle.VERTICAL, new ImageIcon(getClass().getResource("/icons/light/icons8-vga-16.png")));
-		ToolPanel output = new OutputPanel("Output", "output", DockableStyle.HORIZONTAL, new ImageIcon(getClass().getResource("/icons/light/icons8-vga-16.png")));
+		ToolPanel explorer = new ToolPanel("Explorer", "explorer", DockableStyle.VERTICAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
+		ToolPanel output = new OutputPanel("Output", "output", DockableStyle.HORIZONTAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
 		AlwaysDisplayedPanel alwaysDisplayed = new AlwaysDisplayedPanel("always displayed", "always-displayed");
 
 		one.setTitleBackground(new Color(0xa1f2ff));
@@ -193,17 +187,6 @@ public class MainFrame extends JFrame {
 		view.add(new DockableMenuItem(() -> ((Dockable) alwaysDisplayed).getPersistentID(), ((Dockable) alwaysDisplayed).getTabText()));
 		view.add(changeText);
 
-		JToolBar toolBar = new JToolBar();
-		JButton test1 = new JButton("Test1");
-		test1.addActionListener(e -> Docking.undock(one));
-		toolBar.add(test1);
-		JButton test2 = new JButton("Test2");
-		toolBar.add(test2);
-		JButton test3 = new JButton("Test3");
-		toolBar.add(test3);
-		JButton save = new JButton("save");
-		JButton restore = new JButton("restore");
-
 		JMenuItem storeCurrentLayout = new JMenuItem("Store Current Layout...");
 		storeCurrentLayout.addActionListener(e -> {
 			String layoutName = JOptionPane.showInputDialog("Name of Layout");
@@ -215,27 +198,12 @@ public class MainFrame extends JFrame {
 		JMenuItem restoreDefaultLayout = new ApplicationLayoutMenuItem("default", "Restore Default Layout");
 		window.add(restoreDefaultLayout);
 
-		toolBar.add(save);
-		toolBar.add(restore);
-
-		save.addActionListener(e -> currentLayout = DockingState.getWindowLayout(this));
-		restore.addActionListener(e -> DockingState.restoreWindowLayout(this, currentLayout));
-
-		test2.addActionListener(e -> test.setVisible(false));
-		test3.addActionListener(e -> test.setVisible(true));
-
 		setLayout(new GridBagLayout());
 
 		GridBagConstraints gbc = new GridBagConstraints();
 
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 1.0;
-
-		add(toolBar, gbc);
-
 		gbc.gridy++;
+		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
 
@@ -249,21 +217,6 @@ public class MainFrame extends JFrame {
 		gbc.weighty = 0;
 		gbc.fill = GridBagConstraints.NONE;
 
-		JTabbedPane tabs = new JTabbedPane();
-		tabs.setTabPlacement(JTabbedPane.BOTTOM);
-		tabs.add("Test", null);
-
-		tabs.addChangeListener(e -> test.setVisible(!test.isVisible()));
-		tabs.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				test.setVisible(!test.isVisible());
-			}
-		});
-
-		JToggleButton button = new JToggleButton("Test");
-		button.addActionListener(e -> test.setVisible(button.isSelected()));
-
 		ApplicationLayout defaultLayout = new WindowLayoutBuilder(alwaysDisplayed.getPersistentID())
 				.dock(one.getPersistentID(), alwaysDisplayed.getPersistentID())
 				.dock(two.getPersistentID(), one.getPersistentID(), DockingRegion.SOUTH)
@@ -275,9 +228,6 @@ public class MainFrame extends JFrame {
 
 		DockingLayouts.addLayout("default", defaultLayout);
 		AppState.setDefaultApplicationLayout(defaultLayout);
-
-		// save the default layout so that we have something to restore, do it later so that the split is set up properly
-		SwingUtilities.invokeLater(save::doClick);
 	}
 
 	private JMenuItem actionListenDock(Dockable dockable) {
@@ -291,7 +241,7 @@ public class MainFrame extends JFrame {
 			MainFrame mainFrame = new MainFrame();
 			mainFrame.setVisible(true);
 
-			// now that the main frame is setup with the defaults, we can restore the layout
+			// now that the main frame is set up with the defaults, we can restore the layout
 			AppState.setPersistFile(new File("basic_demo_layout.xml"));
 
 			try {

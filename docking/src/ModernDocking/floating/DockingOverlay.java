@@ -21,9 +21,12 @@ SOFTWARE.
  */
 package ModernDocking.floating;
 
-import ModernDocking.*;
-import ModernDocking.internal.DockingProperties;
+import ModernDocking.Dockable;
+import ModernDocking.DockableStyle;
+import ModernDocking.DockingRegion;
+import ModernDocking.RootDockingPanel;
 import ModernDocking.internal.DockingInternal;
+import ModernDocking.internal.DockingProperties;
 
 import javax.swing.*;
 import java.awt.*;

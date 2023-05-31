@@ -21,10 +21,10 @@ SOFTWARE.
  */
 package ModernDocking.persist;
 
+import ModernDocking.RootDockingPanel;
 import ModernDocking.internal.DockedSimplePanel;
 import ModernDocking.internal.DockedSplitPanel;
 import ModernDocking.internal.DockedTabbedPanel;
-import ModernDocking.RootDockingPanel;
 
 public class RootDockState {
 	private final DockableState state;
