@@ -51,9 +51,6 @@ public class DockingOverlay {
 	// the region on the root that is being docked to, this comes from the handles? I think
 	private DockingRegion rootRegion;
 
-	// the last region that we calculated. used for painting
-	private DockingRegion lastSelectedRegion;
-
 	// the top left location where the overlay starts
 	private Point location = new Point(0, 0);
 	// the total size of the overlay, used for drawing
@@ -99,6 +96,9 @@ public class DockingOverlay {
 	}
 
 	public void update(Point screenPos) {
+		// the last region that we calculated. used for painting
+		DockingRegion lastSelectedRegion;
+
 		if (targetRoot != null && rootRegion != null) {
 			Point point = targetRoot.getLocation();
 			Dimension size = targetRoot.getSize();
@@ -327,8 +327,6 @@ public class DockingOverlay {
 		if (visible && !visibleOverride) {
 			g.setColor(DockingProperties.getDockingOverlay());
 			g.fillRect(location.x, location.y, size.width, size.height);
-//			g.setColor(DockingProperties.getDockingOverlayBorder());
-//			g.drawRect(location.x, location.y, size.width, size.height);
 		}
 	}
 }

@@ -35,10 +35,8 @@ public class SplitState implements DockableState {
 
 	public SplitState(DockedSplitPanel panel) {
 		orientation = panel.getSplitPane().getOrientation();
-		dividerLocation = panel.getSplitPane().getDividerLocation();// / (double) panel.getSplitPane().getMaximumDividerLocation();
+		dividerLocation = panel.getSplitPane().getDividerLocation();
 		resizeWeight = panel.getSplitPane().getResizeWeight();
-
-//		System.out.println("divider, location: " + panel.getSplitPane().getDividerLocation() + ", max: " + panel.getSplitPane().getMaximumDividerLocation() + ", loc: " + dividerLocation);
 
 		if (panel.getLeft() instanceof DockedTabbedPanel) {
 			left = new TabState((DockedTabbedPanel) panel.getLeft());

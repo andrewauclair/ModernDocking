@@ -30,6 +30,7 @@ import javax.swing.event.AncestorListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Objects;
 
 // this can be replaced by the user or with the docking-ui FlatLaf header UI
 public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, AncestorListener {
@@ -68,8 +69,8 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		initialized = true;
 
 		try {
-			settings.setIcon(new ImageIcon(getClass().getResource("/icons/settings.png")));
-			close.setIcon(new ImageIcon(getClass().getResource("/icons/close.png")));
+			settings.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/settings.png"))));
+			close.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/close.png"))));
 		}
 		catch (Exception ignored) {
 		}

@@ -51,7 +51,6 @@ public class RootDockingPanel extends DockingPanel {
 		setLayout(new GridBagLayout());
 	}
 
-	public void init(){}
 	public RootDockingPanel(Window window) {
 		setLayout(new GridBagLayout());
 

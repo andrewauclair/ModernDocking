@@ -3,6 +3,9 @@ module modern_docking {
     requires java.logging;
 
     exports ModernDocking;
-	exports ModernDocking.ui;
+	exports ModernDocking.event;
+	exports ModernDocking.exception;
+	exports ModernDocking.layouts;
 	exports ModernDocking.persist;
+	exports ModernDocking.ui;
 }

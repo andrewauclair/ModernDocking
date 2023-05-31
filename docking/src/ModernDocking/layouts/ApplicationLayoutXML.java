@@ -34,7 +34,7 @@ public class ApplicationLayoutXML {
 	private static final String NL = "\n";
 
 	// saves a docking layout to the given file, returns true if successful, false otherwise
-	public static boolean saveLayoutToFile(File file, ApplicationLayout layout) throws DockingLayoutException {
+	public static void saveLayoutToFile(File file, ApplicationLayout layout) throws DockingLayoutException {
 		// create the file if it doens't exist
 		try {
 			file.createNewFile();
@@ -73,7 +73,6 @@ public class ApplicationLayoutXML {
 		catch (Exception e) {
 			throw new DockingLayoutException(e);
 		}
-		return true;
 	}
 
 	public static ApplicationLayout loadLayoutFromFile(File file) throws DockingLayoutException {

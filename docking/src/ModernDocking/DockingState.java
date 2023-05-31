@@ -179,10 +179,6 @@ public class DockingState {
 
 		root.setPanel(restoreState(state.getState(), window));
 
-		if (window instanceof JDialog) {
-//			((JDialog) window).setSize(500, 500);
-//			window.setVisible(true);
-		}
 		AppState.setPaused(paused);
 
 		if (!paused) {

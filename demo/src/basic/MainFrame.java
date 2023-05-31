@@ -67,15 +67,12 @@ public class MainFrame extends JFrame {
 
 				ApplicationLayout layout = DockingState.getApplicationLayout();
 
-				boolean saved = false;
 				try {
-					saved = ApplicationLayoutXML.saveLayoutToFile(selectedFile, layout);
+					ApplicationLayoutXML.saveLayoutToFile(selectedFile, layout);
 				}
 				catch (DockingLayoutException ex) {
 					ex.printStackTrace();
-				}
 
-				if (!saved) {
 					JOptionPane.showMessageDialog(MainFrame.this, "Failed to save layout");
 				}
 			}

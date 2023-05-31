@@ -41,7 +41,7 @@ public class WindowLayoutXML {
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
 		XMLStreamWriter writer;
 		try {
-			writer = factory.createXMLStreamWriter(new FileOutputStream(file));
+			writer = factory.createXMLStreamWriter(Files.newOutputStream(file.toPath()));
 		}
 		catch (Exception e) {
 			e.printStackTrace();

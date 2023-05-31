@@ -26,8 +26,8 @@ package ModernDocking.layouts;
 public class DockingSplitPanelNode implements DockingLayoutNode {
 	private DockingLayoutNode left;
 	private DockingLayoutNode right;
-	private int orientation;
-	private double dividerProportion;
+	private final int orientation;
+	private final double dividerProportion;
 
 	private DockingLayoutNode parent;
 

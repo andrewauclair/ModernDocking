@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  *  The TextIcon will paint a String of text as an Icon. The Icon
  *  can be used by any Swing component that supports icons.
- *
+
  *  TextIcon supports two different layout styles:
  *  <ul>
  *  <li>Horizontally - does normal rendering of the text by using the
@@ -21,7 +21,7 @@ import java.util.Map;
  *  requires FontMetrics information in order to calculate its size and to do
  *  the rendering. Therefore, it should only be added to component it was
  *  created for.
- *
+
  *  By default, the text will be rendered using the Font and foreground color
  *  of its associated component. However, this class does allow you to override
  *  these properties. Also starting in JDK6 the desktop renderering hints will
