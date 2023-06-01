@@ -327,7 +327,12 @@ public class Docking {
 
 		AppState.persist();
 
-		dockable.onUndocked();
+		if (!dockable.canBeClosed()) {
+			dock(dockable, instance.mainWindow);
+		}
+		else {
+			dockable.onUndocked();
+		}
 	}
 
 	// check if a dockable is currently docked
