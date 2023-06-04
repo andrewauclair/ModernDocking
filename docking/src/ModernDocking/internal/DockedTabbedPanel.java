@@ -23,6 +23,7 @@ package ModernDocking.internal;
 
 import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
+import ModernDocking.RootDockingPanel;
 import ModernDocking.floating.FloatListener;
 import ModernDocking.persist.AppState;
 
@@ -30,8 +31,11 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * DockingPanel that has a JTabbedPane inside its center
@@ -65,11 +69,71 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		// set the initial border. Docking handles the border after this using a global AWT listener
 		setNotSelectedBorder();
 
+		// default to tabs on bottom. if we need to change it we will when the first dockable is added
 		tabs.setTabPlacement(JTabbedPane.BOTTOM);
+
+		configureTrailingComponent();
 
 		add(tabs, BorderLayout.CENTER);
 
 		addPanel(dockable);
+	}
+
+	private void configureTrailingComponent() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridBagLayout());
+
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.EAST;
+		gbc.weightx = 1.0;
+		gbc.weighty = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+
+		JButton menu = new JButton();
+
+		try {
+			menu.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/settings.png"))));
+		}
+		catch (Exception ignored) {
+		}
+
+		setupButton(menu);
+
+		menu.addActionListener(e -> {
+			DockableWrapper dockable = panels.get(tabs.getSelectedIndex());
+
+			dockable.getUI().displaySettingsMenu(menu);
+
+		});
+
+		panel.add(menu, gbc);
+
+		tabs.putClientProperty("JTabbedPane.trailingComponent", panel);
+	}
+
+	private void setupButton(JButton button) {
+		Color color = DockingProperties.getTitlebarBackgroundColor();
+		button.setBackground(color);
+		button.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+		button.setFocusable(false);
+		button.setOpaque(false);
+		button.setContentAreaFilled(false);
+
+		button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				button.setContentAreaFilled(true);
+				button.setOpaque(true);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				button.setContentAreaFilled(false);
+				button.setOpaque(false);
+			}
+		});
 	}
 
 	@Override
@@ -94,12 +158,23 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	public void addPanel(DockableWrapper dockable) {
 		dockable.setParent(this);
 
+		// we only support tabs on top if we have FlatLaf because we can add a trailing component for our menu
+		boolean usingFlatLaf = tabs.getUI().getClass().getSimpleName().startsWith("Flat");
+
+		if (dockable.getDockable().getTabStyle() == Dockable.TabStyle.TAB_ON_BOTTOM) {
+			tabs.setTabPlacement(JTabbedPane.BOTTOM);
+		}
+		else if (dockable.getDockable().getTabStyle() == Dockable.TabStyle.TAB_ON_TOP && usingFlatLaf) {
+			tabs.setTabPlacement(JTabbedPane.TOP);
+		}
+
 		panels.add(dockable);
 		tabs.add(dockable.getDockable().getTabText(), dockable.getDisplayPanel());
 
 		tabs.setIconAt(tabs.getTabCount() - 1, dockable.getDockable().getIcon());
 		tabs.setSelectedIndex(tabs.getTabCount() - 1);
 		selectedTab = tabs.getSelectedIndex();
+		tabs.setTabComponentAt(tabs.getTabCount() - 1, new JLabel(dockable.getDockable().getTabText()));
 	}
 
 	/**
@@ -264,5 +339,24 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			panels.get(selectedTab).getDockable().shown();
 			DockingListeners.fireShownEvent(panels.get(selectedTab).getDockable());
 		}
+	}
+
+	public boolean isUsingTopTabs() {
+		return tabs.getTabPlacement() == JTabbedPane.TOP;
+	}
+
+	public boolean isUsingBottomTabs() {
+		return tabs.getTabPlacement() == JTabbedPane.BOTTOM;
+	}
+
+	public Component getTabForDockable(DockableWrapper wrapper) {
+		for (int i = 0; i < panels.size(); i++) {
+			DockableWrapper panel = panels.get(i);
+
+			if (panel.getDockable() == wrapper.getDockable()) {
+				return tabs.getTabComponentAt(i);
+			}
+		}
+		return null;
 	}
 }

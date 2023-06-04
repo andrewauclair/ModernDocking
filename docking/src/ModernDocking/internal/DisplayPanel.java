@@ -43,6 +43,12 @@ public class DisplayPanel extends JPanel {
 
 		setLayout(new GridBagLayout());
 
+		buildUI();
+	}
+
+	private void buildUI() {
+		removeAll();
+
 		GridBagConstraints gbc = new GridBagConstraints();
 
 		gbc.gridx = 0;
@@ -50,8 +56,11 @@ public class DisplayPanel extends JPanel {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 
-		add((Component) wrapper.getHeaderUI(), gbc);
-		gbc.gridy++;
+		if (!(wrapper.getParent() instanceof DockedTabbedPanel) || ((DockedTabbedPanel) wrapper.getParent()).isUsingBottomTabs()) {
+			add((Component) wrapper.getUI(), gbc);
+			gbc.gridy++;
+		}
+
 		gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
 
@@ -65,5 +74,9 @@ public class DisplayPanel extends JPanel {
 	 */
 	public DockableWrapper getWrapper() {
 		return wrapper;
+	}
+
+	public void parentChanged() {
+		buildUI();
 	}
 }

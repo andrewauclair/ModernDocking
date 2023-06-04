@@ -106,6 +106,11 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		component.addAncestorListener(this);
 	}
 
+	@Override
+	public void displaySettingsMenu(JButton settings) {
+		settingsMenu.show(settings, settings.getWidth(), settings.getHeight());
+	}
+
 	protected void init() {
 		if (initialized) {
 			return;
@@ -119,7 +124,7 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		catch (Exception ignored) {
 		}
 
-		settings.addActionListener(e -> this.settingsMenu.show(settings, settings.getWidth(), settings.getHeight()));
+		settings.addActionListener(e -> displaySettingsMenu(settings));
 		close.addActionListener(e -> headerController.close());
 
 		setupButton(settings);
