@@ -72,7 +72,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 	private ModalityType modalityType = ModalityType.MODELESS;
 
-	public FloatListener(DockableWrapper dockable, JComponent dragSource) {
+	public FloatListener(DockableWrapper dockable, Component dragSource) {
 		this.floatingDockable = dockable;
 
 		if (dragSource != null) {
@@ -89,7 +89,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 						((JDialog) originalWindow).setModalityType(ModalityType.MODELESS);
 
-//						SwingUtilities.invokeLater(() -> currentTopWindow.toFront());
 						SwingUtilities.invokeLater(() -> floatingFrame.toFront());
 						SwingUtilities.invokeLater(() -> activeUtilsFrame.toFront());
 					}

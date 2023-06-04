@@ -287,6 +287,7 @@ public class MainFrame extends JFrame {
 				throw new RuntimeException(ex);
 			}
 		}
+		UIManager.getDefaults().put("JTabbedPane.trailingComponent", new JLabel("Test"));
 		UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0,0,0,0));
 		UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
 

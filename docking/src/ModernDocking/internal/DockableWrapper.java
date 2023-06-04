@@ -92,6 +92,14 @@ public class DockableWrapper {
 	 */
 	public void setParent(DockingPanel parent) {
 		this.parent = parent;
+
+		if (parent instanceof DockedTabbedPanel && ((DockedTabbedPanel) parent).isUsingTopTabs()) {
+			SwingUtilities.invokeLater(() -> {
+			floatListener = new FloatListener(this, ((DockedTabbedPanel) parent).getTabForDockable(this));
+			});
+		}
+
+		displayPanel.parentChanged();
 	}
 
 	/**

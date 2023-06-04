@@ -54,13 +54,20 @@ public interface Dockable {
 	 */
 	int getType();
 
-	/**
-	 * provide the tab text to the docking framework
-	 * the tab text to be displayed when Dockable is in a tabbed pane. Does not need to be unique
-	 * NOTE: this text should be static. If it needs to change, then the Dockable needs to be undocked and docked again.
-	 *
-	 * @return Tab text of the dockable
-	 */
+	enum TabStyle
+	{
+		TAB_ON_BOTTOM, // default
+		TAB_ON_TOP,
+		DROP_DOWN
+	}
+
+	default TabStyle getTabStyle() {
+		return TabStyle.TAB_ON_BOTTOM;
+	}
+
+	// provide the tab text to the docking framework
+	// the tab text to be displayed when Dockable is in a tabbed pane. Does not need to be unique
+	// NOTE: this text should be static. If it needs to change, then the Dockable needs to be undocked and docked again.
 	String getTabText();
 
 	/**
