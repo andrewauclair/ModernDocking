@@ -460,6 +460,8 @@ public class Docking {
 			root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
 		}
 		DockingListeners.fireUnpinnedEvent(dockable);
+		dockable.hidden();
+		DockingListeners.fireHiddenEvent(dockable);
 	}
 
 	// display a dockable by persistentID

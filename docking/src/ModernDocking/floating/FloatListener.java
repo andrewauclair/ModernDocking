@@ -39,6 +39,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FloatListener extends DragSourceAdapter implements DragSourceListener, DragSourceMotionListener {
+	public static boolean isFloating = false;
+
 	// current floating dockable
 	private final DockableWrapper floatingDockable;
 
@@ -161,6 +163,8 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 	}
 
 	public void mouseDragged(Point point) {
+		isFloating = true;
+
 		dragOffset = point;
 
 		// force the drag offset to be inset from the edge slightly
@@ -271,6 +275,8 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 	@Override
 	public void dragDropEnd(DragSourceDropEvent dsde) {
 		dropFloatingPanel();
+
+		isFloating = false;
 	}
 
 	@Override

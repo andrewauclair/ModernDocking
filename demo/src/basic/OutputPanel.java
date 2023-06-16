@@ -105,4 +105,14 @@ public class OutputPanel extends ToolPanel {
             }
         }
     }
+
+    @Override
+    public void shown() {
+        System.out.println("Output shown");
+    }
+
+    @Override
+    public void hidden() {
+        System.out.println("Output hidden");
+    }
 }

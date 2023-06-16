@@ -23,6 +23,7 @@ package ModernDocking.internal;
 
 import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
+import ModernDocking.floating.FloatListener;
 import ModernDocking.persist.AppState;
 
 import javax.swing.*;
@@ -38,6 +39,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 	private final JTabbedPane tabs = new JTabbedPane();
 	private DockingPanel parent;
+
+	private int selectedTab = -1;
 
 	public DockedTabbedPanel() {
 		setLayout(new BorderLayout());
@@ -72,11 +75,12 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 		tabs.setIconAt(tabs.getTabCount() - 1, dockable.getDockable().getIcon());
 		tabs.setSelectedIndex(tabs.getTabCount() - 1);
+		selectedTab = tabs.getSelectedIndex();
 	}
 
 	public void removePanel(DockableWrapper dockable) {
-		panels.remove(dockable);
 		tabs.remove(dockable.getDisplayPanel());
+		panels.remove(dockable);
 
 		dockable.setParent(null);
 	}
@@ -178,7 +182,14 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			DockableWrapper panel = panels.get(i);
 
 			if (panel.getDockable() == dockable) {
+				if (tabs.getSelectedIndex() != i) {
+					if (tabs.getSelectedIndex() != -1) {
+						DockingListeners.fireHiddenEvent(panels.get(tabs.getSelectedIndex()).getDockable());
+					}
+					DockingListeners.fireShownEvent(panels.get(i).getDockable());
+				}
 				tabs.setSelectedIndex(i);
+				selectedTab = tabs.getSelectedIndex();
 			}
 		}
 	}
@@ -190,5 +201,20 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		AppState.persist();
+
+		if (tabs.getSelectedIndex() == -1) {
+			return;
+		}
+
+		if (selectedTab != -1 && !FloatListener.isFloating) {
+			panels.get(selectedTab).getDockable().hidden();
+			DockingListeners.fireHiddenEvent(panels.get(selectedTab).getDockable());
+		}
+		selectedTab = tabs.getSelectedIndex();
+
+		if (selectedTab != -1) {
+			panels.get(selectedTab).getDockable().shown();
+			DockingListeners.fireShownEvent(panels.get(selectedTab).getDockable());
+		}
 	}
 }

@@ -118,6 +118,12 @@ public interface Dockable {
 	default void onUndocked() {
 	}
 
+	default void shown() {
+	}
+
+	default void hidden() {
+	}
+
     default Map<String, String> getProperties() {
 		return new HashMap<>();
 	}

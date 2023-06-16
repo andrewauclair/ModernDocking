@@ -33,4 +33,8 @@ public interface DockingListener {
 	}
 
 	void unpinned(String persistentID);
+
+	void shown(String persistentID);
+
+	void hidden(String persistentID);
 }

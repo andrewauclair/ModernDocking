@@ -63,4 +63,14 @@ public abstract class BasePanel extends JPanel implements Dockable {
 	public DockingHeaderUI createHeaderUI(HeaderController headerController, HeaderModel headerModel) {
 		return new FlatLafHeaderUI(headerController, headerModel);
 	}
+
+	@Override
+	public void shown() {
+		System.out.println(persistentID + " shown");
+	}
+
+	@Override
+	public void hidden() {
+		System.out.println(persistentID + " hidden");
+	}
 }

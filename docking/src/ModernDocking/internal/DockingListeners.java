@@ -75,4 +75,12 @@ public class DockingListeners {
 	public static void fireUnpinnedEvent(Dockable dockable) {
 		dockingListeners.forEach(listener -> listener.unpinned(dockable.getPersistentID()));
 	}
+
+	public static void fireShownEvent(Dockable dockable) {
+		dockingListeners.forEach(listener -> listener.shown(dockable.getPersistentID()));
+	}
+
+	public static void fireHiddenEvent(Dockable dockable) {
+		dockingListeners.forEach(listener -> listener.shown(dockable.getPersistentID()));
+	}
 }
