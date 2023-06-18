@@ -27,6 +27,7 @@ import ModernDocking.RootDockingPanel;
 import ModernDocking.floating.TempFloatingFrame;
 
 import javax.swing.*;
+import javax.swing.plaf.DimensionUIResource;
 import java.awt.*;
 
 import static ModernDocking.internal.DockingInternal.getWrapper;
@@ -119,6 +120,7 @@ public class FloatingFrame extends JFrame {
 			// adjust the floating frame such that the dockable is in the correct location
 			DisplayPanel displayPanel = getWrapper(dockable).getDisplayPanel();
 
+
 			Point point = displayPanel.getLocation();
 			SwingUtilities.convertPointToScreen(point, displayPanel.getParent());
 
@@ -130,11 +132,10 @@ public class FloatingFrame extends JFrame {
 
 			setLocation(finalPoint);
 
-			// adjust the floating frame such that the dockable is the correct size (doesn't really make it perfect, but it's pretty close)
-			// (I don't suspect that someone is going to float and drop the same dockable over and over and notice the 3 pixel increase each time)
-			Insets frameInsets = getInsets();
+			Dimension currentPanelSize = displayPanel.getSize();
+			Dimension currentFrameSize = getSize();
 
-			Dimension newSize = new Dimension(onScreenSize.width + frameInsets.left + frameInsets.right, onScreenSize.height + frameInsets.top + frameInsets.bottom);
+			Dimension newSize = new Dimension(currentFrameSize.width - currentPanelSize.width + onScreenSize.width, currentFrameSize.height - currentPanelSize.height + onScreenSize.height);
 			setSize(newSize);
 		});
 	}
