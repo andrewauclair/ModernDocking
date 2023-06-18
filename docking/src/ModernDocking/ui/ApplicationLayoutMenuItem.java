@@ -29,10 +29,20 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-// Special JMenuItem that restores the application layout with an ApplicationLayout
+/**
+ * Special JMenuItem which will restore an ApplicationLayout when selected
+ */
 public class ApplicationLayoutMenuItem extends JMenuItem implements ActionListener {
+    /**
+     * The name of the ApplicationLayout, used to get the layout from DockingLayouts
+     */
     private final String layoutName;
 
+    /**
+     * Create a new ApplicationLayoutMenuItem for the specified layout. The layout name will be used as the display text.
+     *
+     * @param layoutName Name of the ApplicationLayout this ApplicationLayoutMenuItem will restore
+     */
     public ApplicationLayoutMenuItem(String layoutName) {
         super(layoutName);
 
@@ -40,6 +50,12 @@ public class ApplicationLayoutMenuItem extends JMenuItem implements ActionListen
         addActionListener(this);
     }
 
+    /**
+     * Create a new ApplicationLayoutMenuItem for the specified layout
+     *
+     * @param layoutName Name of the ApplicationLayout this ApplicationLayoutMenuItem will restore
+     * @param text Display text of the JMenuItem
+     */
     public ApplicationLayoutMenuItem(String layoutName, String text) {
         super(text);
 

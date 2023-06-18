@@ -25,7 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// layout of the entire application including all frames with docking roots
+/**
+ * Layout of the entire application, including all open frames with docking roots
+ */
 public class ApplicationLayout {
 	private static class FrameLayout {
 		private final WindowLayout layout;
@@ -37,15 +39,32 @@ public class ApplicationLayout {
 		}
 	}
 
+	/**
+	 * List of all the FrameLayouts in this ApplicationLayout
+	 */
 	private final List<FrameLayout> layouts = new ArrayList<>();
 
+	/**
+	 * Create an empty ApplicationLayout
+	 */
 	public ApplicationLayout() {
 	}
 
+	/**
+	 * Create an ApplicationLayout from a WindowLayout
+	 * @param mainFrame Layout of the application main frame
+	 */
 	public ApplicationLayout(WindowLayout mainFrame) {
 		layouts.add(new FrameLayout(mainFrame, true));
 	}
 
+	/**
+	 * Add a WindowLayout as the main frame
+	 *
+	 * Note: This will remove the current main frame layout in this ApplicationLayout, if one exists
+	 *
+	 * @param layout Layout of the application main frame
+	 */
 	public void setMainFrame(WindowLayout layout) {
 		for (FrameLayout frameLayout : layouts) {
 			if (frameLayout.isMainFrame) {
@@ -56,10 +75,20 @@ public class ApplicationLayout {
 		layouts.add(new FrameLayout(layout, true));
 	}
 
+	/**
+	 * Add a new WindowLayout
+	 *
+	 * @param layout Layout to add to this ApplicationLayout
+	 */
 	public void addFrame(WindowLayout layout) {
 		layouts.add(new FrameLayout(layout, layout.isMainFrame()));
 	}
 
+	/**
+	 * Get the layout of the main frame stored in this ApplicationLayout
+	 *
+	 * @return The layout of the main frame, or null, if there is no main frame layout
+	 */
 	public WindowLayout getMainFrameLayout() {
 		for (FrameLayout frameLayout : layouts) {
 			if (frameLayout.isMainFrame) {
@@ -69,6 +98,11 @@ public class ApplicationLayout {
 		return null;
 	}
 
+	/**
+	 * Get all the floating frame layouts in this ApplicationLayout
+	 *
+	 * @return All layouts in this ApplicationLayout that are not the main frame
+	 */
 	public List<WindowLayout> getFloatingFrameLayouts() {
 		return layouts.stream()
 				.filter(layout -> !layout.isMainFrame)

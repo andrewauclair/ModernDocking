@@ -32,7 +32,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
 
-// this can be replaced by the user or with the docking-ui FlatLaf header UI
+/**
+ * This can be replaced by the user or with the docking-ui FlatLaf header UI
+ */
 public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, AncestorListener {
 	private final HeaderController headerController;
 	private final HeaderModel headerModel;

@@ -30,10 +30,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 
+/**
+ * Helper class to save and load ApplicationLayouts to/from XML formatted files
+ */
 public class ApplicationLayoutXML {
 	private static final String NL = "\n";
 
-	// saves a docking layout to the given file, returns true if successful, false otherwise
+	/**
+	 * saves a docking layout to the given file
+	 *
+	 * @param file File to save the docking layout into
+	 * @param layout The layout to save
+	 * @throws DockingLayoutException Thrown if we failed to save the layout to the file
+	 */
 	public static void saveLayoutToFile(File file, ApplicationLayout layout) throws DockingLayoutException {
 		// create the file if it doens't exist
 		try {
@@ -75,6 +84,13 @@ public class ApplicationLayoutXML {
 		}
 	}
 
+	/**
+	 * Load an ApplicationLayout from the specified file
+	 *
+	 * @param file File to load the ApplicationLayout from
+	 * @return ApplicationLayout loaded from the file
+	 * @throws DockingLayoutException Thrown if we failed to read from the file or something went wrong with loading the layout
+	 */
 	public static ApplicationLayout loadLayoutFromFile(File file) throws DockingLayoutException {
 		XMLInputFactory factory = XMLInputFactory.newInstance();
 
