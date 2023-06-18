@@ -28,6 +28,9 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Default implementation of the Dockable interface. Useful for GUI builds where you can set each property.
+ */
 public abstract class DefaultDockingPanel implements Dockable {
     private String persistentID;
     private int type;

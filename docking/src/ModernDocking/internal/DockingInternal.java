@@ -31,6 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Internal utilities for the library
+ */
 public class DockingInternal {
 	private static final Map<String, DockableWrapper> dockables = new HashMap<>();
 

@@ -21,5 +21,8 @@ SOFTWARE.
  */
 package ModernDocking.persist;
 
+/**
+ * Base interface for the Panel, Tab and Split state classes
+ */
 public interface DockableState {
 }

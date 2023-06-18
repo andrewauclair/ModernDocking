@@ -21,7 +21,15 @@ SOFTWARE.
  */
 package ModernDocking.exception;
 
+/**
+ * Exception wrapper for exceptions encounted while dealing with docking layouts
+ */
 public class DockingLayoutException extends Exception {
+    /**
+     * Create a new instance
+     *
+     * @param cause The root cause of the exception
+     */
     public DockingLayoutException(Exception cause) {
         initCause(cause);
     }

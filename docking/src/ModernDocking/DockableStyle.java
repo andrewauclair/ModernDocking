@@ -21,8 +21,20 @@ SOFTWARE.
  */
 package ModernDocking;
 
+/**
+ * The style used by a dockable. Used to lock dockables into specific orientations
+ */
 public enum DockableStyle {
+	/**
+	 * Dockable is only allowed to be docked horizontally
+	 */
 	HORIZONTAL,
+	/**
+	 * Dockable is only allowed to be docked vertically
+	 */
 	VERTICAL,
+	/**
+	 * Dockable is allowed to be docked horizontally or vertically
+	 */
 	BOTH
 }

@@ -30,11 +30,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.function.Supplier;
 
-// Special JCheckBoxMenuItem that handles updating the checkbox for us based on the docking state of the dockable
+/**
+ * Special JCheckBoxMenuItem that handles updating the checkbox for us based on the docking state of the dockable
+ */
 public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListener {
 	private final Supplier<String> persistentIDProvider;
 	private final String persistentID;
 
+	/**
+	 * Create a new DockableMenuItem
+	 *
+	 * @param dockable The dockable to dock when this menu item is selected
+	 */
 	public DockableMenuItem(Dockable dockable) {
 		this(dockable.getPersistentID(), dockable.getTabText());
 	}

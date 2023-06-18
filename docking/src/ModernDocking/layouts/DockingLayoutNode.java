@@ -23,6 +23,9 @@ package ModernDocking.layouts;
 
 import ModernDocking.DockingRegion;
 
+/**
+ * Base interface for docking layout nodes, simple, split, tab and empty
+ */
 public interface DockingLayoutNode {
 	DockingLayoutNode findNode(String persistentID);
 

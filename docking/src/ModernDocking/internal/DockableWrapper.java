@@ -31,8 +31,10 @@ import ModernDocking.ui.HeaderModel;
 import javax.swing.*;
 import java.awt.*;
 
-// internal wrapper around the Dockable implemented by the application.
-// lets us provide access to the dockable and its parent in the hierarchy
+/**
+ * internal wrapper around the Dockable implemented by the application.
+ * lets us provide access to the dockable and its parent in the hierarchy
+ */
 public class DockableWrapper {
 	private final HeaderController headerController;
 	private Window window;
@@ -48,6 +50,11 @@ public class DockableWrapper {
 	private boolean unpinned = false;
 	private RootDockingPanel root;
 
+	/**
+	 * Create a new wrapper for the dockable
+	 *
+	 * @param dockable Dockable to contain in this wrapper
+	 */
 	public DockableWrapper(Dockable dockable) {
 		this.dockable = dockable;
 
@@ -60,22 +67,45 @@ public class DockableWrapper {
 		displayPanel = new DisplayPanel(this);
 	}
 
+	/**
+	 * Get the window for the dockable
+	 *
+	 * @return The window that the contained dockable is in
+	 */
 	public Window getWindow() {
 		return window;
 	}
 
+	/**
+	 * Set the new window of the dockable
+	 *
+	 * @param window New window
+	 */
 	public void setWindow(Window window) {
 		this.window = window;
 	}
 
+	/**
+	 * Set the new parent of the dockable
+	 *
+	 * @param parent New parent
+	 */
 	public void setParent(DockingPanel parent) {
 		this.parent = parent;
 	}
 
+	/**
+	 * Get the contained dockable
+	 *
+	 * @return The dockable contained in this wrapper
+	 */
 	public Dockable getDockable() {
 		return dockable;
 	}
 
+	/**
+	 * Remove any floating listeners that this wrapper has added to the dockables header controller
+	 */
 	public void removedListeners() {
 		if (floatListener != null) {
 			headerController.removeListeners();
@@ -88,30 +118,65 @@ public class DockableWrapper {
 		}
 	}
 
+	/**
+	 * Get the parent of this wrapper
+	 *
+	 * @return Parent of wrapper
+	 */
 	public DockingPanel getParent() {
 		return parent;
 	}
 
+	/**
+	 * Check if the dockable is maximized
+	 *
+	 * @return Whether the dockable is maximized
+	 */
 	public boolean isMaximized() {
 		return maximized;
 	}
 
+	/**
+	 * Set the dockable to maximized
+	 *
+	 * @param maximized Maximized flag
+	 */
 	public void setMaximized(boolean maximized) {
 		this.maximized = maximized;
 	}
 
+	/**
+	 * Check if the dockable is unpinned
+	 *
+	 * @return Whether the dockable is unpinned
+	 */
 	public boolean isUnpinned() {
 		return unpinned;
 	}
 
+	/**
+	 * Set the dockable to unpinned
+	 *
+	 * @param unpinned Unpinned flag
+	 */
 	public void setUnpinned(boolean unpinned) {
 		this.unpinned = unpinned;
 	}
 
-	public DockingHeaderUI getUI() {
+	/**
+	 * Get the header UI of the dockable
+	 *
+	 * @return Header UI instance
+	 */
+	public DockingHeaderUI getHeaderUI() {
 		return headerUI;
 	}
 
+	/**
+	 * Get the display panel
+	 *
+	 * @return Display panel instance
+	 */
 	public DisplayPanel getDisplayPanel() {
 		return displayPanel;
 	}

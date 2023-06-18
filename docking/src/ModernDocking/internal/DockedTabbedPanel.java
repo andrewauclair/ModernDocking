@@ -33,7 +33,9 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-// DockingPanel that has a JTabbedPane inside its center
+/**
+ * DockingPanel that has a JTabbedPane inside its center
+ */
 public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	private final List<DockableWrapper> panels = new ArrayList<>();
 
@@ -42,6 +44,9 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 	private int selectedTab = -1;
 
+	/**
+	 * Create a new instance of DockedTabbedPanel
+	 */
 	public DockedTabbedPanel() {
 		setLayout(new BorderLayout());
 
@@ -78,6 +83,11 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		selectedTab = tabs.getSelectedIndex();
 	}
 
+	/**
+	 * Remove a panel from this DockedTabbedPanel. This is done when the dockable is closed or docked elsewhere
+	 *
+	 * @param dockable The dockable to remove
+	 */
 	public void removePanel(DockableWrapper dockable) {
 		tabs.remove(dockable.getDisplayPanel());
 		panels.remove(dockable);

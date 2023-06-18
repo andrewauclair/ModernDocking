@@ -21,7 +21,15 @@ SOFTWARE.
  */
 package ModernDocking.exception;
 
+/**
+ * Special RuntimeException indicating that a dockable was not found
+ */
 public class DockableNotFoundException extends RuntimeException {
+	/**
+	 * Create a new DockableNotFoundException
+	 *
+	 * @param persistentID The persistentID of the non-existent dockable
+	 */
 	public DockableNotFoundException(String persistentID) {
 		super("Dockable with persistent ID '" + persistentID + "' not found.");
 	}

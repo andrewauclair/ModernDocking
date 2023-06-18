@@ -24,6 +24,9 @@ package ModernDocking.internal;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The internal JPanel used to display the Dockable plus its header
+ */
 public class DisplayPanel extends JPanel {
 	private final DockableWrapper wrapper;
 
@@ -39,7 +42,7 @@ public class DisplayPanel extends JPanel {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 
-		add((Component) wrapper.getUI(), gbc);
+		add((Component) wrapper.getHeaderUI(), gbc);
 		gbc.gridy++;
 		gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
@@ -47,6 +50,11 @@ public class DisplayPanel extends JPanel {
 		add((Component) wrapper.getDockable(), gbc);
 	}
 
+	/**
+	 * Get the wrapper used in this panel
+	 *
+	 * @return Wrapper for this panel
+	 */
 	public DockableWrapper getWrapper() {
 		return wrapper;
 	}

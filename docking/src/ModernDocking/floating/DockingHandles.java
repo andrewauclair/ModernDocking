@@ -34,8 +34,10 @@ import java.util.Map;
 
 import static ModernDocking.floating.DockingHandle.HANDLE_ICON_SIZE;
 
-// handles displaying the handles for docking overlaid on the application
-// only displayed over the currently hit docking panel
+/**
+ * handles displaying the handles for docking overlaid on the application
+ * only displayed over the currently hit docking panel
+ */
 public class DockingHandles {
 	private final DockingHandle rootCenter = new DockingHandle(DockingRegion.CENTER, true);
 	private final DockingHandle rootWest = new DockingHandle(DockingRegion.WEST, true);
@@ -62,6 +64,12 @@ public class DockingHandles {
 	// the dockable that the mouse is currently over, can be null
 	private Dockable targetDockable = null;
 
+	/**
+	 * Create a new instance of the DockingHandles
+	 *
+	 * @param utilFrame The utility frame to draw the handles on
+	 * @param root The root panel of the window we're drawing over
+	 */
 	public DockingHandles(JFrame utilFrame, RootDockingPanel root) {
 		this.utilFrame = utilFrame;
 
@@ -80,10 +88,20 @@ public class DockingHandles {
 		setupHandle(dockableSouth);
 	}
 
+	/**
+	 * Get the current region that we are moused over
+	 *
+	 * @return The current region, possibly null
+	 */
 	public DockingRegion getDockableRegion() {
 		return dockableRegion;
 	}
 
+	/**
+	 * Get the current root region that we are moused over
+	 *
+	 * @return The current root region, possibly null
+	 */
 	public DockingRegion getRootRegion() {
 		return rootRegion;
 	}
@@ -229,6 +247,11 @@ public class DockingHandles {
 		component.setLocation(x - (HANDLE_ICON_SIZE / 2), y - (HANDLE_ICON_SIZE / 2));
 	}
 
+	/**
+	 * Paint the handles
+	 *
+	 * @param g Graphics instance to use
+	 */
 	public void paint(Graphics g) {
 		int centerX = dockableCenter.getX() + (dockableCenter.getWidth() / 2);
 		int centerY = dockableCenter.getY() + (dockableCenter.getWidth() / 2);

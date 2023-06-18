@@ -21,7 +21,15 @@ SOFTWARE.
  */
 package ModernDocking.exception;
 
+/**
+ * Special RuntimeException for failing to register a dockable
+ */
 public class DockableRegistrationFailureException extends RuntimeException {
+	/**
+	 * Create a new instance
+	 *
+	 * @param message Failure message
+	 */
 	public DockableRegistrationFailureException(String message) {
 		super(message);
 	}

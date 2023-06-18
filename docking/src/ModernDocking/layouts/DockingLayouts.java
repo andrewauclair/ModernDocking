@@ -36,10 +36,20 @@ public class DockingLayouts {
 	private static final List<LayoutsListener> listeners = new ArrayList<>();
 	private static final Map<String, ApplicationLayout> layouts = new HashMap<>();
 
+	/**
+	 * Add a new layouts listener
+	 *
+	 * @param listener New listener to add
+	 */
 	public static void addLayoutsListener(LayoutsListener listener) {
 		listeners.add(listener);
 	}
 
+	/**
+	 * Remove a layout listener
+	 *
+	 * @param listener Listener to remove
+	 */
 	public static void removeLayoutsListener(LayoutsListener listener) {
 		listeners.remove(listener);
 	}
@@ -57,6 +67,12 @@ public class DockingLayouts {
 		}
 	}
 
+	/**
+	 * Lookup a layout by name
+	 *
+	 * @param name Name of the layout to find
+	 * @return The layout, or null if it is not found
+	 */
 	public static ApplicationLayout getLayout(String name) {
 		return layouts.get(name);
 	}

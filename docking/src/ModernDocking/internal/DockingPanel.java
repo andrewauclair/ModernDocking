@@ -26,16 +26,45 @@ import ModernDocking.DockingRegion;
 
 import javax.swing.*;
 
-// Docking panel with docking regions of: north, south, east, west and center
+/**
+ * Docking panel with docking regions of: north, south, east, west and center
+ */
 public abstract class DockingPanel extends JPanel {
+	/**
+	 * Set the parent of this DockingPanel
+	 *
+	 * @param parent The new parent of this panel
+	 */
 	public abstract void setParent(DockingPanel parent);
 
+	/**
+	 * Dock a dockable to this panel
+	 *
+	 * @param dockable The dockable to dock
+	 * @param region The region to dock into
+	 * @param dividerProportion The proportion to use if docking as a split pane
+	 */
 	public abstract void dock(Dockable dockable, DockingRegion region, double dividerProportion);
 
-	// undock the given dockable, returns true if the dockable was found and removed
+	/**
+	 * undock the given dockable, returns true if the dockable was found and removed
+	 *
+	 * @param dockable Dockable to undock
+	 */
 	public abstract void undock(Dockable dockable);
 
+	/**
+	 * Replace one of the children in this panel with a new child
+	 *
+	 * @param child The child to replace
+	 * @param newChild The new child to add
+	 */
 	public abstract void replaceChild(DockingPanel child, DockingPanel newChild);
 
+	/**
+	 * Remove the specified child from this panel
+	 *
+	 * @param child Child to remove
+	 */
 	public abstract void removeChild(DockingPanel child);
 }

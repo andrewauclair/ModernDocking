@@ -37,6 +37,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * This class is a special panel used to display toolbar on the West, East or South side of a frame to display dockables
+ * that are unpinned
+ */
 public class DockableToolbar extends JPanel implements ComponentListener {
 	public enum Location {
 		WEST,

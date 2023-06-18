@@ -32,6 +32,9 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * This class is used for auto persisting the application layout to a file when there are changes to the layout
+ */
 public class AppState {
 	private static final Logger logger = Logger.getLogger(AppState.class.getPackageName());
 	private static final int PERSIST_TIMER_DELAY_MS = 500;
@@ -49,6 +52,11 @@ public class AppState {
 		AppState.autoPersist = autoPersist;
 	}
 
+	/**
+	 * Are we currently auto persisting to a file?
+	 *
+	 * @return True - we are auto persisting, False - we are not auto persisting
+	 */
 	public static boolean isAutoPersist() {
 		return autoPersist;
 	}
@@ -57,6 +65,11 @@ public class AppState {
 		autoPersistFile = file;
 	}
 
+	/**
+	 * Retrieve the file that we are persisting the application layout into
+	 *
+	 * @return The file we are currently persisting to
+	 */
 	public static File getPersistFile() {
 		return autoPersistFile;
 	}

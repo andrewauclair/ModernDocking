@@ -24,12 +24,26 @@ package ModernDocking.util;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Special Icon to combine multiple Icons.
+ *
+ * We use this to combine an image icon and rotated text icon on West/East docking toolbars
+ */
 public class CombinedIcon implements Icon {
+    /**
+     * The amount of padding to add between the two icons
+     */
     private static final int PADDING = 2;
 
     private final Icon top;
     private final Icon bottom;
 
+    /**
+     * Create a new CombinedIcon
+     *
+     * @param top The icon to display on the top
+     * @param bottom The icon to display on the bottom
+     */
     public CombinedIcon(Icon top, Icon bottom) {
         this.top = top;
         this.bottom = bottom;

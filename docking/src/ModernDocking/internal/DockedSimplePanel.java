@@ -27,12 +27,19 @@ import ModernDocking.DockingRegion;
 import javax.swing.*;
 import java.awt.*;
 
-// simple docking panel that only has a single Dockable in the center
+/**
+ * simple docking panel that only has a single Dockable in the center
+ */
 public class DockedSimplePanel extends DockingPanel {
 	private final DockableWrapper dockable;
 
 	private DockingPanel parent;
 
+	/**
+	 * Create a new instance of DockedSimplePanel with a wrapper
+	 *
+	 * @param dockable Wrapper of the dockable in this simple panel
+	 */
 	public DockedSimplePanel(DockableWrapper dockable) {
 		setLayout(new BorderLayout());
 

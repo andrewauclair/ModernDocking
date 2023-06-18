@@ -33,7 +33,9 @@ import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-// DockingPanel that has a split pane with 2 dockables, split can be vertical or horizontal
+/**
+ * DockingPanel that has a split pane with 2 dockables, split can be vertical or horizontal
+ */
 public class DockedSplitPanel extends DockingPanel implements MouseListener, PropertyChangeListener {
 	private DockingPanel left = null;
 	private DockingPanel right = null;
@@ -42,6 +44,11 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	private DockingPanel parent;
 	private final Window window;
 
+	/**
+	 * Create a new DockedSplitPanel
+	 *
+	 * @param window The window this panel is in. Used to tell the child DockableWrappers what Window they are a part of
+	 */
 	public DockedSplitPanel(Window window) {
 		this.window = window;
 		setLayout(new BorderLayout());
@@ -135,10 +142,20 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 		}
 	}
 
+	/**
+	 * Access to the underlying JSplitPane. This is required so that we can pull a bunch of values for saving layouts.
+	 *
+	 * @return The JSplitPane used by this DockedSplitPanel
+	 */
 	public JSplitPane getSplitPane() {
 		return splitPane;
 	}
 
+	/**
+	 * Get the left/top component of the split
+	 *
+	 * @return Left/top component in the split
+	 */
 	public DockingPanel getLeft() {
 		return left;
 	}
@@ -155,6 +172,11 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 		splitPane.setDividerLocation(dividerLocation);
 	}
 
+	/**
+	 * Get the right/bottom component of the split
+	 *
+	 * @return Right/bottom component in the split
+	 */
 	public DockingPanel getRight() {
 		return right;
 	}

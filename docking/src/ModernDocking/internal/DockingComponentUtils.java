@@ -33,7 +33,9 @@ import java.util.Optional;
 
 import static ModernDocking.internal.DockingInternal.getWrapper;
 
-// set of internal utilities for dealing with the component hierarchy of dockables
+/**
+ * set of internal utilities for dealing with the component hierarchy of dockables
+ */
 public class DockingComponentUtils {
 	// used to undock all dockables in a container
 	// called when a frame is to be disposed
@@ -84,7 +86,12 @@ public class DockingComponentUtils {
 		return first.orElse(null);
 	}
 
-	// find a dockable at a given screen position
+	/**
+	 * find a dockable at a given screen position
+	 *
+	 * @param screenPos Screen position to check for a dockable at
+	 * @return Dockable under the screen position, or null if none is found
+	 */
 	public static Dockable findDockableAtScreenPos(Point screenPos) {
 		Window window = findRootAtScreenPos(screenPos);
 
@@ -96,7 +103,13 @@ public class DockingComponentUtils {
 		return findDockableAtScreenPos(screenPos, window);
 	}
 
-	// find a dockable at a given screen position, limited to a single window
+	/**
+	 * find a dockable at a given screen position, limited to a single window
+	 *
+	 * @param screenPos Screen position to check for a dockable at
+	 * @param window The window to check
+	 * @return Dockable under the screen position, or null if none is found
+	 */
 	public static Dockable findDockableAtScreenPos(Point screenPos, Window window) {
 		// window is null so there's no dockable to find
 		if (window == null) {
@@ -124,7 +137,12 @@ public class DockingComponentUtils {
 		return ((DisplayPanel) component).getWrapper().getDockable();
 	}
 
-	// find a docking panel at a given screen position
+	/**
+	 * find a docking panel at a given screen position
+	 *
+	 * @param screenPos Screen position to check for a dockable at
+	 * @return DockingPanel under the screen position, or null if none is found
+	 */
 	public static DockingPanel findDockingPanelAtScreenPos(Point screenPos) {
 		Window window = findRootAtScreenPos(screenPos);
 
@@ -136,7 +154,13 @@ public class DockingComponentUtils {
 		return findDockingPanelAtScreenPos(screenPos, window);
 	}
 
-	// find a docking panel at a given screen position. limited to a single window
+	/**
+	 * find a docking panel at a given screen position. limited to a single window
+	 *
+	 * @param screenPos Screen position to check for a dockable at
+	 * @param window The window to check
+	 * @return DockingPanel under the screen position, or null if none is found
+	 */
 	public static DockingPanel findDockingPanelAtScreenPos(Point screenPos, Window window) {
 		// no window found at the location, return null
 		if (window == null) {
@@ -164,7 +188,11 @@ public class DockingComponentUtils {
 		return (DockingPanel) component;
 	}
 
-	// remove panels from window if they return false for allowFloating() and there are no other dockables in the window
+	/**
+	 * remove panels from window if they return false for allowFloating() and there are no other dockables in the window
+	 *
+	 * @param window The window to remove illegal floating dockables from
+	 */
 	public static void removeIllegalFloats(Window window) {
 		// don't touch any dockables on a JDialog, they are their own little environment
 		if (window instanceof JDialog) {

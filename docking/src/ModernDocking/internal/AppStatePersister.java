@@ -29,7 +29,9 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 
-// simple internal class that calls AppState.persist() whenever a frame resizes, moves or changes state
+/**
+ * simple internal class that calls AppState.persist() whenever a frame resizes, moves or changes state
+ */
 public class AppStatePersister extends ComponentAdapter implements WindowStateListener {
 	public AppStatePersister() {
 	}

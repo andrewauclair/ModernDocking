@@ -29,12 +29,24 @@ import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
+/**
+ * Special label used to draw the docking handles on an overlay
+ */
 public class DockingHandle extends JLabel implements ComponentListener {
+	/**
+	 * The size to draw the docking handle, in pixels
+	 */
 	public static final int HANDLE_ICON_SIZE = 32;
 
 	private final DockingRegion region;
 	private final boolean isRoot;
 
+	/**
+	 * Create a new DockingHandle
+	 *
+	 * @param region The region of this DockingHandle
+	 * @param isRoot Is this the root docking handle?
+	 */
 	public DockingHandle(DockingRegion region, boolean isRoot) {
 		this.region = region;
 		this.isRoot = isRoot;
@@ -44,10 +56,20 @@ public class DockingHandle extends JLabel implements ComponentListener {
 		setVisible(false);
 	}
 
+	/**
+	 * Get the region for this handle
+	 *
+	 * @return Region this DockingHandle represents
+	 */
 	public DockingRegion getRegion() {
 		return region;
 	}
 
+	/**
+	 * Check if this DockingHandle is for the root of the panel
+	 *
+	 * @return Whether this is the root docking handle
+	 */
 	public boolean isRoot() {
 		return isRoot;
 	}
@@ -94,8 +116,13 @@ public class DockingHandle extends JLabel implements ComponentListener {
 	public void componentHidden(ComponentEvent e) {
 	}
 
-	// g is used to do the main paint operations
-	// g2 is used to draw the dashed lines on top
+	/**
+	 * Paint the handle
+	 *
+	 * @param g used to do the main paint operations
+	 * @param g2 used to draw the dashed lines on top
+	 * @param mouseOver is the mouse over this handle?
+	 */
 	public void paintHandle(Graphics g, Graphics2D g2, boolean mouseOver) {
 		Rectangle bounds = getBounds();
 

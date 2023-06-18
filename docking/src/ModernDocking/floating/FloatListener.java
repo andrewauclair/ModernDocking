@@ -178,7 +178,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 		RootDockingPanel currentRoot = DockingComponentUtils.rootForWindow(originalWindow);
 
-		floatingFrame = new TempFloatingFrame(floatingDockable.getDockable(), (JComponent) floatingDockable.getUI());
+		floatingFrame = new TempFloatingFrame(floatingDockable.getDockable(), (JComponent) floatingDockable.getHeaderUI());
 
 		floatingDockable.getParent().undock(floatingDockable.getDockable());
 
@@ -191,7 +191,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 		// make sure we are still using the mouse press point, not the current mouse position which might not be over the frame anymore
 		Point mousePos = new Point(point);
-		SwingUtilities.convertPointToScreen(mousePos, (Component) floatingDockable.getUI());
+		SwingUtilities.convertPointToScreen(mousePos, (Component) floatingDockable.getHeaderUI());
 
 		if (originalWindow != windowToDispose) {
 			currentTopWindow = originalWindow;
