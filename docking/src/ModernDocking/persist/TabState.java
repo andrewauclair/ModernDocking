@@ -27,13 +27,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * State of a tab panel
+ */
 public class TabState implements DockableState {
 	private final List<String> persistentIDs = new ArrayList<>();
 
+	/**
+	 * Create from a tabbed panel
+	 *
+	 * @param panel Tabbed panel
+	 */
 	public TabState(DockedTabbedPanel panel) {
 		persistentIDs.addAll(panel.persistentIDs());
 	}
 
+	/**
+	 * List of persistent IDs in the tabbed panel
+	 *
+	 * @return Persistent IDs
+	 */
 	public List<String> getPersistentIDs() {
 		return Collections.unmodifiableList(persistentIDs);
 	}

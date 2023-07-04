@@ -74,14 +74,28 @@ public class AppState {
 		return autoPersistFile;
 	}
 
+	/**
+	 * Sets the pause state of the auto persistence
+	 *
+	 * @param paused Whether auto persistence should be enabled
+	 */
 	public static void setPaused(boolean paused) {
 		AppState.paused = paused;
 	}
 
+	/**
+	 * Gets the pause state of the auto persistence
+	 *
+	 * @return Whether auto persistence is enabled
+	 */
 	public static boolean isPaused() {
 		return paused;
 	}
 
+	/**
+	 * Used to persist the current app layout to the layout file.
+	 * This is a no-op if auto persistence is turned off, it's paused or there is no file
+	 */
 	public static void persist() {
 		if (!autoPersist || paused || autoPersistFile == null) {
 			return;
@@ -119,7 +133,14 @@ public class AppState {
 		}
 	}
 
-	// returns true if and only if a layout is restored from a file. Restoring from the default layout will return false.
+	// returns
+
+	/**
+	 * Restore the application layout from the auto persist file.
+	 *
+	 * @return true if and only if a layout is restored from a file. Restoring from the default layout will return false.
+	 * @throws DockingLayoutException Thrown for any issues with the layout file.
+	 */
 	public static boolean restore() throws DockingLayoutException {
 		// don't restore if auto persist is disabled
 		if (autoPersistFile == null || !autoPersistFile.exists()) {

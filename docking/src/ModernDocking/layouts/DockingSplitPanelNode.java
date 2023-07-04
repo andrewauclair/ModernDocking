@@ -23,7 +23,10 @@ package ModernDocking.layouts;
 
  import ModernDocking.DockingRegion;
 
-public class DockingSplitPanelNode implements DockingLayoutNode {
+ /**
+  * Layout node that represents a splitpane
+  */
+ public class DockingSplitPanelNode implements DockingLayoutNode {
 	private DockingLayoutNode left;
 	private DockingLayoutNode right;
 	private final int orientation;

@@ -33,15 +33,23 @@ import java.awt.event.WindowStateListener;
  * simple internal class that calls AppState.persist() whenever a frame resizes, moves or changes state
  */
 public class AppStatePersister extends ComponentAdapter implements WindowStateListener {
-	public AppStatePersister() {
-	}
-
-	public void addFrame(Window window) {
+	/**
+	 * Add a window to this persister. The persister will listen for any changes to the window and trigger the
+	 * auto persistence.
+	 *
+	 * @param window The window to add
+	 */
+	public void addWindow(Window window) {
 		window.addComponentListener(this);
 		window.addWindowStateListener(this);
 	}
 
-	public void removeFrame(Window window) {
+	/**
+	 * Remove a window from this persister. This will stop the persister from listening to events.
+	 *
+	 * @param window The window to remove
+	 */
+	public void removeWindow(Window window) {
 		window.removeComponentListener(this);
 		window.removeWindowStateListener(this);
 	}

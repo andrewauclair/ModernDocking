@@ -35,7 +35,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class DockingState {
-	// cached layout for when a maximized dockable is minimized
+	/**
+	 * cached layout for when a maximized dockable is minimized
+	 */
 	public static final Map<Window, WindowLayout> maximizeRestoreLayout = new HashMap<>();
 
 	public static RootDockState getRootState(Window window) {
@@ -64,6 +66,11 @@ public class DockingState {
 		return DockingLayouts.layoutFromRoot(root);
 	}
 
+	/**
+	 * Get the current application layout of the application
+	 *
+	 * @return Layout of the application
+	 */
 	public static ApplicationLayout getApplicationLayout() {
 		ApplicationLayout layout = new ApplicationLayout();
 
@@ -78,6 +85,11 @@ public class DockingState {
 		return layout;
 	}
 
+	/**
+	 * Restore the application layout, creating any necessary windows
+	 *
+	 * @param layout Application layout to restore
+	 */
 	public static void restoreApplicationLayout(ApplicationLayout layout) {
 		// get rid of all existing windows and undock all dockables
 		Set<Window> windows = new HashSet<>(Docking.getInstance().getRootPanels().keySet());
@@ -106,6 +118,12 @@ public class DockingState {
 		DockingInternal.fireDockedEventForAll();
 	}
 
+	/**
+	 * Restore the layout of a single window
+	 *
+	 * @param window Window to restore the layout onto
+	 * @param layout The layout to restore
+	 */
 	public static void restoreWindowLayout(Window window, WindowLayout layout) {
 		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
 

@@ -28,58 +28,113 @@ import ModernDocking.event.MaximizeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Manager class for docking and maximize listeners
+ */
 public class DockingListeners {
 	private static final List<MaximizeListener> maximizeListeners = new ArrayList<>();
 	private static final List<DockingListener> dockingListeners = new ArrayList<>();
 
+	/**
+	 * Add a new maximize listener. Will be called when a dockable is maximized
+	 *
+	 * @param listener Listener to add
+	 */
 	public static void addMaximizeListener(MaximizeListener listener) {
 		if (!maximizeListeners.contains(listener)) {
 			maximizeListeners.add(listener);
 		}
 	}
 
+	/**
+	 * Remove a previously added maximize listener. No-op if the listener isn't in the list
+	 *
+	 * @param listener Listener to remove
+	 */
 	public static void removeMaximizeListener(MaximizeListener listener) {
 		maximizeListeners.remove(listener);
 	}
 
-	// package private function to fire an event
+	/**
+	 * Fire a new maximize event
+	 *
+	 * @param dockable Dockable that has changed
+	 * @param maximized New maximized state
+	 */
 	public static void fireMaximizeEvent(Dockable dockable, boolean maximized) {
 		maximizeListeners.forEach(listener -> listener.maximized(dockable, maximized));
 	}
 
+	/**
+	 * Add a new docking listener
+	 *
+	 * @param listener Listener to add
+	 */
 	public static void addDockingListener(DockingListener listener) {
 		if (!dockingListeners.contains(listener)) {
 			dockingListeners.add(listener);
 		}
 	}
 
+	/**
+	 * Remove a docking listener
+	 *
+	 * @param listener Listener to remove
+	 */
 	public static void removeDockingListener(DockingListener listener) {
 		dockingListeners.remove(listener);
 	}
 
-	// package private function to fire docked event
+	/**
+	 * Fire a new docked event
+	 *
+	 * @param dockable Dockable that was docked
+	 */
 	public static void fireDockedEvent(Dockable dockable) {
 		dockingListeners.forEach(listener -> listener.docked(dockable.getPersistentID()));
 	}
 
-	// package private function to fire undocked event
+	/**
+	 * Fire a new undocked event
+	 *
+	 * @param dockable Dockable that was undocked
+	 */
 	public static void fireUndockedEvent(Dockable dockable) {
 		dockingListeners.forEach(listener -> listener.undocked(dockable.getPersistentID()));
 	}
 
-	// package private function to fire auto undocked event
+	/**
+	 * Fire a new auto undocked event
+	 *
+	 * @param dockable Dockable that was undocked automatically
+	 */
 	public static void fireAutoUndockedEvent(Dockable dockable) {
 		dockingListeners.forEach(listener -> listener.autoUndocked(dockable.getPersistentID()));
 	}
 
+	/**
+	 * Fire a new unpinned event
+	 *
+	 * @param dockable Dockable that was unpinned
+	 */
 	public static void fireUnpinnedEvent(Dockable dockable) {
 		dockingListeners.forEach(listener -> listener.unpinned(dockable.getPersistentID()));
 	}
 
+	/**
+	 * Fire a new shown event
+	 *
+	 * @param dockable Dockable that was shown
+	 */
 	public static void fireShownEvent(Dockable dockable) {
 		dockingListeners.forEach(listener -> listener.shown(dockable.getPersistentID()));
 	}
 
+	/**
+	 * Fire a new hidden event
+	 *
+	 * @param dockable Dockable that was hidden
+	 */
 	public static void fireHiddenEvent(Dockable dockable) {
 		dockingListeners.forEach(listener -> listener.shown(dockable.getPersistentID()));
 	}

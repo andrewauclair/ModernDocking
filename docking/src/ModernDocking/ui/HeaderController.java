@@ -27,6 +27,9 @@ import ModernDocking.event.DockingListener;
 import ModernDocking.event.MaximizeListener;
 import ModernDocking.internal.DockingListeners;
 
+/**
+ * Controller for the header of dockables. Responsible for controlling the state of all buttons on the header.
+ */
 public class HeaderController implements MaximizeListener, DockingListener {
 	private final Dockable dockable;
 	private final HeaderModel model;
@@ -50,22 +53,37 @@ public class HeaderController implements MaximizeListener, DockingListener {
 		DockingListeners.removeDockingListener(this);
 	}
 
+	/**
+	 * Pin the dockable
+	 */
 	public void pinDockable() {
 		Docking.pinDockable(dockable);
 	}
 
+	/**
+	 * Set the dockable to unpinned
+	 */
 	public void unpinDockable() {
 		Docking.unpinDockable(dockable);
 	}
 
+	/**
+	 * Launch the dockable in a new window
+	 */
 	public void newWindow() {
 		Docking.newWindow(dockable);
 	}
 
+	/**
+	 * Minimize the dockable
+	 */
 	public void minimize() {
 		Docking.minimize(dockable);
 	}
 
+	/**
+	 * Maximize the dockable
+	 */
 	public void maximize() {
 		Docking.maximize(dockable);
 	}

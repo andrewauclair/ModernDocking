@@ -21,20 +21,51 @@ SOFTWARE.
  */
 package ModernDocking.event;
 
+/**
+ * Listener interface used to listen for docking events
+ */
 public interface DockingListener {
+	/**
+	 * dockable has been docked
+	 *
+	 * @param persistentID Persistent ID of the dockable
+	 */
 	void docked(String persistentID);
 
+	/**
+	 * Dockable has been undocked
+	 *
+	 * @param persistentID Persistent ID of the dockable
+	 */
 	void undocked(String persistentID);
 
-	// called when a dockable is undocked due to being alone in a frame with floatingAllowed() = false
-	// this is only useful when the dockable should be placed back in the app main frame somewhere
-	// TODO maybe make this part of the docking strategy instead of a listener
+	/**
+	 * called when a dockable is undocked due to being alone in a frame with floatingAllowed() = false
+	 * this is only useful when the dockable should be placed back in the app main frame somewhere
+	 *
+	 * @param persistentID Persistent ID of the dockable
+	 */
 	default void autoUndocked(String persistentID) {
 	}
 
+	/**
+	 * dockable has been unpinned
+	 *
+	 * @param persistentID Persistent ID of the dockable
+	 */
 	void unpinned(String persistentID);
 
+	/**
+	 * dockable has been shown
+	 *
+	 * @param persistentID Persistent ID of the dockable
+	 */
 	void shown(String persistentID);
 
+	/**
+	 * dockable has been hidden
+	 *
+	 * @param persistentID Persistent ID of the dockable
+	 */
 	void hidden(String persistentID);
 }

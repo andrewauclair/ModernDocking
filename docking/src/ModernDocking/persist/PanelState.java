@@ -21,13 +21,25 @@ SOFTWARE.
  */
 package ModernDocking.persist;
 
+/**
+ * DockableState that stores a single simple panel
+ */
 public class PanelState implements DockableState {
 	private final String persistentID;
 
+	/**
+	 * Create a new PanelState
+	 *
+	 * @param persistentID ID
+	 */
 	public PanelState(String persistentID) {
 		this.persistentID = persistentID;
 	}
 
+	/**
+	 * Get ID
+	 * @return Persistent ID
+	 */
 	public String getPersistentID() {
 		return persistentID;
 	}

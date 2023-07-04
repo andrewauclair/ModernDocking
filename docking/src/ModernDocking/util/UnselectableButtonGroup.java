@@ -4,11 +4,15 @@ import javax.swing.*;
 import java.util.Enumeration;
 import java.util.Vector;
 
-// special form of ButtonGroup that allows the currently selected button to deselected
-// found from this answer: https://stackoverflow.com/a/51867860
+/**
+ * special form of ButtonGroup that allows the currently selected button to deselected
+ * found from this answer: https://stackoverflow.com/a/51867860
+ */
 public class UnselectableButtonGroup extends ButtonGroup {
 
-	// the list of buttons participating in this group
+	/**
+	 * the list of buttons participating in this group
+	 */
 	protected final Vector<AbstractButton> buttons = new Vector<>();
 
 	/**

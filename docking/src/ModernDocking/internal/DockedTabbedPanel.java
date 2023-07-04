@@ -72,6 +72,11 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		super.removeNotify();
 	}
 
+	/**
+	 * Add a new panel to this tabbed panel.
+	 *
+	 * @param dockable The dockable to add
+	 */
 	public void addPanel(DockableWrapper dockable) {
 		dockable.setParent(this);
 
@@ -204,6 +209,11 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		}
 	}
 
+	/**
+	 * Get the persistent ID of the selected tab
+	 *
+	 * @return The persistent ID of the selected tab
+	 */
 	public String getSelectedTabID() {
 		return panels.get(tabs.getSelectedIndex()).getDockable().getPersistentID();
 	}

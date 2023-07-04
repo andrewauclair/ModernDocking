@@ -38,6 +38,9 @@ import java.awt.dnd.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Listener responsible for tracking dockables both when they are first dragged and while being dragged
+ */
 public class FloatListener extends DragSourceAdapter implements DragSourceListener, DragSourceMotionListener {
 	public static boolean isFloating = false;
 

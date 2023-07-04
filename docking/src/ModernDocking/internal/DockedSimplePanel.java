@@ -52,6 +52,11 @@ public class DockedSimplePanel extends DockingPanel {
 		add(dockable.getDisplayPanel(), BorderLayout.CENTER);
 	}
 
+	/**
+	 * Get the wrapper of the dockable contained in this simple panel
+	 *
+	 * @return Contained dockable
+	 */
 	public DockableWrapper getWrapper() {
 		return dockable;
 	}

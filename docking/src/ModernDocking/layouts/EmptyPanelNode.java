@@ -23,6 +23,10 @@ package ModernDocking.layouts;
 
 import ModernDocking.DockingRegion;
 
+/**
+ * Used to avoid exceptions?
+ */
+// TODO might be good to get rid of this?
 public class EmptyPanelNode implements DockingLayoutNode {
 	@Override
 	public DockingLayoutNode findNode(String persistentID) {

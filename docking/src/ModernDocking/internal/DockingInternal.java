@@ -37,7 +37,11 @@ import java.util.stream.Collectors;
 public class DockingInternal {
 	private static final Map<String, DockableWrapper> dockables = new HashMap<>();
 
-	// register a dockable with the framework
+	/**
+	 * register a dockable with the framework
+	 *
+	 * @param dockable The dockable to register
+	 */
 	public static void registerDockable(Dockable dockable) {
 		if (dockables.containsKey(dockable.getPersistentID())) {
 			throw new DockableRegistrationFailureException("Registration for Dockable failed. Persistent ID " + dockable.getPersistentID() + " already exists.");
@@ -48,7 +52,11 @@ public class DockingInternal {
 		dockables.put(dockable.getPersistentID(), new DockableWrapper(dockable));
 	}
 
-	// Dockables must be deregistered so it can be properly disposed
+	/**
+	 * Dockables must be deregistered so it can be properly disposed
+	 *
+	 * @param dockable The dockable to deregister
+	 */
 	public static void deregisterDockable(Dockable dockable) {
 		getWrapper(dockable).removedListeners();
 		dockables.remove(dockable.getPersistentID());
@@ -80,8 +88,10 @@ public class DockingInternal {
 		}
 	}
 
+	/**
+	 * everything has been restored, go through the list of dockables and fire docked events for the ones that are docked
+	 */
 	public static void fireDockedEventForAll() {
-		// everything has been restored, go through the list of dockables and fire docked events for the ones that are docked
 		for (DockableWrapper wrapper : dockables.values()) {
 			if (Docking.isDocked(wrapper.getDockable())) {
 				DockingListeners.fireDockedEvent(wrapper.getDockable());

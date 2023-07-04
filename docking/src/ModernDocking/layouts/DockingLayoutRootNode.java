@@ -23,6 +23,9 @@ package ModernDocking.layouts;
 
 import ModernDocking.DockingRegion;
 
+/**
+ * The root node of a docking layout
+ */
 public class DockingLayoutRootNode implements DockingLayoutNode {
     private DockingLayoutNode node;
 

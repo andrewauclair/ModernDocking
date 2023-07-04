@@ -28,6 +28,9 @@ import ModernDocking.layouts.DockingLayouts;
 
 import javax.swing.*;
 
+/**
+ * Custom JMenu that displays all the layouts in DockingLayouts as menu items
+ */
 public class LayoutsMenu extends JMenu implements LayoutsListener {
 	public LayoutsMenu() {
 		super("Layouts");

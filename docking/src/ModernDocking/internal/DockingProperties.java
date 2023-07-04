@@ -26,6 +26,9 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Properties used in UIManager for colors and settings
+ */
 public class DockingProperties {
 	private static final String handlesBackgroundColorKey = "ModernDocking.handles.background";
 	private static final String handlesBackgroundBorderColorKey = "ModernDocking.handles.background.border";
@@ -131,10 +134,20 @@ public class DockingProperties {
 		}
 	}
 
+	/**
+	 * Get the background color of handles
+	 *
+	 * @return Handles background color
+	 */
 	public static Color getHandlesBackground() {
 		return properties.currentColors.get(handlesBackgroundColorKey);
 	}
 
+	/**
+	 * Get the color of the handles background borders
+	 *
+	 * @return Border color
+	 */
 	public static Color getHandlesBackgroundBorder() {
 		return properties.currentColors.get(handlesBackgroundBorderColorKey);
 	}

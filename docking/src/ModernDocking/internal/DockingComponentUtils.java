@@ -37,8 +37,14 @@ import static ModernDocking.internal.DockingInternal.getWrapper;
  * set of internal utilities for dealing with the component hierarchy of dockables
  */
 public class DockingComponentUtils {
-	// used to undock all dockables in a container
-	// called when a frame is to be disposed
+	//
+	//
+
+	/**
+	 * used to undock all dockables in a container. called when a frame is to be disposed
+	 *
+	 * @param container Container to undock all components from
+	 */
 	public static void undockComponents(Container container) {
 		for (Component component : container.getComponents()) {
 			if (component instanceof DisplayPanel) {
@@ -50,7 +56,12 @@ public class DockingComponentUtils {
 		}
 	}
 
-	// search for a root panel on the screen at a specific position
+	/**
+	 * search for a root panel on the screen at a specific position
+	 *
+	 * @param screenPos The screen position to search at
+	 * @return The window at screenPos. null if not found.
+	 */
 	public static Window findRootAtScreenPos(Point screenPos) {
 		for (Window window : Docking.getInstance().getRootPanels().keySet()) {
 			Rectangle bounds = new Rectangle(window.getX(), window.getY(), window.getWidth(), window.getHeight());
@@ -62,14 +73,24 @@ public class DockingComponentUtils {
 		return null;
 	}
 
-	// find the frame that a dockable is in
-	// returns null if the dockable is not docked
+	/**
+	 *
+	 * @param dockable The dockable to find a window for.
+	 * @return The window containing the dockable. null if not found.
+	 */
 	public static Window findWindowForDockable(Dockable dockable) {
 		return getWrapper(dockable).getWindow();
 	}
 
-	// find the root for the given window
-	// throws an exception if the window doesn't have a root panel
+	//
+	//
+
+	/**
+	 * find the root for the given window, throws an exception if the window doesn't have a root panel
+	 *
+	 * @param window The window to find a root for
+	 * @return The root of the given window
+	 */
 	public static RootDockingPanel rootForWindow(Window window) {
 		if (Docking.getInstance().getRootPanels().containsKey(window)) {
 			return Docking.getInstance().getRootPanels().get(window);
@@ -77,7 +98,12 @@ public class DockingComponentUtils {
 		throw new DockableRegistrationFailureException("No root panel for window has been registered.");
 	}
 
-	// find the frame for a given root
+	/**
+	 * Find the window for a given root
+	 *
+	 * @param root The root to find a window for
+	 * @return The window for the root or null
+	 */
 	public static Window windowForRoot(RootDockingPanel root) {
 		Optional<Window> first = Docking.getInstance().getRootPanels().keySet().stream()
 				.filter(frame -> Docking.getInstance().getRootPanels().get(frame) == root)
@@ -245,6 +271,13 @@ public class DockingComponentUtils {
 		}
 	}
 
+	/**
+	 * Finds the first dockable of a specified type. The main frame is searched first and then
+	 * any other frames that exist
+	 *
+	 * @param type The type to search for
+	 * @return The first Dockable of the given type, if any exist
+	 */
 	public static Optional<Dockable> findFirstDockableOfType(int type) {
 		RootDockingPanel mainRoot = rootForWindow(Docking.getInstance().getMainWindow());
 

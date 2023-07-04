@@ -29,10 +29,18 @@ import java.awt.*;
 
 import static ModernDocking.internal.DockingInternal.getWrapper;
 
-// this is a frame used temporarily when floating a panel
+/**
+ * this is a frame used temporarily when floating a panel
+ */
 public class TempFloatingFrame extends JFrame {
 	private static final int BORDER_SIZE = 2;
 
+	/**
+	 * Create a new temporary floating frame to contain a dockable that has started to float
+	 *
+	 * @param dockable Dockable in the floating frame
+	 * @param dragSrc The source of the drag
+	 */
 	public TempFloatingFrame(Dockable dockable, JComponent dragSrc) {
 		setLayout(new BorderLayout()); // keep it simple, just use border layout
 		setUndecorated(true); // hide the frame

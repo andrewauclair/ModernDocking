@@ -30,13 +30,20 @@ import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
-// utility frame that is used to draw handles and overlay highlighting
+/**
+ * utility frame that is used to draw handles and overlay highlighting
+ */
 public class DockingUtilsFrame extends JFrame implements ComponentListener {
 	private final DockingHandles handles;
 	private final DockingOverlay overlay;
 	private final Window referenceDockingWindow;
 
-	// create a new DockingUtilsFrame with a frame and its root panel
+	/**
+	 * create a new DockingUtilsFrame with a frame and its root panel
+	 *
+	 * @param referenceDockingWindow Window that this utility frame is tied to
+	 * @param root The root of the tied window
+	 */
 	public DockingUtilsFrame(Window referenceDockingWindow, RootDockingPanel root) {
 		setLayout(null); // don't use a layout manager for this custom painted frame
 		setUndecorated(true); // don't want to see a frame border
@@ -69,7 +76,11 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		super.removeNotify();
 	}
 
-	// set the current dockable that the mouse is over, can be null
+	/**
+	 * set the current dockable that the mouse is over, can be null
+	 *
+	 * @param target Target dockable
+	 */
 	public void setTargetDockable(Dockable target) {
 		handles.setTarget(target);
 		overlay.setTargetDockable(target);
@@ -78,36 +89,60 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		overlay.setTargetDockableRegion(handles.getDockableRegion());
 	}
 
-	// set the floating panel, doesn't change once the panel is first floated
+	/**
+	 * set the floating panel, doesn't change once the panel is first floated
+	 *
+	 * @param floating Floating dockable
+	 */
 	public void setFloating(Dockable floating) {
 		handles.setFloating(floating);
 		overlay.setFloating(floating);
 	}
 
-	// update the overlay with the current mouse position
+	/**
+	 * update the overlay with the current mouse position
+	 *
+	 * @param screenPos New mouse position
+	 */
 	public void update(Point screenPos) {
 		handles.update(screenPos);
 		overlay.update(screenPos);
 	}
 
-	// activate the overlays, sets them to visible
+	/**
+	 * activate the overlays, sets them to visible
+	 *
+	 * @param active New active state
+	 */
 	public void setActive(boolean active) {
 		handles.setActive(active);
 		overlay.setActive(active);
 	}
 
-	// get the current region from the overlay. this is either a root region or dockable region
+	/**
+	 * get the current region from the overlay. this is either a root region or dockable region
+	 *
+	 * @param screenPos Screen position to find region of
+	 * @return The root or dockable region at the screen position
+	 */
 	public DockingRegion getRegion(Point screenPos) {
 		return overlay.getRegion(screenPos);
 	}
 
-	// checks if docking to the root. This is only possible when the mouse is over a root docking handle
+	/**
+	 * checks if docking to the root. This is only possible when the mouse is over a root docking handle
+	 *
+	 * @return Is docking to root
+	 */
 	public boolean isDockingToRoot() {
 		return overlay.isDockingToRoot();
 	}
 
-	// checks if docking to a dockable. Returns false if isDockingToRoot() is true.
-	// Returns false if not over a frame
+	/**
+	 * checks if docking to a dockable. Returns false if isDockingToRoot() is true.
+	 *
+	 * @return false if not over a frame
+	 */
 	public boolean isDockingToDockable() {
 		return overlay.isDockingToDockable();
 	}

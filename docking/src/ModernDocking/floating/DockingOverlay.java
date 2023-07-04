@@ -31,7 +31,9 @@ import ModernDocking.internal.DockingProperties;
 import javax.swing.*;
 import java.awt.*;
 
-// displays the overlay highlight of where the panel will be docked
+/**
+ * displays the overlay highlight of where the panel will be docked
+ */
 public class DockingOverlay {
 	// determines how close to the edge the user has to drag the panel before they see an overlay other than CENTER
 	private static final double REGION_SENSITIVITY = 0.35;
@@ -65,6 +67,12 @@ public class DockingOverlay {
 	// override for the visible flag, sometimes internally we don't want to draw but we might be active
 	private boolean visibleOverride = false;
 
+	/**
+	 * Construct a new overlay for a utility frame and root panel
+	 *
+	 * @param utilFrame The utility frame this overlay covers
+	 * @param root The root of the frame under the utility frame
+	 */
 	public DockingOverlay(JFrame utilFrame, RootDockingPanel root) {
 		this.utilFrame = utilFrame;
 
@@ -230,7 +238,12 @@ public class DockingOverlay {
 		utilFrame.repaint();
 	}
 
-	// get the region that we're currently displaying an overlay for
+	/**
+	 * get the region that we're currently displaying an overlay for
+	 *
+	 * @param screenPos Screen position to find the region for
+	 * @return Region of the given screen position
+	 */
 	public DockingRegion getRegion(Point screenPos) {
 		// if we're moused over a root handle, use the region of the handle
 		if (rootRegion != null) {
@@ -305,6 +318,11 @@ public class DockingOverlay {
 		return rootRegion != null;
 	}
 
+	/**
+	 * Checks if we're docking to another dockable
+	 *
+	 * @return True if the target dockable or dockable region are not null
+	 */
 	public boolean isDockingToDockable() {
 		return dockableRegion != null || targetDockable != null;
 	}
@@ -323,6 +341,11 @@ public class DockingOverlay {
 		visibleOverride = !isDockingToRoot() && !isDockingToDockable();
 	}
 
+	/**
+	 * Paint the docking overlay if visible
+	 *
+	 * @param g Graphics to use for painting
+	 */
 	public void paint(Graphics g) {
 		if (visible && !visibleOverride) {
 			g.setColor(DockingProperties.getDockingOverlay());

@@ -30,9 +30,18 @@ import java.util.Map;
  */
 public class TextIcon implements Icon, PropertyChangeListener
 {
+	/**
+	 * Layout of text icon
+	 */
 	public enum Layout
 	{
+		/**
+		 * Text is horizontal in the icon
+		 */
 		HORIZONTAL,
+		/**
+		 * Text is vertical in the icon
+		 */
 		VERTICAL
 	}
 

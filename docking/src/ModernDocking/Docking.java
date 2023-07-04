@@ -132,7 +132,7 @@ public class Docking {
 		instance.rootPanels.put(parent, panel);
 		FloatListener.registerDockingWindow(parent, panel);
 
-		instance.appStatePersister.addFrame(parent);
+		instance.appStatePersister.addWindow(parent);
 	}
 
 	/**
@@ -149,7 +149,7 @@ public class Docking {
 		instance.rootPanels.put(parent, panel);
 		FloatListener.registerDockingWindow(parent, panel);
 
-		instance.appStatePersister.addFrame(parent);
+		instance.appStatePersister.addWindow(parent);
 	}
 
 	/**
@@ -195,7 +195,7 @@ public class Docking {
 
 		instance.rootPanels.remove(parent);
 
-		instance.appStatePersister.removeFrame(parent);
+		instance.appStatePersister.removeWindow(parent);
 	}
 
 	/**

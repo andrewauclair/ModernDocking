@@ -26,25 +26,52 @@ import ModernDocking.Docking;
 
 import javax.swing.*;
 
+/**
+ * Model for the header of a dockable. Provides wrapper access to functions in the dockable
+ */
 public class HeaderModel {
+	/**
+	 * Dockable for this model
+	 */
 	public final Dockable dockable;
 
+	/**
+	 * Create a new model for the given dockable
+	 *
+	 * @param dockable Dockable for the model
+	 */
 	public HeaderModel(Dockable dockable) {
 		this.dockable = dockable;
 	}
 
+	/**
+	 * Get the title text of dockable
+	 *
+	 * @return Title text
+	 */
 	public String titleText() {
 		return dockable.getTabText();
 	}
 
+	/**
+	 * Get the icon to display for the dockable
+	 *
+	 * @return Dockable icon
+	 */
 	public Icon icon() {
 		return dockable.getIcon();
 	}
 
+	/**
+	 * Check if pinning is allowed for this dockable
+	 *
+	 * @return Is pinning allowed?
+	 */
 	public boolean isPinnedAllowed() {
 		return dockable.allowPinning();
 	}
 
+	// TODO can this be removed?
 	public boolean isPinned() {
 		return false;
 	}

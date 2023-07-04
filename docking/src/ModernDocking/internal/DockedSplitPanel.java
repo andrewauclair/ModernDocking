@@ -67,6 +67,12 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 		add(splitPane, BorderLayout.CENTER);
 	}
 
+	/**
+	 * Set the divider location of the splitpane. Tricks are needed to properly set the position.
+	 * The position cannot be set until the JSplitPane is displayed on screen.
+	 *
+	 * @param proportion The new proportion of the splitpane
+	 */
 	public void setDividerLocation(final double proportion) {
 		// calling setDividerLocation on a JSplitPane that isn't visible does nothing, so we need to check if it is showing first
 		if (splitPane.isShowing()) {
@@ -104,6 +110,11 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 		}
 	}
 
+	/**
+	 * Used to set the real divider location, which is set as an int, not a double.
+	 *
+	 * @param location The new proportion of the splitpane
+	 */
 	public void setDividerLocation(final int location) {
 		if (splitPane.isShowing()) {
 			if ((splitPane.getWidth() > 0) && (splitPane.getHeight() > 0)) {
@@ -160,6 +171,11 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 		return left;
 	}
 
+	/**
+	 * Set the panel in the left/top of split
+	 *
+	 * @param panel New left/top panel
+	 */
 	public void setLeft(DockingPanel panel) {
 		left = panel;
 		left.setParent(this);

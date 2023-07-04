@@ -75,6 +75,11 @@ public abstract class DefaultDockingPanel implements Dockable {
         return icon;
     }
 
+    /**
+     * Set the icon of this dockable
+     *
+     * @param icon The dockables icon to display on tabs and toolbars
+     */
     public void setIcon(Icon icon) {
         this.icon = icon;
     }
@@ -111,6 +116,11 @@ public abstract class DefaultDockingPanel implements Dockable {
         return canBeClosed;
     }
 
+    /**
+     * Set the close button support for this dockable
+     *
+     * @param canBeClosed Can this dockable be closed?
+     */
     public void setCanBeClosed(boolean canBeClosed) {
         this.canBeClosed = canBeClosed;
     }
@@ -120,6 +130,11 @@ public abstract class DefaultDockingPanel implements Dockable {
         return allowPinning;
     }
 
+    /**
+     * Set the pinning support on this dockable
+     *
+     * @param allowPinning Is pinning allowed
+     */
     public void setAllowPinning(boolean allowPinning) {
         this.allowPinning = allowPinning;
     }
@@ -129,6 +144,11 @@ public abstract class DefaultDockingPanel implements Dockable {
         return allowMinMax;
     }
 
+    /**
+     * Set the min/max support on this dockable
+     *
+     * @param allowMinMax Is min/max supported
+     */
     public void setAllowMinMax(boolean allowMinMax) {
         this.allowMinMax = allowMinMax;
     }

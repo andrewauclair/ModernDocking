@@ -23,7 +23,15 @@ package ModernDocking.exception;
 
 import ModernDocking.Dockable;
 
+/**
+ * Exception that is thrown when a dockable is not already docked
+ */
 public class NotDockedException extends RuntimeException {
+	/**
+	 * Create a new exception with the given dockable
+	 *
+	 * @param dockable Dockable that is not docked
+	 */
 	public NotDockedException(Dockable dockable) {
 		super("Dockable '" + dockable.getPersistentID() + "' is not docked.");
 	}

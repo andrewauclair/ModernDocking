@@ -26,15 +26,28 @@ import ModernDocking.Docking;
 
 import javax.swing.*;
 
+/**
+ * Represents a dockable that has failed to load from a layout file.
+ *
+ * These are stripped out after restoring from the layout.
+ */
 public class FailedDockable extends JPanel implements Dockable {
 	private final String persistentID;
 
+	/**
+	 * Create a new FailedDockable
+	 *
+	 * @param persistentID Persistent ID that has failed to load
+	 */
 	public FailedDockable(String persistentID) {
 		this.persistentID = persistentID;
 
 		Docking.registerDockable(this);
 	}
 
+	/**
+	 * Deregister this dockable
+	 */
 	public void destroy() {
 		Docking.deregisterDockable(this);
 	}

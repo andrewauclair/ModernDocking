@@ -106,10 +106,20 @@ public class DockingHandles {
 		return rootRegion;
 	}
 
+	/**
+	 * Set this docking handle active
+	 *
+	 * @param active Active state of handles
+	 */
 	public void setActive(boolean active) {
 		utilFrame.setVisible(active);
 	}
 
+	/**
+	 * Set the floating dockable
+	 *
+	 * @param dockable Dockable that is floating
+	 */
 	public void setFloating(Dockable dockable) {
 		floating = dockable;
 	}
@@ -143,15 +153,32 @@ public class DockingHandles {
 		}
 	}
 
+	/**
+	 * Retrieve the spacing for the handle
+	 *
+	 * @param handle The handle label
+	 * @return width
+	 */
 	private int handleSpacing(JLabel handle) {
 		return handle.getWidth() + 8;
 	}
 
+	/**
+	 * Retrieve the spacing for the root handle
+	 *
+	 * @param handle The handle label
+	 * @return width
+	 */
+	// TODO I think this causes issues on linux. the root handles get bigger. but not on windows?
 	private int rootHandleSpacing(JLabel handle) {
 		return handle.getWidth() + 16;
 	}
 
-	// set the specific Dockable target which we'll show a basic handle in the center of
+	/**
+	 * set the specific Dockable target which we'll show a basic handle in the center of
+	 *
+	 * @param dockable target dockable
+	 */
 	public void setTarget(Dockable dockable) {
 		if (dockable == targetDockable) {
 			return;

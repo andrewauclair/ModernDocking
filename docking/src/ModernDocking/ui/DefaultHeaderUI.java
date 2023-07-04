@@ -41,6 +41,9 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 
 	protected final JLabel titleLabel = new JLabel();
 	protected final JButton settings = new JButton();
+	/**
+	 * Close button that shows an X and when pressed undocks the dockable
+	 */
 	protected final JButton close = new JButton();
 	protected final JLabel maximizedIndicator = new JLabel("Maximized");
 

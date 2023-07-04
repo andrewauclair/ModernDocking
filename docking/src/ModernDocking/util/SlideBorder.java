@@ -26,9 +26,17 @@ import ModernDocking.internal.DockableToolbar;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Panel that provides a slider for unpinned dockables when they are displayed
+ */
 public class SlideBorder extends JPanel {
 	private final DockableToolbar.Location location;
 
+	/**
+	 * Create a SlideBorder with the given toolbar location
+	 *
+	 * @param location Location of the toolbar
+	 */
 	public SlideBorder(DockableToolbar.Location location) {
 		this.location = location;
 		setCursor(location == DockableToolbar.Location.SOUTH ? Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR) : Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));

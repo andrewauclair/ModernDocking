@@ -23,6 +23,15 @@ package ModernDocking.event;
 
 import ModernDocking.Dockable;
 
+/**
+ * Interface for creating listeners for maximize events
+ */
 public interface MaximizeListener {
+	/**
+	 * Maximized state of dockable has changed
+	 *
+	 * @param dockable Dockable that has changed
+	 * @param maximized New maximized state
+	 */
 	void maximized(Dockable dockable, boolean maximized);
 }

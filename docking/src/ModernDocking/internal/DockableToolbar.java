@@ -42,6 +42,9 @@ import java.util.stream.Collectors;
  * that are unpinned
  */
 public class DockableToolbar extends JPanel implements ComponentListener {
+	/**
+	 * Location of the toolbar. Toolbars are supported to the West, South and East of a window
+	 */
 	public enum Location {
 		WEST,
 		SOUTH,
@@ -84,6 +87,13 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	private final List<Entry> dockables = new ArrayList<>();
 	private final UnselectableButtonGroup buttonGroup = new UnselectableButtonGroup();
 
+	/**
+	 * Create a new dockable toolbar for the window, its root and a location (west, south or east)
+	 *
+	 * @param window The window this toolbar is attached to
+	 * @param root The root of the attached window
+	 * @param location The location of this toolbar within the window
+	 */
 	public DockableToolbar(Window window, RootDockingPanel root, Location location) {
 		super(new GridBagLayout());
 
@@ -97,6 +107,11 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 		addComponentListener(this);
 	}
 
+	/**
+	 * Get the location within the window that this toolbar is docked
+	 *
+	 * @return Location, west, south or east
+	 */
 	public Location getDockedLocation() {
 		return location;
 	}
@@ -157,6 +172,11 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 		}
 	}
 
+	/**
+	 * Add a new dockable to this toolbar
+	 *
+	 * @param dockable Dockable to add
+	 */
 	public void addDockable(Dockable dockable) {
 		if (!hasDockable(dockable)) {
 			DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
@@ -212,6 +232,11 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 		}
 	}
 
+	/**
+	 * Remove a dockable from this toolbar
+	 *
+	 * @param dockable Dockable to remove
+	 */
 	public void removeDockable(Dockable dockable) {
 		for (Entry entry : dockables) {
 			if (entry.dockable == dockable) {
@@ -233,21 +258,40 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 		}
 	}
 
+	/**
+	 * Check if this toolbar contains a certain dockable
+	 *
+	 * @param dockable Dockable to search for
+	 * @return Is dockable contained in this toolbar?
+	 */
 	public boolean hasDockable(Dockable dockable) {
 		return dockables.stream()
 				.anyMatch(panel -> panel.dockable.equals(dockable));
 	}
 
+	/**
+	 * Check if this toolbar should be displayed.
+	 *
+	 * @return True if there are 1 or more dockables in the toolbar
+	 */
 	public boolean shouldDisplay() {
 		return dockables.size() > 0;
 	}
 
+	/**
+	 * Hide all the dockables in the toolbar
+	 */
 	public void hideAll() {
 		buttonGroup.setSelected(buttonGroup.getSelection(), false);
 
 		updateButtons();
 	}
 
+	/**
+	 * Get a list of the persistent IDs of the dockables in this toolbar
+	 *
+	 * @return List of persistent IDs
+	 */
 	public List<String> getPersistentIDs() {
 		return dockables.stream()
 				.map(entry -> entry.dockable.getPersistentID())

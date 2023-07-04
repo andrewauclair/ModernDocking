@@ -17,11 +17,26 @@ import java.awt.*;
  */
 public class RotatedIcon implements Icon
 {
+	/**
+	 * Rotation state
+	 */
 	public enum Rotate
 	{
+		/**
+		 * Rotation down
+		 */
 		DOWN,
+		/**
+		 * Rotation up
+		 */
 		UP,
+		/**
+		 * Rotation upside down
+		 */
 		UPSIDE_DOWN,
+		/**
+		 * Rotation center
+		 */
 		ABOUT_CENTER
 	}
 

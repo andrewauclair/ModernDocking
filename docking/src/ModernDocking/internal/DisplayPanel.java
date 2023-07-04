@@ -30,6 +30,11 @@ import java.awt.*;
 public class DisplayPanel extends JPanel {
 	private final DockableWrapper wrapper;
 
+	/**
+	 * Create a new internal display panel for the dockable
+	 *
+	 * @param wrapper Wrapper for the dockable that this panel will represent
+	 */
 	public DisplayPanel(DockableWrapper wrapper) {
 		this.wrapper = wrapper;
 

@@ -27,15 +27,29 @@ import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Docking layout node for a simple panel. A that contains a single dockable.
+ */
 public class DockingSimplePanelNode implements DockingLayoutNode {
 	private final String persistentID;
 	private final Map<String, String> properties = new HashMap<>();
 	private DockingLayoutNode parent;
 
+	/**
+	 * Create a new DockingSimplePanelNode with just a persistent ID
+	 *
+	 * @param persistentID The persistent ID of the contained dockable
+	 */
 	public DockingSimplePanelNode(String persistentID) {
 		this.persistentID = persistentID;
 	}
 
+	/**
+	 * Create a new DockingSimplePanelNode with properties
+	 *
+	 * @param persistentID The persistent ID of the contained dockable
+	 * @param properties Properties of the dockable
+	 */
 	public DockingSimplePanelNode(String persistentID, Map<String, String> properties) {
 		this.persistentID = persistentID;
 		this.properties.putAll(properties);
@@ -101,10 +115,20 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 	public void replaceChild(DockingLayoutNode child, DockingLayoutNode newChild) {
 	}
 
+	/**
+	 * Get Persistent ID of the contained dockable
+	 *
+	 * @return Persistent ID
+	 */
 	public String getPersistentID() {
 		return persistentID;
 	}
 
+	/**
+	 * Get the properties of the dockable
+	 *
+	 * @return properties map
+	 */
 	public Map<String, String> getProperties() {
 		return properties;
 	}

@@ -27,22 +27,40 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Docking layout node for a tabbed panel. A that contains multiple dockables in a JTabbedPane.
+ */
 public class DockingTabPanelNode implements DockingLayoutNode {
 	private final List<DockingSimplePanelNode> tabs = new ArrayList<>();
 	private String selectedTabID;
 
 	private DockingLayoutNode parent;
 
+	/**
+	 * Create a new tab panel node with a single dockable to start
+	 *
+	 * @param selectedTabID Persistent ID of first dockable
+	 */
 	public DockingTabPanelNode(String selectedTabID) {
 		this.selectedTabID = selectedTabID;
 	}
 
+	/**
+	 * Add a new dockable to the tab panel
+	 *
+	 * @param persistentID Dockable persistent ID to add
+	 */
 	public void addTab(String persistentID) {
 		DockingSimplePanelNode tab = new DockingSimplePanelNode(persistentID);
 		tab.setParent(this);
 		tabs.add(tab);
 	}
 
+	/**
+	 * Get a list of the persistent IDs in the tab panel
+	 *
+	 * @return List of persistent IDs
+	 */
 	public List<String> getPersistentIDs() {
 		List<String> persistentIDs = new ArrayList<>();
 
@@ -52,6 +70,11 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 		return persistentIDs;
 	}
 
+	/**
+	 * Get the persistent ID of the selected tab
+	 *
+	 * @return persistent ID
+	 */
 	public String getSelectedTabID() {
 		return selectedTabID;
 	}
@@ -100,6 +123,11 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	public void replaceChild(DockingLayoutNode child, DockingLayoutNode newChild) {
 	}
 
+	/**
+	 * Bring the layout node to front by setting it as the selected tab
+	 *
+	 * @param node Tab to set as selected
+	 */
 	public void bringToFront(DockingLayoutNode node) {
 		for (DockingSimplePanelNode tab : tabs) {
 			if (tab == node) {

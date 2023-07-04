@@ -27,7 +27,9 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-// layout of a single frame
+/**
+ * layout of a single frame
+ */
 public class WindowLayout {
 	private boolean isMainFrame;
 	private final Point location;

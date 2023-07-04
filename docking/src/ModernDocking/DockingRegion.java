@@ -21,10 +21,28 @@ SOFTWARE.
  */
 package ModernDocking;
 
+/**
+ * Enum used to determine docking regions throughout the framework
+ */
 public enum DockingRegion {
+	/**
+	 * Used to dock to the center of components
+	 */
 	CENTER,
+	/**
+	 * North or top of windows
+	 */
 	NORTH,
+	/**
+	 * East or right of windows
+	 */
 	EAST,
+	/**
+	 * South or bottom of windows
+	 */
 	SOUTH,
+	/**
+	 * West or left of windows
+	 */
 	WEST
 }

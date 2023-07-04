@@ -31,7 +31,9 @@ import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 
-// only class that should be used by clients
+/**
+ * Panel that should be added to each frame that should support docking
+ */
 public class RootDockingPanel extends DockingPanel {
 	private Window window;
 
@@ -47,10 +49,18 @@ public class RootDockingPanel extends DockingPanel {
 	private DockableToolbar westToolbar;
 	private DockableToolbar eastToolbar;
 
+	/**
+	 * Create root panel with GridBagLayout as the layout
+	 */
 	public RootDockingPanel() {
 		setLayout(new GridBagLayout());
 	}
 
+	/**
+	 * Create a new RootDockingPanel for the given window
+	 *
+	 * @param window Window this root panel is attached to
+	 */
 	public RootDockingPanel(Window window) {
 		setLayout(new GridBagLayout());
 
@@ -86,22 +96,47 @@ public class RootDockingPanel extends DockingPanel {
 		eastToolbar = new DockableToolbar(window, this, DockableToolbar.Location.EAST);
 	}
 
+	/**
+	 * Get the window that contains this RootDockingPanel
+	 *
+	 * @return Parent window
+	 */
 	public Window getWindow() {
 		return window;
 	}
 
+	/**
+	 * Set the panel that should be displayed when the root is empty
+	 *
+	 * @param panel New empty panel
+	 */
 	public void setEmptyPanel(JPanel panel) {
 		this.emptyPanel = panel;
 	}
 
+	/**
+	 * Check if pinning is supported on this root
+	 *
+	 * @return True if pinning is supported
+	 */
 	public boolean isPinningSupported() {
 		return pinningSupported;
 	}
 
+	/**
+	 * Set pinning supported flag
+	 *
+	 * @param supported Is pinning supported?
+	 */
 	public void setPinningSupported(boolean supported) {
 		pinningSupported = supported;
 	}
 
+	/**
+	 * Get the layer that is being used for pinning
+	 *
+	 * @return Pinning layer
+	 */
 	public int getPinningLayer() {
 		return pinningLayer;
 	}
@@ -110,14 +145,29 @@ public class RootDockingPanel extends DockingPanel {
 		pinningLayer = layer;
 	}
 
+	/**
+	 * Get the main panel contained in this root panel
+	 *
+	 * @return Main panel
+	 */
 	public DockingPanel getPanel() {
 		return panel;
 	}
 
+	/**
+	 * Check if this root is empty
+	 *
+	 * @return True if empty
+	 */
 	public boolean isEmpty() {
 		return panel == null;
 	}
 
+	/**
+	 * Set the main panel
+	 *
+	 * @param panel New main panel
+	 */
 	public void setPanel(DockingPanel panel) {
 		this.panel = panel;
 
@@ -219,7 +269,12 @@ public class RootDockingPanel extends DockingPanel {
 		createContents();
 	}
 
-	// set a dockable to be unpinned at the given location
+	/**
+	 * set a dockable to be unpinned at the given location
+	 *
+	 * @param dockable Dockable to unpin
+	 * @param location Toolbar to unpin to
+	 */
 	public void setDockableUnpinned(Dockable dockable, DockableToolbar.Location location) {
 		switch (location) {
 			case WEST: {
@@ -298,12 +353,20 @@ public class RootDockingPanel extends DockingPanel {
 		repaint();
 	}
 
+	/**
+	 * Hide all unpinned panels on the west, south and east toolbars
+	 */
 	public void hideUnpinnedPanels() {
 		westToolbar.hideAll();
 		southToolbar.hideAll();
 		eastToolbar.hideAll();
 	}
 
+	/**
+	 * Get a list of IDs for unpinned dockables on the west toolbar
+	 *
+	 * @return Persistent IDs
+	 */
 	public List<String> getWestUnpinnedToolbarIDs() {
 		if (westToolbar == null) {
 			return Collections.emptyList();
@@ -311,6 +374,11 @@ public class RootDockingPanel extends DockingPanel {
 		return westToolbar.getPersistentIDs();
 	}
 
+	/**
+	 * Get a list of IDs for unpinned dockables on the east toolbar
+	 *
+	 * @return Persistent IDs
+	 */
 	public List<String> getEastUnpinnedToolbarIDs() {
 		if (eastToolbar == null) {
 			return Collections.emptyList();
@@ -318,6 +386,11 @@ public class RootDockingPanel extends DockingPanel {
 		return eastToolbar.getPersistentIDs();
 	}
 
+	/**
+	 * Get a list of IDs for unpinned dockables on the south toolbar
+	 *
+	 * @return Persistent IDs
+	 */
 	public List<String> getSouthUnpinnedToolbarIDs() {
 		if (southToolbar == null) {
 			return Collections.emptyList();

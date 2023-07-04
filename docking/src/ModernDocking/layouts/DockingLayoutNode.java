@@ -27,13 +27,42 @@ import ModernDocking.DockingRegion;
  * Base interface for docking layout nodes, simple, split, tab and empty
  */
 public interface DockingLayoutNode {
+	/**
+	 * Find a node in the layout
+	 *
+	 * @param persistentID Persistent ID to search for
+	 * @return The layout node, if found. null if not found.
+	 */
 	DockingLayoutNode findNode(String persistentID);
 
+	/**
+	 * Dock a new persistent ID into this node
+	 *
+	 * @param persistentID Persistent ID of dockable to add
+	 * @param region Region to dock into
+	 * @param dividerProportion Proportion to use if in a splitpane
+	 */
 	void dock(String persistentID, DockingRegion region, double dividerProportion);
 
+	/**
+	 * Replace an existing layout node child
+	 *
+	 * @param child Child to replace
+	 * @param newChild Child to add
+	 */
 	void replaceChild(DockingLayoutNode child, DockingLayoutNode newChild);
 
+	/**
+	 * Get the parent of this node
+	 *
+	 * @return Parent of node, null if root.
+	 */
 	DockingLayoutNode getParent();
 
+	/**
+	 * Set the parent of this node
+	 *
+	 * @param parent New parent
+	 */
 	void setParent(DockingLayoutNode parent);
 }

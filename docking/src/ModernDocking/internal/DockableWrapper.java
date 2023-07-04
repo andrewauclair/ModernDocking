@@ -181,10 +181,20 @@ public class DockableWrapper {
 		return displayPanel;
 	}
 
+	/**
+	 * Change the root that this dockable is in
+	 *
+	 * @param root New root of dockable
+	 */
 	public void setRoot(RootDockingPanel root) {
 		this.root = root;
 	}
 
+	/**
+	 * Get the root that contains this dockable
+	 *
+	 * @return Root panel containing dockable
+	 */
 	public RootDockingPanel getRoot() {
 		return root;
 	}
