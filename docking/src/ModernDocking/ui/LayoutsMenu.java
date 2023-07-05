@@ -32,6 +32,9 @@ import javax.swing.*;
  * Custom JMenu that displays all the layouts in DockingLayouts as menu items
  */
 public class LayoutsMenu extends JMenu implements LayoutsListener {
+	/**
+	 * Create a new layouts menu. Add a listener for when layouts change.
+	 */
 	public LayoutsMenu() {
 		super("Layouts");
 

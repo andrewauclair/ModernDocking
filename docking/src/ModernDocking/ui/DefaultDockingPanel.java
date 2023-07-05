@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Default implementation of the Dockable interface. Useful for GUI builds where you can set each property.
+ * Default implementation of the Dockable interface. Useful for GUI builders where you can set each property.
  */
 public abstract class DefaultDockingPanel implements Dockable {
     private String persistentID;
@@ -49,6 +49,11 @@ public abstract class DefaultDockingPanel implements Dockable {
         return persistentID;
     }
 
+    /**
+     * Set the persistent ID of the dockable
+     *
+     * @param persistentID New persistent ID
+     */
     public void setPersistentID(String persistentID) {
         this.persistentID = persistentID;
     }
@@ -57,6 +62,11 @@ public abstract class DefaultDockingPanel implements Dockable {
         return type;
     }
 
+    /**
+     * Set the type of the dockable
+     *
+     * @param type New type
+     */
     public void setType(int type) {
         this.type = type;
     }
@@ -66,6 +76,11 @@ public abstract class DefaultDockingPanel implements Dockable {
         return tabText;
     }
 
+    /**
+     * Set the tab text of the dockable
+     *
+     * @param tabText New tab text
+     */
     public void setTabText(String tabText) {
         this.tabText = tabText;
     }
@@ -89,6 +104,11 @@ public abstract class DefaultDockingPanel implements Dockable {
         return floatingAllowed;
     }
 
+    /**
+     * Set floating allowed flag
+     *
+     * @param isFloatingAllowed New flag value
+     */
     public void setIsFloatingAllowed(boolean isFloatingAllowed) {
         this.floatingAllowed = isFloatingAllowed;
     }
@@ -98,6 +118,11 @@ public abstract class DefaultDockingPanel implements Dockable {
         return limitToRoot;
     }
 
+    /**
+     * Set limit to root flag
+     *
+     * @param limitToRoot New flag value
+     */
     public void setShouldLimitToRoot(boolean limitToRoot) {
         this.limitToRoot = limitToRoot;
     }
@@ -107,6 +132,11 @@ public abstract class DefaultDockingPanel implements Dockable {
         return style;
     }
 
+    /**
+     * Set the style of the dockable
+     *
+     * @param style New style
+     */
     public void setStyle(DockableStyle style) {
         this.style = style;
     }
@@ -158,6 +188,11 @@ public abstract class DefaultDockingPanel implements Dockable {
         return moreOptions.size() > 0;
     }
 
+    /**
+     * Set the additional options to be displayed on the menu
+     *
+     * @param options Additional menu options
+     */
     public void setMoreOptions(List<JMenu> options) {
         moreOptions = options;
     }

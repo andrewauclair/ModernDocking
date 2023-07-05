@@ -37,6 +37,9 @@ import java.util.List;
  * DockingPanel that has a JTabbedPane inside its center
  */
 public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
+	/**
+	 * Wrapper objects of the contained dockables in this tabbed panel
+	 */
 	private final List<DockableWrapper> panels = new ArrayList<>();
 
 	private final JTabbedPane tabs = new JTabbedPane();
@@ -100,6 +103,11 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		dockable.setParent(null);
 	}
 
+	/**
+	 * Get a list of the dockables in this tabbed panel
+	 *
+	 * @return List of persistent IDs of dockable tabs
+	 */
 	public List<String> persistentIDs() {
 		List<String> ids = new ArrayList<>();
 
@@ -192,6 +200,11 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		);
 	}
 
+	/**
+	 * Set the specified dockable as the selected tab in the tab pane
+	 *
+	 * @param dockable Dockable to bring to front
+	 */
 	public void bringToFront(Dockable dockable) {
 		for (int i = 0; i < panels.size(); i++) {
 			DockableWrapper panel = panels.get(i);

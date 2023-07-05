@@ -84,6 +84,11 @@ public class HeaderModel {
 		return Docking.isUnpinned(dockable);
 	}
 
+	/**
+	 * helper function to determine if the header min/max option should be enabled
+	 *
+	 * @return Is min/max allowed for this dockable
+	 */
 	public boolean isMaximizeAllowed() {
 		return dockable.allowMinMax();
 	}
@@ -96,6 +101,10 @@ public class HeaderModel {
 		return dockable.canBeClosed();
 	}
 
+	/**
+	 *
+	 * @return True if there are more options to add to the context menu
+	 */
 	public boolean hasMoreOptions() {
 		return dockable.hasMoreOptions();
 	}
@@ -104,6 +113,11 @@ public class HeaderModel {
 		return dockable.isFloatingAllowed();
 	}
 
+	/**
+	 * Add the extra options to the context menu
+	 *
+	 * @param menu Menu to add options to
+	 */
 	public void addMoreOptions(JPopupMenu menu) {
 		dockable.addMoreOptions(menu);
 	}

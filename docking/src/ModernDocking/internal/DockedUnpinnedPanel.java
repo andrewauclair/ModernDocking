@@ -36,9 +36,18 @@ import java.awt.event.MouseMotionListener;
  * Special JPanel used to contain a dockable within a docking toolbar
  */
 public class DockedUnpinnedPanel extends JPanel implements ComponentListener, MouseMotionListener {
+	/**
+	 * The root that this unpinned panel belongs to
+	 */
 	private final RootDockingPanel root;
+	/**
+	 * The toolbar that contains the dockable in this unpinned panel
+	 */
 	private final DockableToolbar toolbar;
 
+	/**
+	 * Flag indicating if the panel has been configured. Configuration doesn't occur until the panel is setVisible(true)
+	 */
 	private boolean configured = false;
 
 	/**

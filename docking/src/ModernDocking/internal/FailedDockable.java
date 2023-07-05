@@ -32,6 +32,9 @@ import javax.swing.*;
  * These are stripped out after restoring from the layout.
  */
 public class FailedDockable extends JPanel implements Dockable {
+	/**
+	 * Persistent ID that no dockable has been registered for
+	 */
 	private final String persistentID;
 
 	/**

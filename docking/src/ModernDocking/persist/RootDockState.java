@@ -52,6 +52,11 @@ public class RootDockState {
 		}
 	}
 
+	/**
+	 * Get the state stored in this root docking state
+	 *
+	 * @return Main state
+	 */
 	public DockableState getState() {
 		return state;
 	}

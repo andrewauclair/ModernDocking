@@ -36,22 +36,52 @@ import java.util.Objects;
  * This can be replaced by the user or with the docking-ui FlatLaf header UI
  */
 public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, AncestorListener {
+	/**
+	 * Header controller which determines what menu options are enabled
+	 */
 	private final HeaderController headerController;
+	/**
+	 * Header model which provides values to the UI
+	 */
 	private final HeaderModel headerModel;
 
+	/**
+	 * Label that displays the name of the dockable
+	 */
 	protected final JLabel titleLabel = new JLabel();
+	/**
+	 * Settings button. Displays a popup menu when pressed
+	 */
 	protected final JButton settings = new JButton();
 	/**
 	 * Close button that shows an X and when pressed undocks the dockable
 	 */
 	protected final JButton close = new JButton();
+	/**
+	 * Label that is displayed when the dockable is maximized
+	 */
 	protected final JLabel maximizedIndicator = new JLabel("Maximized");
 
+	/**
+	 * Popup menu that is displayed when the settings button is pressed
+	 */
 	private final JPopupMenu settingsMenu = new JPopupMenu();
 
+	/**
+	 * Menu option to pin the dockable. Available when the dockable is unpinned
+	 */
 	private final JMenuItem pinned = new JMenuItem("Pinned");
+	/**
+	 * Menu option to unpin the dockable. Available when the dockable is pinned
+	 */
 	private final JMenuItem unpinned = new JMenuItem("Unpinned");
+	/**
+	 * Option to move the dockable to its own window
+	 */
 	private final JMenuItem window = new JMenuItem("Window");
+	/**
+	 * Option to maximize the dockable
+	 */
 	private final JCheckBoxMenuItem maximizeOption = new JCheckBoxMenuItem("Maximize");
 
 	private boolean initialized = false;

@@ -34,7 +34,14 @@ import java.util.function.Supplier;
  * Special JCheckBoxMenuItem that handles updating the checkbox for us based on the docking state of the dockable
  */
 public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListener {
+	/**
+	 * Persistent ID provider. Used when the persistent ID isn't known at compile time.
+	 * Used when this menu item is added to a menu (using addNotify)
+	 */
 	private final Supplier<String> persistentIDProvider;
+	/**
+	 * The persistent ID of the dockable which will be displayed when this dockable is clicked
+	 */
 	private final String persistentID;
 
 	/**

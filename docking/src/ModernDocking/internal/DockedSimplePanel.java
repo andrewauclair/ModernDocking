@@ -31,8 +31,14 @@ import java.awt.*;
  * simple docking panel that only has a single Dockable in the center
  */
 public class DockedSimplePanel extends DockingPanel {
+	/**
+	 * Wrapper of the dockable in this simple panel
+	 */
 	private final DockableWrapper dockable;
 
+	/**
+	 * Parent panel of this simple panel
+	 */
 	private DockingPanel parent;
 
 	/**

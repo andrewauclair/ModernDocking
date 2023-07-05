@@ -228,6 +228,11 @@ public class DockingHandles {
 		}
 	}
 
+	/**
+	 * update the positions of the handles
+	 *
+	 * @param screenPos New mouse position
+	 */
 	public void update(Point screenPos) {
 		JComponent component = targetRoot;
 

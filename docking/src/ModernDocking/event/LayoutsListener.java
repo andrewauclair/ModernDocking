@@ -23,8 +23,22 @@ package ModernDocking.event;
 
 import ModernDocking.layouts.ApplicationLayout;
 
+/**
+ * Interface used for listening to changes in the DockingLayouts list
+ */
 public interface LayoutsListener {
+	/**
+	 * A new layout has been added to DockingLayouts
+	 *
+	 * @param name Name of the new layout
+	 * @param layout Reference to the layout
+	 */
 	void layoutAdded(String name, ApplicationLayout layout);
 
+	/**
+	 * A layout has been removed from DockingLayouts
+	 *
+	 * @param name Name of the removed layout
+	 */
 	void layoutRemoved(String name);
 }

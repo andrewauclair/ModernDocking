@@ -48,6 +48,12 @@ public class AppState {
 
 	private static Timer persistTimer = null;
 
+	/**
+	 * Set whether the framework should auto persist the application layout to a file when
+	 * docking changes, windows resize, etc.
+	 *
+	 * @param autoPersist Should the framework auto persist the application layout to a file?
+	 */
 	public static void setAutoPersist(boolean autoPersist) {
 		AppState.autoPersist = autoPersist;
 	}
@@ -61,6 +67,11 @@ public class AppState {
 		return autoPersist;
 	}
 
+	/**
+	 * Set the file that should be used for auto persistence. This will be written as an XML file.
+	 *
+	 * @param file File to persist layout to
+	 */
 	public static void setPersistFile(File file) {
 		autoPersistFile = file;
 	}
@@ -176,6 +187,12 @@ public class AppState {
 		}
 	}
 
+	/**
+	 * Set the default layout used by the application. This layout is restored after the application has loaded
+	 * and there is no persisted layout or the persisted layout fails to load.
+	 *
+	 * @param layout Default layout
+	 */
 	public static void setDefaultApplicationLayout(ApplicationLayout layout) {
 		defaultAppLayout = layout;
 	}

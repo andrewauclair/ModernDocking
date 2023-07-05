@@ -46,8 +46,12 @@ public interface Dockable {
 	 */
 	String getPersistentID();
 
-	// tells the docking framework what type of dockable this is
-	// provided as a simple int, but it's best to create your own enum and return the ordinal
+	/**
+	 * Provides the type of this dockable. Uses an int so that the user code can decide if they're just ints
+	 * or an enum (using the ordinal values)
+	 *
+	 * @return Type as an int, user defined
+	 */
 	int getType();
 
 	/**
@@ -69,10 +73,20 @@ public interface Dockable {
 		return null;
 	}
 
-	// indicates that this dockable is allowed to be floated as its own new window.
-	// if floating is not allowed and an attempt is made to float the dockable, it will be returned to where it was undocked.
-	// Note that this is independent of limitToRoot(). Returning false for floatingAllowed() and false for limitToRoot() will still
-	//    allow the dockable to be moved between roots, but it can't be used to start a new floating root.
+	//
+	//
+	//
+	//
+
+	/**
+	 * indicates that this dockable is allowed to be floated as its own new window.
+	 * if floating is not allowed and an attempt is made to float the dockable, it will be returned to where it was undocked.
+	 * <p>
+	 * Note that this is independent of limitToRoot(). Returning false for floatingAllowed() and false for limitToRoot() will still
+	 *    allow the dockable to be moved between roots, but it can't be used to start a new floating root.
+	 *
+	 * @return True, if floating is allowed
+	 */
 	boolean isFloatingAllowed();
 
 	/**
@@ -140,36 +154,66 @@ public interface Dockable {
 	default void addMoreOptions(JPopupMenu menu) {
 	}
 
-	// create the header for the panel. default action is to create an instance of DefaultHeaderUI.
-	// this can be replaced using the docking-ui package and the FlatLafHeaderUI
+	/**
+	 * create the header for the panel. default action is to create an instance of DefaultHeaderUI.
+	 * this can be replaced using the docking-ui package and the FlatLafHeaderUI
+	 *
+	 * @param headerController Header controller for this dockable
+	 * @param headerModel Header model for this dockable
+	 * @return A new header UI that uses the provided controller and model
+	 */
 	default DockingHeaderUI createHeaderUI(HeaderController headerController, HeaderModel headerModel) {
 		return new DefaultHeaderUI(headerController, headerModel);
 	}
 
-	// called when the Docking framework is about to dock this Dockable. Allows the action to be overridden.
-	// return true if the docking action has been performed separately.
+	/**
+	 * called when the Docking framework is about to dock this Dockable. Allows the action to be overridden.
+	 * return true if the docking action has been performed separately.
+	 *
+	 * @return True if docking was handled separately. False if the framework should proceed with docking
+	 */
 	default boolean onDocking() {
 		return false;
 	}
 
-	// called after the Dockable has been docked
+	/**
+	 * called after the Dockable has been docked
+	 */
 	default void onDocked() {
 	}
 
-	// called after the Dockable has been undocked
+	/**
+	 * called after the Dockable has been undocked
+	 */
 	default void onUndocked() {
 	}
 
+	/**
+	 * called when the dockable is shown
+	 */
 	default void shown() {
 	}
 
+	/**
+	 * called when the dockable is hidden
+	 */
 	default void hidden() {
 	}
 
+	/**
+	 * Get the properties of the dockable
+	 *
+	 * @return map of the dockable properties
+	 */
     default Map<String, String> getProperties() {
 		return new HashMap<>();
 	}
 
+	/**
+	 * Set the properties of the dockable
+	 *
+	 * @param properties map of the dockable properties
+	 */
 	default void setProperties(Map<String, String> properties) {
 	}
 }

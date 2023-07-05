@@ -44,9 +44,17 @@ public class RootDockingPanel extends DockingPanel {
 	private boolean pinningSupported = false;
 	private int pinningLayer = JLayeredPane.MODAL_LAYER;
 
-	// "toolbar" panels for unpinned dockables
+	/**
+	 * South toolbar of this panel. Only created if pinning is supported.
+	 */
 	private DockableToolbar southToolbar;
+	/**
+	 * West toolbar of this panel. Only created if pinning is supported.
+	 */
 	private DockableToolbar westToolbar;
+	/**
+	 * East toolbar of this panel. Only created if pinning is supported.
+	 */
 	private DockableToolbar eastToolbar;
 
 	/**
@@ -78,6 +86,11 @@ public class RootDockingPanel extends DockingPanel {
 		eastToolbar = new DockableToolbar(window, this, DockableToolbar.Location.EAST);
 	}
 
+	/**
+	 * Set the parent window of this root
+	 *
+	 * @param window Parent window of root
+	 */
 	public void setWindow(Window window) {
 		if (this.window != null) {
 			Docking.deregisterDockingPanel(this.window);
@@ -141,6 +154,11 @@ public class RootDockingPanel extends DockingPanel {
 		return pinningLayer;
 	}
 
+	/**
+	 * Set the pinning layer used for unpinned dockable toolbars
+	 *
+	 * @param layer Pinning layer
+	 */
 	public void setPinningLayer(int layer) {
 		pinningLayer = layer;
 	}
@@ -248,6 +266,11 @@ public class RootDockingPanel extends DockingPanel {
 		}
 	}
 
+	/**
+	 * Remove a dockable from its toolbar and pin it back into the root
+	 *
+	 * @param dockable Dockable to pin
+	 */
 	public void setDockablePinned(Dockable dockable) {
 		// if the dockable is currently unpinned, remove it from the toolbar, then adjust the toolbars
 		if (westToolbar.hasDockable(dockable)) {
@@ -294,6 +317,12 @@ public class RootDockingPanel extends DockingPanel {
 		createContents();
 	}
 
+	/**
+	 * Get a list of the unpinned dockables on the specified toolbar
+	 *
+	 * @param location Toolbar location
+	 * @return List of unpinned dockables
+	 */
 	public List<String> unpinnedPersistentIDs(DockableToolbar.Location location) {
 		switch (location) {
 			case WEST: return westToolbar.getPersistentIDs();

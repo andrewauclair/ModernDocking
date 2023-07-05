@@ -28,6 +28,9 @@ import java.awt.*;
  * The internal JPanel used to display the Dockable plus its header
  */
 public class DisplayPanel extends JPanel {
+	/**
+	 * Dockable contained in this display panel
+	 */
 	private final DockableWrapper wrapper;
 
 	/**

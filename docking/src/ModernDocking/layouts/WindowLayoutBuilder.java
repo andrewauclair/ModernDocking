@@ -23,22 +23,53 @@ package ModernDocking.layouts;
 
 import ModernDocking.DockingRegion;
 
-// Utility to help create layouts without directly applying them to the actual app
+/**
+ * Utility to help create layouts without directly applying them to the actual app
+ */
 public class WindowLayoutBuilder {
 	private final DockingLayoutRootNode rootNode = new DockingLayoutRootNode();
 
+	/**
+	 * Start building a new layout
+	 *
+	 * @param firstID First dockable ID in the layout
+	 */
 	public WindowLayoutBuilder(String firstID) {
 		rootNode.dock(firstID, DockingRegion.CENTER, 0.0);
 	}
 
+	/**
+	 * Dock a new dockable into this layout
+	 *
+	 * @param sourceID The new dockable
+	 * @param targetID The dockable to dock to the center of
+	 * @return This builder in order to chain calls
+	 */
 	public WindowLayoutBuilder dock(String sourceID, String targetID) {
 		return dock(sourceID, targetID, DockingRegion.CENTER);
 	}
 
+	/**
+	 * Dock a new dockable into this layout
+	 *
+	 * @param sourceID The new dockable
+	 * @param targetID The dockable to dock to
+	 * @param region The region on the dockable to dock to
+	 * @return This builder in order to chain calls
+	 */
 	public WindowLayoutBuilder dock(String sourceID, String targetID, DockingRegion region) {
 		return dock(sourceID, targetID, region, 0.5);
 	}
 
+	/**
+	 * Dock a new dockable into this layout
+	 *
+	 * @param sourceID The new dockable
+	 * @param targetID The dockable to dock to
+	 * @param region The region on the dockable to dock to
+	 * @param dividerProportion The divider proportion to use if creating a split pane
+	 * @return This builder in order to chain calls
+	 */
 	public WindowLayoutBuilder dock(String sourceID, String targetID, DockingRegion region, double dividerProportion) {
 		DockingLayoutNode node = findNode(targetID);
 

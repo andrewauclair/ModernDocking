@@ -30,6 +30,9 @@ import java.awt.*;
  * Panel that provides a slider for unpinned dockables when they are displayed
  */
 public class SlideBorder extends JPanel {
+	/**
+	 * The location of the toolbar that this slide border is for. Used to determine the correct orientation of the panel
+	 */
 	private final DockableToolbar.Location location;
 
 	/**

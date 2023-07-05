@@ -31,6 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class used to persist window layouts to XML
+ */
 public class WindowLayoutXML {
 	private static final String NL = "\n";
 
@@ -206,6 +209,12 @@ public class WindowLayoutXML {
 		writer.writeCharacters(NL);
 	}
 
+	/**
+	 * Load a WindowLayout from an XML file
+	 *
+	 * @param file File to load WindowLayout from
+	 * @return The loaded WindowLayout
+	 */
 	public static WindowLayout loadLayoutFromFile(File file) {
 		XMLInputFactory factory = XMLInputFactory.newInstance();
 		XMLStreamReader reader;

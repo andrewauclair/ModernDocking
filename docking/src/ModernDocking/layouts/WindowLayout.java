@@ -44,6 +44,15 @@ public class WindowLayout {
 	private final List<String> eastUnpinnedToolbarIDs = new ArrayList<>();
 	private final List<String> southUnpinnedToolbarIDs = new ArrayList<>();
 
+	/**
+	 * Create a new WindowLayout from an existing root node
+	 *
+	 * @param isMainFrame Flag indicating if this is the main frame of the application
+	 * @param location The location of the window on screen
+	 * @param size The width and height of the window
+	 * @param state State of the window (maximized, minimized)
+	 * @param rootNode Root of the window
+	 */
 	public WindowLayout(boolean isMainFrame, Point location, Dimension size, int state, DockingLayoutNode rootNode) {
 		this.isMainFrame = isMainFrame;
 		this.location = location;
@@ -55,6 +64,11 @@ public class WindowLayout {
 		hasSizeAndLocationInformation = true;
 	}
 
+	/**
+	 * Create a WindowLayout from a root node. All other info is defaulted
+	 *
+	 * @param rootNode Root of window
+	 */
 	public WindowLayout(DockingLayoutNode rootNode) {
 		this.rootNode = rootNode;
 		this.state = Frame.NORMAL;
@@ -66,6 +80,12 @@ public class WindowLayout {
 		modalityType = ModalityType.MODELESS;
 	}
 
+	/**
+	 * Create a new WindowLayout for the given window and its root. Assumed to not be the main frame
+	 *
+	 * @param window The window for this layout
+	 * @param rootNode The root for the window
+	 */
 	public WindowLayout(Window window, DockingLayoutNode rootNode) {
 		this.rootNode = rootNode;
 		this.location = window.getLocation();
@@ -83,14 +103,29 @@ public class WindowLayout {
 		hasSizeAndLocationInformation = true;
 	}
 
+	/**
+	 * Check if the contained window is the applications main frame
+	 *
+	 * @return True if contained window is the main frame of the application
+	 */
 	public boolean isMainFrame() {
 		return isMainFrame;
 	}
 
+	/**
+	 * Get the location on screen of this window
+	 *
+	 * @return Screen location
+	 */
 	public Point getLocation() {
 		return location;
 	}
 
+	/**
+	 * Get the size of this window
+	 *
+	 * @return Size (width and height) of the contained window
+	 */
 	public Dimension getSize() {
 		return size;
 	}
@@ -111,33 +146,68 @@ public class WindowLayout {
 		maximizedDockable = persistentID;
 	}
 
+	/**
+	 * Get the persistent ID of the dockable which is currently maximized
+	 *
+	 * @return Name of maximized dockable. Empty string if none.
+	 */
 	public String getMaximizedDockable() {
 		return maximizedDockable;
 	}
 
+	/**
+	 * Set a list of all the dockables on the west toolbar
+	 *
+	 * @param ids List of unpinned dockable IDs on the west toolbar
+	 */
 	public void setWestUnpinnedToolbarIDs(List<String> ids) {
 		westUnpinnedToolbarIDs.clear();
 		westUnpinnedToolbarIDs.addAll(ids);
 	}
 
+	/**
+	 * Get a list of all the dockables on the west toolbar
+	 *
+	 * @return List of unpinned dockable IDs on the west toolbar
+	 */
 	public List<String> getWestUnpinnedToolbarIDs() {
 		return westUnpinnedToolbarIDs;
 	}
 
+	/**
+	 * Set a list of all the dockables on the east toolbar
+	 *
+	 * @param ids List of unpinned dockable IDs on the east toolbar
+	 */
 	public void setEastUnpinnedToolbarIDs(List<String> ids) {
 		eastUnpinnedToolbarIDs.clear();
 		eastUnpinnedToolbarIDs.addAll(ids);
 	}
 
+	/**
+	 * Get a list of all the dockables on the east toolbar
+	 *
+	 * @return List of unpinned dockable IDs on the east toolbar
+	 */
 	public List<String> getEastUnpinnedToolbarIDs() {
 		return eastUnpinnedToolbarIDs;
 	}
 
+	/**
+	 * Set a list of all the dockables on the south toolbar
+	 *
+	 * @param ids List of unpinned dockable IDs on the south toolbar
+	 */
 	public void setSouthUnpinnedToolbarIDs(List<String> ids) {
 		southUnpinnedToolbarIDs.clear();
 		southUnpinnedToolbarIDs.addAll(ids);
 	}
 
+	/**
+	 * Get a list of all the dockables on the south toolbar
+	 *
+	 * @return List of unpinned dockable IDs on the south toolbar
+	 */
 	public List<String> getSouthUnpinnedToolbarIDs() {
 		return southUnpinnedToolbarIDs;
 	}

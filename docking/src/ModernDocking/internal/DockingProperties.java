@@ -152,10 +152,20 @@ public class DockingProperties {
 		return properties.currentColors.get(handlesBackgroundBorderColorKey);
 	}
 
+	/**
+	 * Get the color of the handles outline
+	 *
+	 * @return Outline color
+	 */
 	public static Color getHandlesOutline() {
 		return properties.currentColors.get(handlesOutlineColorKey);
 	}
 
+	/**
+	 * Get the color of the handles fill
+	 *
+	 * @return Fill color
+	 */
 	public static Color getHandlesFill() {
 		return properties.currentColors.get(handlesFillColorKey);
 	}

@@ -1,3 +1,6 @@
+/**
+ * Module for the Modern Docking framework
+ */
 module modern_docking {
 	requires java.desktop;
     requires java.logging;

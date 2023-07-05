@@ -42,6 +42,9 @@ import java.util.Map;
  * Listener responsible for tracking dockables both when they are first dragged and while being dragged
  */
 public class FloatListener extends DragSourceAdapter implements DragSourceListener, DragSourceMotionListener {
+	/**
+	 * Flag indicating if there is a dockable currently floating
+	 */
 	public static boolean isFloating = false;
 
 	// current floating dockable

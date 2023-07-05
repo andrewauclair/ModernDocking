@@ -34,6 +34,14 @@ package ModernDocking.layouts;
 
 	private DockingLayoutNode parent;
 
+	 /**
+	  * Create a new DockingSplitPanelNode for a layout
+	  *
+	  * @param left The left component of the split
+	  * @param right The right component of the split
+	  * @param orientation The orientation of the split
+	  * @param dividerProportion The divider proportion of the split
+	  */
 	public DockingSplitPanelNode(DockingLayoutNode left, DockingLayoutNode right, int orientation, double dividerProportion) {
 		this.left = left;
 		this.right = right;
@@ -90,10 +98,20 @@ package ModernDocking.layouts;
 		}
 	}
 
+	 /**
+	  * Get the left component of the split
+	  *
+	  * @return Left component
+	  */
 	public DockingLayoutNode getLeft() {
 		return left;
 	}
 
+	 /**
+	  * Get the right component of the split
+	  *
+	  * @return Right component
+	  */
 	public DockingLayoutNode getRight() {
 		return right;
 	}

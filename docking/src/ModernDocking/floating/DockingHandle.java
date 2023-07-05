@@ -38,7 +38,13 @@ public class DockingHandle extends JLabel implements ComponentListener {
 	 */
 	public static final int HANDLE_ICON_SIZE = 32;
 
+	/**
+	 * The region that this docking handle display is drawing
+	 */
 	private final DockingRegion region;
+	/**
+	 * Flag indicating whether this handle display is for the root handles
+	 */
 	private final boolean isRoot;
 
 	/**

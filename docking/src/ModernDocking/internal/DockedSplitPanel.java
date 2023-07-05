@@ -209,6 +209,11 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 		splitPane.setDividerLocation(dividerLocation);
 	}
 
+	/**
+	 * Set the orientation of the split pane
+	 *
+	 * @param orientation New orientation of the split pane
+	 */
 	public void setOrientation(int orientation) {
 		splitPane.setOrientation(orientation);
 

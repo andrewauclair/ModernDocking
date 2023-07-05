@@ -34,8 +34,17 @@ import java.awt.event.ComponentListener;
  * utility frame that is used to draw handles and overlay highlighting
  */
 public class DockingUtilsFrame extends JFrame implements ComponentListener {
+	/**
+	 * Handles display for this utility frame
+	 */
 	private final DockingHandles handles;
+	/**
+	 * Overlay display for this utility frame
+	 */
 	private final DockingOverlay overlay;
+	/**
+	 * The window from the application that this utility frame is directly over
+	 */
 	private final Window referenceDockingWindow;
 
 	/**

@@ -109,6 +109,11 @@ public class SplitState implements DockableState {
 		return dividerLocation;
 	}
 
+	/**
+	 * Get the resize weight of the split pane
+	 *
+	 * @return Resize weight
+	 */
 	public double getResizeWeight() {
 		return resizeWeight;
 	}
