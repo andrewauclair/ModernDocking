@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.Docking;
 import ModernDocking.RootDockingPanel;
 import ModernDocking.floating.FloatListener;
 import ModernDocking.ui.DockingHeaderUI;
@@ -30,6 +31,9 @@ import ModernDocking.ui.HeaderModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 
 /**
  * internal wrapper around the Dockable implemented by the application.
@@ -180,6 +184,26 @@ public class DockableWrapper {
 		return headerUI;
 	}
 
+	public JComponent getTabHeaderUI() {
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.setBorder(BorderFactory.createEmptyBorder(2, 1, 1, 1));
+		panel.setOpaque(false);
+
+		JLabel label = new JLabel(dockable.getTabText());
+		label.setOpaque(false);
+
+		label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 4));
+
+		panel.add(label, BorderLayout.WEST);
+
+		if (dockable.canBeClosed()) {
+			JButton c = new JButton("c");
+			c.addActionListener(e -> Docking.undock(dockable));
+
+			panel.add(c, BorderLayout.EAST);
+		}
+		return panel;
+	}
 	/**
 	 * Get the display panel
 	 *

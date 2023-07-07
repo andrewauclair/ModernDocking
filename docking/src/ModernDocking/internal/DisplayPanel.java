@@ -57,7 +57,7 @@ public class DisplayPanel extends JPanel {
 		gbc.weightx = 1.0;
 
 		if (!(wrapper.getParent() instanceof DockedTabbedPanel) || ((DockedTabbedPanel) wrapper.getParent()).isUsingBottomTabs()) {
-			add((Component) wrapper.getUI(), gbc);
+			add((Component) wrapper.getHeaderUI(), gbc);
 			gbc.gridy++;
 		}
 
