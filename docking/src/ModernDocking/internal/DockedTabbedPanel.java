@@ -93,7 +93,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		menu.addActionListener(e -> {
 			DockableWrapper dockable = panels.get(tabs.getSelectedIndex());
 
-			dockable.getUI().displaySettingsMenu(menu);
+			dockable.getHeaderUI().displaySettingsMenu(menu);
 
 		});
 
@@ -163,7 +163,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		tabs.setIconAt(tabs.getTabCount() - 1, dockable.getDockable().getIcon());
 		tabs.setSelectedIndex(tabs.getTabCount() - 1);
 		selectedTab = tabs.getSelectedIndex();
-		tabs.setTabComponentAt(tabs.getTabCount() - 1, new JLabel(dockable.getDockable().getTabText()));
+
+		SwingUtilities.invokeLater(() -> tabs.setTabComponentAt(tabs.getTabCount() - 1, dockable.getTabHeaderUI()));
 	}
 
 	/**
