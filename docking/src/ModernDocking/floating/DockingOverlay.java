@@ -80,14 +80,29 @@ public class DockingOverlay {
 		size = utilFrame.getSize();
 	}
 
+	/**
+	 * Set this overlay active. Sets the overlay to visible.
+	 *
+	 * @param active Should the overlay be displayed?
+	 */
 	public void setActive(boolean active) {
 		visible = active;
 	}
 
+	/**
+	 * Set a reference to the dockable currently being floated
+	 *
+	 * @param dockable Current floating dockable
+	 */
 	public void setFloating(Dockable dockable) {
 		floating = dockable;
 	}
 
+	/**
+	 * Set the target dockable which is currently under the mouse position.
+	 *
+	 * @param dockable Target dockable under mouse
+	 */
 	public void setTargetDockable(Dockable dockable) {
 		targetDockable = dockable;
 	}
@@ -310,6 +325,11 @@ public class DockingOverlay {
 		return DockingRegion.CENTER;
 	}
 
+	/**
+	 * Check if the floating dockable is targeting a root docking handle
+	 *
+	 * @return True if the currently selected docking handle target or area is on the root panel
+	 */
 	public boolean isDockingToRoot() {
 		// force the region to always be the center if the root is empty
 		if (targetRoot.getPanel() == null) {

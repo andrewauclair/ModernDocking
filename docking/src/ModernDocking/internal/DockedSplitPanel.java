@@ -37,7 +37,13 @@ import java.beans.PropertyChangeListener;
  * DockingPanel that has a split pane with 2 dockables, split can be vertical or horizontal
  */
 public class DockedSplitPanel extends DockingPanel implements MouseListener, PropertyChangeListener {
+	/**
+	 * Panel in the left/top part of the split
+	 */
 	private DockingPanel left = null;
+	/**
+	 * Panel in the right/bottom part of the split
+	 */
 	private DockingPanel right = null;
 
 	private final JSplitPane splitPane = new JSplitPane();
@@ -197,6 +203,11 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 		return right;
 	}
 
+	/**
+	 * Set the right panel of the split
+	 *
+	 * @param panel New right panel
+	 */
 	public void setRight(DockingPanel panel) {
 		right = panel;
 		right.setParent(this);

@@ -70,6 +70,12 @@ public class DockingInternal {
 		throw new DockableRegistrationFailureException("Dockable with Persistent ID " + dockable.getPersistentID() + " has not been registered.");
 	}
 
+	/**
+	 * Find a dockable with the given persistent ID
+	 * @param persistentID persistent ID to search for
+	 * @return found dockable
+	 * @throws DockableRegistrationFailureException if the dockable has not been registered
+	 */
 	public static Dockable getDockable(String persistentID) {
 		if (dockables.containsKey(persistentID)) {
 			return dockables.get(persistentID).getDockable();

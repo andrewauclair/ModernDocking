@@ -46,8 +46,17 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	 * Location of the toolbar. Toolbars are supported to the West, South and East of a window
 	 */
 	public enum Location {
+		/**
+		 * Toolbar is on the west of the root panel
+		 */
 		WEST,
+		/**
+		 * Toolbar is on the south of the root panel
+		 */
 		SOUTH,
+		/**
+		 * Toolbar is on the east of the root panel
+		 */
 		EAST
 	}
 
@@ -116,6 +125,11 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 		return location;
 	}
 
+	/**
+	 * Check if this toolbar is vertical (east or west)
+	 *
+	 * @return True if vertical
+	 */
 	public boolean isVertical() {
 		return location == Location.EAST || location == Location.WEST;
 	}

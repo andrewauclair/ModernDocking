@@ -26,7 +26,7 @@ import java.awt.*;
 
 /**
  * Special Icon to combine multiple Icons.
- *
+ * <p>
  * We use this to combine an image icon and rotated text icon on West/East docking toolbars
  */
 public class CombinedIcon implements Icon {

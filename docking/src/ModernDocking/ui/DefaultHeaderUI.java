@@ -84,8 +84,17 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 	 */
 	private final JCheckBoxMenuItem maximizeOption = new JCheckBoxMenuItem("Maximize");
 
+	/**
+	 * Used to ensure that the header UI is only initialized once when added to its parent
+	 */
 	private boolean initialized = false;
 
+	/**
+	 * Create a new DefualtHeaderUI
+	 *
+	 * @param headerController Header controller to use for this UI
+	 * @param headerModel Header model to use for this UI
+	 */
 	public DefaultHeaderUI(HeaderController headerController, HeaderModel headerModel) {
 		this.headerController = headerController;
 		this.headerModel = headerModel;
