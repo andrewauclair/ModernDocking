@@ -112,8 +112,6 @@ public class DockingHandle extends JLabel {
 		// draw the outline over the mouse over
 		g.setColor(outline);
 
-		System.out.println(bounds);
-
 		if (isRoot && region != DockingRegion.CENTER) {
 			drawRootOutline(g);
 		}
