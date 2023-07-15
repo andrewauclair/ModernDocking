@@ -113,16 +113,16 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		utilFrames.put(window, new DockingUtilsFrame(window, root));
 	}
 
-	private void updateFramePosition(Point mousePos) {
+	private void updateFramePosition(Point mousePosOnScreen) {
 		// update the frames position to our mouse position
-		Point framePos = new Point(mousePos.x - dragOffset.x, mousePos.y - dragOffset.y);
+		Point framePos = new Point(mousePosOnScreen.x - dragOffset.x, mousePosOnScreen.y - dragOffset.y);
 		floatingFrame.setLocation(framePos);
 
 		// find the frame at our current position
-		Window frame = DockingComponentUtils.findRootAtScreenPos(mousePos);
+		Window frame = DockingComponentUtils.findRootAtScreenPos(mousePosOnScreen);
 
 		// findRootAtScreenPos has a tendency to find the last added frame at the position. meaning it ignores Z order. override it here because we know better.
-		if (currentTopWindow != null && currentTopWindow.getBounds().contains(mousePos)) {
+		if (currentTopWindow != null && currentTopWindow.getBounds().contains(mousePosOnScreen)) {
 			frame = currentTopWindow;
 		}
 
@@ -136,12 +136,12 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			changeFrameOverlays(frame);
 		}
 
-		Dockable dockable = DockingComponentUtils.findDockableAtScreenPos(mousePos, currentTopWindow);
+		Dockable dockable = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, currentTopWindow);
 
 		if (activeUtilsFrame != null) {
 			activeUtilsFrame.setFloating(floatingDockable.getDockable());
 			activeUtilsFrame.setTargetDockable(dockable);
-			activeUtilsFrame.update(mousePos);
+			activeUtilsFrame.update(mousePosOnScreen);
 		}
 	}
 
