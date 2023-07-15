@@ -26,13 +26,11 @@ import ModernDocking.internal.DockingProperties;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 
 /**
  * Special label used to draw the docking handles on an overlay
  */
-public class DockingHandle extends JLabel implements ComponentListener {
+public class DockingHandle extends JLabel {
 	/**
 	 * The size to draw the docking handle, in pixels
 	 */
@@ -80,48 +78,6 @@ public class DockingHandle extends JLabel implements ComponentListener {
 		return isRoot;
 	}
 
-	@Override
-	public void addNotify() {
-		super.addNotify();
-
-		addComponentListener(this);
-	}
-
-	@Override
-	public void removeNotify() {
-		removeComponentListener(this);
-
-		super.removeNotify();
-	}
-
-	@Override
-	public void updateUI() {
-		super.updateUI();
-
-		if (getGraphicsConfiguration() != null) {
-			double scale = getGraphicsConfiguration().getDefaultTransform().getScaleX();
-
-			setSize((int) (HANDLE_ICON_SIZE * scale), (int) (HANDLE_ICON_SIZE * scale));
-		}
-	}
-
-	@Override
-	public void componentResized(ComponentEvent e) {
-	}
-
-	@Override
-	public void componentMoved(ComponentEvent e) {
-	}
-
-	@Override
-	public void componentShown(ComponentEvent e) {
-		updateUI();
-	}
-
-	@Override
-	public void componentHidden(ComponentEvent e) {
-	}
-
 	/**
 	 * Paint the handle
 	 *
@@ -155,6 +111,8 @@ public class DockingHandle extends JLabel implements ComponentListener {
 
 		// draw the outline over the mouse over
 		g.setColor(outline);
+
+		System.out.println(bounds);
 
 		if (isRoot && region != DockingRegion.CENTER) {
 			drawRootOutline(g);
