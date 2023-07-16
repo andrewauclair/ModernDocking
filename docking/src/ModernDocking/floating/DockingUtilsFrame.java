@@ -58,9 +58,8 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		setUndecorated(true); // don't want to see a frame border
 		setType(Type.UTILITY); // hide this frame from the task bar
 		setBackground(new Color(0, 0, 0, 0)); // don't want a background for this frame
+		getContentPane().setBackground(new Color(0, 0, 0, 0)); // don't want a background for the content frame either.
 		setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR)); // always moving a dockable when this frame is visible. use the moving cursor to indicate such
-
-//		getRootPane().putClientProperty("Window.alpha", 0.0f);
 
 		// set location and size based on the reference docking frame
 		setLocation(referenceDockingWindow.getLocation());
