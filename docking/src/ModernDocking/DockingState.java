@@ -29,10 +29,8 @@ import ModernDocking.persist.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.List;
 
 public class DockingState {
 	/**
@@ -147,6 +145,18 @@ public class DockingState {
 		// undock and destroy any failed dockables
 		undockFailedComponents(root);
 
+		// find all the splits and restore their divider locations from the bottom up
+		Deque<DockedSplitPanel> splitPanels = new ArrayDeque<>();
+
+		// find all the splits recursively. Pushing new splits onto the front of the deque. this forces the deepest
+		// splits to be adjusted first, keeping their position proper.
+		findSplitPanels(root, splitPanels);
+
+		// loop through and restore split proportions, bottom up
+		for (DockedSplitPanel splitPanel : splitPanels) {
+			SwingUtilities.invokeLater(() -> splitPanel.setDividerLocation(splitPanel.getLastRequestedDividerProportion()));
+		}
+
 		for (String id : layout.getWestUnpinnedToolbarIDs()) {
 			Dockable dockable = getDockable(id);
 			root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
@@ -170,6 +180,17 @@ public class DockingState {
 
 		if (layout.getMaximizedDockable() != null) {
 			Docking.maximize(getDockable(layout.getMaximizedDockable()));
+		}
+	}
+
+	private static void findSplitPanels(Container container, Deque<DockedSplitPanel> panels) {
+		for (Component component : container.getComponents()) {
+			if (component instanceof DockedSplitPanel) {
+				panels.addFirst((DockedSplitPanel) component);
+			}
+			else if (component instanceof Container) {
+				findSplitPanels((Container) component, panels);
+			}
 		}
 	}
 

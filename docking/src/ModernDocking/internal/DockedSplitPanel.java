@@ -50,6 +50,9 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	private DockingPanel parent;
 	private final Window window;
 
+	// the last divider proportion that setDividerLocation was called with
+	private double lastRequestedDividerProportion;
+
 	/**
 	 * Create a new DockedSplitPanel
 	 *
@@ -66,11 +69,17 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 
 		setDividerLocation(splitPane.getResizeWeight());
 
+		lastRequestedDividerProportion = splitPane.getResizeWeight();
+
 		if (splitPane.getUI() instanceof BasicSplitPaneUI) {
 			((BasicSplitPaneUI) splitPane.getUI()).getDivider().addMouseListener(this);
 		}
 
 		add(splitPane, BorderLayout.CENTER);
+	}
+
+	public double getLastRequestedDividerProportion() {
+		return lastRequestedDividerProportion;
 	}
 
 	/**
@@ -80,6 +89,8 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	 * @param proportion The new proportion of the splitpane
 	 */
 	public void setDividerLocation(final double proportion) {
+		lastRequestedDividerProportion = proportion;
+
 		// calling setDividerLocation on a JSplitPane that isn't visible does nothing, so we need to check if it is showing first
 		if (splitPane.isShowing()) {
 			if (splitPane.getWidth() > 0 && splitPane.getHeight() > 0) {
