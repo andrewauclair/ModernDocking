@@ -147,6 +147,16 @@ public class WindowLayoutBuilderTests extends JFrame implements LayoutsListener 
                 .dock("3", "1")
                 .dock("2", "1", DockingRegion.SOUTH, .25)
                 .buildApplicationLayout());
+
+        DockingLayouts.addLayout("dock to root east/west", new WindowLayoutBuilder("1")
+                .dockToRoot("2", DockingRegion.EAST)
+                .dockToRoot("3", DockingRegion.WEST)
+                .buildApplicationLayout());
+
+        DockingLayouts.addLayout("dock to root north/south", new WindowLayoutBuilder("1")
+                .dockToRoot("2", DockingRegion.NORTH)
+                .dockToRoot("3", DockingRegion.SOUTH)
+                .buildApplicationLayout());
     }
 
     public static void main(String[] args) {

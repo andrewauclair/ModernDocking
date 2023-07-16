@@ -23,6 +23,8 @@ package ModernDocking.layouts;
 
  import ModernDocking.DockingRegion;
 
+ import javax.swing.*;
+
  /**
   * Layout node that represents a splitpane
   */
@@ -84,6 +86,19 @@ package ModernDocking.layouts;
 
 	@Override
 	public void dock(String persistentID, DockingRegion region, double dividerProportion) {
+		if (region != DockingRegion.CENTER) {
+			int orientation = region == DockingRegion.EAST || region == DockingRegion.WEST ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
+			DockingLayoutNode left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(persistentID) : this;
+			DockingLayoutNode right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(persistentID);
+
+			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
+				dividerProportion = 1.0 - dividerProportion;
+			}
+
+			DockingLayoutNode oldParent = parent;
+			DockingSplitPanelNode split = new DockingSplitPanelNode(left, right, orientation, dividerProportion);
+			oldParent.replaceChild(this, split);
+		}
 	}
 
 	@Override
