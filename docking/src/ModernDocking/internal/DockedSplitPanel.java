@@ -50,7 +50,9 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	private DockingPanel parent;
 	private final Window window;
 
-	// the last divider proportion that setDividerLocation was called with
+	/**
+	 * the last divider proportion that setDividerLocation was called with
+	 */
 	private double lastRequestedDividerProportion;
 
 	/**
@@ -78,6 +80,12 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 		add(splitPane, BorderLayout.CENTER);
 	}
 
+	/**
+	 * Retrieve the last double that we used to set the divider proportion with. This helps us properly
+	 * restore divider locations when restoring from a layout.
+	 *
+	 * @return Requested divider proportion
+	 */
 	public double getLastRequestedDividerProportion() {
 		return lastRequestedDividerProportion;
 	}
