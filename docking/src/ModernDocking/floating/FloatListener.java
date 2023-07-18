@@ -82,16 +82,25 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 				// unpinned dockables are not floatable. They must be pinned again
 				if (!Docking.isUnpinned(floatingDockable.getDockable())) {
 					this.dragSource.startDrag(dge, Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR), transferable, FloatListener.this);
-					mouseDragged(dge.getDragOrigin());
+					mouseDragStarted(dge.getDragOrigin());
 
 					if (originalWindow instanceof JDialog) {
 						modalityType = ((JDialog) originalWindow).getModalityType();
 
 						((JDialog) originalWindow).setModalityType(ModalityType.MODELESS);
 
-//						SwingUtilities.invokeLater(() -> currentTopWindow.toFront());
-						SwingUtilities.invokeLater(() -> floatingFrame.toFront());
-						SwingUtilities.invokeLater(() -> activeUtilsFrame.toFront());
+						SwingUtilities.invokeLater(() -> {
+							// check that the floating frame still exists since we invoked later and time might have passed
+							if (floatingFrame != null) {
+								floatingFrame.toFront();
+							}
+						});
+						SwingUtilities.invokeLater(() -> {
+							// check that the utils frame still exists since we invoked later and time might have passed
+							if (activeUtilsFrame != null) {
+								activeUtilsFrame.toFront();
+							}
+						});
 					}
 				}
 			});
@@ -155,20 +164,35 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		if (newWindow != null) {
 			activeUtilsFrame = utilFrames.get(newWindow);
 
-			if (activeUtilsFrame != null) {
+			if (currentTopWindow != null && floatingFrame != null && activeUtilsFrame != null) {
 				Point mousePos = MouseInfo.getPointerInfo().getLocation();
 				activeUtilsFrame.setFloating(floatingDockable.getDockable());
 				activeUtilsFrame.update(mousePos);
 				activeUtilsFrame.setActive(true);
 
-				SwingUtilities.invokeLater(() -> currentTopWindow.toFront());
-				SwingUtilities.invokeLater(() -> floatingFrame.toFront());
-				SwingUtilities.invokeLater(() -> activeUtilsFrame.toFront());
+				SwingUtilities.invokeLater(() -> {
+					// check that the current top frame still exists since we invoked later and time might have passed
+					if (currentTopWindow != null) {
+						currentTopWindow.toFront();
+					}
+				});
+				SwingUtilities.invokeLater(() -> {
+					// check that the floating frame still exists since we invoked later and time might have passed
+					if (floatingFrame != null) {
+						floatingFrame.toFront();
+					}
+				});
+				SwingUtilities.invokeLater(() -> {
+					// check that the utils frame still exists since we invoked later and time might have passed
+					if (activeUtilsFrame != null) {
+						activeUtilsFrame.toFront();
+					}
+				});
 			}
 		}
 	}
 
-	public void mouseDragged(Point point) {
+	public void mouseDragStarted(Point point) {
 		isFloating = true;
 
 		dragOffset = point;
@@ -287,6 +311,9 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 	@Override
 	public void dragMouseMoved(DragSourceDragEvent dsde) {
+		if (!isFloating) {
+			return;
+		}
 		updateFramePosition(dsde.getLocation());
 	}
 }
