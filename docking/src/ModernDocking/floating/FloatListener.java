@@ -89,6 +89,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 						((JDialog) originalWindow).setModalityType(ModalityType.MODELESS);
 
+						// Set all of these as invokeLater to force the order they happen in
 						SwingUtilities.invokeLater(() -> {
 							// check that the floating frame still exists since we invoked later and time might have passed
 							if (floatingFrame != null) {
@@ -170,9 +171,25 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 				activeUtilsFrame.update(mousePos);
 				activeUtilsFrame.setActive(true);
 
-				SwingUtilities.invokeLater(() -> currentTopWindow.toFront());
-				SwingUtilities.invokeLater(() -> floatingFrame.toFront());
-				SwingUtilities.invokeLater(() -> activeUtilsFrame.toFront());
+				// Set all of these as invokeLater to force the order they happen in
+				SwingUtilities.invokeLater(() -> {
+					// check that the current top frame still exists since we invoked later and time might have passed
+					if (currentTopWindow != null) {
+						currentTopWindow.toFront();
+					}
+				});
+				SwingUtilities.invokeLater(() -> {
+					// check that the floating frame still exists since we invoked later and time might have passed
+					if (floatingFrame != null) {
+						floatingFrame.toFront();
+					}
+				});
+				SwingUtilities.invokeLater(() -> {
+					// check that the utils frame still exists since we invoked later and time might have passed
+					if (activeUtilsFrame != null) {
+						activeUtilsFrame.toFront();
+					}
+				});
 			}
 		}
 	}
@@ -214,14 +231,12 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			activeUtilsFrame = utilFrames.get(originalWindow);
 		}
 
-		SwingUtilities.invokeLater(() -> {
-			if (activeUtilsFrame != null) {
-				activeUtilsFrame.setFloating(floatingDockable.getDockable());
-				activeUtilsFrame.update(mousePos);
-				activeUtilsFrame.setActive(true);
-				activeUtilsFrame.toFront();
-			}
-		});
+		if (activeUtilsFrame != null) {
+			activeUtilsFrame.setFloating(floatingDockable.getDockable());
+			activeUtilsFrame.update(mousePos);
+			activeUtilsFrame.setActive(true);
+			activeUtilsFrame.toFront();
+		}
 
 		AppState.setPaused(true);
 	}
