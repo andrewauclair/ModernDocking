@@ -35,13 +35,24 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import exception.FailOnThreadViolationRepaintManager;
+import picocli.CommandLine;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame implements Callable<Integer> {
+	@CommandLine.Option(names = "--laf", required = true, description = "look and feel to use. one of: system, light or dark")
+	String lookAndFeel;
+
+	@CommandLine.Option(names = "--enable-edt-violation-detector", arity = "0..1", defaultValue = "false", description = "enable the Event Dispatch Thread (EDT) violation checker")
+	boolean edtViolationDetector;
+
+	@CommandLine.Option(names = "--ui-scale", arity = "0..1", defaultValue = "1", description = "scale to use for the FlatLaf.uiScale value")
+	int uiScale;
+
 	public MainFrame() {
 		setTitle("Modern Docking Basic Demo");
 
@@ -232,38 +243,19 @@ public class MainFrame extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			configureLookAndFeel(args);
-
-			MainFrame mainFrame = new MainFrame();
-			mainFrame.setVisible(true);
-
-			// now that the main frame is set up with the defaults, we can restore the layout
-			AppState.setPersistFile(new File("basic_demo_layout.xml"));
-
-			try {
-				AppState.restore();
-			} catch (DockingLayoutException e) {
-				// something happened trying to load the layout file, record it here
-				e.printStackTrace();
-			}
-
-			AppState.setAutoPersist(true);
-		});
+		new CommandLine(new MainFrame()).execute(args);
 	}
 
-	private static void configureLookAndFeel(String[] args) {
+	private void configureLookAndFeel() {
 		try {
 			FlatLaf.registerCustomDefaultsSource( "docking" );
 
-			if (args.length > 1) {
-				System.setProperty("flatlaf.uiScale", args[1]);
-			}
+			System.setProperty("flatlaf.uiScale", String.valueOf(uiScale));
 
-			if (args.length > 0 && args[0].equals("light")) {
+			if (lookAndFeel.equals("light")) {
 				UIManager.setLookAndFeel(new FlatLightLaf());
 			}
-			else if (args.length > 0 && args[0].equals("dark")) {
+			else if (lookAndFeel.equals("dark")) {
 				UIManager.setLookAndFeel(new FlatDarkLaf());
 			}
 			else {
@@ -290,7 +282,31 @@ public class MainFrame extends JFrame {
 		UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0,0,0,0));
 		UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
 
-		// this is an app to test the docking framework, we want to make sure we detect EDT violations as soon as possible
-		FailOnThreadViolationRepaintManager.install();
+		if (edtViolationDetector) {
+			// this is an app to test the docking framework, we want to make sure we detect EDT violations as soon as possible
+			FailOnThreadViolationRepaintManager.install();
+		}
+	}
+
+	@Override
+	public Integer call() throws Exception {
+		SwingUtilities.invokeLater(() -> {
+			configureLookAndFeel();
+
+			setVisible(true);
+
+			// now that the main frame is set up with the defaults, we can restore the layout
+			AppState.setPersistFile(new File("basic_demo_layout.xml"));
+
+			try {
+				AppState.restore();
+			} catch (DockingLayoutException e) {
+				// something happened trying to load the layout file, record it here
+				e.printStackTrace();
+			}
+
+			AppState.setAutoPersist(true);
+		});
+		return 0;
 	}
 }
