@@ -43,12 +43,21 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	private final List<DockableWrapper> panels = new ArrayList<>();
 
 	private final JTabbedPane tabs = new JTabbedPane();
+
+	/**
+	 * The parent of this DockedTabbedPanel
+	 */
 	private DockingPanel parent;
 
+	/**
+	 * The selected tab index. default to -1 and set properly when state changes
+	 */
 	private int selectedTab = -1;
 
 	/**
 	 * Create a new instance of DockedTabbedPanel
+	 *
+	 * @param dockable The first dockable in the tabbed pane
 	 */
 	public DockedTabbedPanel(DockableWrapper dockable) {
 		setLayout(new BorderLayout());
