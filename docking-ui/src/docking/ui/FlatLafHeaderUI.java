@@ -27,7 +27,16 @@ import ModernDocking.ui.HeaderController;
 import ModernDocking.ui.HeaderModel;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
+/**
+ * Custom DefaultHeaderUI that uses SVG Icons for settings and close when using FlatLaf
+ */
 public class FlatLafHeaderUI extends DefaultHeaderUI implements DockingHeaderUI {
+	/**
+	 * Construct a new FlatLafHeaderUI
+	 *
+	 * @param headerController Header controller to use for this UI
+	 * @param headerModel Header model to use for this UI
+	 */
 	public FlatLafHeaderUI(HeaderController headerController, HeaderModel headerModel) {
 		super(headerController, headerModel);
 
