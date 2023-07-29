@@ -54,7 +54,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	/**
 	 * Create a new instance of DockedTabbedPanel
 	 */
-	public DockedTabbedPanel() {
+	public DockedTabbedPanel(DockableWrapper dockable) {
 		setLayout(new BorderLayout());
 
 		// set the initial border. Docking handles the border after this using a global AWT listener
@@ -66,6 +66,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		configureTrailingComponent();
 
 		add(tabs, BorderLayout.CENTER);
+
+		addPanel(dockable);
 	}
 
 	private void configureTrailingComponent() {

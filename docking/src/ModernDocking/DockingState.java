@@ -23,6 +23,7 @@ package ModernDocking;
 
 import ModernDocking.exception.DockableNotFoundException;
 import ModernDocking.exception.DockableRegistrationFailureException;
+import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.internal.*;
 import ModernDocking.layouts.*;
 import ModernDocking.persist.*;
@@ -252,7 +253,7 @@ public class DockingState {
 	}
 
 	private static DockedTabbedPanel restoreTabbed(TabState state, Window window) {
-		DockedTabbedPanel panel = new DockedTabbedPanel();
+		DockedTabbedPanel panel = null;
 
 		for (String persistentID : state.getPersistentIDs()) {
 			Dockable dockable = getDockable(persistentID);
@@ -266,9 +267,17 @@ public class DockingState {
 			DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
 			wrapper.setWindow(window);
 
-			panel.addPanel(wrapper);
+			if (panel == null) {
+				panel = new DockedTabbedPanel(wrapper);
+			}
+			else {
+				panel.addPanel(wrapper);
+			}
 		}
 
+		if (panel == null) {
+			throw new RuntimeException("DockedTabbedPanel has no tabs");
+		}
 		return panel;
 	}
 
@@ -318,7 +327,7 @@ public class DockingState {
 	}
 
 	private static DockedTabbedPanel restoreTabbed(DockingTabPanelNode node, Window window) {
-		DockedTabbedPanel panel = new DockedTabbedPanel();
+		DockedTabbedPanel panel = null;
 
 		for (String persistentID : node.getPersistentIDs()) {
 			Dockable dockable = getDockable(persistentID);
@@ -332,7 +341,16 @@ public class DockingState {
 			DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
 			wrapper.setWindow(window);
 
-			panel.addPanel(wrapper);
+			if (panel == null) {
+				panel = new DockedTabbedPanel(wrapper);
+			}
+			else {
+				panel.addPanel(wrapper);
+			}
+		}
+
+		if (panel == null) {
+			throw new RuntimeException("DockedTabbedPanel has no tabs");
 		}
 
 		if (!node.getSelectedTabID().isEmpty()) {

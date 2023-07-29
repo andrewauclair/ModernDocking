@@ -80,9 +80,8 @@ public class DockedSimplePanel extends DockingPanel {
 		wrapper.setWindow(this.dockable.getWindow());
 
 		if (region == DockingRegion.CENTER) {
-			DockedTabbedPanel tabbedPanel = new DockedTabbedPanel();
+			DockedTabbedPanel tabbedPanel = new DockedTabbedPanel(this.dockable);
 
-			tabbedPanel.addPanel(this.dockable);
 			tabbedPanel.addPanel(wrapper);
 
 			this.dockable.getDockable().hidden();
