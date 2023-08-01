@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2022-2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,16 +21,25 @@ SOFTWARE.
  */
 package docking.ui;
 
+import ModernDocking.internal.DockingProperties;
 import ModernDocking.ui.DefaultHeaderUI;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
 import ModernDocking.ui.HeaderModel;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
+
 /**
  * Custom DefaultHeaderUI that uses SVG Icons for settings and close when using FlatLaf
  */
 public class FlatLafHeaderUI extends DefaultHeaderUI implements DockingHeaderUI {
+
+	private final FlatSVGIcon settingsIcon = new FlatSVGIcon("icons/settings.svg");
+	private final FlatSVGIcon closeIcon = new FlatSVGIcon("icons/close.svg");
+
 	/**
 	 * Construct a new FlatLafHeaderUI
 	 *
@@ -40,7 +49,62 @@ public class FlatLafHeaderUI extends DefaultHeaderUI implements DockingHeaderUI 
 	public FlatLafHeaderUI(HeaderController headerController, HeaderModel headerModel) {
 		super(headerController, headerModel);
 
-		settings.setIcon(new FlatSVGIcon("icons/settings.svg"));
-		close.setIcon(new FlatSVGIcon("icons/close.svg"));
+		setBackground(UIManager.getColor("TableHeader.background"));
+		Color foreground = UIManager.getColor("TableHeader.foreground");
+
+		settingsIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> foreground));
+		closeIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> foreground));
+
+	}
+
+	@Override
+	protected void init() {
+		super.init();
+
+		settings.setIcon(settingsIcon);
+		close.setIcon(closeIcon);
+	}
+
+	@Override
+	protected void configureColors() {
+		setBackground(UIManager.getColor("TableHeader.background"));
+		Color foreground = UIManager.getColor("TableHeader.foreground");
+		setForeground(foreground);
+
+		settings.setForeground(foreground);
+		close.setForeground(foreground);
+
+		if (DockingProperties.isTitlebarBorderEnabled()) {
+			Border border = BorderFactory.createMatteBorder(0, 0, DockingProperties.getTitlebarBorderSize(), 0, UIManager.getColor("TableHeader.borderColor"));
+			setBorder(border);
+		}
+
+		UIManager.addPropertyChangeListener(e -> {
+			if ("lookAndFeel".equals(e.getPropertyName())) {
+				SwingUtilities.invokeLater(() -> {
+					setBackground(UIManager.getColor("TableHeader.background"));
+					Color newForeground = UIManager.getColor("TableHeader.foreground");
+					setForeground(newForeground);
+
+					if (DockingProperties.isTitlebarBorderEnabled()) {
+						Border border = BorderFactory.createMatteBorder(0, 0, DockingProperties.getTitlebarBorderSize(), 0, UIManager.getColor("TableHeader.borderColor"));
+						setBorder(border);
+					}
+				});
+
+			}
+		});
+	}
+
+	@Override
+	public void setForeground(Color fg) {
+		super.setForeground(fg);
+
+		if (settingsIcon != null) {
+			settingsIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> fg));
+		}
+		if (closeIcon != null) {
+			closeIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> fg));
+		}
 	}
 }

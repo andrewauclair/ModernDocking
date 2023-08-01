@@ -87,10 +87,10 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 	/**
 	 * Used to ensure that the header UI is only initialized once when added to its parent
 	 */
-	private boolean initialized = false;
+	protected boolean initialized = false;
 
 	/**
-	 * Create a new DefualtHeaderUI
+	 * Create a new DefaultHeaderUI
 	 *
 	 * @param headerController Header controller to use for this UI
 	 * @param headerModel Header model to use for this UI
@@ -111,7 +111,7 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		settingsMenu.show(settings, settings.getWidth(), settings.getHeight());
 	}
 
-	private void init() {
+	protected void init() {
 		if (initialized) {
 			return;
 		}
@@ -130,31 +130,7 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		setupButton(settings);
 		setupButton(close);
 
-		Color color = DockingProperties.getTitlebarBackgroundColor();
-		setBackground(color);
-
-		if (DockingProperties.isTitlebarBorderEnabled()) {
-			setBorder(BorderFactory.createMatteBorder(0, 0, DockingProperties.getTitlebarBorderSize(), 0, DockingProperties.getTitlebarBorderColor()));
-		}
-
-		UIManager.addPropertyChangeListener(e -> {
-			if ("lookAndFeel".equals(e.getPropertyName())) {
-				Color bg = DockingProperties.getTitlebarBackgroundColor();
-				SwingUtilities.invokeLater(() -> {
-					setBackground(bg);
-
-					if (DockingProperties.isTitlebarBorderEnabled()) {
-						Border border = BorderFactory.createLineBorder(DockingProperties.getTitlebarBorderColor(), DockingProperties.getTitlebarBorderSize());
-						setBorder(border);
-					}
-				});
-
-			}
-			else if (e.getPropertyName().equals("ModernDocking.titlebar.background")) {
-				Color bg = DockingProperties.getTitlebarBackgroundColor();
-				SwingUtilities.invokeLater(() -> setBackground(bg));
-			}
-		});
+		configureColors();
 
 		setLayout(new GridBagLayout());
 
@@ -203,6 +179,35 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		}
 	}
 
+	protected void configureColors() {
+		Color color = DockingProperties.getTitlebarBackgroundColor();
+		setBackground(color);
+
+		if (DockingProperties.isTitlebarBorderEnabled()) {
+			Border border = BorderFactory.createMatteBorder(0, 0, DockingProperties.getTitlebarBorderSize(), 0, DockingProperties.getTitlebarBorderColor());
+			setBorder(border);
+		}
+
+		UIManager.addPropertyChangeListener(e -> {
+			if ("lookAndFeel".equals(e.getPropertyName())) {
+				Color bg = DockingProperties.getTitlebarBackgroundColor();
+				SwingUtilities.invokeLater(() -> {
+					setBackground(bg);
+
+					if (DockingProperties.isTitlebarBorderEnabled()) {
+						Border border = BorderFactory.createLineBorder(DockingProperties.getTitlebarBorderColor(), DockingProperties.getTitlebarBorderSize());
+						setBorder(border);
+					}
+				});
+
+			}
+			else if (e.getPropertyName().equals("ModernDocking.titlebar.background")) {
+				Color bg = DockingProperties.getTitlebarBackgroundColor();
+				SwingUtilities.invokeLater(() -> setBackground(bg));
+			}
+		});
+	}
+
 	private void addOptions() {
 		headerModel.addMoreOptions(settingsMenu);
 
@@ -242,8 +247,6 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 	}
 
 	private void setupButton(JButton button) {
-		Color color = DockingProperties.getTitlebarBackgroundColor();
-		button.setBackground(color);
 		button.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		button.setFocusable(false);
 		button.setOpaque(false);
@@ -273,6 +276,16 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 	}
 
 	@Override
+	public void setForeground(Color fg) {
+		super.setForeground(fg);
+
+		if (titleLabel != null) titleLabel.setForeground(fg);
+
+		if (close != null) close.setForeground(fg);
+		if (settings != null) settings.setForeground(fg);
+	}
+
+	@Override
 	public void update() {
 		maximizedIndicator.setVisible(headerModel.isMaximized());
 		maximizeOption.setSelected(headerModel.isMaximized());
@@ -289,11 +302,9 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 
 	@Override
 	public void ancestorRemoved(AncestorEvent event) {
-
 	}
 
 	@Override
 	public void ancestorMoved(AncestorEvent event) {
-
 	}
 }

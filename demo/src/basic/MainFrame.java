@@ -34,6 +34,9 @@ import ModernDocking.ui.LayoutsMenu;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme;
 import exception.FailOnThreadViolationRepaintManager;
 import picocli.CommandLine;
 
@@ -44,7 +47,7 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 
 public class MainFrame extends JFrame implements Callable<Integer> {
-	@CommandLine.Option(names = "--laf", required = true, description = "look and feel to use. one of: system, light or dark")
+	@CommandLine.Option(names = "--laf", required = true, description = "look and feel to use. one of: system, light, dark, github-dark or solarized-dark")
 	String lookAndFeel;
 
 	@CommandLine.Option(names = "--enable-edt-violation-detector", arity = "0..1", defaultValue = "false", description = "enable the Event Dispatch Thread (EDT) violation checker")
@@ -54,7 +57,12 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 	int uiScale;
 
 	public MainFrame() {
-		setTitle("Modern Docking Basic Demo");
+	}
+
+	@Override
+	public void setVisible(boolean b) {
+
+	setTitle("Modern Docking Basic Demo");
 
 		setSize(800, 600);
 
@@ -162,10 +170,17 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		ToolPanel output = new OutputPanel("Output", "output", DockableStyle.HORIZONTAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
 		AlwaysDisplayedPanel alwaysDisplayed = new AlwaysDisplayedPanel("always displayed", "always-displayed");
 
+		ThemesPanel themes = new ThemesPanel();
+
 		one.setTitleBackground(new Color(0xa1f2ff));
 		two.setTitleBackground(new Color(0xdda1ff));
 		three.setTitleBackground(new Color(0xffaea1));
 		four.setTitleBackground(new Color(0xc3ffa1));
+
+		one.setTitleForeground(Color.black);
+		two.setTitleForeground(Color.black);
+		three.setTitleForeground(Color.black);
+		four.setTitleForeground(Color.black);
 
 		JMenuItem changeText = new JMenuItem("Change tab text");
 		changeText.addActionListener(e -> {
@@ -194,6 +209,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		view.add(actionListenDock(output));
 		view.add(new DockableMenuItem(() -> ((Dockable) alwaysDisplayed).getPersistentID(), ((Dockable) alwaysDisplayed).getTabText()));
 		view.add(changeText);
+		view.add(actionListenDock(themes));
 
 		JMenuItem storeCurrentLayout = new JMenuItem("Store Current Layout...");
 		storeCurrentLayout.addActionListener(e -> {
@@ -231,11 +247,15 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 				.dockToRoot(three.getPersistentID(), DockingRegion.WEST)
 				.dock(four.getPersistentID(), two.getPersistentID(), DockingRegion.CENTER)
 				.dockToRoot(output.getPersistentID(), DockingRegion.SOUTH)
-				.dockToRoot(explorer.getPersistentID(), DockingRegion.EAST)
+				.dockToRoot(themes.getPersistentID(), DockingRegion.EAST)
+				.dock(explorer.getPersistentID(), themes.getPersistentID(), DockingRegion.CENTER)
+				.display(themes.getPersistentID())
 				.buildApplicationLayout();
 
 		DockingLayouts.addLayout("default", defaultLayout);
 		AppState.setDefaultApplicationLayout(defaultLayout);
+
+		super.setVisible(b);
 	}
 
 	private JMenuItem actionListenDock(Dockable dockable) {
@@ -243,7 +263,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 	}
 
 	public static void main(String[] args) {
-		new CommandLine(new MainFrame()).execute(args);
+		SwingUtilities.invokeLater(() -> new CommandLine(new MainFrame()).execute(args));
 	}
 
 	private void configureLookAndFeel() {
@@ -257,6 +277,12 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 			}
 			else if (lookAndFeel.equals("dark")) {
 				UIManager.setLookAndFeel(new FlatDarkLaf());
+			}
+			else if (lookAndFeel.equals("github-dark")) {
+				UIManager.setLookAndFeel(new FlatGitHubDarkIJTheme());
+			}
+			else if (lookAndFeel.equals("solarized-dark")) {
+				UIManager.setLookAndFeel(new FlatSolarizedDarkIJTheme());
 			}
 			else {
 				try {
@@ -292,7 +318,10 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 	@Override
 	public Integer call() throws Exception {
 		SwingUtilities.invokeLater(() -> {
-			configureLookAndFeel();
+		configureLookAndFeel();
+
+		});
+		SwingUtilities.invokeLater(() -> {
 
 			setVisible(true);
 
