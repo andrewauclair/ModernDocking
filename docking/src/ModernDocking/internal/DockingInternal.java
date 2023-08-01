@@ -25,6 +25,7 @@ import ModernDocking.Dockable;
 import ModernDocking.Docking;
 import ModernDocking.exception.DockableRegistrationFailureException;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
@@ -102,6 +103,16 @@ public class DockingInternal {
 			if (Docking.isDocked(wrapper.getDockable())) {
 				DockingListeners.fireDockedEvent(wrapper.getDockable());
 			}
+		}
+	}
+
+	/**
+	 * Force a UI update on all dockables when changing L&F. This ensures that any dockables not part of a free (i.e. not docked)
+	 * are properly updated with the new L&F
+	 */
+	public static void updateLAF() {
+		for (DockableWrapper wrapper : dockables.values()) {
+			SwingUtilities.updateComponentTreeUI(wrapper.getDisplayPanel());
 		}
 	}
 }
