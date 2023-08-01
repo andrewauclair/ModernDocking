@@ -71,6 +71,13 @@ public class Docking {
 		instance = this;
 
 		FloatListener.reset();
+
+		// listen for L&F changes so that we can update dockable panels properly when not displayed
+		UIManager.addPropertyChangeListener(e -> {
+			if ("lookAndFeel".equals(e.getPropertyName())) {
+				SwingUtilities.invokeLater(DockingInternal::updateLAF);
+			}
+		});
 	}
 
 	/**
