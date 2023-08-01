@@ -24,6 +24,7 @@ package ModernDocking.internal;
 import ModernDocking.Dockable;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
@@ -73,6 +74,17 @@ public class ActiveDockableHighlighter {
 				}
 			}
 		}, AWTEvent.MOUSE_EVENT_MASK);
+
+		UIManager.addPropertyChangeListener(e -> {
+			if ("lookAndFeel".equals(e.getPropertyName())) {
+				SwingUtilities.invokeLater(() -> {
+					if (activePanel != null) {
+						setSelectedBorder();
+					}
+				});
+
+			}
+		});
 	}
 
 	private void setSelectedBorder() {
