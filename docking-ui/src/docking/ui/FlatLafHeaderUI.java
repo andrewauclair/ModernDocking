@@ -36,8 +36,14 @@ import java.awt.*;
  * Custom DefaultHeaderUI that uses SVG Icons for settings and close when using FlatLaf
  */
 public class FlatLafHeaderUI extends DefaultHeaderUI implements DockingHeaderUI {
+	/**
+	 * Settings icon for the header. Uses an SVG icon for sharper icons
+	 */
 
 	private final FlatSVGIcon settingsIcon = new FlatSVGIcon("icons/settings.svg");
+	/**
+	 * Close icon for the header. Uses an SVG icon for sharper icons
+	 */
 	private final FlatSVGIcon closeIcon = new FlatSVGIcon("icons/close.svg");
 
 	/**
