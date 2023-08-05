@@ -107,8 +107,8 @@ public class DockingInternal {
 	}
 
 	/**
-	 * Force a UI update on all dockables when changing L&F. This ensures that any dockables not part of a free (i.e. not docked)
-	 * are properly updated with the new L&F
+	 * Force a UI update on all dockables when changing look and feel. This ensures that any dockables not part of a free (i.e. not docked)
+	 * are properly updated with the new look and feel
 	 */
 	public static void updateLAF() {
 		for (DockableWrapper wrapper : dockables.values()) {
