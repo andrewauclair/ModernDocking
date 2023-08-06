@@ -209,11 +209,8 @@ public class RootDockingPanel extends DockingPanel {
 
 	@Override
 	public void removeNotify() {
-		// if there is no Docking instance skip this code to prevent issues in GUI builders
-		if (Docking.getInstance() != null) {
-			Window rootWindow = (Window) SwingUtilities.getRoot(this);
-			Docking.deregisterDockingPanel(rootWindow);
-		}
+		Window rootWindow = (Window) SwingUtilities.getRoot(this);
+		Docking.deregisterDockingPanel(rootWindow);
 
 		super.removeNotify();
 	}

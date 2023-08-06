@@ -73,10 +73,10 @@ public class DockingState {
 	public static ApplicationLayout getApplicationLayout() {
 		ApplicationLayout layout = new ApplicationLayout();
 
-		layout.setMainFrame(getWindowLayout(Docking.getInstance().getMainWindow()));
+		layout.setMainFrame(getWindowLayout(Docking.getMainWindow()));
 
-		for (Window frame : Docking.getInstance().getRootPanels().keySet()) {
-			if (frame != Docking.getInstance().getMainWindow()) {
+		for (Window frame : Docking.getRootPanels().keySet()) {
+			if (frame != Docking.getMainWindow()) {
 				layout.addFrame(getWindowLayout(frame));
 			}
 		}
@@ -91,9 +91,9 @@ public class DockingState {
 	 */
 	public static void restoreApplicationLayout(ApplicationLayout layout) {
 		// get rid of all existing windows and undock all dockables
-		Set<Window> windows = new HashSet<>(Docking.getInstance().getRootPanels().keySet());
+		Set<Window> windows = new HashSet<>(Docking.getRootPanels().keySet());
 		for (Window window : windows) {
-			if (window != Docking.getInstance().getMainWindow()) {
+			if (window != Docking.getMainWindow()) {
 				DockingComponentUtils.undockComponents(window);
 				window.dispose();
 			}
@@ -102,7 +102,7 @@ public class DockingState {
 		AppState.setPaused(true);
 
 		// setup main frame
-		restoreWindowLayout(Docking.getInstance().getMainWindow(), layout.getMainFrameLayout());
+		restoreWindowLayout(Docking.getMainWindow(), layout.getMainFrameLayout());
 
 		// setup rest of floating windows from layout
 		for (WindowLayout frameLayout : layout.getFloatingFrameLayouts()) {
