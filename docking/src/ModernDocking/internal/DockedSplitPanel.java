@@ -22,7 +22,9 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.Docking;
 import ModernDocking.DockingRegion;
+import ModernDocking.layouts.DockingSimplePanelNode;
 import ModernDocking.persist.AppState;
 
 import javax.swing.*;
@@ -278,7 +280,14 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 		DockedSplitPanel split = new DockedSplitPanel(window);
 		parent.replaceChild(this, split);
 
-		DockedSimplePanel newPanel = new DockedSimplePanel(wrapper);
+		DockingPanel newPanel;
+
+		if (Docking.alwaysDisplayTabsMode()) {
+			newPanel = new DockedTabbedPanel(wrapper);
+		}
+		else {
+			newPanel = new DockedSimplePanel(wrapper);
+		}
 
 		if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
 			split.setLeft(this);

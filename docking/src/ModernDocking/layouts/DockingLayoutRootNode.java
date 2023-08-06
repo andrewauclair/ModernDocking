@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package ModernDocking.layouts;
 
+import ModernDocking.Docking;
 import ModernDocking.DockingRegion;
 
 /**
@@ -38,6 +39,10 @@ public class DockingLayoutRootNode implements DockingLayoutNode {
     public void dock(String persistentID, DockingRegion region, double dividerProportion) {
         if (node != null) {
             node.dock(persistentID, region, dividerProportion);
+        }
+        else if (Docking.alwaysDisplayTabsMode()) {
+            node = new DockingTabPanelNode(persistentID);
+            node.setParent(this);
         }
         else {
             node = new DockingSimplePanelNode(persistentID);

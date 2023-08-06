@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package ModernDocking.layouts;
 
+import ModernDocking.Docking;
 import ModernDocking.DockingRegion;
 
 import javax.swing.*;
@@ -42,6 +43,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 * @param selectedTabID Persistent ID of first dockable
 	 */
 	public DockingTabPanelNode(String selectedTabID) {
+		addTab(selectedTabID);
 		this.selectedTabID = selectedTabID;
 	}
 
@@ -51,6 +53,9 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 * @param persistentID Dockable persistent ID to add
 	 */
 	public void addTab(String persistentID) {
+		if (findNode(persistentID) != null) {
+			return;
+		}
 		DockingSimplePanelNode tab = new DockingSimplePanelNode(persistentID);
 		tab.setParent(this);
 		tabs.add(tab);
@@ -106,8 +111,18 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 		}
 		else {
 			int orientation = region == DockingRegion.EAST || region == DockingRegion.WEST ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
-			DockingLayoutNode left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(persistentID) : this;
-			DockingLayoutNode right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(persistentID);
+
+			DockingLayoutNode left;
+			DockingLayoutNode right;
+
+			if (Docking.alwaysDisplayTabsMode()) {
+				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingTabPanelNode(persistentID) : this;
+				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(persistentID);
+			}
+			else {
+				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(persistentID) : this;
+				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(persistentID);
+			}
 
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
 				dividerProportion = 1.0 - dividerProportion;

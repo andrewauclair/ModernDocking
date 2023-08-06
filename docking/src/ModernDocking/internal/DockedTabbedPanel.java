@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.Docking;
 import ModernDocking.DockingRegion;
 import ModernDocking.RootDockingPanel;
 import ModernDocking.floating.FloatListener;
@@ -159,6 +160,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		dockable.setParent(this);
 
 		// we only support tabs on top if we have FlatLaf because we can add a trailing component for our menu
+		// TODO this isn't thorough enough to know if we're running a L&F from the IntelliJ themes
 		boolean usingFlatLaf = tabs.getUI().getClass().getSimpleName().startsWith("Flat");
 
 		if (dockable.getDockable().getTabStyle() == Dockable.TabStyle.TAB_ON_BOTTOM) {
@@ -167,6 +169,9 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		else if (dockable.getDockable().getTabStyle() == Dockable.TabStyle.TAB_ON_TOP && usingFlatLaf) {
 			tabs.setTabPlacement(JTabbedPane.TOP);
 		}
+		else {
+			tabs.setTabPlacement(JTabbedPane.BOTTOM);
+		}
 
 		panels.add(dockable);
 		tabs.add(dockable.getDockable().getTabText(), dockable.getDisplayPanel());
@@ -174,7 +179,10 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		tabs.setIconAt(tabs.getTabCount() - 1, dockable.getDockable().getIcon());
 		tabs.setSelectedIndex(tabs.getTabCount() - 1);
 		selectedTab = tabs.getSelectedIndex();
-		tabs.setTabComponentAt(tabs.getTabCount() - 1, new JLabel(dockable.getDockable().getTabText()));
+
+//		SwingUtilities.invokeLater(() -> {
+			tabs.setTabComponentAt(tabs.getTabCount() - 1, dockable.getTabHeaderUI());
+//		});
 	}
 
 	/**
@@ -220,7 +228,14 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			DockedSplitPanel split = new DockedSplitPanel(panels.get(0).getWindow());
 			parent.replaceChild(this, split);
 
-			DockedSimplePanel newPanel = new DockedSimplePanel(wrapper);
+			DockingPanel newPanel;
+
+			if (Docking.alwaysDisplayTabsMode()) {
+				newPanel = new DockedTabbedPanel(wrapper);
+			}
+			else {
+				newPanel = new DockedSimplePanel(wrapper);
+			}
 
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
 				split.setLeft(this);
