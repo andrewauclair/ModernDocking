@@ -54,39 +54,6 @@ public interface Dockable {
 	 */
 	int getType();
 
-	enum TabStyle
-	{
-		/**
-		 * Display tabs on the bottom of the JTabbedPane
-		 */
-		TAB_ON_BOTTOM, // default
-		/**
-		 * Display tabs on the top of the JTabbedPane
-		 */
-		TAB_ON_TOP,
-		/**
-		 * Display tabs as dropdown in the header (currently not implemented)
-		 */
-		DROP_DOWN
-	}
-
-	/**
-	 * Tab style of this dockable. Defaults to bottom. Provided options are bottom, top and drop down.
-	 * <p>
-	 * Currently, top is only supported if using a look and feel from FlatLaf. Adding a close button to the
-	 * system look and feel tabs isn't easy/possible. FlatLaf provides an option to set a component in the tab
-	 * header. We require a location for the close button, which can only be done in FlatLaf.
-	 * </p>
-	 * <p>
-	 * Possibly in the future system look and feels could be supported through a context menu on the tab
-	 * that provides the close option.
-	 * </p>
-	 * @return Dockable tab style
-	 */
-	default TabStyle getTabStyle() {
-		return TabStyle.TAB_ON_BOTTOM;
-	}
-
 	// provide the tab text to the docking framework
 	// the tab text to be displayed when Dockable is in a tabbed pane. Does not need to be unique
 	// NOTE: this text should be static. If it needs to change, then the Dockable needs to be undocked and docked again.

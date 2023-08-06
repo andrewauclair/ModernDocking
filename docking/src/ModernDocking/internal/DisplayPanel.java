@@ -21,6 +21,8 @@ SOFTWARE.
  */
 package ModernDocking.internal;
 
+import ModernDocking.Docking;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -56,9 +58,11 @@ public class DisplayPanel extends JPanel {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 
-		if (!(wrapper.getParent() instanceof DockedTabbedPanel) || ((DockedTabbedPanel) wrapper.getParent()).isUsingBottomTabs()) {
-			add((Component) wrapper.getHeaderUI(), gbc);
-			gbc.gridy++;
+		if (!Docking.alwaysDisplayTabsMode()) {
+			if (!(wrapper.getParent() instanceof DockedTabbedPanel) || ((DockedTabbedPanel) wrapper.getParent()).isUsingBottomTabs()) {
+				add((Component) wrapper.getHeaderUI(), gbc);
+				gbc.gridy++;
+			}
 		}
 
 		gbc.weighty = 1.0;

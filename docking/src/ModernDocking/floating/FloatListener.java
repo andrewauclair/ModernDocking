@@ -274,7 +274,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		else if (!floatingDockable.getDockable().isFloatingAllowed()) {
 			DockingState.restoreState(originalWindow, rootState);
 		}
-
 		else {
 			new FloatingFrame(floatingDockable.getDockable(), floatingFrame);
 		}

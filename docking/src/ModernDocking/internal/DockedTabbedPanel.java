@@ -157,16 +157,11 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 * @param dockable The dockable to add
 	 */
 	public void addPanel(DockableWrapper dockable) {
-		dockable.setParent(this);
-
 		// we only support tabs on top if we have FlatLaf because we can add a trailing component for our menu
 		// TODO this isn't thorough enough to know if we're running a L&F from the IntelliJ themes
 		boolean usingFlatLaf = tabs.getUI().getClass().getSimpleName().startsWith("Flat");
 
-		if (dockable.getDockable().getTabStyle() == Dockable.TabStyle.TAB_ON_BOTTOM) {
-			tabs.setTabPlacement(JTabbedPane.BOTTOM);
-		}
-		else if (dockable.getDockable().getTabStyle() == Dockable.TabStyle.TAB_ON_TOP && usingFlatLaf) {
+		if (Docking.alwaysDisplayTabsMode() && usingFlatLaf) {
 			tabs.setTabPlacement(JTabbedPane.TOP);
 		}
 		else {
@@ -183,6 +178,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 //		SwingUtilities.invokeLater(() -> {
 			tabs.setTabComponentAt(tabs.getTabCount() - 1, dockable.getTabHeaderUI());
 //		});
+
+		dockable.setParent(this);
 	}
 
 	/**
