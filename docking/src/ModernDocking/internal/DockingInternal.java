@@ -39,6 +39,17 @@ public class DockingInternal {
 	private static final Map<String, DockableWrapper> dockables = new HashMap<>();
 
 	/**
+	 * Get access to the registered dockables
+	 *
+	 * @return List of registered dockables
+	 */
+	public static List<Dockable> getDockables() {
+		return dockables.values().stream()
+				.map(DockableWrapper::getDockable)
+				.collect(Collectors.toList());
+	}
+
+	/**
 	 * register a dockable with the framework
 	 *
 	 * @param dockable The dockable to register

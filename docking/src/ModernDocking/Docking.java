@@ -31,9 +31,7 @@ import ModernDocking.persist.AppState;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static ModernDocking.internal.DockingInternal.getDockable;
 import static ModernDocking.internal.DockingInternal.getWrapper;
@@ -126,6 +124,23 @@ public class Docking {
 	}
 
 	/**
+	 * Deregister all dockables that have been registered. This action will also undock all dockables.
+	 */
+	public static void deregisterAllDockables() {
+		Set<Window> windows = new HashSet<>(Docking.getInstance().getRootPanels().keySet());
+		for (Window window : windows) {
+			if (window != Docking.getInstance().getMainWindow()) {
+				DockingComponentUtils.undockComponents(window);
+				window.dispose();
+			}
+		}
+
+		for (Dockable dockable : DockingInternal.getDockables()) {
+			deregisterDockable(dockable);
+		}
+	}
+
+	/**
 	 * registration function for DockingPanel
 	 *
 	 * @param panel Panel to register
@@ -160,6 +175,37 @@ public class Docking {
 	}
 
 	/**
+	 * Deregister a docking root panel
+	 *
+	 * @param parent The parent of the panel that we're deregistering
+	 */
+	public static void deregisterDockingPanel(Window parent) {
+		if (instance.rootPanels.containsKey(parent)) {
+			RootDockingPanel root = instance.rootPanels.get(parent);
+
+			DockingComponentUtils.undockComponents(root);
+		}
+
+		instance.rootPanels.remove(parent);
+
+		instance.appStatePersister.removeWindow(parent);
+	}
+
+	/**
+	 * Deregister all registered panels. Additionally, dispose any windows created by Modern Docking.
+	 */
+	public static void deregisterAllDockingPanels() {
+		Set<Window> windows = new HashSet<>(Docking.getInstance().getRootPanels().keySet());
+		for (Window window : windows) {
+			deregisterDockingPanel(window);
+
+			if (window != Docking.getInstance().getMainWindow()) {
+				window.dispose();
+			}
+		}
+	}
+
+	/**
 	 * allows the user to configure pinning per window. by default pinning is only enabled on the frames the docking framework creates
 	 *
 	 * @param window The window to configure pinning on
@@ -186,23 +232,6 @@ public class Docking {
 		RootDockingPanel root = DockingComponentUtils.rootForWindow(DockingComponentUtils.findWindowForDockable(dockable));
 
 		return dockable.allowPinning() && root.isPinningSupported();
-	}
-
-	/**
-	 * Deregister a docking root panel
-	 *
-	 * @param parent The parent of the panel that we're deregistering
-	 */
-	public static void deregisterDockingPanel(Window parent) {
-		if (instance.rootPanels.containsKey(parent)) {
-			RootDockingPanel root = instance.rootPanels.get(parent);
-
-			DockingComponentUtils.undockComponents(root);
-		}
-
-		instance.rootPanels.remove(parent);
-
-		instance.appStatePersister.removeWindow(parent);
 	}
 
 	/**
