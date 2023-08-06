@@ -188,6 +188,10 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		if (tabs.getTabCount() == 1 && parent != null) {
 			parent.replaceChild(this, new DockedSimplePanel(panels.get(0)));
 		}
+
+		if (tabs.getTabCount() == 0) {
+			parent.removeChild(this);
+		}
 	}
 
 	@Override
