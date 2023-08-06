@@ -93,8 +93,10 @@ public class DockingState {
 		// get rid of all existing windows and undock all dockables
 		Set<Window> windows = new HashSet<>(Docking.getRootPanels().keySet());
 		for (Window window : windows) {
-			if (window != Docking.getMainWindow()) {
-				DockingComponentUtils.undockComponents(window);
+			DockingComponentUtils.undockComponents(window);
+
+			// only dispose this window if we created it
+			if (window instanceof FloatingFrame) {
 				window.dispose();
 			}
 		}
