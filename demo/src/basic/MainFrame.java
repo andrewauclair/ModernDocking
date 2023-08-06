@@ -50,10 +50,10 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 	@CommandLine.Option(names = "--laf", required = true, description = "look and feel to use. one of: system, light, dark, github-dark or solarized-dark")
 	String lookAndFeel;
 
-	@CommandLine.Option(names = "--enable-edt-violation-detector", arity = "0..1", defaultValue = "false", description = "enable the Event Dispatch Thread (EDT) violation checker")
+	@CommandLine.Option(names = "--enable-edt-violation-detector", defaultValue = "false", description = "enable the Event Dispatch Thread (EDT) violation checker")
 	boolean edtViolationDetector;
 
-	@CommandLine.Option(names = "--ui-scale", arity = "0..1", defaultValue = "1", description = "scale to use for the FlatLaf.uiScale value")
+	@CommandLine.Option(names = "--ui-scale", defaultValue = "1", description = "scale to use for the FlatLaf.uiScale value")
 	int uiScale;
 
 	public MainFrame() {
