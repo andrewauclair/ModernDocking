@@ -79,21 +79,12 @@ public class Docking {
 	}
 
 	/**
-	 * Retrieve an instance of the Docking singleton
-	 *
-	 * @return Instance of Docking
-	 */
-	public static Docking getInstance() {
-		return instance;
-	}
-
-	/**
 	 * Get a map of RootDockingPanels to their Windows
 	 *
 	 * @return map of root panels
 	 */
-	public Map<Window, RootDockingPanel> getRootPanels() {
-		return rootPanels;
+	public static Map<Window, RootDockingPanel> getRootPanels() {
+		return instance.rootPanels;
 	}
 
 	/**
@@ -101,8 +92,8 @@ public class Docking {
 	 *
 	 * @return main window
 	 */
-	public Window getMainWindow() {
-		return mainWindow;
+	public static Window getMainWindow() {
+		return instance.mainWindow;
 	}
 
 	/**
@@ -127,9 +118,9 @@ public class Docking {
 	 * Deregister all dockables that have been registered. This action will also undock all dockables.
 	 */
 	public static void deregisterAllDockables() {
-		Set<Window> windows = new HashSet<>(Docking.getInstance().getRootPanels().keySet());
+		Set<Window> windows = new HashSet<>(Docking.getRootPanels().keySet());
 		for (Window window : windows) {
-			if (window != Docking.getInstance().getMainWindow()) {
+			if (window != Docking.getMainWindow()) {
 				DockingComponentUtils.undockComponents(window);
 				window.dispose();
 			}
@@ -180,6 +171,10 @@ public class Docking {
 	 * @param parent The parent of the panel that we're deregistering
 	 */
 	public static void deregisterDockingPanel(Window parent) {
+		// if there is no Docking instance skip this code to prevent issues in GUI builders
+		if (instance == null) {
+			return;
+		}
 		if (instance.rootPanels.containsKey(parent)) {
 			RootDockingPanel root = instance.rootPanels.get(parent);
 
@@ -195,11 +190,11 @@ public class Docking {
 	 * Deregister all registered panels. Additionally, dispose any windows created by Modern Docking.
 	 */
 	public static void deregisterAllDockingPanels() {
-		Set<Window> windows = new HashSet<>(Docking.getInstance().getRootPanels().keySet());
+		Set<Window> windows = new HashSet<>(Docking.getRootPanels().keySet());
 		for (Window window : windows) {
 			deregisterDockingPanel(window);
 
-			if (window != Docking.getInstance().getMainWindow()) {
+			if (window != Docking.getMainWindow()) {
 				window.dispose();
 			}
 		}
