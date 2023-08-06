@@ -98,10 +98,8 @@ public class DockableWrapper {
 	public void setParent(DockingPanel parent) {
 		this.parent = parent;
 
-		if (parent instanceof DockedTabbedPanel && Docking.alwaysDisplayTabsMode()) {//((DockedTabbedPanel) parent).isUsingTopTabs()) {
-//			SwingUtilities.invokeLater(() -> {
+		if (parent instanceof DockedTabbedPanel && Docking.alwaysDisplayTabsMode()) {
 			floatListener = new FloatListener(this, ((DockedTabbedPanel) parent).getTabForDockable(this));
-//			});
 		}
 
 		displayPanel.parentChanged();
@@ -198,28 +196,28 @@ public class DockableWrapper {
 		panel.add(label, BorderLayout.WEST);
 
 		if (dockable.canBeClosed()) {
-			JButton c = new JButton(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/close-16.png"))));
-			c.setFocusable(false);
-			c.setOpaque(false);
-			c.setContentAreaFilled(false);
+			JButton close = new JButton(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/close-16.png"))));
+			close.setFocusable(false);
+			close.setOpaque(false);
+			close.setContentAreaFilled(false);
 
-			c.addMouseListener(new MouseAdapter() {
+			close.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseEntered(MouseEvent e) {
-					c.setContentAreaFilled(true);
-					c.setOpaque(true);
+					close.setContentAreaFilled(true);
+					close.setOpaque(true);
 				}
 
 				@Override
 				public void mouseExited(MouseEvent e) {
-					c.setContentAreaFilled(false);
-					c.setOpaque(false);
+					close.setContentAreaFilled(false);
+					close.setOpaque(false);
 				}
 			});
 
-			c.addActionListener(e -> Docking.undock(dockable));
+			close.addActionListener(e -> Docking.undock(dockable));
 
-			panel.add(c, BorderLayout.EAST);
+			panel.add(close, BorderLayout.EAST);
 		}
 		return panel;
 	}

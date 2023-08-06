@@ -50,24 +50,26 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 	@CommandLine.Option(names = "--laf", required = true, description = "look and feel to use. one of: system, light, dark, github-dark or solarized-dark")
 	String lookAndFeel;
 
-	@CommandLine.Option(names = "--enable-edt-violation-detector", arity = "0..1", defaultValue = "false", description = "enable the Event Dispatch Thread (EDT) violation checker")
+	@CommandLine.Option(names = "--enable-edt-violation-detector", defaultValue = "false", description = "enable the Event Dispatch Thread (EDT) violation checker")
 	boolean edtViolationDetector;
 
-	@CommandLine.Option(names = "--ui-scale", arity = "0..1", defaultValue = "1", description = "scale to use for the FlatLaf.uiScale value")
+	@CommandLine.Option(names = "--ui-scale", defaultValue = "1", description = "scale to use for the FlatLaf.uiScale value")
 	int uiScale;
+
+	@CommandLine.Option(names = "--always-use-tabs", defaultValue = "false", description = "always use tabs, even when there is only 1 dockable in the tab group")
+	boolean alwaysUseTabs;
 
 	public MainFrame() {
 	}
 
 	@Override
 	public void setVisible(boolean b) {
-
-	setTitle("Modern Docking Basic Demo");
+		setTitle("Modern Docking Basic Demo");
 
 		setSize(800, 600);
 
 		Docking.initialize(this);
-//		Docking.setAlwaysDisplayTabMode(true);
+		Docking.setAlwaysDisplayTabMode(alwaysUseTabs);
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);

@@ -35,6 +35,7 @@ import java.awt.Dialog.ModalityType;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
+import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -105,6 +106,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 					}
 				}
 			});
+
 		}
 	}
 

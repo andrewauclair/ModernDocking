@@ -175,9 +175,17 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		tabs.setSelectedIndex(tabs.getTabCount() - 1);
 		selectedTab = tabs.getSelectedIndex();
 
-//		SwingUtilities.invokeLater(() -> {
-			tabs.setTabComponentAt(tabs.getTabCount() - 1, dockable.getTabHeaderUI());
-//		});
+		if (Docking.alwaysDisplayTabsMode()) {
+			int index = tabs.getTabCount() - 1;
+			JComponent tabHeaderUI = dockable.getTabHeaderUI();
+			tabHeaderUI.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					tabs.setSelectedIndex(index);
+				}
+			});
+			tabs.setTabComponentAt(index, tabHeaderUI);
+		}
 
 		dockable.setParent(this);
 	}
@@ -272,7 +280,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			removePanel(toRemove);
 		}
 
-		if (tabs.getTabCount() == 1 && parent != null) {
+		if (!Docking.alwaysDisplayTabsMode() && tabs.getTabCount() == 1 && parent != null) {
 			parent.replaceChild(this, new DockedSimplePanel(panels.get(0)));
 		}
 
