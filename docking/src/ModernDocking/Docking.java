@@ -120,8 +120,10 @@ public class Docking {
 	public static void deregisterAllDockables() {
 		Set<Window> windows = new HashSet<>(Docking.getRootPanels().keySet());
 		for (Window window : windows) {
-			if (window != Docking.getMainWindow()) {
-				DockingComponentUtils.undockComponents(window);
+			DockingComponentUtils.undockComponents(window);
+
+			// only dispose this window if we created it
+			if (window instanceof FloatingFrame) {
 				window.dispose();
 			}
 		}
@@ -194,7 +196,8 @@ public class Docking {
 		for (Window window : windows) {
 			deregisterDockingPanel(window);
 
-			if (window != Docking.getMainWindow()) {
+			// only dispose this window if we created it
+			if (window instanceof FloatingFrame) {
 				window.dispose();
 			}
 		}
@@ -573,7 +576,11 @@ public class Docking {
 		if (window instanceof JDialog) {
 			return false;
 		}
-		return window != instance.mainWindow && !DockingState.maximizeRestoreLayout.containsKey(window);
+		if (DockingState.maximizeRestoreLayout.containsKey(window)) {
+			return false;
+		}
+		// only dispose this window if we created it
+		return window instanceof FloatingFrame;
 	}
 
 	/**
