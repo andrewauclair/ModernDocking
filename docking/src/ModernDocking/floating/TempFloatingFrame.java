@@ -53,7 +53,11 @@ public class TempFloatingFrame extends JFrame {
 
 		// set the frame position to match the current dockable position
 		Point newPoint = new Point(dragSrc.getLocation());
-		SwingUtilities.convertPointToScreen(newPoint, dragSrc.getParent());
+
+		// when dragging from a tab there is no parent for the drag source
+		if (dragSrc.getParent() != null) {
+			SwingUtilities.convertPointToScreen(newPoint, dragSrc.getParent());
+		}
 
 		setLocation(newPoint);
 

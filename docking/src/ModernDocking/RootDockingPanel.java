@@ -21,10 +21,7 @@ SOFTWARE.
  */
 package ModernDocking;
 
-import ModernDocking.internal.DockableToolbar;
-import ModernDocking.internal.DockedSimplePanel;
-import ModernDocking.internal.DockingInternal;
-import ModernDocking.internal.DockingPanel;
+import ModernDocking.internal.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -225,6 +222,10 @@ public class RootDockingPanel extends DockingPanel {
 		// panel does not exist, create new simple panel
 		if (panel != null) {
 			panel.dock(dockable, region, dividerProportion);
+		}
+		else if (Docking.alwaysDisplayTabsMode()) {
+			setPanel(new DockedTabbedPanel(DockingInternal.getWrapper(dockable)));
+			DockingInternal.getWrapper(dockable).setWindow(window);
 		}
 		else {
 			setPanel(new DockedSimplePanel(DockingInternal.getWrapper(dockable)));

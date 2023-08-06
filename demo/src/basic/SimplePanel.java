@@ -47,11 +47,6 @@ public class SimplePanel extends BasePanel {
 		tabText = "";
 	}
 
-	@Override
-	public TabStyle getTabStyle() {
-		return TabStyle.TAB_ON_TOP;
-	}
-
 	public void setTitleBackground(Color color) {
 		this.backgroundColor = color;
 	}
