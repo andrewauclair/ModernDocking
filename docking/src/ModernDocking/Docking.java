@@ -184,6 +184,7 @@ public class Docking {
 		}
 
 		instance.rootPanels.remove(parent);
+		FloatListener.deregisterDockingWindow(parent);
 
 		instance.appStatePersister.removeWindow(parent);
 	}

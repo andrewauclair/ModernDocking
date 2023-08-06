@@ -124,6 +124,10 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		utilFrames.put(window, new DockingUtilsFrame(window, root));
 	}
 
+	public static void deregisterDockingWindow(Window window) {
+		utilFrames.remove(window);
+	}
+
 	private void updateFramePosition(Point mousePosOnScreen) {
 		// update the frames position to our mouse position
 		Point framePos = new Point(mousePosOnScreen.x - dragOffset.x, mousePosOnScreen.y - dragOffset.y);
