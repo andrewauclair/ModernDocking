@@ -25,6 +25,8 @@ import ModernDocking.internal.DockedSimplePanel;
 import ModernDocking.internal.DockedSplitPanel;
 import ModernDocking.internal.DockedTabbedPanel;
 
+import javax.swing.*;
+
 /**
  * State of a split pane
  */
@@ -33,7 +35,7 @@ public class SplitState implements DockableState {
 	private final DockableState right;
 
 	private final int orientation;
-	private final int dividerLocation;
+	private final double dividerProportion;
 	private final double resizeWeight;
 
 	/**
@@ -42,9 +44,17 @@ public class SplitState implements DockableState {
 	 * @param panel Split panel to store state for
 	 */
 	public SplitState(DockedSplitPanel panel) {
-		orientation = panel.getSplitPane().getOrientation();
-		dividerLocation = panel.getSplitPane().getDividerLocation();
+		JSplitPane splitPane = panel.getSplitPane();
+
+		orientation = splitPane.getOrientation();
 		resizeWeight = panel.getSplitPane().getResizeWeight();
+
+		int height = splitPane.getHeight();
+		int dividerSize = splitPane.getDividerSize();
+		int dividerLocation = splitPane.getDividerLocation();
+		int width = splitPane.getWidth();
+		dividerProportion = orientation == JSplitPane.VERTICAL_SPLIT ? dividerLocation / (float) (height - dividerSize) :
+				dividerLocation / (float) (width - dividerSize);
 
 		if (panel.getLeft() instanceof DockedTabbedPanel) {
 			left = new TabState((DockedTabbedPanel) panel.getLeft());
@@ -105,8 +115,8 @@ public class SplitState implements DockableState {
 	 *
 	 * @return Divider location
 	 */
-	public int getDividerLocation() {
-		return dividerLocation;
+	public double getDividerProprtion() {
+		return dividerProportion;
 	}
 
 	/**

@@ -221,6 +221,18 @@ public class DockingState {
 
 		root.setPanel(restoreState(state.getState(), window));
 
+		// find all the splits and restore their divider locations from the bottom up
+		Deque<DockedSplitPanel> splitPanels = new ArrayDeque<>();
+
+		// find all the splits recursively. Pushing new splits onto the front of the deque. this forces the deepest
+		// splits to be adjusted first, keeping their position proper.
+		findSplitPanels(root, splitPanels);
+
+		// loop through and restore split proportions, bottom up
+		for (DockedSplitPanel splitPanel : splitPanels) {
+			SwingUtilities.invokeLater(() -> splitPanel.setDividerLocation(splitPanel.getLastRequestedDividerProportion()));
+		}
+
 		AppState.setPaused(paused);
 
 		if (!paused) {
@@ -249,7 +261,7 @@ public class DockingState {
 		panel.setLeft(restoreState(state.getLeft(), window));
 		panel.setRight(restoreState(state.getRight(), window));
 		panel.setOrientation(state.getOrientation());
-		panel.setDividerLocation(state.getDividerLocation());
+		panel.setDividerLocation(state.getDividerProprtion());
 
 		return panel;
 	}
