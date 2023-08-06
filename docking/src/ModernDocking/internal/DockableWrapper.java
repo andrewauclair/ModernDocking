@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.Docking;
 import ModernDocking.RootDockingPanel;
 import ModernDocking.floating.FloatListener;
 import ModernDocking.ui.DockingHeaderUI;
@@ -30,6 +31,9 @@ import ModernDocking.ui.HeaderModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Objects;
 
 /**
  * internal wrapper around the Dockable implemented by the application.
@@ -92,6 +96,12 @@ public class DockableWrapper {
 	 */
 	public void setParent(DockingPanel parent) {
 		this.parent = parent;
+
+		if (parent instanceof DockedTabbedPanel && Docking.alwaysDisplayTabsMode()) {
+			floatListener = new FloatListener(this, ((DockedTabbedPanel) parent).getTabForDockable(this));
+		}
+
+		displayPanel.parentChanged();
 	}
 
 	/**
@@ -170,6 +180,45 @@ public class DockableWrapper {
 	 */
 	public DockingHeaderUI getHeaderUI() {
 		return headerUI;
+	}
+
+	public JComponent getTabHeaderUI() {
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.setBorder(BorderFactory.createEmptyBorder(2, 1, 1, 1));
+		panel.setOpaque(false);
+
+		JLabel label = new JLabel(dockable.getTabText());
+		label.setOpaque(false);
+
+		label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 4));
+
+		panel.add(label, BorderLayout.WEST);
+
+		if (dockable.canBeClosed()) {
+			JButton close = new JButton(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/close-16.png"))));
+			close.setFocusable(false);
+			close.setOpaque(false);
+			close.setContentAreaFilled(false);
+
+			close.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					close.setContentAreaFilled(true);
+					close.setOpaque(true);
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+					close.setContentAreaFilled(false);
+					close.setOpaque(false);
+				}
+			});
+
+			close.addActionListener(e -> Docking.undock(dockable));
+
+			panel.add(close, BorderLayout.EAST);
+		}
+		return panel;
 	}
 
 	/**

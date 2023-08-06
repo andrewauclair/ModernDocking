@@ -21,6 +21,8 @@ SOFTWARE.
  */
 package ModernDocking.ui;
 
+import javax.swing.*;
+
 /**
  * Interface used for defining Docking header UIs that can be updated
  */
@@ -29,4 +31,11 @@ public interface DockingHeaderUI {
 	 * Update the UI
 	 */
 	void update();
+
+	/**
+	 * Display the settings menu
+	 *
+	 * @param settings Settings button to display menu at
+	 */
+	void displaySettingsMenu(JButton settings);
 }

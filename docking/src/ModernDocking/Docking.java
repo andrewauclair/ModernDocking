@@ -56,6 +56,8 @@ public class Docking {
 
 	private static boolean isInOnDockingCallback = false;
 
+	private static boolean alwaysDisplayTabsMode = false;
+
 	/**
 	 * Create the one and only instance of the Docking class for the application
 	 * @param mainWindow The main window of the application
@@ -764,5 +766,13 @@ public class Docking {
 		Docking.undock(dockable);
 
 		DockingState.restoreApplicationLayout(layout);
+	}
+
+	public static boolean alwaysDisplayTabsMode() {
+		return alwaysDisplayTabsMode;
+	}
+
+	public static void setAlwaysDisplayTabMode(boolean alwaysDisplayTabsMode) {
+		Docking.alwaysDisplayTabsMode = alwaysDisplayTabsMode;
 	}
 }

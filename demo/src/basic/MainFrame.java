@@ -56,17 +56,20 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 	@CommandLine.Option(names = "--ui-scale", defaultValue = "1", description = "scale to use for the FlatLaf.uiScale value")
 	int uiScale;
 
+	@CommandLine.Option(names = "--always-use-tabs", defaultValue = "false", description = "always use tabs, even when there is only 1 dockable in the tab group")
+	boolean alwaysUseTabs;
+
 	public MainFrame() {
 	}
 
 	@Override
-	public void setVisible(boolean b) {
-
-	setTitle("Modern Docking Basic Demo");
+	public void setVisible(boolean visible) {
+		setTitle("Modern Docking Basic Demo");
 
 		setSize(800, 600);
 
 		Docking.initialize(this);
+		Docking.setAlwaysDisplayTabMode(alwaysUseTabs);
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -255,7 +258,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		DockingLayouts.addLayout("default", defaultLayout);
 		AppState.setDefaultApplicationLayout(defaultLayout);
 
-		super.setVisible(b);
+		super.setVisible(visible);
 	}
 
 	private JMenuItem actionListenDock(Dockable dockable) {

@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.Docking;
 import ModernDocking.DockingRegion;
 import ModernDocking.floating.FloatListener;
 import ModernDocking.persist.AppState;
@@ -30,8 +31,11 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * DockingPanel that has a JTabbedPane inside its center
@@ -65,11 +69,71 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		// set the initial border. Docking handles the border after this using a global AWT listener
 		setNotSelectedBorder();
 
+		// default to tabs on bottom. if we need to change it we will when the first dockable is added
 		tabs.setTabPlacement(JTabbedPane.BOTTOM);
+
+		configureTrailingComponent();
 
 		add(tabs, BorderLayout.CENTER);
 
 		addPanel(dockable);
+	}
+
+	private void configureTrailingComponent() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridBagLayout());
+
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.EAST;
+		gbc.weightx = 1.0;
+		gbc.weighty = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+
+		JButton menu = new JButton();
+
+		try {
+			menu.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/settings.png"))));
+		}
+		catch (Exception ignored) {
+		}
+
+		setupButton(menu);
+
+		menu.addActionListener(e -> {
+			DockableWrapper dockable = panels.get(tabs.getSelectedIndex());
+
+			dockable.getHeaderUI().displaySettingsMenu(menu);
+
+		});
+
+		panel.add(menu, gbc);
+
+		tabs.putClientProperty("JTabbedPane.trailingComponent", panel);
+	}
+
+	private void setupButton(JButton button) {
+		Color color = DockingProperties.getTitlebarBackgroundColor();
+		button.setBackground(color);
+		button.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+		button.setFocusable(false);
+		button.setOpaque(false);
+		button.setContentAreaFilled(false);
+
+		button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				button.setContentAreaFilled(true);
+				button.setOpaque(true);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				button.setContentAreaFilled(false);
+				button.setOpaque(false);
+			}
+		});
 	}
 
 	@Override
@@ -92,7 +156,16 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 * @param dockable The dockable to add
 	 */
 	public void addPanel(DockableWrapper dockable) {
-		dockable.setParent(this);
+		// we only support tabs on top if we have FlatLaf because we can add a trailing component for our menu
+		// TODO this isn't thorough enough to know if we're running a L&F from the IntelliJ themes
+		boolean usingFlatLaf = tabs.getUI().getClass().getSimpleName().startsWith("Flat");
+
+		if (Docking.alwaysDisplayTabsMode() && usingFlatLaf) {
+			tabs.setTabPlacement(JTabbedPane.TOP);
+		}
+		else {
+			tabs.setTabPlacement(JTabbedPane.BOTTOM);
+		}
 
 		panels.add(dockable);
 		tabs.add(dockable.getDockable().getTabText(), dockable.getDisplayPanel());
@@ -100,6 +173,20 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		tabs.setIconAt(tabs.getTabCount() - 1, dockable.getDockable().getIcon());
 		tabs.setSelectedIndex(tabs.getTabCount() - 1);
 		selectedTab = tabs.getSelectedIndex();
+
+		if (Docking.alwaysDisplayTabsMode()) {
+			int index = tabs.getTabCount() - 1;
+			JComponent tabHeaderUI = dockable.getTabHeaderUI();
+			tabHeaderUI.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					tabs.setSelectedIndex(index);
+				}
+			});
+			tabs.setTabComponentAt(index, tabHeaderUI);
+		}
+
+		dockable.setParent(this);
 	}
 
 	/**
@@ -145,7 +232,14 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			DockedSplitPanel split = new DockedSplitPanel(panels.get(0).getWindow());
 			parent.replaceChild(this, split);
 
-			DockedSimplePanel newPanel = new DockedSimplePanel(wrapper);
+			DockingPanel newPanel;
+
+			if (Docking.alwaysDisplayTabsMode()) {
+				newPanel = new DockedTabbedPanel(wrapper);
+			}
+			else {
+				newPanel = new DockedSimplePanel(wrapper);
+			}
 
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
 				split.setLeft(this);
@@ -185,7 +279,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			removePanel(toRemove);
 		}
 
-		if (tabs.getTabCount() == 1 && parent != null) {
+		if (!Docking.alwaysDisplayTabsMode() && tabs.getTabCount() == 1 && parent != null) {
 			parent.replaceChild(this, new DockedSimplePanel(panels.get(0)));
 		}
 
@@ -264,5 +358,24 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			panels.get(selectedTab).getDockable().shown();
 			DockingListeners.fireShownEvent(panels.get(selectedTab).getDockable());
 		}
+	}
+
+	public boolean isUsingTopTabs() {
+		return tabs.getTabPlacement() == JTabbedPane.TOP;
+	}
+
+	public boolean isUsingBottomTabs() {
+		return tabs.getTabPlacement() == JTabbedPane.BOTTOM;
+	}
+
+	public Component getTabForDockable(DockableWrapper wrapper) {
+		for (int i = 0; i < panels.size(); i++) {
+			DockableWrapper panel = panels.get(i);
+
+			if (panel.getDockable() == wrapper.getDockable()) {
+				return tabs.getTabComponentAt(i);
+			}
+		}
+		return null;
 	}
 }

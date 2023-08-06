@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.Docking;
 import ModernDocking.DockingRegion;
 
 import javax.swing.*;
@@ -79,7 +80,10 @@ public class DockedSimplePanel extends DockingPanel {
 		DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
 		wrapper.setWindow(this.dockable.getWindow());
 
-		if (region == DockingRegion.CENTER) {
+		if (getParent() instanceof DockedTabbedPanel) {
+			((DockedTabbedPanel) parent).addPanel(wrapper);
+		}
+		else if (region == DockingRegion.CENTER) {
 			DockedTabbedPanel tabbedPanel = new DockedTabbedPanel(this.dockable);
 
 			tabbedPanel.addPanel(wrapper);
@@ -93,7 +97,14 @@ public class DockedSimplePanel extends DockingPanel {
 			DockedSplitPanel split = new DockedSplitPanel(this.dockable.getWindow());
 			parent.replaceChild(this, split);
 
-			DockedSimplePanel newPanel = new DockedSimplePanel(wrapper);
+			DockingPanel newPanel;
+
+			if (Docking.alwaysDisplayTabsMode()) {
+				newPanel = new DockedTabbedPanel(wrapper);
+			}
+			else {
+				newPanel = new DockedSimplePanel(wrapper);
+			}
 
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
 				split.setLeft(this);
