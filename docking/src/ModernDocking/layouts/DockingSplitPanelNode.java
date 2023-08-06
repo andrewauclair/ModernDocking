@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package ModernDocking.layouts;
 
+ import ModernDocking.Docking;
  import ModernDocking.DockingRegion;
 
  import javax.swing.*;
@@ -88,8 +89,18 @@ package ModernDocking.layouts;
 	public void dock(String persistentID, DockingRegion region, double dividerProportion) {
 		if (region != DockingRegion.CENTER) {
 			int orientation = region == DockingRegion.EAST || region == DockingRegion.WEST ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
-			DockingLayoutNode left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(persistentID) : this;
-			DockingLayoutNode right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(persistentID);
+
+			DockingLayoutNode left;
+			DockingLayoutNode right;
+
+			if (Docking.alwaysDisplayTabsMode()) {
+				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingTabPanelNode(persistentID) : this;
+				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(persistentID);
+			}
+			else {
+				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(persistentID) : this;
+				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(persistentID);
+			}
 
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
 				dividerProportion = 1.0 - dividerProportion;

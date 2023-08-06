@@ -34,6 +34,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.Objects;
 
 /**
  * internal wrapper around the Dockable implemented by the application.
@@ -98,9 +99,9 @@ public class DockableWrapper {
 		this.parent = parent;
 
 		if (parent instanceof DockedTabbedPanel && ((DockedTabbedPanel) parent).isUsingTopTabs()) {
-			SwingUtilities.invokeLater(() -> {
+//			SwingUtilities.invokeLater(() -> {
 			floatListener = new FloatListener(this, ((DockedTabbedPanel) parent).getTabForDockable(this));
-			});
+//			});
 		}
 
 		displayPanel.parentChanged();
@@ -197,7 +198,25 @@ public class DockableWrapper {
 		panel.add(label, BorderLayout.WEST);
 
 		if (dockable.canBeClosed()) {
-			JButton c = new JButton("c");
+			JButton c = new JButton(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/close-16.png"))));
+			c.setFocusable(false);
+			c.setOpaque(false);
+			c.setContentAreaFilled(false);
+
+			c.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					c.setContentAreaFilled(true);
+					c.setOpaque(true);
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+					c.setContentAreaFilled(false);
+					c.setOpaque(false);
+				}
+			});
+
 			c.addActionListener(e -> Docking.undock(dockable));
 
 			panel.add(c, BorderLayout.EAST);

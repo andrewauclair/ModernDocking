@@ -765,4 +765,14 @@ public class Docking {
 
 		DockingState.restoreApplicationLayout(layout);
 	}
+
+	private static boolean alwaysDisplayTabsMode = false;
+
+	public static boolean alwaysDisplayTabsMode() {
+		return alwaysDisplayTabsMode;
+	}
+
+	public static void setAlwaysDisplayTabMode(boolean alwaysDisplayTabsMode) {
+		Docking.alwaysDisplayTabsMode = alwaysDisplayTabsMode;
+	}
 }

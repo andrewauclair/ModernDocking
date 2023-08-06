@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package ModernDocking.layouts;
 
+import ModernDocking.Docking;
 import ModernDocking.DockingRegion;
 
 import javax.swing.*;
@@ -74,8 +75,10 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 
 	@Override
 	public void dock(String persistentID, DockingRegion region, double dividerProportion) {
-
-		 if (region == DockingRegion.CENTER) {
+		if (getParent() instanceof DockingTabPanelNode) {
+			getParent().dock(persistentID, region, dividerProportion);
+		}
+		else if (region == DockingRegion.CENTER) {
 			DockingTabPanelNode tab = new DockingTabPanelNode(persistentID);
 
 			tab.addTab(this.persistentID);
@@ -83,22 +86,31 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 
 			parent.replaceChild(this, tab);
 		}
-		 else if (getParent() instanceof DockingTabPanelNode) {
-			 getParent().dock(persistentID, region, dividerProportion);
-		 }
 		else {
 			int orientation = region == DockingRegion.EAST || region == DockingRegion.WEST ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
 
 			DockingLayoutNode left;
 			DockingLayoutNode right;
 
-			if (orientation == JSplitPane.HORIZONTAL_SPLIT) {
-				left = region == DockingRegion.EAST ? this : new DockingSimplePanelNode(persistentID);
-				right = region == DockingRegion.EAST ? new DockingSimplePanelNode(persistentID) : this;
+			if (Docking.alwaysDisplayTabsMode()) {
+				if (orientation == JSplitPane.HORIZONTAL_SPLIT) {
+					left = region == DockingRegion.EAST ? this : new DockingTabPanelNode(persistentID);
+					right = region == DockingRegion.EAST ? new DockingTabPanelNode(persistentID) : this;
+				}
+				else {
+					left = region == DockingRegion.SOUTH ? this : new DockingTabPanelNode(persistentID);
+					right = region == DockingRegion.SOUTH ? new DockingTabPanelNode(persistentID) : this;
+				}
 			}
 			else {
-				left = region == DockingRegion.SOUTH ? this : new DockingSimplePanelNode(persistentID);
-				right = region == DockingRegion.SOUTH ? new DockingSimplePanelNode(persistentID) : this;
+				if (orientation == JSplitPane.HORIZONTAL_SPLIT) {
+					left = region == DockingRegion.EAST ? this : new DockingSimplePanelNode(persistentID);
+					right = region == DockingRegion.EAST ? new DockingSimplePanelNode(persistentID) : this;
+				}
+				else {
+					left = region == DockingRegion.SOUTH ? this : new DockingSimplePanelNode(persistentID);
+					right = region == DockingRegion.SOUTH ? new DockingSimplePanelNode(persistentID) : this;
+				}
 			}
 
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {

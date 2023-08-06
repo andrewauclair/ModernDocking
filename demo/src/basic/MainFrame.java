@@ -67,6 +67,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		setSize(800, 600);
 
 		Docking.initialize(this);
+		Docking.setAlwaysDisplayTabMode(true);
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
