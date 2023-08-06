@@ -175,15 +175,14 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		selectedTab = tabs.getSelectedIndex();
 
 		if (Docking.alwaysDisplayTabsMode()) {
-			int index = tabs.getTabCount() - 1;
 			JComponent tabHeaderUI = dockable.getTabHeaderUI();
 			tabHeaderUI.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					tabs.setSelectedIndex(index);
+					tabs.setSelectedIndex(tabs.indexOfTabComponent(tabHeaderUI));
 				}
 			});
-			tabs.setTabComponentAt(index, tabHeaderUI);
+			tabs.setTabComponentAt(tabs.getTabCount() - 1, tabHeaderUI);
 		}
 
 		dockable.setParent(this);
