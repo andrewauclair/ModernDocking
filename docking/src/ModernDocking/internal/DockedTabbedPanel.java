@@ -194,10 +194,12 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 * @param dockable The dockable to remove
 	 */
 	public void removePanel(DockableWrapper dockable) {
-		tabs.remove(dockable.getDisplayPanel());
-		panels.remove(dockable);
+		if (panels.contains(dockable)) {
+			tabs.remove(dockable.getDisplayPanel());
+			panels.remove(dockable);
 
-		dockable.setParent(null);
+			dockable.setParent(null);
+		}
 	}
 
 	/**
@@ -266,17 +268,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 	@Override
 	public void undock(Dockable dockable) {
-		DockableWrapper toRemove = null;
-
-		for (DockableWrapper panel : panels) {
-			if (panel.getDockable() == dockable) {
-				toRemove = panel;
-			}
-		}
-
-		if (toRemove != null) {
-			removePanel(toRemove);
-		}
+		removePanel(DockingInternal.getWrapper(dockable));
 
 		if (!Docking.alwaysDisplayTabsMode() && tabs.getTabCount() == 1 && parent != null) {
 			parent.replaceChild(this, new DockedSimplePanel(panels.get(0)));

@@ -308,6 +308,13 @@ public class Docking {
 			throw new DockableRegistrationFailureException("Window does not have a RootDockingPanel: " + window);
 		}
 
+		// if the source is already docked we need to undock it before docking it again, otherwise we might steal it from its UI parent
+		if (Docking.isDocked(dockable)) {
+			DockableWrapper wrapper = getWrapper(dockable);
+
+			wrapper.getParent().undock(dockable);
+		}
+
 		// if the dockable has decided to do something else, skip out of this function
 		if (!isInOnDockingCallback)  {
 			isInOnDockingCallback = true;
@@ -400,6 +407,13 @@ public class Docking {
 	public static void dock(Dockable source, Dockable target, DockingRegion region, double dividerProportion) {
 		if (!isDocked(target)) {
 			throw new NotDockedException(target);
+		}
+
+		// if the source is already docked we need to undock it before docking it again, otherwise we might steal it from its UI parent
+		if (Docking.isDocked(source)) {
+			DockableWrapper wrapper = getWrapper(source);
+
+			wrapper.getParent().undock(source);
 		}
 
 		// if the source dockable has decided to do something else, skip out of this function
