@@ -87,6 +87,12 @@ public class DockingOverlay {
 	 */
 	public void setActive(boolean active) {
 		visible = active;
+
+		floating = null;
+		targetDockable = null;
+		dockableRegion = null;
+		rootRegion = null;
+		size = new Dimension(0, 0);
 	}
 
 	/**
@@ -351,6 +357,7 @@ public class DockingOverlay {
 	public void setTargetRootRegion(DockingRegion region) {
 		rootRegion = region;
 
+		// we should only be visible if we're docking to a root or dockable. otherwise the overlay should be hidden.
 		visibleOverride = !isDockingToRoot() && !isDockingToDockable();
 	}
 
@@ -358,6 +365,7 @@ public class DockingOverlay {
 	public void setTargetDockableRegion(DockingRegion region) {
 		dockableRegion = region;
 
+		// we should only be visible if we're docking to a root or dockable. otherwise the overlay should be hidden.
 		visibleOverride = !isDockingToRoot() && !isDockingToDockable();
 	}
 

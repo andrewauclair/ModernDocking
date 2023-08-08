@@ -300,6 +300,8 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 		// hide the overlay frame if one is active
 		if (activeUtilsFrame != null) {
+			activeUtilsFrame.setTargetDockable(null);
+			activeUtilsFrame.setFloating(null);
 			activeUtilsFrame.setActive(false);
 			activeUtilsFrame = null;
 		}
