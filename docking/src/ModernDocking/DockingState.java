@@ -409,6 +409,13 @@ public class DockingState {
     }
 
     private static void restoreSplits(List<JSplitPane> splits, List<Double> proportions) {
+        if (splits.size() != proportions.size()) {
+            return;
+        }
+        if (splits.isEmpty()) {
+            return;
+        }
+
         JSplitPane splitPane = splits.get(0);
         double proportion = proportions.get(0);
 
