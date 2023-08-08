@@ -72,7 +72,11 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		// default to tabs on bottom. if we need to change it we will when the first dockable is added
 		tabs.setTabPlacement(JTabbedPane.BOTTOM);
 
-		configureTrailingComponent();
+		tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+
+		if (Docking.alwaysDisplayTabsMode()) {
+			configureTrailingComponent();
+		}
 
 		add(tabs, BorderLayout.CENTER);
 
@@ -110,7 +114,9 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 		panel.add(menu, gbc);
 
+
 		tabs.putClientProperty("JTabbedPane.trailingComponent", panel);
+
 	}
 
 	private void setupButton(JButton button) {
