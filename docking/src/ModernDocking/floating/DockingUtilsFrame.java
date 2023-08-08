@@ -59,6 +59,7 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		setType(Type.UTILITY); // hide this frame from the task bar
 
 		setBackground(new Color(0, 0, 0, 0)); // don't want a background for this frame
+		getRootPane().setBackground(new Color(0, 0, 0, 0)); // don't want a background for the root pane either. Workaround for a FlatLaf macOS issue.
 		getContentPane().setBackground(new Color(0, 0, 0, 0)); // don't want a background for the content frame either.
 
 		try {
