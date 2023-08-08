@@ -30,7 +30,7 @@ java {
 
 group = "io.github.andrewauclair.ModernDocking"
 archivesBaseName = "ModernDocking"
-version = "0.7.0"
+version = "0.7.1"
 
 publishing {
 	publications {
