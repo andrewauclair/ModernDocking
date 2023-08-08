@@ -124,10 +124,9 @@ public class FloatingFrame extends JFrame {
 			Point point = displayPanel.getLocation();
 			SwingUtilities.convertPointToScreen(point, displayPanel.getParent());
 
-			Point finalPoint = new Point(FloatingFrame.this.getX() - (point.x - onScreenPoint.x), FloatingFrame.this.getY() - (point.y - onScreenPoint.y));
+			Point finalPoint = new Point(this.getX() - (point.x - onScreenPoint.x), FloatingFrame.this.getY() - (point.y - onScreenPoint.y));
 
 			// make sure we keep the new frame on the screen
-			finalPoint.x = Math.max(0, finalPoint.x);
 			finalPoint.y = Math.max(0, finalPoint.y);
 
 			setLocation(finalPoint);
