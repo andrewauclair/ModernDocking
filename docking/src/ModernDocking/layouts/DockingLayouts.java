@@ -22,15 +22,15 @@ SOFTWARE.
 package ModernDocking.layouts;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockingProperty;
 import ModernDocking.RootDockingPanel;
 import ModernDocking.event.LayoutsListener;
 import ModernDocking.internal.*;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DockingLayouts {
 	private static final List<LayoutsListener> listeners = new ArrayList<>();
@@ -96,7 +96,25 @@ public class DockingLayouts {
 
 		if (panel instanceof DockedSimplePanel) {
 			Dockable dockable = ((DockedSimplePanel) panel).getWrapper().getDockable();
-			node = new DockingSimplePanelNode(dockable.getPersistentID(), dockable.getProperties());
+			Map<String, String> properties = new HashMap<>(dockable.getProperties());
+
+			List<Field> collect = Arrays.stream(dockable.getClass().getDeclaredFields())
+					.filter(field -> field.getAnnotation(DockingProperty.class) != null)
+					.collect(Collectors.toList());
+
+			for (Field field : collect) {
+				try {
+					field.setAccessible(true);
+					String o =(String) field.get(dockable);
+					DockingProperty property = field.getAnnotation(DockingProperty.class);
+					properties.put(property.names()[0], o);
+				} catch (IllegalAccessException e) {
+e.printStackTrace();
+
+				}
+			}
+
+			node = new DockingSimplePanelNode(dockable.getPersistentID(), properties);
 		}
 		else if (panel instanceof DockedSplitPanel) {
 			node = splitPanelToNode((DockedSplitPanel) panel);

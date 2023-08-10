@@ -216,4 +216,7 @@ public interface Dockable {
 	 */
 	default void setProperties(Map<String, String> properties) {
 	}
+
+	default void updateProperties() {
+	}
 }

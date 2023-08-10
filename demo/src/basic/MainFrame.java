@@ -37,6 +37,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme;
+import docking.ui.DockingUI;
 import exception.FailOnThreadViolationRepaintManager;
 import picocli.CommandLine;
 
@@ -68,7 +69,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		setSize(800, 600);
 
-		Docking.initialize(this);
+		DockingUI.initialize(this);
 		Docking.setAlwaysDisplayTabMode(alwaysUseTabs);
 
 		JMenuBar menuBar = new JMenuBar();

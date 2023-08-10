@@ -1,6 +1,7 @@
 package basic;
 
 import ModernDocking.DockableStyle;
+import ModernDocking.DockingProperty;
 import ModernDocking.persist.AppState;
 
 import javax.swing.*;
@@ -13,6 +14,9 @@ import javax.swing.table.TableColumn;
 import java.util.*;
 
 public class OutputPanel extends ToolPanel {
+    @DockingProperty(names = {"first-column-name"}, defaultValue = "one")
+    private String firstColumnName = "one";
+
     private JTable table = new JTable(new DefaultTableModel(new String[] { "one", "two"}, 0));
 
     private Map<String, String> properties = new HashMap<>();
