@@ -36,6 +36,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.IntConsumer;
 
 /**
  * DockingPanel that has a JTabbedPane inside its center
@@ -114,9 +115,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 		panel.add(menu, gbc);
 
-
 		tabs.putClientProperty("JTabbedPane.trailingComponent", panel);
-
+		tabs.putClientProperty("JTabbedPane.tabCloseCallback", (IntConsumer) tabIndex -> Docking.undock(panels.get(tabIndex).getDockable()));
 	}
 
 	private void setupButton(JButton button) {
@@ -181,14 +181,11 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		selectedTab = tabs.getSelectedIndex();
 
 		if (Docking.alwaysDisplayTabsMode()) {
-			JComponent tabHeaderUI = dockable.getTabHeaderUI();
-			tabHeaderUI.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					tabs.setSelectedIndex(tabs.indexOfTabComponent(tabHeaderUI));
-				}
-			});
-			tabs.setTabComponentAt(tabs.getTabCount() - 1, tabHeaderUI);
+			tabs.setTabComponentAt(tabs.getTabCount() - 1, new JLabel(dockable.getDockable().getTabText()));
+
+			if (dockable.getDockable().canBeClosed()) {
+				dockable.getDisplayPanel().putClientProperty("JTabbedPane.tabClosable", true);
+			}
 		}
 
 		dockable.setParent(this);
