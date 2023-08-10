@@ -440,14 +440,17 @@ public class DockingState {
             if (splitPane.getWidth() > 0 && splitPane.getHeight() > 0) {
                 splitPane.setDividerLocation(proportion);
 
-				SwingUtilities.invokeLater(() -> {
-					splits.remove(0);
-					proportions.remove(0);
+                if (!splits.isEmpty()) {
+                    SwingUtilities.invokeLater(() -> {
+                        JSplitPane nextSplit = splits.get(0);
+                        double nextProportion = proportions.get(0);
 
-					if (!splits.isEmpty()) {
-						restoreSplit(splits.get(0), proportions.get(0), splits, proportions);
-					}
-				});
+                        splits.remove(0);
+                        proportions.remove(0);
+
+                        restoreSplit(nextSplit, nextProportion, splits, proportions);
+                    });
+                }
             } else {
                 // split hasn't been completely calculated yet, wait until componentResize
                 splitPane.addComponentListener(new ComponentAdapter() {
