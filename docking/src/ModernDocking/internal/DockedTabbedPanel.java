@@ -59,6 +59,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 */
 	private int selectedTab = -1;
 
+	private static Icon settingsIcon = new ImageIcon(Objects.requireNonNull(DockedTabbedPanel.class.getResource("/icons/settings.png")));
+
 	/**
 	 * Create a new instance of DockedTabbedPanel
 	 *
@@ -84,6 +86,10 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		addPanel(dockable);
 	}
 
+	public static void setSettingsIcon(Icon icon) {
+		settingsIcon = icon;
+	}
+
 	private void configureTrailingComponent() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
@@ -96,13 +102,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
 
-		JButton menu = new JButton();
-
-		try {
-			menu.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/settings.png"))));
-		}
-		catch (Exception ignored) {
-		}
+		JButton menu = new JButton(settingsIcon);
 
 		setupButton(menu);
 
@@ -181,7 +181,15 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		selectedTab = tabs.getSelectedIndex();
 
 		if (Docking.alwaysDisplayTabsMode()) {
-			tabs.setTabComponentAt(tabs.getTabCount() - 1, new JLabel(dockable.getDockable().getTabText()));
+			JLabel tabComponent = new JLabel(dockable.getDockable().getTabText());
+
+			tabComponent.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					tabs.setSelectedIndex(tabs.indexOfTabComponent(tabComponent));
+				}
+			});
+			tabs.setTabComponentAt(tabs.getTabCount() - 1, tabComponent);
 
 			if (dockable.getDockable().canBeClosed()) {
 				dockable.getDisplayPanel().putClientProperty("JTabbedPane.tabClosable", true);
