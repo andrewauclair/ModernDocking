@@ -96,18 +96,24 @@ public class DockingLayouts {
 
 		if (panel instanceof DockedSimplePanel) {
 			Dockable dockable = ((DockedSimplePanel) panel).getWrapper().getDockable();
+
 			Map<String, String> properties = new HashMap<>(dockable.getProperties());
 
-			List<Field> collect = Arrays.stream(dockable.getClass().getDeclaredFields())
+			List<Field> dockingPropFields = Arrays.stream(dockable.getClass().getDeclaredFields())
 					.filter(field -> field.getAnnotation(DockingProperty.class) != null)
 					.collect(Collectors.toList());
 
-			for (Field field : collect) {
+			for (Field field : dockingPropFields) {
 				try {
+					// make sure we can access the field if it is private/protected
 					field.setAccessible(true);
+
+					// only supporting strings at this time
 					String o =(String) field.get(dockable);
+
+					// grab the property and store the value by its name
 					DockingProperty property = field.getAnnotation(DockingProperty.class);
-					properties.put(property.names()[0], o);
+					properties.put(property.name(), o);
 				} catch (IllegalAccessException e) {
 e.printStackTrace();
 

@@ -34,8 +34,10 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DockingState {
     /**
@@ -357,7 +359,39 @@ public class DockingState {
             throw new DockableNotFoundException(node.getPersistentID());
         }
 
-        dockable.setProperties(node.getProperties());
+//        dockable.setProperties(node.getProperties());
+        Map<String, String> properties = new HashMap<>(node.getProperties());
+
+        List<Field> dockingPropFields = Arrays.stream(dockable.getClass().getDeclaredFields())
+                .filter(field -> field.getAnnotation(DockingProperty.class) != null)
+                .collect(Collectors.toList());
+
+        for (Field field : dockingPropFields) {
+            try {
+                // make sure we can access the field if it is private/protected
+                field.setAccessible(true);
+
+                // only supporting strings at this time
+//                String o =(String) field.get(dockable);
+
+                // grab the property and store the value by its name
+                DockingProperty property = field.getAnnotation(DockingProperty.class);
+//                properties.put(property.name(), o);
+                if (properties.containsKey(property.name())) {
+                    field.set(dockable, properties.get(property.name()));
+                }
+                else if (!Objects.equals(property.defaultValue(), "__no_default_value__")) {
+                    field.set(dockable, property.defaultValue());
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+
+            }
+        }
+
+        dockable.setProperties(properties);
+
+        dockable.updateProperties();
 
         Docking.undock(dockable);
 

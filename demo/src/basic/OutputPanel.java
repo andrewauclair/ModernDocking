@@ -14,8 +14,8 @@ import javax.swing.table.TableColumn;
 import java.util.*;
 
 public class OutputPanel extends ToolPanel {
-    @DockingProperty(names = {"first-column-name"}, defaultValue = "one")
-    private String firstColumnName = "one";
+    @DockingProperty(name = "first-column-name", defaultValue = "one")
+    private String firstColumnName;
 
     private JTable table = new JTable(new DefaultTableModel(new String[] { "one", "two"}, 0));
 
@@ -118,5 +118,26 @@ public class OutputPanel extends ToolPanel {
     @Override
     public void hidden() {
         System.out.println("Output hidden");
+    }
+
+    @Override
+    public boolean hasMoreOptions() {
+        return true;
+    }
+
+    @Override
+    public void addMoreOptions(JPopupMenu menu) {
+        JMenuItem rename = new JMenuItem();
+        rename.addActionListener(e -> {
+            firstColumnName = "changed";
+            table.getColumnModel().getColumn(0).setHeaderValue(firstColumnName);
+        });
+        menu.add(rename);
+    }
+
+    @Override
+    public void updateProperties() {
+        // properties have now been loaded, use them
+        table.getColumnModel().getColumn(0).setHeaderValue(firstColumnName);
     }
 }
