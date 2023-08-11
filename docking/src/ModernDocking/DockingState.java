@@ -96,6 +96,7 @@ public class DockingState {
      * @param layout Application layout to restore
      */
     public static void restoreApplicationLayout(ApplicationLayout layout) {
+        System.out.println("restore application layout");
         // get rid of all existing windows and undock all dockables
         Set<Window> windows = new HashSet<>(Docking.getRootPanels().keySet());
         for (Window window : windows) {
@@ -388,8 +389,6 @@ public class DockingState {
 
             }
         }
-
-        dockable.setProperties(properties);
 
         dockable.updateProperties();
 

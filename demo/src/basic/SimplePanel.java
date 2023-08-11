@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package basic;
 
+import ModernDocking.DockingProperty;
 import ModernDocking.ui.DefaultHeaderUI;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
@@ -41,6 +42,32 @@ public class SimplePanel extends BasePanel {
 
 	private Color backgroundColor = null;
 	private Color foregroundColor = null;
+
+	@DockingProperty(name = "test", defaultValue = "one")
+	private String test;
+
+	@DockingProperty(name = "test1", defaultValue = "two")
+	private String test1;
+	@DockingProperty(name = "test2", defaultValue = "three")
+	private String test2;
+	@DockingProperty(name = "test3", defaultValue = "four")
+	private String test3;
+	@DockingProperty(name = "test4", defaultValue = "five")
+	private String test4;
+	@DockingProperty(name = "test5", defaultValue = "six")
+	private String test5;
+	@DockingProperty(name = "test6", defaultValue = "seven")
+	private String test6;
+	@DockingProperty(name = "test7", defaultValue = "eight")
+	private String test7;
+	@DockingProperty(name = "test8", defaultValue = "nine")
+	private String test8;
+	@DockingProperty(name = "test9", defaultValue = "ten")
+	private String test9;
+	@DockingProperty(name = "test10", defaultValue = "eleven")
+	private String test10;
+	@DockingProperty(name = "test11", defaultValue = "twelve")
+	private String test11;
 
 	public SimplePanel(String title, String persistentID) {
 		super(title, persistentID);
@@ -122,20 +149,18 @@ public class SimplePanel extends BasePanel {
 	}
 
 	@Override
-	public Map<String, String> getProperties() {
-		Map<String, String> props = new HashMap<>();
-		props.put("test", "one");
-		props.put("test1", "two");
-		props.put("test2", "three");
-		props.put("test3", "four");
-		props.put("test4", "yak");
-		props.put("test5", "six");
-		props.put("test6", "seven");
-		props.put("test7", "eight");
-		props.put("test8", "nine");
-		props.put("test9", "ten");
-		props.put("test10", "eleven");
-		props.put("test11", "twelve");
-		return props;
+	public void updateProperties() {
+		System.out.println(test);
+		System.out.println(test1);
+		System.out.println(test2);
+		System.out.println(test3);
+		System.out.println(test4);
+		System.out.println(test5);
+		System.out.println(test6);
+		System.out.println(test7);
+		System.out.println(test8);
+		System.out.println(test9);
+		System.out.println(test10);
+		System.out.println(test11);
 	}
 }

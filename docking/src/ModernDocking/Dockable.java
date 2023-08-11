@@ -201,22 +201,8 @@ public interface Dockable {
 	}
 
 	/**
-	 * Get the properties of the dockable
-	 *
-	 * @return map of the dockable properties
+	 * The member variables with the DockingProperty annotation have been updated from the layout file
 	 */
-    default Map<String, String> getProperties() {
-		return new HashMap<>();
-	}
-
-	/**
-	 * Set the properties of the dockable
-	 *
-	 * @param properties map of the dockable properties
-	 */
-	default void setProperties(Map<String, String> properties) {
-	}
-
 	default void updateProperties() {
 	}
 }

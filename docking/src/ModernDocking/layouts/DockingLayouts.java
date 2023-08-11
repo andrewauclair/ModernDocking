@@ -97,7 +97,7 @@ public class DockingLayouts {
 		if (panel instanceof DockedSimplePanel) {
 			Dockable dockable = ((DockedSimplePanel) panel).getWrapper().getDockable();
 
-			Map<String, String> properties = new HashMap<>(dockable.getProperties());
+			Map<String, String> properties = new HashMap<>();
 
 			List<Field> dockingPropFields = Arrays.stream(dockable.getClass().getDeclaredFields())
 					.filter(field -> field.getAnnotation(DockingProperty.class) != null)

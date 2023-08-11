@@ -84,31 +84,31 @@ public class OutputPanel extends ToolPanel {
         properties.put("column-sizes", prop);
     }
 
-    @Override
-    public Map<String, String> getProperties() {
-        return properties;
-    }
-
-    @Override
-    public void setProperties(Map<String, String> properties) {
-        if (properties.get("columns") != null && properties.get("column-sizes") != null) {
-            String[] columns = properties.get("columns").split(",");
-            String[] columnSizes = properties.get("column-sizes").split(",");
-
-
-            List<TableColumn> tableColumns = Collections.list(table.getColumnModel().getColumns());
-
-            for (int i = 0; i < columns.length; i++) {
-                int location = table.getColumnModel().getColumnIndex(columns[i]);
-
-                table.getColumnModel().moveColumn(location, i);
-                final int index = i;
-                SwingUtilities.invokeLater(() -> {
-                    table.getColumnModel().getColumn(index).setPreferredWidth(Integer.parseInt(columnSizes[index]));
-                });
-            }
-        }
-    }
+//    @Override
+//    public Map<String, String> getProperties() {
+//        return properties;
+//    }
+//
+//    @Override
+//    public void setProperties(Map<String, String> properties) {
+//        if (properties.get("columns") != null && properties.get("column-sizes") != null) {
+//            String[] columns = properties.get("columns").split(",");
+//            String[] columnSizes = properties.get("column-sizes").split(",");
+//
+//
+//            List<TableColumn> tableColumns = Collections.list(table.getColumnModel().getColumns());
+//
+//            for (int i = 0; i < columns.length; i++) {
+//                int location = table.getColumnModel().getColumnIndex(columns[i]);
+//
+//                table.getColumnModel().moveColumn(location, i);
+//                final int index = i;
+//                SwingUtilities.invokeLater(() -> {
+//                    table.getColumnModel().getColumn(index).setPreferredWidth(Integer.parseInt(columnSizes[index]));
+//                });
+//            }
+//        }
+//    }
 
     @Override
     public void shown() {
