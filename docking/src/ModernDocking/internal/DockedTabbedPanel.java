@@ -218,13 +218,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 *
 	 * @return List of persistent IDs of dockable tabs
 	 */
-	public List<String> persistentIDs() {
-		List<String> ids = new ArrayList<>();
-
-		for (DockableWrapper panel : panels) {
-			ids.add(panel.getDockable().getPersistentID());
-		}
-		return ids;
+	public List<DockableWrapper> getDockables() {
+		return new ArrayList<>(panels);
 	}
 
 	@Override

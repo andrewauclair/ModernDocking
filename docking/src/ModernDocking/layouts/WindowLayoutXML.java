@@ -160,7 +160,6 @@ public class WindowLayoutXML {
 		writer.writeEndElement();
 		writer.writeCharacters(NL);
 
-		writer.writeCharacters(NL);
 		writer.writeEndElement();
 		writer.writeCharacters(NL);
 	}
@@ -197,10 +196,24 @@ public class WindowLayoutXML {
 		writer.writeEndElement();
 		writer.writeCharacters(NL);
 
-		for (String persistentID : node.getPersistentIDs()) {
+		for (DockingSimplePanelNode simpleNode : node.getPersistentIDs()) {
 			writer.writeStartElement("tab");
-			writer.writeAttribute("persistentID", persistentID);
+			writer.writeAttribute("persistentID", simpleNode.getPersistentID());
 			writer.writeCharacters(NL);
+
+			writer.writeStartElement("properties");
+
+			Map<String, String> properties = simpleNode.getProperties();
+
+			for (String key : properties.keySet()) {
+				String value = properties.get(key);
+
+				writer.writeAttribute(key, value);
+			}
+
+			writer.writeEndElement();
+			writer.writeCharacters(NL);
+
 			writer.writeEndElement();
 			writer.writeCharacters(NL);
 		}
@@ -380,6 +393,8 @@ public class WindowLayoutXML {
 	private static DockingTabPanelNode readTabNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
 		DockingTabPanelNode node = new DockingTabPanelNode("");
 
+		String currentPersistentID = "";
+
 		while (reader.hasNext()) {
 			int next = reader.nextTag();
 
@@ -388,8 +403,11 @@ public class WindowLayoutXML {
 				node = new DockingTabPanelNode(persistentID);
 			}
 			else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("tab")) {
-				String persistentID = reader.getAttributeValue(0);
-				node.addTab(persistentID);
+				currentPersistentID = reader.getAttributeValue(0);
+				node.addTab(currentPersistentID);
+			}
+			else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("properties")) {
+				node.setProperties(currentPersistentID, readProperties(reader));
 			}
 			else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("tabbed")) {
 				break;

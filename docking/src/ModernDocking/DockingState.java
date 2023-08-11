@@ -320,12 +320,14 @@ public class DockingState {
     private static DockedTabbedPanel restoreTabbed(DockingTabPanelNode node, Window window) {
         DockedTabbedPanel panel = null;
 
-        for (String persistentID : node.getPersistentIDs()) {
-            Dockable dockable = getDockable(persistentID);
+        for (DockingSimplePanelNode simpleNode : node.getPersistentIDs()) {
+            Dockable dockable = getDockable(simpleNode.getPersistentID());
 
             if (dockable == null) {
-                throw new DockableNotFoundException(persistentID);
+                throw new DockableNotFoundException(simpleNode.getPersistentID());
             }
+
+            dockable.setProperties(simpleNode.getProperties());
 
             Docking.undock(dockable);
 

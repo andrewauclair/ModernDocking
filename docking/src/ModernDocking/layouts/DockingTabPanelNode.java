@@ -27,6 +27,8 @@ import ModernDocking.DockingRegion;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Docking layout node for a tabbed panel. A that contains multiple dockables in a JTabbedPane.
@@ -48,6 +50,17 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	}
 
 	/**
+	 * Create a new tab panel node with a single dockable to start
+	 *
+	 * @param selectedTabID Persistent ID of first dockable
+	 * @param properties Properties of the dockable
+	 */
+	public DockingTabPanelNode(String selectedTabID, Map<String, String> properties) {
+		addTab(selectedTabID, properties);
+		this.selectedTabID = selectedTabID;
+	}
+
+	/**
 	 * Add a new dockable to the tab panel
 	 *
 	 * @param persistentID Dockable persistent ID to add
@@ -62,17 +75,35 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	}
 
 	/**
+	 * Add a new dockable to the tab panel
+	 *
+	 * @param persistentID Dockable persistent ID to add
+	 * @param properties Properties of the dockable
+	 */
+	public void addTab(String persistentID, Map<String, String> properties) {
+		if (findNode(persistentID) != null) {
+			return;
+		}
+		DockingSimplePanelNode tab = new DockingSimplePanelNode(persistentID, properties);
+		tab.setParent(this);
+		tabs.add(tab);
+	}
+
+	public void setProperties(String persistentID, Map<String, String> properties) {
+		Optional<DockingSimplePanelNode> first = tabs.stream()
+				.filter(dockingSimplePanelNode -> !dockingSimplePanelNode.getPersistentID().equals(persistentID))
+				.findFirst();
+
+		first.ifPresent(dockingSimplePanelNode -> dockingSimplePanelNode.setProperties(properties));
+	}
+
+	/**
 	 * Get a list of the persistent IDs in the tab panel
 	 *
 	 * @return List of persistent IDs
 	 */
-	public List<String> getPersistentIDs() {
-		List<String> persistentIDs = new ArrayList<>();
-
-		for (DockingSimplePanelNode tab : tabs) {
-			persistentIDs.add(tab.getPersistentID());
-		}
-		return persistentIDs;
+	public List<DockingSimplePanelNode> getPersistentIDs() {
+		return new ArrayList<>(tabs);
 	}
 
 	/**

@@ -138,4 +138,9 @@ public class SimplePanel extends BasePanel {
 		props.put("test11", "twelve");
 		return props;
 	}
+
+	@Override
+	public void setProperties(Map<String, String> properties) {
+		System.out.println("Set props for " + getPersistentID());
+	}
 }

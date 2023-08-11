@@ -65,7 +65,6 @@ public class ApplicationLayoutXML {
 			writer.writeStartDocument();
 			writer.writeCharacters(NL);
 			writer.writeStartElement("app-layout");
-			writer.writeCharacters(NL);
 
 			WindowLayoutXML.saveLayoutToFile(writer, layout.getMainFrameLayout(), true);
 

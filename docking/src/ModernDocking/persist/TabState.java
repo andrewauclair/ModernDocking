@@ -26,6 +26,7 @@ import ModernDocking.internal.DockedTabbedPanel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * State of a tab panel
@@ -39,7 +40,11 @@ public class TabState implements DockableState {
 	 * @param panel Tabbed panel
 	 */
 	public TabState(DockedTabbedPanel panel) {
-		persistentIDs.addAll(panel.persistentIDs());
+		persistentIDs.addAll(
+				panel.getDockables().stream()
+						.map(wrapper -> wrapper.getDockable().getPersistentID())
+						.collect(Collectors.toList())
+		);
 	}
 
 	/**
