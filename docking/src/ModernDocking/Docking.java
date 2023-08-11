@@ -449,10 +449,21 @@ public class Docking {
 	 */
 	public static void newWindow(Dockable dockable) {
 		DisplayPanel displayPanel = getWrapper(dockable).getDisplayPanel();
-		Point location = displayPanel.getLocationOnScreen();
-		Dimension size = displayPanel.getSize();
 
-		newWindow(dockable, location, size);
+		if (isDocked(dockable)) {
+			Point location = displayPanel.getLocationOnScreen();
+			Dimension size = displayPanel.getSize();
+
+			newWindow(dockable, location, size);
+		}
+		else {
+			FloatingFrame frame = new FloatingFrame();
+
+			dock(dockable, frame);
+
+			frame.pack();
+			frame.setLocationRelativeTo(getMainWindow());
+		}
 	}
 
 	/**
