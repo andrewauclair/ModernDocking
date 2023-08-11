@@ -445,6 +445,15 @@ public class Docking {
 	/**
 	 * create a new FloatingFrame window for the given dockable, undock it from its current frame (if there is one) and dock it into the new frame
 	 *
+	 * @param persistentID The persistent ID of the dockable to float in a new window
+	 */
+	public static void newWindow(String persistentID) {
+		newWindow(getDockable(persistentID));
+	}
+
+	/**
+	 * create a new FloatingFrame window for the given dockable, undock it from its current frame (if there is one) and dock it into the new frame
+	 *
 	 * @param dockable The dockable to float in a new window
 	 */
 	public static void newWindow(Dockable dockable) {
@@ -469,6 +478,17 @@ public class Docking {
 	/**
 	 * Create a new FloatingFrame window for the given dockable, undock it from its current frame (if there is one) and dock it into the new frame
 	 *
+	 * @param persistentID The persistent ID of the dockable to float in a new window
+	 * @param location The screen location to display the new frame at
+	 * @param size The size of the new frame
+	 */
+	public static void newWindow(String persistentID, Point location, Dimension size) {
+		newWindow(getDockable(persistentID), location, size);
+	}
+
+	/**
+	 * Create a new FloatingFrame window for the given dockable, undock it from its current frame (if there is one) and dock it into the new frame
+	 *
 	 * @param dockable The dockable to float in a new window
 	 * @param location The screen location to display the new frame at
 	 * @param size The size of the new frame
@@ -478,6 +498,8 @@ public class Docking {
 
 		undock(dockable);
 		dock(dockable, frame);
+
+		bringToFront(dockable);
 	}
 
 	/**
