@@ -24,7 +24,6 @@ package ModernDocking.layouts;
 import javax.xml.stream.*;
 import java.awt.*;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;

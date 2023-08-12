@@ -239,7 +239,7 @@ public class Docking {
 
 	/**
 	 * docks a dockable to the center of the given window
-	 *
+	 * <p>
 	 * NOTE: This will only work if the window root docking node is empty. Otherwise this does nothing.
 	 *
 	 * @param persistentID The persistentID of the dockable to dock
@@ -251,7 +251,7 @@ public class Docking {
 
 	/**
 	 * docks a dockable to the center of the given window
-	 *
+	 * <p>
 	 * NOTE: This will only work if the window root docking node is empty. Otherwise this does nothing.
 	 *
 	 * @param dockable The dockable to dock
@@ -726,6 +726,9 @@ public class Docking {
 		posInFrame.x += component.getWidth() / 2;
 		posInFrame.y += component.getHeight() / 2;
 
+		if (!root.isPinningSupported()) {
+			return;
+		}
 		undock(dockable);
 
 		// reset the window, undocking the dockable sets it to null
@@ -774,7 +777,7 @@ public class Docking {
 
 	/**
 	 * Display a dockable
-	 *
+	 * <p>
 	 * if the dockable is already docked, then bringToFront is called.
 	 * if it is not docked, then dock is called, docking it with dockables of the same type
 	 *

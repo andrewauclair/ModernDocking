@@ -6,7 +6,7 @@ import java.util.Vector;
 
 /**
  * special form of ButtonGroup that allows the currently selected button to deselected
- * found from this answer: https://stackoverflow.com/a/51867860
+ * found from this answer: <a href="https://stackoverflow.com/a/51867860">stackoverflow</a>
  */
 public class UnselectableButtonGroup extends ButtonGroup {
 

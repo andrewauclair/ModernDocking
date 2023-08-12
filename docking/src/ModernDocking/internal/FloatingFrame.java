@@ -27,7 +27,6 @@ import ModernDocking.RootDockingPanel;
 import ModernDocking.floating.TempFloatingFrame;
 
 import javax.swing.*;
-import javax.swing.plaf.DimensionUIResource;
 import java.awt.*;
 
 import static ModernDocking.internal.DockingInternal.getWrapper;

@@ -151,6 +151,9 @@ public class RootDockingPanel extends DockingPanel {
 	 * @return True if pinning is supported
 	 */
 	public boolean isPinningSupported() {
+		if (supportedToolbars.isEmpty()) {
+			return false;
+		}
 		return pinningSupported;
 	}
 

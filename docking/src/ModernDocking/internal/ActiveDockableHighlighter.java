@@ -24,7 +24,6 @@ package ModernDocking.internal;
 import ModernDocking.Dockable;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
@@ -32,7 +31,7 @@ import static ModernDocking.internal.DockingInternal.getWrapper;
 
 /**
  * This class is responsible for adding a selected border around the dockable at the current mouse position.
- *
+ * <p>
  * Using an AWT Event Listener we can listen for global MOUSE_ENTERED and MOUSE_EXITED to add/remove the border.
  */
 public class ActiveDockableHighlighter {

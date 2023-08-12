@@ -23,7 +23,6 @@ package ModernDocking;
 
 import ModernDocking.exception.DockableNotFoundException;
 import ModernDocking.exception.DockableRegistrationFailureException;
-import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.internal.*;
 import ModernDocking.layouts.*;
 import ModernDocking.persist.*;
@@ -34,8 +33,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class DockingState {
     /**
