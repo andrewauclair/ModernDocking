@@ -23,6 +23,7 @@ package basic;
 
 import ModernDocking.*;
 import ModernDocking.exception.DockingLayoutException;
+import ModernDocking.internal.DockableToolbar;
 import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.ApplicationLayoutXML;
 import ModernDocking.layouts.DockingLayouts;
@@ -43,6 +44,7 @@ import picocli.CommandLine;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.util.EnumSet;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
