@@ -21,7 +21,11 @@ SOFTWARE.
  */
 package ModernDocking.layouts;
 
+import ModernDocking.Dockable;
+import ModernDocking.Docking;
+import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.exception.DockingLayoutException;
+import ModernDocking.internal.DockingInternal;
 
 import javax.xml.stream.*;
 import java.io.File;
@@ -29,6 +33,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Helper class to save and load ApplicationLayouts to/from XML formatted files
@@ -72,6 +78,18 @@ public class ApplicationLayoutXML {
 				WindowLayoutXML.saveLayoutToFile(writer, frameLayout, false);
 			}
 
+			writer.writeStartElement("undocked");
+			writer.writeCharacters(NL);
+
+			for (Dockable dockable : DockingInternal.getDockables()) {
+				if (!Docking.isDocked(dockable)) {
+					WindowLayoutXML.writeSimpleNodeToFile(writer, new DockingSimplePanelNode(dockable.getPersistentID(), dockable.getProperties()));
+				}
+			}
+
+			writer.writeEndElement();
+			writer.writeCharacters(NL);
+
 			writer.writeEndElement();
 
 			writer.writeEndDocument();
@@ -106,6 +124,9 @@ public class ApplicationLayoutXML {
 				if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("layout")) {
 					layout.addFrame(WindowLayoutXML.readLayoutFromReader(reader));
 				}
+				else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("undocked")) {
+					readUndocked(reader);
+				}
 				else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("app-layout")) {
 					break;
 				}
@@ -124,6 +145,27 @@ public class ApplicationLayoutXML {
 			}
 			catch (XMLStreamException e) {
 				e.printStackTrace();
+			}
+		}
+	}
+
+	private static void readUndocked(XMLStreamReader reader) throws XMLStreamException {
+		while (reader.hasNext()) {
+			int next = reader.nextTag();
+
+			if (next == XMLStreamConstants.START_ELEMENT) {
+				if (reader.getLocalName().equals("simple")) {
+					DockingSimplePanelNode node = WindowLayoutXML.readSimpleNodeFromFile(reader);
+
+					try {
+						DockingInternal.getDockable(node.getPersistentID()).setProperties(node.getProperties());
+					}
+					catch (DockableRegistrationFailureException ignore) {
+					}
+				}
+			}
+			else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("undocked")) {
+				break;
 			}
 		}
 	}

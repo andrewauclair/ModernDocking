@@ -142,7 +142,7 @@ public class WindowLayoutXML {
 		}
 	}
 
-	private static void writeSimpleNodeToFile(XMLStreamWriter writer, DockingSimplePanelNode node) throws XMLStreamException {
+	public static void writeSimpleNodeToFile(XMLStreamWriter writer, DockingSimplePanelNode node) throws XMLStreamException {
 		writer.writeStartElement("simple");
 		writer.writeAttribute("persistentID", node.getPersistentID());
 		writer.writeCharacters(NL);
@@ -331,7 +331,7 @@ public class WindowLayoutXML {
 		return node;
 	}
 
-	private static DockingSimplePanelNode readSimpleNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
+	public static DockingSimplePanelNode readSimpleNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
 		String persistentID = reader.getAttributeValue(0);
 
 
