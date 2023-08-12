@@ -451,4 +451,8 @@ public class RootDockingPanel extends DockingPanel {
 		}
 		return southToolbar.getPersistentIDs();
 	}
+
+	public boolean isLocationSupported(DockableToolbar.Location location) {
+		return supportedToolbars.contains(location);
+	}
 }

@@ -230,7 +230,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
 
-		RootDockingPanel dockingPanel = new RootDockingPanel(this);
+		RootDockingPanel dockingPanel = new RootDockingPanel(this, EnumSet.of(DockableToolbar.Location.WEST));
 
 		gbc.insets = new Insets(0, 5, 5, 5);
 

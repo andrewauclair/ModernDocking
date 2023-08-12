@@ -734,7 +734,7 @@ public class Docking {
 
 		DockableToolbar.Location preferredLocation = dockable.onUnpinning();
 
-		if (preferredLocation == null) {
+		if (preferredLocation == null || !root.isLocationSupported(preferredLocation)) {
 			boolean allowedSouth = dockable.getStyle() == DockableStyle.BOTH || dockable.getStyle() == DockableStyle.HORIZONTAL;
 
 			int westDist = posInFrame.x;
