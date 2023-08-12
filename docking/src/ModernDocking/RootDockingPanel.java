@@ -321,6 +321,10 @@ public class RootDockingPanel extends DockingPanel {
 	 * @param location Toolbar to unpin to
 	 */
 	public void setDockableUnpinned(Dockable dockable, DockableToolbar.Location location) {
+		if (!isPinningSupported()) {
+			return;
+		}
+
 		switch (location) {
 			case WEST: {
 				if (supportedToolbars.contains(DockableToolbar.Location.WEST)) {
