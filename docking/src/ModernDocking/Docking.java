@@ -499,7 +499,7 @@ public class Docking {
 		undock(dockable);
 		dock(dockable, frame);
 
-		bringToFront(dockable);
+		SwingUtilities.invokeLater(() -> bringToFront(dockable));
 	}
 
 	/**
@@ -732,24 +732,32 @@ public class Docking {
 		getWrapper(dockable).setWindow(window);
 		getWrapper(dockable).setUnpinned(true);
 
-		boolean allowedSouth = dockable.getStyle() == DockableStyle.BOTH || dockable.getStyle() == DockableStyle.HORIZONTAL;
+		DockableToolbar.Location preferredLocation = dockable.onUnpinning();
 
-		int westDist = posInFrame.x;
-		int eastDist = window.getWidth() - posInFrame.x;
-		int southDist = window.getHeight() - posInFrame.y;
+		if (preferredLocation == null) {
+			boolean allowedSouth = dockable.getStyle() == DockableStyle.BOTH || dockable.getStyle() == DockableStyle.HORIZONTAL;
 
-		boolean east = eastDist <= westDist;
-		boolean south = southDist < westDist && southDist < eastDist;
+			int westDist = posInFrame.x;
+			int eastDist = window.getWidth() - posInFrame.x;
+			int southDist = window.getHeight() - posInFrame.y;
 
-		if (south && allowedSouth) {
-			root.setDockableUnpinned(dockable, DockableToolbar.Location.SOUTH);
-		}
-		else if (east) {
-			root.setDockableUnpinned(dockable, DockableToolbar.Location.EAST);
+			boolean east = eastDist <= westDist;
+			boolean south = southDist < westDist && southDist < eastDist;
+
+			if (south && allowedSouth) {
+				root.setDockableUnpinned(dockable, DockableToolbar.Location.SOUTH);
+			}
+			else if (east) {
+				root.setDockableUnpinned(dockable, DockableToolbar.Location.EAST);
+			}
+			else {
+				root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
+			}
 		}
 		else {
-			root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
+			root.setDockableUnpinned(dockable, preferredLocation);
 		}
+
 		DockingListeners.fireUnpinnedEvent(dockable);
 		dockable.hidden();
 		DockingListeners.fireHiddenEvent(dockable);

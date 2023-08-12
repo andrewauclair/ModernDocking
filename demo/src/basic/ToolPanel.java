@@ -24,6 +24,7 @@ package basic;
 import ModernDocking.DockableStyle;
 import ModernDocking.Docking;
 import ModernDocking.DockingRegion;
+import ModernDocking.internal.DockableToolbar;
 
 import javax.swing.*;
 
@@ -98,17 +99,25 @@ public class ToolPanel extends BasePanel {
 		menu.add(new JMenuItem("Else"));
 	}
 
+//	@Override
+//	public boolean onDocking() {
+//		if (style == DockableStyle.VERTICAL) {
+//			Docking.dock(this, Docking.getMainWindow(), DockingRegion.EAST);
+//		}
+//		else if (style == DockableStyle.HORIZONTAL) {
+//			Docking.dock(this, Docking.getMainWindow(), DockingRegion.SOUTH);
+//		}
+//		else {
+//			Docking.dock(this, Docking.getMainWindow(), DockingRegion.NORTH);
+//		}
+//		return true;
+//	}
+
 	@Override
-	public boolean onDocking() {
+	public DockableToolbar.Location onUnpinning() {
 		if (style == DockableStyle.VERTICAL) {
-			Docking.dock(this, Docking.getMainWindow(), DockingRegion.EAST);
+			return DockableToolbar.Location.EAST;
 		}
-		else if (style == DockableStyle.HORIZONTAL) {
-			Docking.dock(this, Docking.getMainWindow(), DockingRegion.SOUTH);
-		}
-		else {
-			Docking.dock(this, Docking.getMainWindow(), DockingRegion.NORTH);
-		}
-		return true;
+		return DockableToolbar.Location.SOUTH;
 	}
 }
