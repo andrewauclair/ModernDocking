@@ -28,7 +28,7 @@ import javax.swing.*;
 
 /**
  * Represents a dockable that has failed to load from a layout file.
- *
+ * <p>
  * These are stripped out after restoring from the layout.
  */
 public class FailedDockable extends JPanel implements Dockable {

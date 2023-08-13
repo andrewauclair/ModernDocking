@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public class DockingSimplePanelNode implements DockingLayoutNode {
 	private final String persistentID;
-	private final Map<String, String> properties = new HashMap<>();
+	private Map<String, String> properties = new HashMap<>();
 	private DockingLayoutNode parent;
 
 	/**
@@ -143,5 +143,9 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 	 */
 	public Map<String, String> getProperties() {
 		return properties;
+	}
+
+	public void setProperties(Map<String, String> properties) {
+		this.properties = new HashMap<>(properties);
 	}
 }

@@ -60,7 +60,7 @@ public class ApplicationLayout {
 
 	/**
 	 * Add a WindowLayout as the main frame
-	 *
+	 * <p>
 	 * Note: This will remove the current main frame layout in this ApplicationLayout, if one exists
 	 *
 	 * @param layout Layout of the application main frame

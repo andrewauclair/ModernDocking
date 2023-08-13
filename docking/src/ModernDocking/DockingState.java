@@ -23,7 +23,6 @@ package ModernDocking;
 
 import ModernDocking.exception.DockableNotFoundException;
 import ModernDocking.exception.DockableRegistrationFailureException;
-import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.internal.*;
 import ModernDocking.layouts.*;
 import ModernDocking.persist.*;
@@ -38,6 +37,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.*;
 
 public class DockingState {
     /**
@@ -323,12 +323,14 @@ public class DockingState {
     private static DockedTabbedPanel restoreTabbed(DockingTabPanelNode node, Window window) {
         DockedTabbedPanel panel = null;
 
-        for (String persistentID : node.getPersistentIDs()) {
-            Dockable dockable = getDockable(persistentID);
+        for (DockingSimplePanelNode simpleNode : node.getPersistentIDs()) {
+            Dockable dockable = getDockable(simpleNode.getPersistentID());
 
             if (dockable == null) {
-                throw new DockableNotFoundException(persistentID);
+                throw new DockableNotFoundException(simpleNode.getPersistentID());
             }
+
+            dockable.setProperties(simpleNode.getProperties());
 
             Docking.undock(dockable);
 

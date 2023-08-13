@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package basic;
+package examples;
 
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
@@ -29,7 +29,7 @@ import ModernDocking.RootDockingPanel;
 import javax.swing.*;
 import java.awt.*;
 
-public class FloatingSample extends JFrame {
+public class Docking_dock extends JFrame {
     private static class DockingPanel extends JPanel implements Dockable {
         private final String id;
 
@@ -73,7 +73,7 @@ public class FloatingSample extends JFrame {
         }
     };
 
-    public FloatingSample() {
+    public Docking_dock() {
         setSize(300, 200);
 
         Docking.initialize(this);
@@ -83,15 +83,19 @@ public class FloatingSample extends JFrame {
 
         DockingPanel alpha = new DockingPanel("Alpha");
         DockingPanel bravo = new DockingPanel("Bravo");
+        DockingPanel charlie = new DockingPanel("Charlie");
+        DockingPanel delta = new DockingPanel("Delta");
 
         Docking.registerDockable(alpha);
         Docking.registerDockable(bravo);
+        Docking.registerDockable(charlie);
+        Docking.registerDockable(delta);
 
         Docking.dock(alpha, this);
         Docking.dock(bravo, alpha, DockingRegion.WEST);
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new FloatingSample().setVisible(true));
+        SwingUtilities.invokeLater(() -> new Docking_dock().setVisible(true));
     }
 }

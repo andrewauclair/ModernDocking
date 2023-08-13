@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2022-2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -239,8 +239,8 @@ public class Docking {
 
 	/**
 	 * docks a dockable to the center of the given window
-	 *
-	 * NOTE: This will only work if the window root docking node is empty. Otherwise this does nothing.
+	 * <p>
+	 * NOTE: This will only work if the window root docking node is empty. Otherwise, this does nothing.
 	 *
 	 * @param persistentID The persistentID of the dockable to dock
 	 * @param window The window to dock into
@@ -251,8 +251,8 @@ public class Docking {
 
 	/**
 	 * docks a dockable to the center of the given window
-	 *
-	 * NOTE: This will only work if the window root docking node is empty. Otherwise this does nothing.
+	 * <p>
+	 * NOTE: This will only work if the window root docking node is empty. Otherwise, this does nothing.
 	 *
 	 * @param dockable The dockable to dock
 	 * @param window The window to dock into
@@ -445,14 +445,45 @@ public class Docking {
 	/**
 	 * create a new FloatingFrame window for the given dockable, undock it from its current frame (if there is one) and dock it into the new frame
 	 *
+	 * @param persistentID The persistent ID of the dockable to float in a new window
+	 */
+	public static void newWindow(String persistentID) {
+		newWindow(getDockable(persistentID));
+	}
+
+	/**
+	 * create a new FloatingFrame window for the given dockable, undock it from its current frame (if there is one) and dock it into the new frame
+	 *
 	 * @param dockable The dockable to float in a new window
 	 */
 	public static void newWindow(Dockable dockable) {
 		DisplayPanel displayPanel = getWrapper(dockable).getDisplayPanel();
-		Point location = displayPanel.getLocationOnScreen();
-		Dimension size = displayPanel.getSize();
 
-		newWindow(dockable, location, size);
+		if (isDocked(dockable)) {
+			Point location = displayPanel.getLocationOnScreen();
+			Dimension size = displayPanel.getSize();
+
+			newWindow(dockable, location, size);
+		}
+		else {
+			FloatingFrame frame = new FloatingFrame();
+
+			dock(dockable, frame);
+
+			frame.pack();
+			frame.setLocationRelativeTo(getMainWindow());
+		}
+	}
+
+	/**
+	 * Create a new FloatingFrame window for the given dockable, undock it from its current frame (if there is one) and dock it into the new frame
+	 *
+	 * @param persistentID The persistent ID of the dockable to float in a new window
+	 * @param location The screen location to display the new frame at
+	 * @param size The size of the new frame
+	 */
+	public static void newWindow(String persistentID, Point location, Dimension size) {
+		newWindow(getDockable(persistentID), location, size);
 	}
 
 	/**
@@ -467,6 +498,8 @@ public class Docking {
 
 		undock(dockable);
 		dock(dockable, frame);
+
+		SwingUtilities.invokeLater(() -> bringToFront(dockable));
 	}
 
 	/**
@@ -536,7 +569,8 @@ public class Docking {
 
 		AppState.persist();
 
-		if (!dockable.canBeClosed()) {
+		// force this dockable to dock again if we're not floating it
+		if (!dockable.canBeClosed() && !FloatListener.isFloating) {
 			dock(dockable, instance.mainWindow);
 		}
 		else {
@@ -693,30 +727,41 @@ public class Docking {
 		posInFrame.x += component.getWidth() / 2;
 		posInFrame.y += component.getHeight() / 2;
 
+		if (!root.isPinningSupported()) {
+			return;
+		}
 		undock(dockable);
 
 		// reset the window, undocking the dockable sets it to null
 		getWrapper(dockable).setWindow(window);
 		getWrapper(dockable).setUnpinned(true);
 
-		boolean allowedSouth = dockable.getStyle() == DockableStyle.BOTH || dockable.getStyle() == DockableStyle.HORIZONTAL;
+		DockableToolbar.Location preferredLocation = dockable.onUnpinning();
 
-		int westDist = posInFrame.x;
-		int eastDist = window.getWidth() - posInFrame.x;
-		int southDist = window.getHeight() - posInFrame.y;
+		if (preferredLocation == null || !root.isLocationSupported(preferredLocation)) {
+			boolean allowedSouth = dockable.getStyle() == DockableStyle.BOTH || dockable.getStyle() == DockableStyle.HORIZONTAL;
 
-		boolean east = eastDist <= westDist;
-		boolean south = southDist < westDist && southDist < eastDist;
+			int westDist = posInFrame.x;
+			int eastDist = window.getWidth() - posInFrame.x;
+			int southDist = window.getHeight() - posInFrame.y;
 
-		if (south && allowedSouth) {
-			root.setDockableUnpinned(dockable, DockableToolbar.Location.SOUTH);
-		}
-		else if (east) {
-			root.setDockableUnpinned(dockable, DockableToolbar.Location.EAST);
+			boolean east = eastDist <= westDist;
+			boolean south = southDist < westDist && southDist < eastDist;
+
+			if (south && allowedSouth) {
+				root.setDockableUnpinned(dockable, DockableToolbar.Location.SOUTH);
+			}
+			else if (east) {
+				root.setDockableUnpinned(dockable, DockableToolbar.Location.EAST);
+			}
+			else {
+				root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
+			}
 		}
 		else {
-			root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
+			root.setDockableUnpinned(dockable, preferredLocation);
 		}
+
 		DockingListeners.fireUnpinnedEvent(dockable);
 		dockable.hidden();
 		DockingListeners.fireHiddenEvent(dockable);
@@ -733,7 +778,7 @@ public class Docking {
 
 	/**
 	 * Display a dockable
-	 *
+	 * <p>
 	 * if the dockable is already docked, then bringToFront is called.
 	 * if it is not docked, then dock is called, docking it with dockables of the same type
 	 *

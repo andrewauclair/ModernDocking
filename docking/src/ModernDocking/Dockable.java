@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package ModernDocking;
 
+import ModernDocking.internal.DockableToolbar;
 import ModernDocking.ui.DefaultHeaderUI;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
@@ -174,6 +175,16 @@ public interface Dockable {
 	 */
 	default boolean onDocking() {
 		return false;
+	}
+
+	/**
+	 * called when the Docking framework is about to set a dockable to unpinned. Allows the destination location to be
+	 * overridden.
+	 *
+	 * @return Target toolbar location for this dockable or null for the framework to decide.
+	 */
+	default DockableToolbar.Location onUnpinning() {
+		return null;
 	}
 
 	/**

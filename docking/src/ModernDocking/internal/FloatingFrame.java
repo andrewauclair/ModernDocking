@@ -27,12 +27,29 @@ import ModernDocking.RootDockingPanel;
 import ModernDocking.floating.TempFloatingFrame;
 
 import javax.swing.*;
-import javax.swing.plaf.DimensionUIResource;
 import java.awt.*;
 
 import static ModernDocking.internal.DockingInternal.getWrapper;
 
 public class FloatingFrame extends JFrame {
+	public FloatingFrame() {
+		setLayout(new BorderLayout());
+
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+		// create and add the root
+		RootDockingPanel root = new RootDockingPanel(this);
+		root.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
+		add(root, BorderLayout.CENTER);
+
+		// allow pinning for this frame
+		Docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
+
+		setVisible(true);
+
+		pack();
+	}
+
 	public FloatingFrame(Point location, Dimension size, int state) {
 		setLocation(location);
 		setSize(size);
@@ -54,7 +71,7 @@ public class FloatingFrame extends JFrame {
 
 	}
 
-		// create a new floating frame. this is used when calling Docking.newWindow or when restoring the layout from a file
+	// create a new floating frame. this is used when calling Docking.newWindow or when restoring the layout from a file
 	public FloatingFrame(Dockable dockable, Point location, Dimension size, int state) {
 		DisplayPanel displayPanel = getWrapper(dockable).getDisplayPanel();
 

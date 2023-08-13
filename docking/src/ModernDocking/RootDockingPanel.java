@@ -26,6 +26,7 @@ import ModernDocking.internal.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -54,6 +55,8 @@ public class RootDockingPanel extends DockingPanel {
 	 */
 	private DockableToolbar eastToolbar;
 
+	private EnumSet<DockableToolbar.Location> supportedToolbars;
+
 	/**
 	 * Create root panel with GridBagLayout as the layout
 	 */
@@ -81,6 +84,22 @@ public class RootDockingPanel extends DockingPanel {
 		southToolbar = new DockableToolbar(window, this, DockableToolbar.Location.SOUTH);
 		westToolbar = new DockableToolbar(window, this, DockableToolbar.Location.WEST);
 		eastToolbar = new DockableToolbar(window, this, DockableToolbar.Location.EAST);
+
+		supportedToolbars = EnumSet.allOf(DockableToolbar.Location.class);
+		pinningSupported = !supportedToolbars.isEmpty();
+	}
+
+	/**
+	 * Create a new RootDockingPanel for the given window and set of supported toolbars
+	 *
+	 * @param window Window this root panel is attached to
+	 * @param supportedToolbars Supported toolbars
+	 */
+	public RootDockingPanel(Window window, EnumSet<DockableToolbar.Location> supportedToolbars) {
+		this(window);
+
+		this.supportedToolbars = supportedToolbars;
+		pinningSupported = !supportedToolbars.isEmpty();
 	}
 
 	/**
@@ -104,6 +123,8 @@ public class RootDockingPanel extends DockingPanel {
 		southToolbar = new DockableToolbar(window, this, DockableToolbar.Location.SOUTH);
 		westToolbar = new DockableToolbar(window, this, DockableToolbar.Location.WEST);
 		eastToolbar = new DockableToolbar(window, this, DockableToolbar.Location.EAST);
+
+		supportedToolbars = EnumSet.allOf(DockableToolbar.Location.class);
 	}
 
 	/**
@@ -130,6 +151,9 @@ public class RootDockingPanel extends DockingPanel {
 	 * @return True if pinning is supported
 	 */
 	public boolean isPinningSupported() {
+		if (supportedToolbars.isEmpty()) {
+			return false;
+		}
 		return pinningSupported;
 	}
 
@@ -235,13 +259,13 @@ public class RootDockingPanel extends DockingPanel {
 
 	@Override
 	public void undock(Dockable dockable) {
-		if (westToolbar.hasDockable(dockable)) {
+		if (supportedToolbars.contains(DockableToolbar.Location.WEST) && westToolbar.hasDockable(dockable)) {
 			westToolbar.removeDockable(dockable);
 		}
-		else if (eastToolbar.hasDockable(dockable)) {
+		else if (supportedToolbars.contains(DockableToolbar.Location.EAST) && eastToolbar.hasDockable(dockable)) {
 			eastToolbar.removeDockable(dockable);
 		}
-		else if (southToolbar.hasDockable(dockable)) {
+		else if (supportedToolbars.contains(DockableToolbar.Location.SOUTH) && southToolbar.hasDockable(dockable)) {
 			southToolbar.removeDockable(dockable);
 		}
 
@@ -271,17 +295,17 @@ public class RootDockingPanel extends DockingPanel {
 	 */
 	public void setDockablePinned(Dockable dockable) {
 		// if the dockable is currently unpinned, remove it from the toolbar, then adjust the toolbars
-		if (westToolbar.hasDockable(dockable)) {
+		if (supportedToolbars.contains(DockableToolbar.Location.WEST) && westToolbar.hasDockable(dockable)) {
 			westToolbar.removeDockable(dockable);
 
 			dock(dockable, DockingRegion.WEST, 0.25f);
 		}
-		else if (eastToolbar.hasDockable(dockable)) {
+		else if (supportedToolbars.contains(DockableToolbar.Location.EAST) && eastToolbar.hasDockable(dockable)) {
 			eastToolbar.removeDockable(dockable);
 
 			dock(dockable, DockingRegion.EAST, 0.25f);
 		}
-		else if (southToolbar.hasDockable(dockable)) {
+		else if (supportedToolbars.contains(DockableToolbar.Location.SOUTH) && southToolbar.hasDockable(dockable)) {
 			southToolbar.removeDockable(dockable);
 
 			dock(dockable, DockingRegion.SOUTH, 0.25f);
@@ -297,17 +321,27 @@ public class RootDockingPanel extends DockingPanel {
 	 * @param location Toolbar to unpin to
 	 */
 	public void setDockableUnpinned(Dockable dockable, DockableToolbar.Location location) {
+		if (!isPinningSupported()) {
+			return;
+		}
+
 		switch (location) {
 			case WEST: {
-				westToolbar.addDockable(dockable);
+				if (supportedToolbars.contains(DockableToolbar.Location.WEST)) {
+					westToolbar.addDockable(dockable);
+				}
 				break;
 			}
 			case SOUTH: {
-				southToolbar.addDockable(dockable);
+				if (supportedToolbars.contains(DockableToolbar.Location.SOUTH)) {
+					southToolbar.addDockable(dockable);
+				}
 				break;
 			}
 			case EAST: {
-				eastToolbar.addDockable(dockable);
+				if (supportedToolbars.contains(DockableToolbar.Location.EAST)) {
+					eastToolbar.addDockable(dockable);
+				}
 				break;
 			}
 		}
@@ -341,7 +375,7 @@ public class RootDockingPanel extends DockingPanel {
 		gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.VERTICAL;
 
-		if (westToolbar.shouldDisplay()) {
+		if (isPinningSupported() && westToolbar.shouldDisplay()) {
 			add(westToolbar, gbc);
 			gbc.gridx++;
 		}
@@ -362,7 +396,7 @@ public class RootDockingPanel extends DockingPanel {
 		gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.VERTICAL;
 
-		if (eastToolbar.shouldDisplay()) {
+		if (isPinningSupported() && eastToolbar.shouldDisplay()) {
 			add(eastToolbar, gbc);
 		}
 
@@ -372,7 +406,7 @@ public class RootDockingPanel extends DockingPanel {
 		gbc.weightx = 1.0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 
-		if (southToolbar.shouldDisplay()) {
+		if (isPinningSupported() && southToolbar.shouldDisplay()) {
 			add(southToolbar, gbc);
 		}
 
@@ -423,5 +457,9 @@ public class RootDockingPanel extends DockingPanel {
 			return Collections.emptyList();
 		}
 		return southToolbar.getPersistentIDs();
+	}
+
+	public boolean isLocationSupported(DockableToolbar.Location location) {
+		return supportedToolbars.contains(location);
 	}
 }

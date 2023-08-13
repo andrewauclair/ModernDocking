@@ -23,6 +23,7 @@ package basic;
 
 import ModernDocking.*;
 import ModernDocking.exception.DockingLayoutException;
+import ModernDocking.internal.DockableToolbar;
 import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.ApplicationLayoutXML;
 import ModernDocking.layouts.DockingLayouts;
@@ -44,6 +45,7 @@ import picocli.CommandLine;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.util.EnumSet;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
@@ -196,12 +198,6 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		menuBar.add(view);
 
 		view.add(actionListenDock(one));
-//		JMenuItem oneItem = new JMenuItem("one");
-//		oneItem.addActionListener(e -> {
-//			Docking.dock(one, MainFrame.this, DockingRegion.WEST);
-//			Docking.dock(one, two, DockingRegion.SOUTH);
-//		});
-//		view.add(oneItem);
 		view.add(actionListenDock(two));
 		view.add(actionListenDock(three));
 		view.add(actionListenDock(four));
@@ -236,6 +232,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		gbc.fill = GridBagConstraints.BOTH;
 
 		RootDockingPanel dockingPanel = new RootDockingPanel(this);
+//		dockingPanel.setPinningSupported(false);
 
 		gbc.insets = new Insets(0, 5, 5, 5);
 
@@ -320,10 +317,8 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 	@Override
 	public Integer call() throws Exception {
-		SwingUtilities.invokeLater(() -> {
-		configureLookAndFeel();
+		SwingUtilities.invokeLater(this::configureLookAndFeel);
 
-		});
 		SwingUtilities.invokeLater(() -> {
 
 			setVisible(true);

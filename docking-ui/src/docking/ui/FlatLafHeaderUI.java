@@ -60,7 +60,6 @@ public class FlatLafHeaderUI extends DefaultHeaderUI implements DockingHeaderUI 
 
 		settingsIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> foreground));
 		closeIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> foreground));
-
 	}
 
 	@Override

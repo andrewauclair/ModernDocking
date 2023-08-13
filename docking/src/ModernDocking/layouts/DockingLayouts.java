@@ -152,10 +152,10 @@ e.printStackTrace();
 	}
 
 	private static DockingLayoutNode tabbedPanelToNode(DockedTabbedPanel panel) {
-		DockingTabPanelNode node = new DockingTabPanelNode(panel.getSelectedTabID());
+		DockingTabPanelNode node = new DockingTabPanelNode(panel.getSelectedTabID(), DockingInternal.getDockable(panel.getSelectedTabID()).getProperties());
 
-		for (String persistentID : panel.persistentIDs()) {
-			node.addTab(persistentID);
+		for (DockableWrapper dockable : panel.getDockables()) {
+			node.addTab(dockable.getDockable().getPersistentID(), dockable.getDockable().getProperties());
 		}
 		return node;
 	}
