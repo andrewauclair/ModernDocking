@@ -136,6 +136,9 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener, Mo
 				width = getWidth() + widthDifference;
 			}
 
+			width = Math.max(100, width);
+			width = Math.min(width, getParent().getWidth() - 100);
+
 			Point location = new Point(toolbarLocation.x + toolbarSize.width, toolbarLocation.y);
 			Dimension size = new Dimension(width, height);
 
@@ -155,6 +158,9 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener, Mo
 			if (configured) {
 				height = getHeight() + widthDifference;
 			}
+
+			height = Math.max(100, height);
+			height = Math.min(height, getParent().getHeight() - 100);
 
 			Point location = new Point(toolbarLocation.x, toolbarLocation.y - height);
 			Dimension size = new Dimension(width, height);
