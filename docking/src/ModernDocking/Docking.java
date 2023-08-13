@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2022-2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -240,7 +240,7 @@ public class Docking {
 	/**
 	 * docks a dockable to the center of the given window
 	 * <p>
-	 * NOTE: This will only work if the window root docking node is empty. Otherwise this does nothing.
+	 * NOTE: This will only work if the window root docking node is empty. Otherwise, this does nothing.
 	 *
 	 * @param persistentID The persistentID of the dockable to dock
 	 * @param window The window to dock into
@@ -252,7 +252,7 @@ public class Docking {
 	/**
 	 * docks a dockable to the center of the given window
 	 * <p>
-	 * NOTE: This will only work if the window root docking node is empty. Otherwise this does nothing.
+	 * NOTE: This will only work if the window root docking node is empty. Otherwise, this does nothing.
 	 *
 	 * @param dockable The dockable to dock
 	 * @param window The window to dock into
@@ -569,7 +569,8 @@ public class Docking {
 
 		AppState.persist();
 
-		if (!dockable.canBeClosed()) {
+		// force this dockable to dock again if we're not floating it
+		if (!dockable.canBeClosed() && !FloatListener.isFloating) {
 			dock(dockable, instance.mainWindow);
 		}
 		else {

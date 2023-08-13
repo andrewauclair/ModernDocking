@@ -79,30 +79,27 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			this.dragSource.addDragSourceMotionListener(FloatListener.this);
 
 			this.dragSource.createDefaultDragGestureRecognizer(dragSource, DnDConstants.ACTION_MOVE, dge -> {
-				// unpinned dockables are not floatable. They must be pinned again
-				if (!Docking.isUnpinned(floatingDockable.getDockable())) {
-					this.dragSource.startDrag(dge, Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR), transferable, FloatListener.this);
-					mouseDragStarted(dge.getDragOrigin());
+				this.dragSource.startDrag(dge, Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR), transferable, FloatListener.this);
+				mouseDragStarted(dge.getDragOrigin());
 
-					if (originalWindow instanceof JDialog) {
-						modalityType = ((JDialog) originalWindow).getModalityType();
+				if (originalWindow instanceof JDialog) {
+					modalityType = ((JDialog) originalWindow).getModalityType();
 
-						((JDialog) originalWindow).setModalityType(ModalityType.MODELESS);
+					((JDialog) originalWindow).setModalityType(ModalityType.MODELESS);
 
-						// Set all of these as invokeLater to force the order they happen in
-						SwingUtilities.invokeLater(() -> {
-							// check that the floating frame still exists since we invoked later and time might have passed
-							if (floatingFrame != null) {
-								floatingFrame.toFront();
-							}
-						});
-						SwingUtilities.invokeLater(() -> {
-							// check that the utils frame still exists since we invoked later and time might have passed
-							if (activeUtilsFrame != null) {
-								activeUtilsFrame.toFront();
-							}
-						});
-					}
+					// Set all of these as invokeLater to force the order they happen in
+					SwingUtilities.invokeLater(() -> {
+						// check that the floating frame still exists since we invoked later and time might have passed
+						if (floatingFrame != null) {
+							floatingFrame.toFront();
+						}
+					});
+					SwingUtilities.invokeLater(() -> {
+						// check that the utils frame still exists since we invoked later and time might have passed
+						if (activeUtilsFrame != null) {
+							activeUtilsFrame.toFront();
+						}
+					});
 				}
 			});
 		}
@@ -216,7 +213,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 		floatingFrame = new TempFloatingFrame(floatingDockable.getDockable(), (JComponent) floatingDockable.getHeaderUI());
 
-		floatingDockable.getParent().undock(floatingDockable.getDockable());
+		Docking.undock(floatingDockable.getDockable());
 
 		DockingComponentUtils.removeIllegalFloats(originalWindow);
 
