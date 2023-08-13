@@ -97,34 +97,7 @@ public class DockingLayouts {
 		if (panel instanceof DockedSimplePanel) {
 			Dockable dockable = ((DockedSimplePanel) panel).getWrapper().getDockable();
 
-			Map<String, String> properties = new HashMap<>();
-
-			List<Field> dockingPropFields = Arrays.stream(dockable.getClass().getDeclaredFields())
-					.filter(field -> field.getAnnotation(DockingProperty.class) != null)
-					.collect(Collectors.toList());
-
-			for (Field field : dockingPropFields) {
-				try {
-					// make sure we can access the field if it is private/protected
-					field.setAccessible(true);
-
-					// grab the property and store the value by its name
-					DockingProperty property = field.getAnnotation(DockingProperty.class);
-
-					// only supporting strings at this time
-					if (field.getType() == int.class) {
-						properties.put(property.name(), Integer.toString((Integer) field.get(dockable)));
-					}
-					else {
-						String o = (String) field.get(dockable);
-
-						properties.put(property.name(), o);
-					}
-				} catch (IllegalAccessException e) {
-e.printStackTrace();
-
-				}
-			}
+			Map<String, String> properties = DockableProperties.saveProperties(dockable);
 
 			node = new DockingSimplePanelNode(dockable.getPersistentID(), properties);
 		}
@@ -158,12 +131,10 @@ e.printStackTrace();
 	}
 
 	private static DockingLayoutNode tabbedPanelToNode(DockedTabbedPanel panel) {
-		// TODO add this back
-		DockingTabPanelNode node = new DockingTabPanelNode(panel.getSelectedTabID());//, DockingInternal.getDockable(panel.getSelectedTabID()).getProperties());
+		DockingTabPanelNode node = new DockingTabPanelNode(panel.getSelectedTabID(), DockableProperties.saveProperties(DockingInternal.getDockable(panel.getSelectedTabID())));
 
 		for (DockableWrapper dockable : panel.getDockables()) {
-			// TODO add this back
-			node.addTab(dockable.getDockable().getPersistentID());//, dockable.getDockable().getProperties());
+			node.addTab(dockable.getDockable().getPersistentID(), DockableProperties.saveProperties(dockable.getDockable()));
 		}
 		return node;
 	}

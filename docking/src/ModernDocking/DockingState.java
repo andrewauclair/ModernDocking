@@ -330,8 +330,7 @@ public class DockingState {
                 throw new DockableNotFoundException(simpleNode.getPersistentID());
             }
 
-            // TODO add this back
-//            dockable.setProperties(simpleNode.getProperties());
+            DockableProperties.configureProperties(dockable, simpleNode.getProperties());
 
             Docking.undock(dockable);
 
@@ -363,48 +362,9 @@ public class DockingState {
             throw new DockableNotFoundException(node.getPersistentID());
         }
 
-//        dockable.setProperties(node.getProperties());
-        Map<String, String> properties = new HashMap<>(node.getProperties());
+        DockableProperties.configureProperties(dockable, node.getProperties());
 
-        List<Field> dockingPropFields = Arrays.stream(dockable.getClass().getDeclaredFields())
-                .filter(field -> field.getAnnotation(DockingProperty.class) != null)
-                .collect(Collectors.toList());
-
-        for (Field field : dockingPropFields) {
-            try {
-                // make sure we can access the field if it is private/protected
-                field.setAccessible(true);
-
-                // only supporting strings at this time
-//                String o =(String) field.get(dockable);
-
-                // grab the property and store the value by its name
-                DockingProperty property = field.getAnnotation(DockingProperty.class);
-//                properties.put(property.name(), o);
-                if (properties.containsKey(property.name())) {
-                    if (field.getType() == int.class) {
-                        field.set(dockable, Integer.parseInt(properties.get(property.name())));
-                    }
-                    else {
-                        field.set(dockable, properties.get(property.name()));
-                    }
-                }
-                else if (!Objects.equals(property.defaultValue(), "__no_default_value__")) {
-                    if (field.getType() == int.class) {
-                        field.set(dockable, Integer.parseInt(property.defaultValue()));
-                    }
-                    else {
-                        field.set(dockable, property.defaultValue());
-                    }
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-
-            }
-        }
-
-        dockable.updateProperties();
-
+        // undock the dockable in case it is currently docked somewhere else
         Docking.undock(dockable);
 
         DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
