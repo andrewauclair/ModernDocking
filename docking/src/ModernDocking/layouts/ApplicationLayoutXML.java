@@ -81,7 +81,8 @@ public class ApplicationLayoutXML {
 
 			for (Dockable dockable : DockingInternal.getDockables()) {
 				if (!Docking.isDocked(dockable)) {
-					WindowLayoutXML.writeSimpleNodeToFile(writer, new DockingSimplePanelNode(dockable.getPersistentID(), dockable.getProperties()));
+					// TODO add this back
+					WindowLayoutXML.writeSimpleNodeToFile(writer, new DockingSimplePanelNode(dockable.getPersistentID()));//, dockable.getProperties()));
 				}
 			}
 
@@ -155,11 +156,12 @@ public class ApplicationLayoutXML {
 				if (reader.getLocalName().equals("simple")) {
 					DockingSimplePanelNode node = WindowLayoutXML.readSimpleNodeFromFile(reader);
 
-					try {
-						DockingInternal.getDockable(node.getPersistentID()).setProperties(node.getProperties());
-					}
-					catch (DockableRegistrationFailureException ignore) {
-					}
+					// TODO add this back
+//					try {
+//						DockingInternal.getDockable(node.getPersistentID()).setProperties(node.getProperties());
+//					}
+//					catch (DockableRegistrationFailureException ignore) {
+//					}
 				}
 			}
 			else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("undocked")) {

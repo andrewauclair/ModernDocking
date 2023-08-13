@@ -330,7 +330,8 @@ public class DockingState {
                 throw new DockableNotFoundException(simpleNode.getPersistentID());
             }
 
-            dockable.setProperties(simpleNode.getProperties());
+            // TODO add this back
+//            dockable.setProperties(simpleNode.getProperties());
 
             Docking.undock(dockable);
 
@@ -381,10 +382,20 @@ public class DockingState {
                 DockingProperty property = field.getAnnotation(DockingProperty.class);
 //                properties.put(property.name(), o);
                 if (properties.containsKey(property.name())) {
-                    field.set(dockable, properties.get(property.name()));
+                    if (field.getType() == int.class) {
+                        field.set(dockable, Integer.parseInt(properties.get(property.name())));
+                    }
+                    else {
+                        field.set(dockable, properties.get(property.name()));
+                    }
                 }
                 else if (!Objects.equals(property.defaultValue(), "__no_default_value__")) {
-                    field.set(dockable, property.defaultValue());
+                    if (field.getType() == int.class) {
+                        field.set(dockable, Integer.parseInt(property.defaultValue()));
+                    }
+                    else {
+                        field.set(dockable, property.defaultValue());
+                    }
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();

@@ -108,12 +108,18 @@ public class DockingLayouts {
 					// make sure we can access the field if it is private/protected
 					field.setAccessible(true);
 
-					// only supporting strings at this time
-					String o =(String) field.get(dockable);
-
 					// grab the property and store the value by its name
 					DockingProperty property = field.getAnnotation(DockingProperty.class);
-					properties.put(property.name(), o);
+
+					// only supporting strings at this time
+					if (field.getType() == int.class) {
+						properties.put(property.name(), Integer.toString((Integer) field.get(dockable)));
+					}
+					else {
+						String o = (String) field.get(dockable);
+
+						properties.put(property.name(), o);
+					}
 				} catch (IllegalAccessException e) {
 e.printStackTrace();
 
@@ -152,10 +158,12 @@ e.printStackTrace();
 	}
 
 	private static DockingLayoutNode tabbedPanelToNode(DockedTabbedPanel panel) {
-		DockingTabPanelNode node = new DockingTabPanelNode(panel.getSelectedTabID(), DockingInternal.getDockable(panel.getSelectedTabID()).getProperties());
+		// TODO add this back
+		DockingTabPanelNode node = new DockingTabPanelNode(panel.getSelectedTabID());//, DockingInternal.getDockable(panel.getSelectedTabID()).getProperties());
 
 		for (DockableWrapper dockable : panel.getDockables()) {
-			node.addTab(dockable.getDockable().getPersistentID(), dockable.getDockable().getProperties());
+			// TODO add this back
+			node.addTab(dockable.getDockable().getPersistentID());//, dockable.getDockable().getProperties());
 		}
 		return node;
 	}

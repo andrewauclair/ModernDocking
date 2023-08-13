@@ -69,6 +69,9 @@ public class SimplePanel extends BasePanel {
 	@DockingProperty(name = "test11", defaultValue = "twelve")
 	private String test11;
 
+	@DockingProperty(name = "test_int_1", defaultValue = "5")
+	private int test_int_1;
+
 	public SimplePanel(String title, String persistentID) {
 		super(title, persistentID);
 		tabText = "";
@@ -150,6 +153,7 @@ public class SimplePanel extends BasePanel {
 
 	@Override
 	public void updateProperties() {
+		System.out.println("Set props for " + getPersistentID());
 		System.out.println(test);
 		System.out.println(test1);
 		System.out.println(test2);
@@ -162,10 +166,11 @@ public class SimplePanel extends BasePanel {
 		System.out.println(test9);
 		System.out.println(test10);
 		System.out.println(test11);
+		System.out.println(test_int_1);
 	}
 
-	@Override
-	public void setProperties(Map<String, String> properties) {
-		System.out.println("Set props for " + getPersistentID());
-	}
+//	@Override
+//	public void setProperties(Map<String, String> properties) {
+//		System.out.println("Set props for " + getPersistentID());
+//	}
 }
