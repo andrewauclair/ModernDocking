@@ -53,7 +53,9 @@ public interface Dockable {
 	 *
 	 * @return Type as an int, user defined
 	 */
-	int getType();
+	default int getType() {
+		return 0;
+	}
 
 	/**
 	 * provide the tab text to the docking framework
@@ -88,7 +90,9 @@ public interface Dockable {
 	 *
 	 * @return True, if floating is allowed
 	 */
-	boolean isFloatingAllowed();
+	default boolean isFloatingAllowed() {
+		return true;
+	}
 
 	/**
 	 * force the dockable to remain in the root it started in.
@@ -115,7 +119,9 @@ public interface Dockable {
 	 *
 	 * @return Can this dockable be closed?
 	 */
-	boolean canBeClosed();
+	default boolean canBeClosed() {
+		return true;
+	}
 
 	/**
 	 * helper function to determine if the header pin option should be enabled
