@@ -176,12 +176,14 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		panels.add(dockable);
 		tabs.add(dockable.getDockable().getTabText(), dockable.getDisplayPanel());
 
+		tabs.setToolTipTextAt(tabs.getTabCount() - 1, dockable.getDockable().getTabTooltip());
 		tabs.setIconAt(tabs.getTabCount() - 1, dockable.getDockable().getIcon());
 		tabs.setSelectedIndex(tabs.getTabCount() - 1);
 		selectedTab = tabs.getSelectedIndex();
 
 		if (Docking.alwaysDisplayTabsMode()) {
 			JLabel tabComponent = new JLabel(dockable.getDockable().getTabText());
+			tabComponent.setToolTipText(dockable.getDockable().getTabTooltip());
 
 			tabComponent.addMouseListener(new MouseAdapter() {
 				@Override
@@ -374,5 +376,23 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			}
 		}
 		return null;
+	}
+
+	public void updateTabInfo(Dockable dockable) {
+		for (int i = 0; i < panels.size(); i++) {
+			DockableWrapper panel = panels.get(i);
+
+			if (panel.getDockable() == dockable) {
+				tabs.setTitleAt(i, dockable.getTabText());
+				tabs.setToolTipTextAt(i, dockable.getTabTooltip());
+
+				Component tabComponent = tabs.getTabComponentAt(i);
+
+				if (tabComponent instanceof JLabel) {
+					((JLabel) tabComponent).setText(dockable.getTabText());
+					((JLabel) tabComponent).setToolTipText(dockable.getTabTooltip());
+				}
+			}
+		}
 	}
 }

@@ -288,6 +288,8 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 
 	@Override
 	public void update() {
+		titleLabel.setText(headerModel.titleText());
+
 		maximizedIndicator.setVisible(headerModel.isMaximized());
 		maximizeOption.setSelected(headerModel.isMaximized());
 		maximizeOption.setEnabled(headerModel.isMaximizeAllowed());

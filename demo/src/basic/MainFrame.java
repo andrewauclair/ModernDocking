@@ -46,6 +46,7 @@ import java.awt.*;
 import java.io.File;
 import java.util.EnumSet;
 import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.Callable;
 
 public class MainFrame extends JFrame implements Callable<Integer> {
@@ -62,6 +63,18 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 	boolean alwaysUseTabs;
 
 	public MainFrame() {
+	}
+	static Random rng = new Random();
+	public static String generateString(String characters, int length)
+	{
+
+
+		char[] text = new char[length];
+		for (int i = 0; i < length; i++)
+		{
+			text[i] = characters.charAt(rng.nextInt(characters.length()));
+		}
+		return new String(text);
 	}
 
 	@Override
@@ -189,8 +202,9 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		JMenuItem changeText = new JMenuItem("Change tab text");
 		changeText.addActionListener(e -> {
-			one.setTabText("test");
-			Docking.updateTabText("one");
+			String rand = generateString("abcdefg", 4);
+			one.setTabText(rand);
+			Docking.updateTabInfo("one");
 		});
 
 		JMenu view = new JMenu("View");

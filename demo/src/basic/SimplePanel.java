@@ -44,7 +44,7 @@ public class SimplePanel extends BasePanel {
 
 	public SimplePanel(String title, String persistentID) {
 		super(title, persistentID);
-		tabText = "";
+		tabText = title;
 	}
 
 	public void setTitleBackground(Color color) {
@@ -113,6 +113,11 @@ public class SimplePanel extends BasePanel {
 		if (tabText == null || tabText.isEmpty()) {
 			return super.getTabText();
 		}
+		return tabText;
+	}
+
+	@Override
+	public String getTabTooltip() {
 		return tabText;
 	}
 
