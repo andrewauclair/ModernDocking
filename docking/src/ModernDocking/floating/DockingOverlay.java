@@ -27,6 +27,7 @@ import ModernDocking.DockingRegion;
 import ModernDocking.RootDockingPanel;
 import ModernDocking.internal.DockingInternal;
 import ModernDocking.internal.DockingProperties;
+import ModernDocking.ui.DockingUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -376,7 +377,8 @@ public class DockingOverlay {
 	 */
 	public void paint(Graphics g) {
 		if (visible && !visibleOverride) {
-			g.setColor(DockingProperties.getDockingOverlay());
+			g.setColor(DockingUI.getOverlayBackground());
+//			g.setColor(DockingProperties.getDockingOverlay());
 			g.fillRect(location.x, location.y, size.width, size.height);
 		}
 	}

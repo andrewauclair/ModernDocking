@@ -27,18 +27,31 @@ public class DockingUI {
     private static final String handleBackground = "ModernDocking.handleBackground";
     private static final String handleForeground = "ModernDocking.handleForeground";
     private static final String overlayBackground = "ModernDocking.overlayBackground";
-    private static final String highlighterColor = "ModernDocking.highlighterColor";
+    private static final String highlighterSelectedBorder = "ModernDocking.highlighterSelectedBorder";
+    private static final String highlighterNotSelectedBorder = "ModernDocking.highlighterNotSelectedBorder";
     private static final String headerBackground = "ModernDocking.headerBackground";
     private static final String headerForeground = "ModernDocking.headerForeground";
 
     private static final String themeHandleBackground = "TableHeader.background";
     private static final String themeHandleForeground = "TableHeader.foreground";
-    private static final String themeHighlighterColor = "TableHeader.foreground";
+    private static final String themeHighlighterSelectedBorder = "Component.focusColor";
+    private static final String themeHighlighterNotSelectedBorder = "Component.borderColor";
     private static final String themeHeaderBackground = "TableHeader.background";
     private static final String themeHeaderForeground = "TableHeader.foreground";
 
+    private static final Color defaultHandleBackground = Color.white;
+    private static final Color defaultHandleForeground = Color.black;
+    private static final Color defaultHighlightColor = Color.BLUE;
+
+    private static final Color overlayBackgroundOpaque = new Color(0x42c0ff);
+    private static final Color defaultOverlayBackground = new Color(overlayBackgroundOpaque.getRed() / 255f, overlayBackgroundOpaque.getGreen() / 255f, overlayBackgroundOpaque.getBlue() / 255f, 85 / 255f);
+
     private static String currentHandleBackground = themeHandleBackground;
     private static String currentHandleForeground = themeHandleForeground;
+    private static String currentHighlightSelectedBorder = themeHighlighterSelectedBorder;
+    private static String currentHighlightNotSelectedBorder = themeHighlighterNotSelectedBorder;
+
+    private static String currentOverlayBackground = overlayBackground;
 
     public static void setHandleBackgroundProperty(String property) {
         currentHandleBackground = property;
@@ -48,7 +61,10 @@ public class DockingUI {
         if (UIManager.get(handleBackground) != null) {
             return UIManager.getColor(handleBackground);
         }
-        return UIManager.getColor(currentHandleBackground);
+        if (UIManager.get(currentHandleBackground) != null) {
+            return UIManager.getColor(currentHandleBackground);
+        }
+        return defaultHandleBackground;
     }
 
     public static void setHandleForegroundProperty(String property) {
@@ -58,6 +74,51 @@ public class DockingUI {
         if (UIManager.get(handleForeground) != null) {
             return UIManager.getColor(handleForeground);
         }
-        return UIManager.getColor(currentHandleForeground);
+        if (UIManager.get(currentHandleForeground) != null) {
+            return UIManager.getColor(currentHandleForeground);
+        }
+        return defaultHandleForeground;
+    }
+
+    public static void setOverlayBackgroundProperty(String property) {
+        currentOverlayBackground = property;
+    }
+
+    public static Color getOverlayBackground() {
+        if (UIManager.get(currentOverlayBackground) != null) {
+            return UIManager.getColor(currentOverlayBackground);
+        }
+        if (UIManager.get(overlayBackground) != null) {
+            return UIManager.getColor(overlayBackground);
+        }
+        return defaultOverlayBackground;
+    }
+
+    public static void setHighlighterSelectedBorderProperty(String property) {
+        currentHighlightSelectedBorder = property;
+    }
+
+    public static Color getHighlighterSelectedBorder() {
+        if (UIManager.get(currentHighlightSelectedBorder) != null) {
+            return UIManager.getColor(currentHighlightSelectedBorder);
+        }
+        if (UIManager.get(highlighterSelectedBorder) != null) {
+            return UIManager.getColor(highlighterSelectedBorder);
+        }
+        return defaultHighlightColor;
+    }
+
+    public static void setHighlighterNotSelectedBorderProperty(String property) {
+        currentHighlightNotSelectedBorder = property;
+    }
+
+    public static Color getHighlighterNotSelectedBorder() {
+        if (UIManager.get(currentHighlightNotSelectedBorder) != null) {
+            return UIManager.getColor(currentHighlightNotSelectedBorder);
+        }
+        if (UIManager.get(highlighterNotSelectedBorder) != null) {
+            return UIManager.getColor(highlighterNotSelectedBorder);
+        }
+        return defaultHighlightColor;
     }
 }
