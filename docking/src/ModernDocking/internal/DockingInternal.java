@@ -24,12 +24,18 @@ package ModernDocking.internal;
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
 import ModernDocking.exception.DockableRegistrationFailureException;
+import ModernDocking.ui.DefaultHeaderUI;
+import ModernDocking.ui.DockingHeaderUI;
+import ModernDocking.ui.HeaderController;
+import ModernDocking.ui.HeaderModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -125,5 +131,11 @@ public class DockingInternal {
 		for (DockableWrapper wrapper : dockables.values()) {
 			SwingUtilities.updateComponentTreeUI(wrapper.getDisplayPanel());
 		}
+	}
+
+	public static BiFunction<HeaderController, HeaderModel, DockingHeaderUI> createHeaderUI = DefaultHeaderUI::new;
+
+	public static DockingHeaderUI createDefaultHeaderUI(HeaderController headerController, HeaderModel headerModel) {
+		return createHeaderUI.apply(headerController, headerModel);
 	}
 }

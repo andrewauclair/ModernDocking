@@ -22,8 +22,7 @@ SOFTWARE.
 package ModernDocking.floating;
 
 import ModernDocking.DockingRegion;
-import ModernDocking.internal.DockingProperties;
-import ModernDocking.ui.DockingUI;
+import ModernDocking.ui.DockingSettings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -89,9 +88,9 @@ public class DockingHandle extends JLabel {
 	public void paintHandle(Graphics g, Graphics2D g2, boolean mouseOver) {
 		Rectangle bounds = getBounds();
 
-		Color background = DockingUI.getHandleBackground();//DockingProperties.getHandlesBackground();
-		Color hover = DockingUI.getHandleForeground();//DockingProperties.getHandlesFill();
-		Color outline = DockingUI.getHandleForeground();//DockingProperties.getHandlesOutline();
+		Color background = DockingSettings.getHandleBackground();//DockingProperties.getHandlesBackground();
+		Color hover = DockingSettings.getHandleForeground();//DockingProperties.getHandlesFill();
+		Color outline = DockingSettings.getHandleForeground();//DockingProperties.getHandlesOutline();
 
 		// each root handle has its own background. we have to draw them here.
 		// the dockables all share one big root that is drawn in DockingHandles
@@ -132,7 +131,7 @@ public class DockingHandle extends JLabel {
 
 		g.fillRect(x, y, width, height);
 
-		Color border = DockingUI.getHandleForeground();//DockingProperties.getHandlesBackgroundBorder();
+		Color border = DockingSettings.getHandleForeground();//DockingProperties.getHandlesBackgroundBorder();
 
 		g.setColor(border);
 		g.drawRect(x, y, width, height);

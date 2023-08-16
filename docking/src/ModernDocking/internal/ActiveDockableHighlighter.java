@@ -22,7 +22,7 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
-import ModernDocking.ui.DockingUI;
+import ModernDocking.ui.DockingSettings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -88,13 +88,13 @@ public class ActiveDockableHighlighter {
 	}
 
 	private void setSelectedBorder() {
-		Color color = DockingUI.getHighlighterSelectedBorder();
+		Color color = DockingSettings.getHighlighterSelectedBorder();
 		activePanel.setBorder(BorderFactory.createLineBorder(color, 2));
 	}
 
 	// TODO if this is ever anything but the default, it looks weird because we don't set the not selected border until the dockable has been selected once
 	private void setNotSelectedBorder() {
-		Color color = DockingUI.getHighlighterNotSelectedBorder();
+		Color color = DockingSettings.getHighlighterNotSelectedBorder();
 
 		activePanel.setBorder(
 				BorderFactory.createCompoundBorder(

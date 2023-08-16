@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking;
 
 import ModernDocking.internal.DockableToolbar;
+import ModernDocking.internal.DockingInternal;
 import ModernDocking.ui.DefaultHeaderUI;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
@@ -30,6 +31,7 @@ import ModernDocking.ui.HeaderModel;
 import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * this is the main interface for a Dockable. Any panel that an application wishes to be dockable must implement
@@ -170,7 +172,7 @@ public interface Dockable {
 	 * @return A new header UI that uses the provided controller and model
 	 */
 	default DockingHeaderUI createHeaderUI(HeaderController headerController, HeaderModel headerModel) {
-		return new DefaultHeaderUI(headerController, headerModel);
+		return DockingInternal.createDefaultHeaderUI(headerController, headerModel);
 	}
 
 	/**

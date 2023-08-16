@@ -180,19 +180,19 @@ public class DockingProperties {
 //		return new Color(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f, properties.overlayAlpha / 255.0f);
 //	}
 
-	public static boolean isTitlebarBorderEnabled() {
-		return properties.titlebarBorderEnabled;
-	}
+//	public static boolean isTitlebarBorderEnabled() {
+//		return properties.titlebarBorderEnabled;
+//	}
+//
+//	public static Color getTitlebarBackgroundColor() {
+//		return properties.currentColors.get(titlebarBackgroundColorKey);
+//	}
 
-	public static Color getTitlebarBackgroundColor() {
-		return properties.currentColors.get(titlebarBackgroundColorKey);
-	}
+//	public static int getTitlebarBorderSize() {
+//		return properties.titlebarBorderSize;
+//	}
 
-	public static int getTitlebarBorderSize() {
-		return properties.titlebarBorderSize;
-	}
-
-	public static Color getTitlebarBorderColor() {
-		return properties.currentColors.get(titlebarBorderColorKey);
-	}
+//	public static Color getTitlebarBorderColor() {
+//		return properties.currentColors.get(titlebarBorderColorKey);
+//	}
 }

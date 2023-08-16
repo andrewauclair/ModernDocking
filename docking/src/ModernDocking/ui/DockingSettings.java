@@ -3,7 +3,7 @@ package ModernDocking.ui;
 import javax.swing.*;
 import java.awt.*;
 
-public class DockingUI {
+public class DockingSettings {
     /*
      * colors:
      *      handle background
@@ -42,16 +42,18 @@ public class DockingUI {
     private static final Color defaultHandleBackground = Color.white;
     private static final Color defaultHandleForeground = Color.black;
     private static final Color defaultHighlightColor = Color.BLUE;
-
     private static final Color overlayBackgroundOpaque = new Color(0x42c0ff);
     private static final Color defaultOverlayBackground = new Color(overlayBackgroundOpaque.getRed() / 255f, overlayBackgroundOpaque.getGreen() / 255f, overlayBackgroundOpaque.getBlue() / 255f, 85 / 255f);
+    private static final Color defaultHeaderBackground = Color.white;
+    private static final Color defaultHeaderForeground = Color.black;
 
     private static String currentHandleBackground = themeHandleBackground;
     private static String currentHandleForeground = themeHandleForeground;
     private static String currentHighlightSelectedBorder = themeHighlighterSelectedBorder;
     private static String currentHighlightNotSelectedBorder = themeHighlighterNotSelectedBorder;
-
     private static String currentOverlayBackground = overlayBackground;
+    private static String currentHeaderBackground = themeHeaderBackground;
+    private static String currentHeaderForeground = themeHeaderForeground;
 
     public static void setHandleBackgroundProperty(String property) {
         currentHandleBackground = property;
@@ -120,5 +122,33 @@ public class DockingUI {
             return UIManager.getColor(highlighterNotSelectedBorder);
         }
         return defaultHighlightColor;
+    }
+
+    public static void setHeaderBackgroundProperty(String property) {
+        currentHeaderBackground = property;
+    }
+
+    public static Color getHeaderBackground() {
+        if (UIManager.get(currentHeaderBackground) != null) {
+            return UIManager.getColor(currentHeaderBackground);
+        }
+        if (UIManager.get(headerBackground) != null) {
+            return UIManager.getColor(headerBackground);
+        }
+        return defaultHeaderBackground;
+    }
+
+    public static void setHeaderForegroundProperty(String property) {
+        currentHeaderForeground = property;
+    }
+
+    public static Color getHeaderForeground() {
+        if (UIManager.get(currentHeaderForeground) != null) {
+            return UIManager.getColor(currentHeaderForeground);
+        }
+        if (UIManager.get(headerForeground) != null) {
+            return UIManager.getColor(headerForeground);
+        }
+        return defaultHeaderForeground;
     }
 }

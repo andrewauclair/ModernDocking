@@ -21,10 +21,7 @@ SOFTWARE.
  */
 package ModernDocking.ui;
 
-import ModernDocking.internal.DockingProperties;
-
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import java.awt.*;
@@ -181,29 +178,25 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 	}
 
 	protected void configureColors() {
-		Color color = DockingProperties.getTitlebarBackgroundColor();
+		Color color = DockingSettings.getHeaderBackground();
 		setBackground(color);
 
-		if (DockingProperties.isTitlebarBorderEnabled()) {
-			Border border = BorderFactory.createMatteBorder(0, 0, DockingProperties.getTitlebarBorderSize(), 0, DockingProperties.getTitlebarBorderColor());
-			setBorder(border);
-		}
+		setForeground(DockingSettings.getHeaderForeground());
+
+		setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, DockingSettings.getHighlighterNotSelectedBorder()));
 
 		UIManager.addPropertyChangeListener(e -> {
 			if ("lookAndFeel".equals(e.getPropertyName())) {
-				Color bg = DockingProperties.getTitlebarBackgroundColor();
+				Color bg = DockingSettings.getHeaderBackground();
 				SwingUtilities.invokeLater(() -> {
 					setBackground(bg);
 
-					if (DockingProperties.isTitlebarBorderEnabled()) {
-						Border border = BorderFactory.createLineBorder(DockingProperties.getTitlebarBorderColor(), DockingProperties.getTitlebarBorderSize());
-						setBorder(border);
-					}
+					setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, DockingSettings.getHighlighterNotSelectedBorder()));
 				});
 
 			}
 			else if (e.getPropertyName().equals("ModernDocking.titlebar.background")) {
-				Color bg = DockingProperties.getTitlebarBackgroundColor();
+				Color bg = DockingSettings.getHeaderBackground();
 				SwingUtilities.invokeLater(() -> setBackground(bg));
 			}
 		});

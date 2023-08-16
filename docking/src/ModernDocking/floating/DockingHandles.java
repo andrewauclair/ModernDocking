@@ -25,7 +25,7 @@ import ModernDocking.Dockable;
 import ModernDocking.DockableStyle;
 import ModernDocking.DockingRegion;
 import ModernDocking.RootDockingPanel;
-import ModernDocking.ui.DockingUI;
+import ModernDocking.ui.DockingSettings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -335,8 +335,8 @@ public class DockingHandles {
 				17
 		);
 
-		Color background = DockingUI.getHandleBackground();//DockingProperties.getHandlesBackground();
-		Color border = DockingUI.getHandleForeground();//DockingProperties.getHandlesBackgroundBorder();
+		Color background = DockingSettings.getHandleBackground();//DockingProperties.getHandlesBackground();
+		Color border = DockingSettings.getHandleForeground();//DockingProperties.getHandlesBackgroundBorder();
 
 		Graphics2D g2 = (Graphics2D) g.create();
 		Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
