@@ -67,7 +67,7 @@ public class FailedDockable extends JPanel implements Dockable {
 
 	@Override
 	public String getTabText() {
-		return null;
+		return "Failed";
 	}
 
 	@Override

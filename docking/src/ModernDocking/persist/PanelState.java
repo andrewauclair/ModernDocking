@@ -26,14 +26,16 @@ package ModernDocking.persist;
  */
 public class PanelState implements DockableState {
 	private final String persistentID;
+	private final String className;
 
 	/**
 	 * Create a new PanelState
 	 *
 	 * @param persistentID ID
 	 */
-	public PanelState(String persistentID) {
+	public PanelState(String persistentID, String className) {
 		this.persistentID = persistentID;
+		this.className = className;
 	}
 
 	/**
@@ -42,5 +44,9 @@ public class PanelState implements DockableState {
 	 */
 	public String getPersistentID() {
 		return persistentID;
+	}
+
+	public String getClassName() {
+		return className;
 	}
 }
