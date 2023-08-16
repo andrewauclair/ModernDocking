@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package ModernDocking.persist;
 
+import ModernDocking.Dockable;
 import ModernDocking.RootDockingPanel;
 import ModernDocking.internal.DockedSimplePanel;
 import ModernDocking.internal.DockedSplitPanel;
@@ -39,7 +40,8 @@ public class RootDockState {
 	 */
 	public RootDockState(RootDockingPanel panel) {
 		if (panel.getPanel() instanceof DockedSimplePanel) {
-			state = new PanelState(((DockedSimplePanel) panel.getPanel()).getWrapper().getDockable().getPersistentID());
+			Dockable dockable = ((DockedSimplePanel) panel.getPanel()).getWrapper().getDockable();
+			state = new PanelState(dockable.getPersistentID(), dockable.getClass().getCanonicalName());
 		}
 		else if (panel.getPanel() instanceof DockedSplitPanel) {
 			state = new SplitState((DockedSplitPanel) panel.getPanel());

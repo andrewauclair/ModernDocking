@@ -81,7 +81,7 @@ public class ApplicationLayoutXML {
 
 			for (Dockable dockable : DockingInternal.getDockables()) {
 				if (!Docking.isDocked(dockable)) {
-					WindowLayoutXML.writeSimpleNodeToFile(writer, new DockingSimplePanelNode(dockable.getPersistentID(), dockable.getProperties()));
+					WindowLayoutXML.writeSimpleNodeToFile(writer, new DockingSimplePanelNode(dockable.getPersistentID(), dockable.getClass().getCanonicalName(), dockable.getProperties()));
 				}
 			}
 
