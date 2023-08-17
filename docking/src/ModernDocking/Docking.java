@@ -561,7 +561,8 @@ public class Docking {
 
 		DockingListeners.fireUndockedEvent(dockable);
 
-		if (window != null && root != null && canDisposeWindow(window) && root.isEmpty()) {
+		// make sure that can dispose this window and we're not floating the last dockable in it
+		if (window != null && root != null && canDisposeWindow(window) && root.isEmpty() && !FloatListener.isFloating) {
 			deregisterDockingPanel(window);
 			window.dispose();
 		}
