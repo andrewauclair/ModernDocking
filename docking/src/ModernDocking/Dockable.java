@@ -234,7 +234,7 @@ public interface Dockable {
 	 *
 	 * @return map of the dockable properties
 	 */
-    default Map<String, String> getProperties() {
+	default Map<String, String> getProperties() {
 		return new HashMap<>();
 	}
 
@@ -244,5 +244,11 @@ public interface Dockable {
 	 * @param properties map of the dockable properties
 	 */
 	default void setProperties(Map<String, String> properties) {
+	}
+
+	/**
+	 * The member variables with the DockingProperty annotation have been updated from the layout file
+	 */
+	default void updateProperties() {
 	}
 }

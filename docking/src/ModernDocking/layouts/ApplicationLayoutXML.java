@@ -23,8 +23,10 @@ package ModernDocking.layouts;
 
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
+import ModernDocking.DockingProperty;
 import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.exception.DockingLayoutException;
+import ModernDocking.internal.DockableProperties;
 import ModernDocking.internal.DockingInternal;
 
 import javax.xml.stream.*;
@@ -81,7 +83,7 @@ public class ApplicationLayoutXML {
 
 			for (Dockable dockable : DockingInternal.getDockables()) {
 				if (!Docking.isDocked(dockable)) {
-					WindowLayoutXML.writeSimpleNodeToFile(writer, new DockingSimplePanelNode(dockable.getPersistentID(), dockable.getClass().getCanonicalName(), dockable.getProperties()));
+					WindowLayoutXML.writeSimpleNodeToFile(writer, new DockingSimplePanelNode(dockable.getPersistentID(), dockable.getClass().getCanonicalName(), DockableProperties.saveProperties(dockable)));
 				}
 			}
 
@@ -155,11 +157,7 @@ public class ApplicationLayoutXML {
 				if (reader.getLocalName().equals("simple")) {
 					DockingSimplePanelNode node = WindowLayoutXML.readSimpleNodeFromFile(reader);
 
-					try {
-						DockingInternal.getDockable(node.getPersistentID()).setProperties(node.getProperties());
-					}
-					catch (DockableRegistrationFailureException ignore) {
-					}
+					DockableProperties.configureProperties(DockingInternal.getDockable(node.getPersistentID()), node.getProperties());
 				}
 			}
 			else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("undocked")) {

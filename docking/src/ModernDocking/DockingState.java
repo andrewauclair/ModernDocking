@@ -36,6 +36,7 @@ import java.awt.event.HierarchyListener;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.*;
 
 public class DockingState {
@@ -95,6 +96,7 @@ public class DockingState {
      * @param layout Application layout to restore
      */
     public static void restoreApplicationLayout(ApplicationLayout layout) {
+        System.out.println("restore application layout");
         // get rid of all existing windows and undock all dockables
         Set<Window> windows = new HashSet<>(Docking.getRootPanels().keySet());
         for (Window window : windows) {
@@ -344,7 +346,7 @@ public class DockingState {
                 throw new DockableNotFoundException(simpleNode.getPersistentID());
             }
 
-            dockable.setProperties(simpleNode.getProperties());
+            DockableProperties.configureProperties(dockable, simpleNode.getProperties());
 
             Docking.undock(dockable);
 
@@ -392,8 +394,9 @@ public class DockingState {
             throw new DockableNotFoundException(node.getPersistentID());
         }
 
-        dockable.setProperties(node.getProperties());
+        DockableProperties.configureProperties(dockable, node.getProperties());
 
+        // undock the dockable in case it is currently docked somewhere else
         Docking.undock(dockable);
 
         DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
