@@ -53,18 +53,8 @@ public class Docking_dock extends JFrame {
         }
 
         @Override
-        public int getType() {
-            return 0;
-        }
-
-        @Override
         public String getTabText() {
             return id;
-        }
-
-        @Override
-        public boolean isFloatingAllowed() {
-            return true;
         }
 
         @Override

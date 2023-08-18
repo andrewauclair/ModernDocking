@@ -72,6 +72,8 @@ public class FlatLafHeaderUI extends DefaultHeaderUI implements DockingHeaderUI 
 
 	@Override
 	protected void configureColors() {
+		super.configureColors();
+
 		setBackground(UIManager.getColor("TableHeader.background"));
 		Color foreground = UIManager.getColor("TableHeader.foreground");
 		setForeground(foreground);
