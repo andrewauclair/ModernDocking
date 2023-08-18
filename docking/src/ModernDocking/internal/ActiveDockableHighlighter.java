@@ -49,13 +49,13 @@ public class ActiveDockableHighlighter {
 				DockingPanel dockable = DockingComponentUtils.findDockingPanelAtScreenPos(((MouseEvent) e).getLocationOnScreen());
 
 				if (activePanel != null && dockable == null) {
-					setNotSelectedBorder();
+					setNotSelectedBorder(activePanel);
 					activePanel = null;
 				}
 
 				if (activePanel != dockable && (dockable instanceof DockedSimplePanel || dockable instanceof DockedTabbedPanel)) {
 					if (activePanel != null) {
-						setNotSelectedBorder();
+						setNotSelectedBorder(activePanel);
 					}
 					activePanel = dockable;
 					setSelectedBorder();
@@ -93,10 +93,10 @@ public class ActiveDockableHighlighter {
 	}
 
 	// TODO if this is ever anything but the default, it looks weird because we don't set the not selected border until the dockable has been selected once
-	private void setNotSelectedBorder() {
+	public static void setNotSelectedBorder(DockingPanel panel) {
 		Color color = DockingSettings.getHighlighterNotSelectedBorder();
 
-		activePanel.setBorder(
+		panel.setBorder(
 				BorderFactory.createCompoundBorder(
 						BorderFactory.createEmptyBorder(1, 1, 1, 1),
 						BorderFactory.createLineBorder(color, 1)
