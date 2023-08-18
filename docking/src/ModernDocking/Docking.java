@@ -854,11 +854,11 @@ public class Docking {
 		Docking.tabLayoutPolicy = tabLayoutPolicy;
 	}
 
-	public static boolean isExperimentalPropertyFeatureEnabled() {
+	public static boolean getExperimentalPropertyMode() {
 		return experimentalProperties;
 	}
 
-	public static void enableExperimentalPropertyFeature() {
-		experimentalProperties = true;
+	public static void setExperimentalPropertyMode(boolean enabled) {
+		experimentalProperties = enabled;
 	}
 }

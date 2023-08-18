@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 public class DockableProperties {
     public static void configureProperties(Dockable dockable, Map<String, String> properties) {
-        if (!Docking.isExperimentalPropertyFeatureEnabled()) {
+        if (!Docking.getExperimentalPropertyMode()) {
             dockable.setProperties(properties);
             return;
         }
@@ -64,7 +64,7 @@ public class DockableProperties {
     }
 
     public static Map<String, String> saveProperties(Dockable dockable) {
-        if (!Docking.isExperimentalPropertyFeatureEnabled()) {
+        if (!Docking.getExperimentalPropertyMode()) {
             return new HashMap<>(dockable.getProperties());
         }
 
