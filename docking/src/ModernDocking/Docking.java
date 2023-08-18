@@ -59,6 +59,8 @@ public class Docking {
 
 	private static int tabLayoutPolicy = JTabbedPane.SCROLL_TAB_LAYOUT;
 
+	private static boolean experimentalProperties = false;
+
 	/**
 	 * Create the one and only instance of the Docking class for the application
 	 * @param mainWindow The main window of the application
@@ -850,5 +852,13 @@ public class Docking {
 			throw new IllegalArgumentException("illegal tab layout policy: must be WRAP_TAB_LAYOUT or SCROLL_TAB_LAYOUT");
 		}
 		Docking.tabLayoutPolicy = tabLayoutPolicy;
+	}
+
+	public static boolean isExperimentalPropertyFeatureEnabled() {
+		return experimentalProperties;
+	}
+
+	public static void enableExperimentalPropertyFeature() {
+		experimentalProperties = true;
 	}
 }
