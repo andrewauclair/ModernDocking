@@ -30,17 +30,17 @@ public class AlwaysDisplayedPanel extends SimplePanel {
 	}
 
 	@Override
-	public boolean getCanBeClosed() {
+	public boolean isClosable() {
 		return false;
 	}
 
 	@Override
-	public boolean getFloatingAllowed() {
+	public boolean isFloatingAllowed() {
 		return false;
 	}
 
 	@Override
-	public boolean getLimitToRoot() {
+	public boolean isLimitedToRoot() {
 		return true;
 	}
 }

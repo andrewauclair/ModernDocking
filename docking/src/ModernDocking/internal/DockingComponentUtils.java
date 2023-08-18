@@ -240,7 +240,7 @@ public class DockingComponentUtils {
 		for (Component component : container.getComponents()) {
 			if (component instanceof DisplayPanel) {
 				DisplayPanel panel = (DisplayPanel) component;
-				if (panel.getWrapper().getDockable().getFloatingAllowed()) {
+				if (panel.getWrapper().getDockable().isFloatingAllowed()) {
 					return false;
 				}
 			}
@@ -263,7 +263,6 @@ public class DockingComponentUtils {
 				wrapper.getParent().undock(dockable);
 
 				DockingListeners.fireUndockedEvent(dockable);
-				DockingListeners.fireAutoUndockedEvent(dockable);
 			}
 			else if (component instanceof Container) {
 				undockIllegalFloats((Container) component);

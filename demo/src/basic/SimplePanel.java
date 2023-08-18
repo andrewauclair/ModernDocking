@@ -138,22 +138,22 @@ public class SimplePanel extends BasePanel {
 	}
 
 	@Override
-	public boolean getFloatingAllowed() {
+	public boolean isFloatingAllowed() {
 		return true;
 	}
 
 	@Override
-	public boolean getCanBeClosed() {
+	public boolean isClosable() {
 		return true;
 	}
 
 	@Override
-	public boolean getAllowMinMax() {
+	public boolean isMinMaxAllowed() {
 		return true;
 	}
 
 	@Override
-	public boolean getLimitToRoot() {
+	public boolean isLimitedToRoot() {
 		return limitToRoot;
 	}
 

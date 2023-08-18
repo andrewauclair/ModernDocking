@@ -194,7 +194,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			});
 			tabs.setTabComponentAt(tabs.getTabCount() - 1, tabComponent);
 
-			if (dockable.getDockable().getCanBeClosed()) {
+			if (dockable.getDockable().isClosable()) {
 				dockable.getDisplayPanel().putClientProperty("JTabbedPane.tabClosable", true);
 			}
 		}

@@ -100,7 +100,7 @@ public interface Dockable {
 	 *
 	 * @return True, if floating is allowed
 	 */
-	default boolean getFloatingAllowed() {
+	default boolean isFloatingAllowed() {
 		return true;
 	}
 
@@ -110,7 +110,7 @@ public interface Dockable {
 	 *
 	 * @return Should this dockable be limited to the root it starts in
 	 */
-	default boolean getLimitToRoot() {
+	default boolean isLimitedToRoot() {
 		return false;
 	}
 
@@ -129,7 +129,7 @@ public interface Dockable {
 	 *
 	 * @return Can this dockable be closed?
 	 */
-	default boolean getCanBeClosed() {
+	default boolean isClosable() {
 		return true;
 	}
 
@@ -140,7 +140,7 @@ public interface Dockable {
 	 *
 	 * @return True if pinning is allowed
 	 */
-	default boolean getAllowPinning() {
+	default boolean isPinningAllowed() {
 		return false;
 	}
 
@@ -149,7 +149,7 @@ public interface Dockable {
 	 *
 	 * @return Is min/max allowed for this dockable
 	 */
-	default boolean getAllowMinMax() {
+	default boolean isMinMaxAllowed() {
 		return false;
 	}
 

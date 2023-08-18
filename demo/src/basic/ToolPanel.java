@@ -59,12 +59,12 @@ public class ToolPanel extends BasePanel {
 	}
 
 	@Override
-	public boolean getFloatingAllowed() {
+	public boolean isFloatingAllowed() {
 		return false;
 	}
 
 	@Override
-	public boolean getLimitToRoot() {
+	public boolean isLimitedToRoot() {
 		return limitToRoot;
 	}
 
@@ -74,17 +74,17 @@ public class ToolPanel extends BasePanel {
 	}
 
 	@Override
-	public boolean getCanBeClosed() {
+	public boolean isClosable() {
 		return true;
 	}
 
 	@Override
-	public boolean getAllowPinning() {
+	public boolean isPinningAllowed() {
 		return true;
 	}
 
 	@Override
-	public boolean getAllowMinMax() {
+	public boolean isMinMaxAllowed() {
 		return false;
 	}
 

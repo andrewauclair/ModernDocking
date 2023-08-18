@@ -68,7 +68,7 @@ public class HeaderModel {
 	 * @return Is pinning allowed?
 	 */
 	public boolean isPinnedAllowed() {
-		return dockable.getAllowPinning();
+		return dockable.isPinningAllowed();
 	}
 
 	// TODO can this be removed?
@@ -77,7 +77,7 @@ public class HeaderModel {
 	}
 
 	public boolean isUnpinnedAllowed() {
-		return dockable.getAllowPinning();
+		return dockable.isPinningAllowed();
 	}
 
 	public boolean isUnpinned() {
@@ -90,7 +90,7 @@ public class HeaderModel {
 	 * @return Is min/max allowed for this dockable
 	 */
 	public boolean isMaximizeAllowed() {
-		return dockable.getAllowMinMax();
+		return dockable.isMinMaxAllowed();
 	}
 
 	public boolean isMaximized() {
@@ -98,7 +98,7 @@ public class HeaderModel {
 	}
 
 	public boolean isCloseAllowed() {
-		return dockable.getCanBeClosed();
+		return dockable.isClosable();
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class HeaderModel {
 	}
 
 	public boolean isFloatingAllowed() {
-		return dockable.getFloatingAllowed();
+		return dockable.isFloatingAllowed();
 	}
 
 	/**

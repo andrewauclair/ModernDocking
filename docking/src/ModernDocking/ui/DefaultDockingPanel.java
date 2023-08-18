@@ -101,7 +101,7 @@ public abstract class DefaultDockingPanel implements Dockable {
     }
 
     @Override
-    public boolean getFloatingAllowed() {
+    public boolean isFloatingAllowed() {
         return floatingAllowed;
     }
 
@@ -115,7 +115,7 @@ public abstract class DefaultDockingPanel implements Dockable {
     }
 
     @Override
-    public boolean getLimitToRoot() {
+    public boolean isLimitedToRoot() {
         return limitToRoot;
     }
 
@@ -124,7 +124,7 @@ public abstract class DefaultDockingPanel implements Dockable {
      *
      * @param limitToRoot New flag value
      */
-    public void setLimitToRoot(boolean limitToRoot) {
+    public void setLimitedToRoot(boolean limitToRoot) {
         this.limitToRoot = limitToRoot;
     }
 
@@ -143,7 +143,7 @@ public abstract class DefaultDockingPanel implements Dockable {
     }
 
     @Override
-    public boolean getCanBeClosed() {
+    public boolean isClosable() {
         return canBeClosed;
     }
 
@@ -152,12 +152,12 @@ public abstract class DefaultDockingPanel implements Dockable {
      *
      * @param canBeClosed Can this dockable be closed?
      */
-    public void setCanBeClosed(boolean canBeClosed) {
+    public void setClosable(boolean canBeClosed) {
         this.canBeClosed = canBeClosed;
     }
 
     @Override
-    public boolean getAllowPinning() {
+    public boolean isPinningAllowed() {
         return allowPinning;
     }
 
@@ -166,12 +166,12 @@ public abstract class DefaultDockingPanel implements Dockable {
      *
      * @param allowPinning Is pinning allowed
      */
-    public void setAllowPinning(boolean allowPinning) {
+    public void setPinningAllowed(boolean allowPinning) {
         this.allowPinning = allowPinning;
     }
 
     @Override
-    public boolean getAllowMinMax() {
+    public boolean isMinMaxAllowed() {
         return allowMinMax;
     }
 
@@ -180,7 +180,7 @@ public abstract class DefaultDockingPanel implements Dockable {
      *
      * @param allowMinMax Is min/max supported
      */
-    public void setAllowMinMax(boolean allowMinMax) {
+    public void setMinMaxAllowed(boolean allowMinMax) {
         this.allowMinMax = allowMinMax;
     }
 

@@ -104,15 +104,6 @@ public class DockingListeners {
 	}
 
 	/**
-	 * Fire a new auto undocked event
-	 *
-	 * @param dockable Dockable that was undocked automatically
-	 */
-	public static void fireAutoUndockedEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.autoUndocked(dockable.getPersistentID()));
-	}
-
-	/**
 	 * Fire a new unpinned event
 	 *
 	 * @param dockable Dockable that was unpinned

@@ -54,27 +54,27 @@ public class PacketListPanel extends JPanel implements Dockable {
 	}
 
 	@Override
-	public boolean getFloatingAllowed() {
+	public boolean isFloatingAllowed() {
 		return false;
 	}
 
 	@Override
-	public boolean getLimitToRoot() {
+	public boolean isLimitedToRoot() {
 		return true;
 	}
 
 	@Override
-	public boolean getCanBeClosed() {
+	public boolean isClosable() {
 		return packetListCount > 1;
 	}
 
 	@Override
-	public boolean getAllowPinning() {
+	public boolean isPinningAllowed() {
 		return false;
 	}
 
 	@Override
-	public boolean getAllowMinMax() {
+	public boolean isMinMaxAllowed() {
 		return false;
 	}
 

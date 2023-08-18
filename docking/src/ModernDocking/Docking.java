@@ -235,7 +235,7 @@ public class Docking {
 	public static boolean pinningAllowed(Dockable dockable) {
 		RootDockingPanel root = DockingComponentUtils.rootForWindow(DockingComponentUtils.findWindowForDockable(dockable));
 
-		return dockable.getAllowPinning() && root.isPinningSupported();
+		return dockable.isPinningAllowed() && root.isPinningSupported();
 	}
 
 	/**
@@ -572,7 +572,7 @@ public class Docking {
 		AppState.persist();
 
 		// force this dockable to dock again if we're not floating it
-		if (!dockable.getCanBeClosed() && !FloatListener.isFloating) {
+		if (!dockable.isClosable() && !FloatListener.isFloating) {
 			dock(dockable, instance.mainWindow);
 		}
 		else {

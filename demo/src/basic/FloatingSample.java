@@ -63,12 +63,12 @@ public class FloatingSample extends JFrame {
         }
 
         @Override
-        public boolean getFloatingAllowed() {
+        public boolean isFloatingAllowed() {
             return true;
         }
 
         @Override
-        public boolean getCanBeClosed() {
+        public boolean isClosable() {
             return false;
         }
     };
