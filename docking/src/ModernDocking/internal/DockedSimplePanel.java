@@ -24,6 +24,7 @@ package ModernDocking.internal;
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
 import ModernDocking.DockingRegion;
+import ModernDocking.ui.DockingSettings;
 
 import javax.swing.*;
 import java.awt.*;

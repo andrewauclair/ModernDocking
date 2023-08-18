@@ -26,6 +26,7 @@ import ModernDocking.Docking;
 import ModernDocking.DockingRegion;
 import ModernDocking.floating.FloatListener;
 import ModernDocking.persist.AppState;
+import ModernDocking.ui.DockingSettings;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -120,7 +121,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	}
 
 	private void setupButton(JButton button) {
-		Color color = DockingProperties.getTitlebarBackgroundColor();
+		Color color = DockingSettings.getHeaderBackground();
 		button.setBackground(color);
 		button.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		button.setFocusable(false);

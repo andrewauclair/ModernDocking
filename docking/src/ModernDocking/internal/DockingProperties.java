@@ -139,60 +139,60 @@ public class DockingProperties {
 	 *
 	 * @return Handles background color
 	 */
-	public static Color getHandlesBackground() {
-		return properties.currentColors.get(handlesBackgroundColorKey);
-	}
+//	public static Color getHandlesBackground() {
+//		return properties.currentColors.get(handlesBackgroundColorKey);
+//	}
+//
+//	/**
+//	 * Get the color of the handles background borders
+//	 *
+//	 * @return Border color
+//	 */
+//	public static Color getHandlesBackgroundBorder() {
+//		return properties.currentColors.get(handlesBackgroundBorderColorKey);
+//	}
+//
+//	/**
+//	 * Get the color of the handles outline
+//	 *
+//	 * @return Outline color
+//	 */
+//	public static Color getHandlesOutline() {
+//		return properties.currentColors.get(handlesOutlineColorKey);
+//	}
+//
+//	/**
+//	 * Get the color of the handles fill
+//	 *
+//	 * @return Fill color
+//	 */
+//	public static Color getHandlesFill() {
+//		return properties.currentColors.get(handlesFillColorKey);
+//	}
 
-	/**
-	 * Get the color of the handles background borders
-	 *
-	 * @return Border color
-	 */
-	public static Color getHandlesBackgroundBorder() {
-		return properties.currentColors.get(handlesBackgroundBorderColorKey);
-	}
+//	public static Color getDockingOverlay() {
+//		Color color = properties.currentColors.get(overlayBackgroundColorKey);
+//		return new Color(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f, properties.overlayAlpha / 255.0f);
+//	}
+//
+//	public static Color getDockingOverlayBorder() {
+//		Color color = properties.currentColors.get(overlayBorderColorKey);
+//		return new Color(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f, properties.overlayAlpha / 255.0f);
+//	}
 
-	/**
-	 * Get the color of the handles outline
-	 *
-	 * @return Outline color
-	 */
-	public static Color getHandlesOutline() {
-		return properties.currentColors.get(handlesOutlineColorKey);
-	}
+//	public static boolean isTitlebarBorderEnabled() {
+//		return properties.titlebarBorderEnabled;
+//	}
+//
+//	public static Color getTitlebarBackgroundColor() {
+//		return properties.currentColors.get(titlebarBackgroundColorKey);
+//	}
 
-	/**
-	 * Get the color of the handles fill
-	 *
-	 * @return Fill color
-	 */
-	public static Color getHandlesFill() {
-		return properties.currentColors.get(handlesFillColorKey);
-	}
+//	public static int getTitlebarBorderSize() {
+//		return properties.titlebarBorderSize;
+//	}
 
-	public static Color getDockingOverlay() {
-		Color color = properties.currentColors.get(overlayBackgroundColorKey);
-		return new Color(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f, properties.overlayAlpha / 255.0f);
-	}
-
-	public static Color getDockingOverlayBorder() {
-		Color color = properties.currentColors.get(overlayBorderColorKey);
-		return new Color(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f, properties.overlayAlpha / 255.0f);
-	}
-
-	public static boolean isTitlebarBorderEnabled() {
-		return properties.titlebarBorderEnabled;
-	}
-
-	public static Color getTitlebarBackgroundColor() {
-		return properties.currentColors.get(titlebarBackgroundColorKey);
-	}
-
-	public static int getTitlebarBorderSize() {
-		return properties.titlebarBorderSize;
-	}
-
-	public static Color getTitlebarBorderColor() {
-		return properties.currentColors.get(titlebarBorderColorKey);
-	}
+//	public static Color getTitlebarBorderColor() {
+//		return properties.currentColors.get(titlebarBorderColorKey);
+//	}
 }

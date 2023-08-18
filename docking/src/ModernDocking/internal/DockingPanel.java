@@ -23,8 +23,10 @@ package ModernDocking.internal;
 
 import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
+import ModernDocking.ui.DockingSettings;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Docking panel with docking regions of: north, south, east, west and center
