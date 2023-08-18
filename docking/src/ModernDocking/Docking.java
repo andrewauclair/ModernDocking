@@ -25,7 +25,6 @@ import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.exception.NotDockedException;
 import ModernDocking.floating.FloatListener;
 import ModernDocking.internal.*;
-import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.WindowLayout;
 import ModernDocking.persist.AppState;
 
@@ -562,7 +561,8 @@ public class Docking {
 
 		DockingListeners.fireUndockedEvent(dockable);
 
-		if (window != null && root != null && canDisposeWindow(window) && root.isEmpty()) {
+		// make sure that can dispose this window and we're not floating the last dockable in it
+		if (window != null && root != null && canDisposeWindow(window) && root.isEmpty() && !FloatListener.isFloating) {
 			deregisterDockingPanel(window);
 			window.dispose();
 		}
@@ -807,8 +807,8 @@ public class Docking {
 	 *
 	 * @param persistentID The persistentID of the dockable to update
 	 */
-	public static void updateTabText(String persistentID) {
-		updateTabText(getDockable(persistentID));
+	public static void updateTabInfo(String persistentID) {
+		updateTabInfo(getDockable(persistentID));
 	}
 
 	/**
@@ -816,17 +816,21 @@ public class Docking {
 	 *
 	 * @param dockable The dockable to update
 	 */
-	public static void updateTabText(Dockable dockable) {
+	public static void updateTabInfo(Dockable dockable) {
 		if (!isDocked(dockable)) {
 			// if the dockable isn't docked then we don't have to do anything to update its tab text
 			return;
 		}
 
-		ApplicationLayout layout = DockingState.getApplicationLayout();
+		DockableWrapper wrapper = getWrapper(dockable);
 
-		Docking.undock(dockable);
+		wrapper.getHeaderUI().update();
 
-		DockingState.restoreApplicationLayout(layout);
+		DockingPanel parent = wrapper.getParent();
+
+		if (parent instanceof DockedTabbedPanel) {
+			((DockedTabbedPanel) parent).updateTabInfo(dockable);
+		}
 	}
 
 	public static boolean alwaysDisplayTabsMode() {

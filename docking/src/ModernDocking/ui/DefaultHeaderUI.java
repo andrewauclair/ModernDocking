@@ -194,6 +194,7 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 					setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, DockingSettings.getHighlighterNotSelectedBorder()));
 				});
 
+				SwingUtilities.updateComponentTreeUI(settingsMenu);
 			}
 			else if (e.getPropertyName().equals("ModernDocking.titlebar.background")) {
 				Color bg = DockingSettings.getHeaderBackground();
@@ -281,6 +282,8 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 
 	@Override
 	public void update() {
+		titleLabel.setText(headerModel.titleText());
+
 		maximizedIndicator.setVisible(headerModel.isMaximized());
 		maximizeOption.setSelected(headerModel.isMaximized());
 		maximizeOption.setEnabled(headerModel.isMaximizeAllowed());
