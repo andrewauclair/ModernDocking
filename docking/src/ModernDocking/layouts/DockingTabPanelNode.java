@@ -23,6 +23,7 @@ package ModernDocking.layouts;
 
 import ModernDocking.Docking;
 import ModernDocking.DockingRegion;
+import ModernDocking.internal.DockingInternal;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -69,7 +70,9 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 		if (findNode(persistentID) != null) {
 			return;
 		}
-		DockingSimplePanelNode tab = new DockingSimplePanelNode(persistentID);
+		String className = DockingInternal.getDockable(persistentID).getClass().getCanonicalName();
+
+		DockingSimplePanelNode tab = new DockingSimplePanelNode(persistentID, className);
 		tab.setParent(this);
 		tabs.add(tab);
 	}
@@ -84,7 +87,9 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 		if (findNode(persistentID) != null) {
 			return;
 		}
-		DockingSimplePanelNode tab = new DockingSimplePanelNode(persistentID, properties);
+		String className = DockingInternal.getDockable(persistentID).getClass().getCanonicalName();
+
+		DockingSimplePanelNode tab = new DockingSimplePanelNode(persistentID, className, properties);
 		tab.setParent(this);
 		tabs.add(tab);
 	}
@@ -151,8 +156,10 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(persistentID);
 			}
 			else {
-				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(persistentID) : this;
-				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(persistentID);
+				String className = DockingInternal.getDockable(persistentID).getClass().getCanonicalName();
+
+				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(persistentID, className) : this;
+				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(persistentID, className);
 			}
 
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
