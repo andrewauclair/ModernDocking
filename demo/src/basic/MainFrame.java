@@ -211,6 +211,13 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		JMenu view = new JMenu("View");
 		menuBar.add(view);
 
+		JMenuItem createNewDockable = new JMenuItem();
+		createNewDockable.addActionListener(e -> {
+			SimplePanel rand = new SimplePanel(generateString("alpha", 6), generateString("abcdefg", 10));
+			Docking.dock(rand, one, DockingRegion.WEST);
+		});
+		view.add(createNewDockable);
+
 		view.add(actionListenDock(one));
 		view.add(actionListenDock(two));
 		view.add(actionListenDock(three));

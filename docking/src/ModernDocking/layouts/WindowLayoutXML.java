@@ -21,6 +21,8 @@ SOFTWARE.
  */
 package ModernDocking.layouts;
 
+import ModernDocking.internal.DockingInternal;
+
 import javax.xml.stream.*;
 import java.awt.*;
 import java.io.File;
@@ -144,6 +146,7 @@ public class WindowLayoutXML {
 	public static void writeSimpleNodeToFile(XMLStreamWriter writer, DockingSimplePanelNode node) throws XMLStreamException {
 		writer.writeStartElement("simple");
 		writer.writeAttribute("persistentID", node.getPersistentID());
+		writer.writeAttribute("class-name", DockingInternal.getDockable(node.getPersistentID()).getClass().getCanonicalName());
 		writer.writeCharacters(NL);
 
 		writer.writeStartElement("properties");
@@ -332,9 +335,9 @@ public class WindowLayoutXML {
 
 	public static DockingSimplePanelNode readSimpleNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
 		String persistentID = reader.getAttributeValue(0);
+		String className = reader.getAttributeValue(1);
 
-
-		return new DockingSimplePanelNode(persistentID, readProperties(reader));
+		return new DockingSimplePanelNode(persistentID, className, readProperties(reader));
 	}
 
 	private static Map<String, String> readProperties(XMLStreamReader reader) throws XMLStreamException {
@@ -390,7 +393,7 @@ public class WindowLayoutXML {
 	}
 
 	private static DockingTabPanelNode readTabNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
-		DockingTabPanelNode node = new DockingTabPanelNode("");
+		DockingTabPanelNode node = null;//new DockingTabPanelNode("");
 
 		String currentPersistentID = "";
 

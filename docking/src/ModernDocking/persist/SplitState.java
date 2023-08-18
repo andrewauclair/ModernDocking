@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package ModernDocking.persist;
 
+import ModernDocking.Dockable;
 import ModernDocking.internal.DockedSimplePanel;
 import ModernDocking.internal.DockedSplitPanel;
 import ModernDocking.internal.DockedTabbedPanel;
@@ -60,7 +61,8 @@ public class SplitState implements DockableState {
 			left = new TabState((DockedTabbedPanel) panel.getLeft());
 		}
 		else if (panel.getLeft() instanceof DockedSimplePanel) {
-			left = new PanelState(((DockedSimplePanel) panel.getLeft()).getWrapper().getDockable().getPersistentID());
+			Dockable dockable = ((DockedSimplePanel) panel.getLeft()).getWrapper().getDockable();
+			left = new PanelState(dockable.getPersistentID(), dockable.getClass().getCanonicalName());
 		}
 		else if (panel.getLeft() instanceof DockedSplitPanel) {
 			left = new SplitState((DockedSplitPanel) panel.getLeft());
@@ -73,7 +75,8 @@ public class SplitState implements DockableState {
 			right = new TabState((DockedTabbedPanel) panel.getRight());
 		}
 		else if (panel.getRight() instanceof DockedSimplePanel) {
-			right = new PanelState(((DockedSimplePanel) panel.getRight()).getWrapper().getDockable().getPersistentID());
+			Dockable dockable = ((DockedSimplePanel) panel.getRight()).getWrapper().getDockable();
+			right = new PanelState(dockable.getPersistentID(), dockable.getClass().getCanonicalName());
 		}
 		else if (panel.getRight() instanceof DockedSplitPanel) {
 			right = new SplitState((DockedSplitPanel) panel.getRight());

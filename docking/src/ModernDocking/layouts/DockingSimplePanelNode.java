@@ -33,6 +33,8 @@ import java.util.Map;
  */
 public class DockingSimplePanelNode implements DockingLayoutNode {
 	private final String persistentID;
+	private final String className;
+
 	private Map<String, String> properties = new HashMap<>();
 	private DockingLayoutNode parent;
 
@@ -41,8 +43,9 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 	 *
 	 * @param persistentID The persistent ID of the contained dockable
 	 */
-	public DockingSimplePanelNode(String persistentID) {
+	public DockingSimplePanelNode(String persistentID, String className) {
 		this.persistentID = persistentID;
+		this.className = className;
 	}
 
 	/**
@@ -51,8 +54,9 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 	 * @param persistentID The persistent ID of the contained dockable
 	 * @param properties Properties of the dockable
 	 */
-	public DockingSimplePanelNode(String persistentID, Map<String, String> properties) {
+	public DockingSimplePanelNode(String persistentID, String className, Map<String, String> properties) {
 		this.persistentID = persistentID;
+		this.className = className;
 		this.properties.putAll(properties);
 	}
 
@@ -104,12 +108,12 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 			}
 			else {
 				if (orientation == JSplitPane.HORIZONTAL_SPLIT) {
-					left = region == DockingRegion.EAST ? this : new DockingSimplePanelNode(persistentID);
-					right = region == DockingRegion.EAST ? new DockingSimplePanelNode(persistentID) : this;
+					left = region == DockingRegion.EAST ? this : new DockingSimplePanelNode(persistentID, className);
+					right = region == DockingRegion.EAST ? new DockingSimplePanelNode(persistentID, className) : this;
 				}
 				else {
-					left = region == DockingRegion.SOUTH ? this : new DockingSimplePanelNode(persistentID);
-					right = region == DockingRegion.SOUTH ? new DockingSimplePanelNode(persistentID) : this;
+					left = region == DockingRegion.SOUTH ? this : new DockingSimplePanelNode(persistentID, className);
+					right = region == DockingRegion.SOUTH ? new DockingSimplePanelNode(persistentID, className) : this;
 				}
 			}
 
@@ -134,6 +138,10 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 	 */
 	public String getPersistentID() {
 		return persistentID;
+	}
+
+	public String getClassName() {
+		return className;
 	}
 
 	/**

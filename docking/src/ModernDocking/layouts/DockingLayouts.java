@@ -99,7 +99,7 @@ public class DockingLayouts {
 
 			Map<String, String> properties = DockableProperties.saveProperties(dockable);
 
-			node = new DockingSimplePanelNode(dockable.getPersistentID(), properties);
+			node = new DockingSimplePanelNode(dockable.getPersistentID(), dockable.getClass().getCanonicalName(), properties);
 		}
 		else if (panel instanceof DockedSplitPanel) {
 			node = splitPanelToNode((DockedSplitPanel) panel);

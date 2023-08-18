@@ -33,8 +33,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
-import java.lang.reflect.Field;
-import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.*;
@@ -282,6 +280,22 @@ public class DockingState {
     private static DockedSimplePanel restoreSimple(PanelState state, Window window) {
         Dockable dockable = getDockable(state.getPersistentID());
 
+        if (dockable instanceof FailedDockable) {
+            try {
+                Class<?> aClass = Class.forName(state.getClassName());
+                Constructor<?> constructor = aClass.getConstructor(String.class, String.class);
+
+                Docking.deregisterDockable(dockable);
+
+                constructor.newInstance(state.getPersistentID(), state.getPersistentID());
+
+                dockable = getDockable(state.getPersistentID());
+            }
+            catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+                   InvocationTargetException ignore) {
+            }
+        }
+
         if (dockable == null) {
             throw new DockableNotFoundException(state.getPersistentID());
         }
@@ -357,6 +371,22 @@ public class DockingState {
 
     private static DockedSimplePanel restoreSimple(DockingSimplePanelNode node, Window window) {
         Dockable dockable = getDockable(node.getPersistentID());
+
+        if (dockable instanceof FailedDockable) {
+            try {
+                Class<?> aClass = Class.forName(node.getClassName());
+                Constructor<?> constructor = aClass.getConstructor(String.class, String.class);
+
+                Docking.deregisterDockable(dockable);
+
+                constructor.newInstance(node.getPersistentID(), node.getPersistentID());
+
+                dockable = getDockable(node.getPersistentID());
+            }
+            catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+                     InvocationTargetException ignore) {
+            }
+        }
 
         if (dockable == null) {
             throw new DockableNotFoundException(node.getPersistentID());
