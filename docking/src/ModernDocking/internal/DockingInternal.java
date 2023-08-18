@@ -23,13 +23,17 @@ package ModernDocking.internal;
 
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
+import ModernDocking.RootDockingPanel;
 import ModernDocking.exception.DockableRegistrationFailureException;
+import ModernDocking.ui.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -125,5 +129,40 @@ public class DockingInternal {
 		for (DockableWrapper wrapper : dockables.values()) {
 			SwingUtilities.updateComponentTreeUI(wrapper.getDisplayPanel());
 		}
+
+		for (RootDockingPanel root : Docking.getRootPanels().values()) {
+			updateLAF(root.getPanel());
+		}
+	}
+
+	private static void updateLAF(DockingPanel panel) {
+		if (panel instanceof DockedTabbedPanel) {
+			ActiveDockableHighlighter.setNotSelectedBorder(panel);
+		}
+		else if (panel instanceof DockedSimplePanel) {
+			DockedSimplePanel simplePanel = (DockedSimplePanel) panel;
+
+			if (simplePanel.getParent() instanceof DockedTabbedPanel) {
+				DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) simplePanel.getParent();
+
+				if (tabbedPanel.getDockables().size() == 1) {
+					ActiveDockableHighlighter.setNotSelectedBorder(panel);
+				}
+			}
+			else {
+				ActiveDockableHighlighter.setNotSelectedBorder(panel);
+			}
+		}
+		else if (panel instanceof DockedSplitPanel) {
+			DockedSplitPanel splitPanel = (DockedSplitPanel) panel;
+
+			updateLAF(splitPanel.getLeft());
+			updateLAF(splitPanel.getRight());
+		}
+	}
+	public static BiFunction<HeaderController, HeaderModel, DockingHeaderUI> createHeaderUI = DefaultHeaderUI::new;
+
+	public static DockingHeaderUI createDefaultHeaderUI(HeaderController headerController, HeaderModel headerModel) {
+		return createHeaderUI.apply(headerController, headerModel);
 	}
 }

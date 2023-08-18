@@ -27,7 +27,6 @@ import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
 import ModernDocking.ui.HeaderModel;
 import com.formdev.flatlaf.FlatLaf;
-import docking.ui.FlatLafHeaderUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -88,29 +87,49 @@ public class SimplePanel extends BasePanel {
 	@Override
 	public DockingHeaderUI createHeaderUI(HeaderController headerController, HeaderModel headerModel) {
 		if (!(UIManager.getLookAndFeel() instanceof FlatLaf)) {
-			return new DefaultHeaderUI(headerController, headerModel);
-		}
-		return new FlatLafHeaderUI(headerController, headerModel) {
-			@Override
-			public void setBackground(Color bg) {
-				if (backgroundColor != null) {
-					super.setBackground(backgroundColor);
+			return new DefaultHeaderUI(headerController, headerModel) {
+				@Override
+				public void setBackground(Color bg) {
+					if (backgroundColor != null) {
+						super.setBackground(backgroundColor);
+					} else {
+						super.setBackground(bg);
+					}
 				}
-				else {
-					super.setBackground(bg);
-				}
-			}
 
-			@Override
-			public void setForeground(Color bg) {
-				if (foregroundColor != null) {
-					super.setForeground(foregroundColor);
+				@Override
+				public void setForeground(Color bg) {
+					if (foregroundColor != null) {
+						super.setForeground(foregroundColor);
+					} else {
+						super.setForeground(bg);
+					}
 				}
-				else {
-					super.setForeground(bg);
+			};
+		}
+		else {
+			return new DefaultHeaderUI(headerController, headerModel) {
+				@Override
+				public void setBackground(Color bg) {
+					if (backgroundColor != null) {
+						super.setBackground(backgroundColor);
+					}
+					else {
+						super.setBackground(bg);
+					}
 				}
-			}
-		};
+
+				@Override
+				public void setForeground(Color bg) {
+					if (foregroundColor != null) {
+						super.setForeground(foregroundColor);
+					}
+					else {
+						super.setForeground(bg);
+					}
+				}
+			};
+		}
 	}
 
 	@Override

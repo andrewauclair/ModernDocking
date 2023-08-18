@@ -22,7 +22,7 @@ SOFTWARE.
 package ModernDocking.floating;
 
 import ModernDocking.DockingRegion;
-import ModernDocking.internal.DockingProperties;
+import ModernDocking.ui.DockingSettings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -88,9 +88,9 @@ public class DockingHandle extends JLabel {
 	public void paintHandle(Graphics g, Graphics2D g2, boolean mouseOver) {
 		Rectangle bounds = getBounds();
 
-		Color background = DockingProperties.getHandlesBackground();
-		Color hover = DockingProperties.getHandlesFill();
-		Color outline = DockingProperties.getHandlesOutline();
+		Color background = DockingSettings.getHandleBackground();//DockingProperties.getHandlesBackground();
+		Color hover = DockingSettings.getHandleForeground();//DockingProperties.getHandlesFill();
+		Color outline = DockingSettings.getHandleForeground();//DockingProperties.getHandlesOutline();
 
 		// each root handle has its own background. we have to draw them here.
 		// the dockables all share one big root that is drawn in DockingHandles
@@ -104,13 +104,14 @@ public class DockingHandle extends JLabel {
 			fillMouseOverRegion(g);
 		}
 
+		// draw the outline over the mouse over
+		g.setColor(outline);
+		g2.setColor(outline);
+
 		// only draw the dashed line if the region isn't center and these are not root handles
 		if (region != DockingRegion.CENTER && !isRoot) {
 			drawDashedLine(g2);
 		}
-
-		// draw the outline over the mouse over
-		g.setColor(outline);
 
 		if (isRoot && region != DockingRegion.CENTER) {
 			drawRootOutline(g);
@@ -130,7 +131,7 @@ public class DockingHandle extends JLabel {
 
 		g.fillRect(x, y, width, height);
 
-		Color border = DockingProperties.getHandlesBackgroundBorder();
+		Color border = DockingSettings.getHandleForeground();//DockingProperties.getHandlesBackgroundBorder();
 
 		g.setColor(border);
 		g.drawRect(x, y, width, height);

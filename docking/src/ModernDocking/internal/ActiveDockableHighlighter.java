@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.ui.DockingSettings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,13 +49,13 @@ public class ActiveDockableHighlighter {
 				DockingPanel dockable = DockingComponentUtils.findDockingPanelAtScreenPos(((MouseEvent) e).getLocationOnScreen());
 
 				if (activePanel != null && dockable == null) {
-					setNotSelectedBorder();
+					setNotSelectedBorder(activePanel);
 					activePanel = null;
 				}
 
 				if (activePanel != dockable && (dockable instanceof DockedSimplePanel || dockable instanceof DockedTabbedPanel)) {
 					if (activePanel != null) {
-						setNotSelectedBorder();
+						setNotSelectedBorder(activePanel);
 					}
 					activePanel = dockable;
 					setSelectedBorder();
@@ -87,14 +88,15 @@ public class ActiveDockableHighlighter {
 	}
 
 	private void setSelectedBorder() {
-		Color color = UIManager.getColor("Component.focusColor");
+		Color color = DockingSettings.getHighlighterSelectedBorder();
 		activePanel.setBorder(BorderFactory.createLineBorder(color, 2));
 	}
 
-	private void setNotSelectedBorder() {
-		Color color = UIManager.getColor("Component.borderColor");
+	// TODO if this is ever anything but the default, it looks weird because we don't set the not selected border until the dockable has been selected once
+	public static void setNotSelectedBorder(DockingPanel panel) {
+		Color color = DockingSettings.getHighlighterNotSelectedBorder();
 
-		activePanel.setBorder(
+		panel.setBorder(
 				BorderFactory.createCompoundBorder(
 						BorderFactory.createEmptyBorder(1, 1, 1, 1),
 						BorderFactory.createLineBorder(color, 1)

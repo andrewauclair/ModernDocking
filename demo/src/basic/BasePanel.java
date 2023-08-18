@@ -25,7 +25,6 @@ import ModernDocking.Dockable;
 import ModernDocking.Docking;
 import ModernDocking.ui.DefaultHeaderUI;
 import com.formdev.flatlaf.FlatLaf;
-import docking.ui.FlatLafHeaderUI;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
 import ModernDocking.ui.HeaderModel;
@@ -59,14 +58,6 @@ public abstract class BasePanel extends JPanel implements Dockable {
 	@Override
 	public String getTabText() {
 		return title;
-	}
-
-	@Override
-	public DockingHeaderUI createHeaderUI(HeaderController headerController, HeaderModel headerModel) {
-		if (!(UIManager.getLookAndFeel() instanceof FlatLaf)) {
-			return new DefaultHeaderUI(headerController, headerModel);
-		}
-		return new FlatLafHeaderUI(headerController, headerModel);
 	}
 
 	@Override
