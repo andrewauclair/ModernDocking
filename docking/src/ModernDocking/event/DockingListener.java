@@ -30,42 +30,33 @@ public interface DockingListener {
 	 *
 	 * @param persistentID Persistent ID of the dockable
 	 */
-	void docked(String persistentID);
+	void onDocked(String persistentID);
 
 	/**
 	 * Dockable has been undocked
 	 *
 	 * @param persistentID Persistent ID of the dockable
 	 */
-	void undocked(String persistentID);
-
-	/**
-	 * called when a dockable is undocked due to being alone in a frame with floatingAllowed() = false
-	 * this is only useful when the dockable should be placed back in the app main frame somewhere
-	 *
-	 * @param persistentID Persistent ID of the dockable
-	 */
-	default void autoUndocked(String persistentID) {
-	}
+	void onUndocked(String persistentID);
 
 	/**
 	 * dockable has been unpinned
 	 *
 	 * @param persistentID Persistent ID of the dockable
 	 */
-	void unpinned(String persistentID);
+	void onUnpinned(String persistentID);
 
 	/**
 	 * dockable has been shown
 	 *
 	 * @param persistentID Persistent ID of the dockable
 	 */
-	void shown(String persistentID);
+	void onShown(String persistentID);
 
 	/**
 	 * dockable has been hidden
 	 *
 	 * @param persistentID Persistent ID of the dockable
 	 */
-	void hidden(String persistentID);
+	void onHidden(String persistentID);
 }

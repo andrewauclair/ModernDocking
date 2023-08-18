@@ -53,12 +53,12 @@ public class PacketBytesPanel extends JPanel implements Dockable {
 	}
 
 	@Override
-	public boolean isFloatingAllowed() {
+	public boolean getFloatingAllowed() {
 		return true;
 	}
 
 	@Override
-	public boolean shouldLimitToRoot() {
+	public boolean getLimitToRoot() {
 		return false;
 	}
 
@@ -68,22 +68,22 @@ public class PacketBytesPanel extends JPanel implements Dockable {
 	}
 
 	@Override
-	public boolean canBeClosed() {
+	public boolean getCanBeClosed() {
 		return true;
 	}
 
 	@Override
-	public boolean allowPinning() {
+	public boolean getAllowPinning() {
 		return true;
 	}
 
 	@Override
-	public boolean allowMinMax() {
+	public boolean getAllowMinMax() {
 		return false;
 	}
 
 	@Override
-	public boolean hasMoreOptions() {
+	public boolean getHasMoreOptions() {
 		return false;
 	}
 }

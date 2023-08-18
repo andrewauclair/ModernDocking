@@ -23,7 +23,6 @@ package ModernDocking;
 
 import ModernDocking.internal.DockableToolbar;
 import ModernDocking.internal.DockingInternal;
-import ModernDocking.ui.DefaultHeaderUI;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
 import ModernDocking.ui.HeaderModel;
@@ -31,7 +30,6 @@ import ModernDocking.ui.HeaderModel;
 import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * this is the main interface for a Dockable. Any panel that an application wishes to be dockable must implement
@@ -102,7 +100,7 @@ public interface Dockable {
 	 *
 	 * @return True, if floating is allowed
 	 */
-	default boolean isFloatingAllowed() {
+	default boolean getFloatingAllowed() {
 		return true;
 	}
 
@@ -112,7 +110,7 @@ public interface Dockable {
 	 *
 	 * @return Should this dockable be limited to the root it starts in
 	 */
-	default boolean shouldLimitToRoot() {
+	default boolean getLimitToRoot() {
 		return false;
 	}
 
@@ -131,7 +129,7 @@ public interface Dockable {
 	 *
 	 * @return Can this dockable be closed?
 	 */
-	default boolean canBeClosed() {
+	default boolean getCanBeClosed() {
 		return true;
 	}
 
@@ -142,7 +140,7 @@ public interface Dockable {
 	 *
 	 * @return True if pinning is allowed
 	 */
-	default boolean allowPinning() {
+	default boolean getAllowPinning() {
 		return false;
 	}
 
@@ -151,7 +149,7 @@ public interface Dockable {
 	 *
 	 * @return Is min/max allowed for this dockable
 	 */
-	default boolean allowMinMax() {
+	default boolean getAllowMinMax() {
 		return false;
 	}
 
@@ -161,7 +159,7 @@ public interface Dockable {
 	 *
 	 * @return True if there are more options to display on the context menu
 	 */
-	default boolean hasMoreOptions() {
+	default boolean getHasMoreOptions() {
 		return false;
 	}
 
@@ -220,13 +218,13 @@ public interface Dockable {
 	/**
 	 * called when the dockable is shown
 	 */
-	default void shown() {
+	default void onShown() {
 	}
 
 	/**
 	 * called when the dockable is hidden
 	 */
-	default void hidden() {
+	default void onHidden() {
 	}
 
 	/**

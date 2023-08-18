@@ -61,12 +61,12 @@ public abstract class BasePanel extends JPanel implements Dockable {
 	}
 
 	@Override
-	public void shown() {
+	public void onShown() {
 		System.out.println(persistentID + " shown");
 	}
 
 	@Override
-	public void hidden() {
+	public void onHidden() {
 		System.out.println(persistentID + " hidden");
 	}
 }

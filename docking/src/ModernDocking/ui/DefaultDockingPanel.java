@@ -57,6 +57,7 @@ public abstract class DefaultDockingPanel implements Dockable {
     public void setPersistentID(String persistentID) {
         this.persistentID = persistentID;
     }
+
     @Override
     public int getType() {
         return type;
@@ -100,7 +101,7 @@ public abstract class DefaultDockingPanel implements Dockable {
     }
 
     @Override
-    public boolean isFloatingAllowed() {
+    public boolean getFloatingAllowed() {
         return floatingAllowed;
     }
 
@@ -109,12 +110,12 @@ public abstract class DefaultDockingPanel implements Dockable {
      *
      * @param isFloatingAllowed New flag value
      */
-    public void setIsFloatingAllowed(boolean isFloatingAllowed) {
+    public void setFloatingAllowed(boolean isFloatingAllowed) {
         this.floatingAllowed = isFloatingAllowed;
     }
 
     @Override
-    public boolean shouldLimitToRoot() {
+    public boolean getLimitToRoot() {
         return limitToRoot;
     }
 
@@ -123,7 +124,7 @@ public abstract class DefaultDockingPanel implements Dockable {
      *
      * @param limitToRoot New flag value
      */
-    public void setShouldLimitToRoot(boolean limitToRoot) {
+    public void setLimitToRoot(boolean limitToRoot) {
         this.limitToRoot = limitToRoot;
     }
 
@@ -142,7 +143,7 @@ public abstract class DefaultDockingPanel implements Dockable {
     }
 
     @Override
-    public boolean canBeClosed() {
+    public boolean getCanBeClosed() {
         return canBeClosed;
     }
 
@@ -156,7 +157,7 @@ public abstract class DefaultDockingPanel implements Dockable {
     }
 
     @Override
-    public boolean allowPinning() {
+    public boolean getAllowPinning() {
         return allowPinning;
     }
 
@@ -170,7 +171,7 @@ public abstract class DefaultDockingPanel implements Dockable {
     }
 
     @Override
-    public boolean allowMinMax() {
+    public boolean getAllowMinMax() {
         return allowMinMax;
     }
 
@@ -184,7 +185,7 @@ public abstract class DefaultDockingPanel implements Dockable {
     }
 
     @Override
-    public boolean hasMoreOptions() {
+    public boolean getHasMoreOptions() {
         return moreOptions.size() > 0;
     }
 

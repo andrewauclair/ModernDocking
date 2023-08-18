@@ -111,17 +111,17 @@ public class OutputPanel extends ToolPanel {
 //    }
 
     @Override
-    public void shown() {
+    public void onShown() {
         System.out.println("Output shown");
     }
 
     @Override
-    public void hidden() {
+    public void onHidden() {
         System.out.println("Output hidden");
     }
 
     @Override
-    public boolean hasMoreOptions() {
+    public boolean getHasMoreOptions() {
         return true;
     }
 

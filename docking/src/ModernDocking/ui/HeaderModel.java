@@ -68,7 +68,7 @@ public class HeaderModel {
 	 * @return Is pinning allowed?
 	 */
 	public boolean isPinnedAllowed() {
-		return dockable.allowPinning();
+		return dockable.getAllowPinning();
 	}
 
 	// TODO can this be removed?
@@ -77,7 +77,7 @@ public class HeaderModel {
 	}
 
 	public boolean isUnpinnedAllowed() {
-		return dockable.allowPinning();
+		return dockable.getAllowPinning();
 	}
 
 	public boolean isUnpinned() {
@@ -90,7 +90,7 @@ public class HeaderModel {
 	 * @return Is min/max allowed for this dockable
 	 */
 	public boolean isMaximizeAllowed() {
-		return dockable.allowMinMax();
+		return dockable.getAllowMinMax();
 	}
 
 	public boolean isMaximized() {
@@ -98,7 +98,7 @@ public class HeaderModel {
 	}
 
 	public boolean isCloseAllowed() {
-		return dockable.canBeClosed();
+		return dockable.getCanBeClosed();
 	}
 
 	/**
@@ -106,11 +106,11 @@ public class HeaderModel {
 	 * @return True if there are more options to add to the context menu
 	 */
 	public boolean hasMoreOptions() {
-		return dockable.hasMoreOptions();
+		return dockable.getHasMoreOptions();
 	}
 
 	public boolean isFloatingAllowed() {
-		return dockable.isFloatingAllowed();
+		return dockable.getFloatingAllowed();
 	}
 
 	/**

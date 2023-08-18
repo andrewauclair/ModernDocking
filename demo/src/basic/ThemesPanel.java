@@ -99,12 +99,12 @@ public class ThemesPanel extends BasePanel implements Dockable {
     }
 
     @Override
-    public boolean isFloatingAllowed() {
+    public boolean getFloatingAllowed() {
         return false;
     }
 
     @Override
-    public boolean canBeClosed() {
+    public boolean getCanBeClosed() {
         return false;
     }
 }

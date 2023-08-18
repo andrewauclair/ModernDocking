@@ -58,7 +58,7 @@ public class Docking_dock extends JFrame {
         }
 
         @Override
-        public boolean canBeClosed() {
+        public boolean getCanBeClosed() {
             return false;
         }
     };

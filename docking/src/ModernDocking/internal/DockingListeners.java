@@ -91,7 +91,7 @@ public class DockingListeners {
 	 * @param dockable Dockable that was docked
 	 */
 	public static void fireDockedEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.docked(dockable.getPersistentID()));
+		dockingListeners.forEach(listener -> listener.onDocked(dockable.getPersistentID()));
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class DockingListeners {
 	 * @param dockable Dockable that was undocked
 	 */
 	public static void fireUndockedEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.undocked(dockable.getPersistentID()));
+		dockingListeners.forEach(listener -> listener.onUndocked(dockable.getPersistentID()));
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class DockingListeners {
 	 * @param dockable Dockable that was unpinned
 	 */
 	public static void fireUnpinnedEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.unpinned(dockable.getPersistentID()));
+		dockingListeners.forEach(listener -> listener.onUnpinned(dockable.getPersistentID()));
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class DockingListeners {
 	 * @param dockable Dockable that was shown
 	 */
 	public static void fireShownEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.shown(dockable.getPersistentID()));
+		dockingListeners.forEach(listener -> listener.onShown(dockable.getPersistentID()));
 	}
 
 	/**
@@ -136,6 +136,6 @@ public class DockingListeners {
 	 * @param dockable Dockable that was hidden
 	 */
 	public static void fireHiddenEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.shown(dockable.getPersistentID()));
+		dockingListeners.forEach(listener -> listener.onShown(dockable.getPersistentID()));
 	}
 }

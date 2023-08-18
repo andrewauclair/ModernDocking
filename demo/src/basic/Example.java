@@ -118,12 +118,12 @@ public class Example extends JFrame {
 		}
 
 		@Override
-		public boolean isFloatingAllowed() {
+		public boolean getFloatingAllowed() {
 			return false;
 		}
 
 		@Override
-		public boolean shouldLimitToRoot() {
+		public boolean getLimitToRoot() {
 			return false;
 		}
 
@@ -133,22 +133,22 @@ public class Example extends JFrame {
 		}
 
 		@Override
-		public boolean canBeClosed() {
+		public boolean getCanBeClosed() {
 			return false;
 		}
 
 		@Override
-		public boolean allowPinning() {
+		public boolean getAllowPinning() {
 			return false;
 		}
 
 		@Override
-		public boolean allowMinMax() {
+		public boolean getAllowMinMax() {
 			return false;
 		}
 
 		@Override
-		public boolean hasMoreOptions() {
+		public boolean getHasMoreOptions() {
 			return false;
 		}
 	}

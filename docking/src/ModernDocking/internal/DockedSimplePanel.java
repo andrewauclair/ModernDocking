@@ -24,7 +24,6 @@ package ModernDocking.internal;
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
 import ModernDocking.DockingRegion;
-import ModernDocking.ui.DockingSettings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -89,7 +88,7 @@ public class DockedSimplePanel extends DockingPanel {
 
 			tabbedPanel.addPanel(wrapper);
 
-			this.dockable.getDockable().hidden();
+			this.dockable.getDockable().onHidden();
 			DockingListeners.fireHiddenEvent(this.dockable.getDockable());
 
 			parent.replaceChild(this, tabbedPanel);

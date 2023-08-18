@@ -240,7 +240,7 @@ public class DockingComponentUtils {
 		for (Component component : container.getComponents()) {
 			if (component instanceof DisplayPanel) {
 				DisplayPanel panel = (DisplayPanel) component;
-				if (panel.getWrapper().getDockable().isFloatingAllowed()) {
+				if (panel.getWrapper().getDockable().getFloatingAllowed()) {
 					return false;
 				}
 			}

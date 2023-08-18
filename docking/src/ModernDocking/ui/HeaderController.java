@@ -98,25 +98,25 @@ public class HeaderController implements MaximizeListener, DockingListener {
 	}
 
 	@Override
-	public void docked(String persistentID) {
+	public void onDocked(String persistentID) {
 		ui.update();
 	}
 
 	@Override
-	public void undocked(String persistentID) {
+	public void onUndocked(String persistentID) {
 		ui.update();
 	}
 
 	@Override
-	public void unpinned(String persistentID) {
+	public void onUnpinned(String persistentID) {
 		ui.update();
 	}
 
 	@Override
-	public void shown(String persistentID) {
+	public void onShown(String persistentID) {
 	}
 
 	@Override
-	public void hidden(String persistentID) {
+	public void onHidden(String persistentID) {
 	}
 }
