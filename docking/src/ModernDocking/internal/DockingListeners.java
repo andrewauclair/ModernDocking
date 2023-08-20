@@ -105,6 +105,15 @@ public class DockingListeners {
 	}
 
 	/**
+	 * Fire a new pinned event
+	 *
+	 * @param dockable Dockable that was pinned
+	 */
+	public static void firePinnedEvent(Dockable dockable) {
+		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.PINNED, dockable)));
+	}
+
+	/**
 	 * Fire a new unpinned event
 	 *
 	 * @param dockable Dockable that was unpinned

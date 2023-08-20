@@ -708,7 +708,8 @@ public class Docking {
 			root.setDockablePinned(dockable);
 
 			getWrapper(dockable).setUnpinned(false);
-			DockingListeners.fireDockedEvent(dockable);
+
+			DockingListeners.firePinnedEvent(dockable);
 		}
 	}
 
