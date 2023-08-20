@@ -317,6 +317,8 @@ public class Docking {
 			DockableWrapper wrapper = getWrapper(dockable);
 
 			wrapper.getParent().undock(dockable);
+
+			// don't fire an undocked event for this one
 		}
 
 		// if the dockable has decided to do something else, skip out of this function

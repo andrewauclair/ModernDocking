@@ -172,8 +172,7 @@ public interface Dockable {
 	}
 
 	/**
-	 * create the header for the panel. default action is to create an instance of DefaultHeaderUI.
-	 * this can be replaced using the docking-ui package and the FlatLafHeaderUI
+	 * create the header for the panel. By default, the framework will create a DefaultHeaderUI for non-flatlaf
 	 *
 	 * @param headerController Header controller for this dockable
 	 * @param headerModel Header model for this dockable

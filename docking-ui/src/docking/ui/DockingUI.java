@@ -23,6 +23,7 @@ package docking.ui;
 
 import ModernDocking.Docking;
 import ModernDocking.internal.DockedTabbedPanel;
+import ModernDocking.internal.DockingInternal;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import javax.swing.*;
@@ -31,6 +32,8 @@ import java.awt.*;
 public class DockingUI {
     public static void initialize(Window mainWindow) {
         Docking.initialize(mainWindow);
+
+        DockingInternal.createHeaderUI = FlatLafHeaderUI::new;
 
         FlatSVGIcon settingsIcon = new FlatSVGIcon("icons/settings.svg");
 
