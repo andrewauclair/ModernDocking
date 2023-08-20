@@ -22,7 +22,8 @@ SOFTWARE.
 package ModernDocking.ui;
 
 import ModernDocking.DockingState;
-import ModernDocking.event.LayoutsListener;
+import ModernDocking.event.DockingLayoutEvent;
+import ModernDocking.event.DockingLayoutListener;
 import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.DockingLayouts;
 
@@ -31,7 +32,7 @@ import javax.swing.*;
 /**
  * Custom JMenu that displays all the layouts in DockingLayouts as menu items
  */
-public class LayoutsMenu extends JMenu implements LayoutsListener {
+public class LayoutsMenu extends JMenu implements DockingLayoutListener {
 	/**
 	 * Create a new layouts menu. Add a listener for when layouts change.
 	 */
@@ -55,12 +56,7 @@ public class LayoutsMenu extends JMenu implements LayoutsListener {
 	}
 
 	@Override
-	public void layoutAdded(String name, ApplicationLayout layout) {
-		rebuildOptions();
-	}
-
-	@Override
-	public void layoutRemoved(String name) {
+	public void layoutChange(DockingLayoutEvent e) {
 		rebuildOptions();
 	}
 }

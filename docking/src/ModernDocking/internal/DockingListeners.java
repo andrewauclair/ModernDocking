@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.event.DockingEvent;
 import ModernDocking.event.DockingListener;
 import ModernDocking.event.MaximizeListener;
 
@@ -91,7 +92,7 @@ public class DockingListeners {
 	 * @param dockable Dockable that was docked
 	 */
 	public static void fireDockedEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.onDocked(dockable.getPersistentID()));
+		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.DOCKED, dockable)));
 	}
 
 	/**
@@ -100,7 +101,7 @@ public class DockingListeners {
 	 * @param dockable Dockable that was undocked
 	 */
 	public static void fireUndockedEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.onUndocked(dockable.getPersistentID()));
+		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.UNDOCKED, dockable)));
 	}
 
 	/**
@@ -109,7 +110,7 @@ public class DockingListeners {
 	 * @param dockable Dockable that was unpinned
 	 */
 	public static void fireUnpinnedEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.onUnpinned(dockable.getPersistentID()));
+		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.UNPINNED, dockable)));
 	}
 
 	/**
@@ -118,7 +119,7 @@ public class DockingListeners {
 	 * @param dockable Dockable that was shown
 	 */
 	public static void fireShownEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.onShown(dockable.getPersistentID()));
+		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.SHOWN, dockable)));
 	}
 
 	/**
@@ -127,6 +128,10 @@ public class DockingListeners {
 	 * @param dockable Dockable that was hidden
 	 */
 	public static void fireHiddenEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.onShown(dockable.getPersistentID()));
+		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.HIDDEN, dockable)));
+	}
+
+	public static void fireDockingEvent(DockingEvent e) {
+		dockingListeners.forEach(listener -> listener.dockingChange(e));
 	}
 }

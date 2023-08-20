@@ -25,38 +25,5 @@ package ModernDocking.event;
  * Listener interface used to listen for docking events
  */
 public interface DockingListener {
-	/**
-	 * dockable has been docked
-	 *
-	 * @param persistentID Persistent ID of the dockable
-	 */
-	void onDocked(String persistentID);
-
-	/**
-	 * Dockable has been undocked
-	 *
-	 * @param persistentID Persistent ID of the dockable
-	 */
-	void onUndocked(String persistentID);
-
-	/**
-	 * dockable has been unpinned
-	 *
-	 * @param persistentID Persistent ID of the dockable
-	 */
-	void onUnpinned(String persistentID);
-
-	/**
-	 * dockable has been shown
-	 *
-	 * @param persistentID Persistent ID of the dockable
-	 */
-	void onShown(String persistentID);
-
-	/**
-	 * dockable has been hidden
-	 *
-	 * @param persistentID Persistent ID of the dockable
-	 */
-	void onHidden(String persistentID);
+	void dockingChange(DockingEvent e);
 }

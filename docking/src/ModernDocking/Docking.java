@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package ModernDocking;
 
+import ModernDocking.event.DockingListener;
 import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.exception.NotDockedException;
 import ModernDocking.floating.FloatListener;
@@ -860,5 +861,13 @@ public class Docking {
 
 	public static void setExperimentalPropertyMode(boolean enabled) {
 		experimentalProperties = enabled;
+	}
+
+	public static void addDockingListener(DockingListener listener) {
+
+	}
+
+	public static void removeDockingListener(DockingListener listener) {
+
 	}
 }

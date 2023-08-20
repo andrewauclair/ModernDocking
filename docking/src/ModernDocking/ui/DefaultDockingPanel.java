@@ -23,6 +23,10 @@ package ModernDocking.ui;
 
 import ModernDocking.Dockable;
 import ModernDocking.DockableStyle;
+import ModernDocking.Docking;
+import ModernDocking.event.DockingEvent;
+import ModernDocking.event.DockingListener;
+import ModernDocking.internal.DockingListeners;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -31,7 +35,7 @@ import java.util.List;
 /**
  * Default implementation of the Dockable interface. Useful for GUI builders where you can set each property.
  */
-public abstract class DefaultDockingPanel implements Dockable {
+public abstract class DefaultDockingPanel implements Dockable, DockingListener {
     private String persistentID;
     private int type;
     private String tabText;
@@ -43,6 +47,12 @@ public abstract class DefaultDockingPanel implements Dockable {
     private boolean allowPinning;
     private boolean allowMinMax;
     private List<JMenu> moreOptions = new ArrayList<>();
+
+    private final List<DockingListener> listeners = new ArrayList<>();
+
+    public DefaultDockingPanel() {
+        Docking.addDockingListener(this);
+    }
 
     @Override
     public String getPersistentID() {
@@ -202,6 +212,21 @@ public abstract class DefaultDockingPanel implements Dockable {
     public void addMoreOptions(JPopupMenu menu) {
         for (JMenu option : moreOptions) {
             menu.add(option);
+        }
+    }
+
+    public void addDockingListener(DockingListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeDockingListener(DockingListener listener) {
+        listeners.remove(listener);
+    }
+
+    @Override
+    public void dockingChange(DockingEvent e) {
+        if (e.getDockable() == this) {
+            listeners.forEach(listener -> listener.dockingChange(e));
         }
     }
 }

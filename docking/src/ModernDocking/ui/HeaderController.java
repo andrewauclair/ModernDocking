@@ -23,6 +23,7 @@ package ModernDocking.ui;
 
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
+import ModernDocking.event.DockingEvent;
 import ModernDocking.event.DockingListener;
 import ModernDocking.event.MaximizeListener;
 import ModernDocking.internal.DockingListeners;
@@ -98,25 +99,7 @@ public class HeaderController implements MaximizeListener, DockingListener {
 	}
 
 	@Override
-	public void onDocked(String persistentID) {
+	public void dockingChange(DockingEvent e) {
 		ui.update();
-	}
-
-	@Override
-	public void onUndocked(String persistentID) {
-		ui.update();
-	}
-
-	@Override
-	public void onUnpinned(String persistentID) {
-		ui.update();
-	}
-
-	@Override
-	public void onShown(String persistentID) {
-	}
-
-	@Override
-	public void onHidden(String persistentID) {
 	}
 }

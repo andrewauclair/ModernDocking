@@ -24,7 +24,8 @@ package tests;
 import ModernDocking.Docking;
 import ModernDocking.DockingRegion;
 import ModernDocking.RootDockingPanel;
-import ModernDocking.event.LayoutsListener;
+import ModernDocking.event.DockingLayoutEvent;
+import ModernDocking.event.DockingLayoutListener;
 import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.WindowLayoutBuilder;
 import ModernDocking.layouts.DockingLayouts;
@@ -40,7 +41,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WindowLayoutBuilderTests extends JFrame implements LayoutsListener {
+public class WindowLayoutBuilderTests extends JFrame implements DockingLayoutListener {
 
     private final JMenu layout;
 
@@ -212,17 +213,19 @@ public class WindowLayoutBuilderTests extends JFrame implements LayoutsListener 
     }
 
     @Override
-    public void layoutAdded(String name, ApplicationLayout layout) {
-        this.layout.add(new ApplicationLayoutMenuItem(name));
-    }
-
-    @Override
-    public void layoutRemoved(String name) {
-        for (int i = 0; i < layout.getItemCount(); i++) {
-            if (layout.getItem(i).getName().equals(name)) {
-                layout.remove(i);
-                return;
-            }
+    public void layoutChange(DockingLayoutEvent e) {
+        switch (e.getID()) {
+            case ADDED:
+                layout.add(new ApplicationLayoutMenuItem(e.getLayoutName()));
+                break;
+            case REMOVED:
+                for (int i = 0; i < layout.getItemCount(); i++) {
+                    if (layout.getItem(i).getName().equals(e.getLayoutName())) {
+                        layout.remove(i);
+                        break;
+                    }
+                }
+                break;
         }
     }
 }

@@ -22,18 +22,16 @@ SOFTWARE.
 package ModernDocking.layouts;
 
 import ModernDocking.Dockable;
-import ModernDocking.DockingProperty;
 import ModernDocking.RootDockingPanel;
-import ModernDocking.event.LayoutsListener;
+import ModernDocking.event.DockingLayoutEvent;
+import ModernDocking.event.DockingLayoutListener;
 import ModernDocking.internal.*;
 
 import javax.swing.*;
-import java.lang.reflect.Field;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DockingLayouts {
-	private static final List<LayoutsListener> listeners = new ArrayList<>();
+	private static final List<DockingLayoutListener> listeners = new ArrayList<>();
 	private static final Map<String, ApplicationLayout> layouts = new HashMap<>();
 
 	/**
@@ -41,7 +39,7 @@ public class DockingLayouts {
 	 *
 	 * @param listener New listener to add
 	 */
-	public static void addLayoutsListener(LayoutsListener listener) {
+	public static void addLayoutsListener(DockingLayoutListener listener) {
 		listeners.add(listener);
 	}
 
@@ -50,20 +48,21 @@ public class DockingLayouts {
 	 *
 	 * @param listener Listener to remove
 	 */
-	public static void removeLayoutsListener(LayoutsListener listener) {
+	public static void removeLayoutsListener(DockingLayoutListener listener) {
 		listeners.remove(listener);
 	}
 
 	public static void addLayout(String name, ApplicationLayout layout) {
 		removeLayout(name);
 		layouts.put(name, layout);
-		listeners.forEach(l -> l.layoutAdded(name, layout));
+		listeners.forEach(l -> l.layoutChange(new DockingLayoutEvent(DockingLayoutEvent.ID.ADDED, name, layout)));
 	}
 
 	public static void removeLayout(String name) {
-		if (layouts.containsKey(name)) {
-			layouts.remove(name);
-			listeners.forEach(l -> l.layoutRemoved(name));
+		ApplicationLayout layout = layouts.remove(name);
+
+		if (layout != null) {
+			listeners.forEach(l -> l.layoutChange(new DockingLayoutEvent(DockingLayoutEvent.ID.REMOVED, name, layout)));
 		}
 	}
 
