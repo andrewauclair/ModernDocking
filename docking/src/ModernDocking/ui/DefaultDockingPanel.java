@@ -35,10 +35,10 @@ import java.util.List;
 /**
  * Default implementation of the Dockable interface. Useful for GUI builders where you can set each property.
  */
-public abstract class DefaultDockingPanel implements Dockable, DockingListener {
+public class DefaultDockingPanel extends JPanel implements Dockable, DockingListener {
     private String persistentID;
     private int type;
-    private String tabText;
+    private String tabText = "";
     private Icon icon;
     private boolean floatingAllowed;
     private boolean limitToRoot;
@@ -51,6 +51,18 @@ public abstract class DefaultDockingPanel implements Dockable, DockingListener {
     private final List<DockingListener> listeners = new ArrayList<>();
 
     public DefaultDockingPanel() {
+        if (persistentID != null) {
+            Docking.registerDockable(this);
+        }
+        Docking.addDockingListener(this);
+    }
+
+    public DefaultDockingPanel(String persistentID, String text) {
+        this.persistentID = persistentID;
+        this.tabText = text;
+
+        Docking.registerDockable(this);
+
         Docking.addDockingListener(this);
     }
 
