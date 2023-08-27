@@ -30,8 +30,22 @@ import javax.swing.*;
 import java.awt.*;
 
 public class DockingUI {
+    private static boolean initialized = false;
+
     public static void initialize(Window mainWindow) {
         Docking.initialize(mainWindow);
+
+        configureDockingUI();
+    }
+
+    /**
+     * Call this directly when using the multi-instance configuration with ModernDockingUI
+     */
+    public static void configureDockingUI() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
 
         DockingInternal.createHeaderUI = FlatLafHeaderUI::new;
 

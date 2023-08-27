@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package basic;
 
+import docking.ui.DockingUI;
 import picocli.CommandLine;
 
 import javax.swing.*;
@@ -29,6 +30,8 @@ import java.io.File;
 public class MultipleInstances {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
+            DockingUI.configureDockingUI();
+
             MainFrame one = new MainFrame(new File("multiframe_demo_layout_1.xml"));
             MainFrame two = new MainFrame(new File("multiframe_demo_layout_2.xml"));
 
