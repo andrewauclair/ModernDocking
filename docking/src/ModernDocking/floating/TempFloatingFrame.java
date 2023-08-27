@@ -40,7 +40,7 @@ public class TempFloatingFrame extends JFrame {
 	 * @param dockable Dockable in the floating frame
 	 * @param dragSrc The source of the drag
 	 */
-	public TempFloatingFrame(Dockable dockable, DockingInstance docking, JComponent dragSrc) {
+	public TempFloatingFrame(DockingInstance docking, Dockable dockable, JComponent dragSrc) {
 		setLayout(new BorderLayout()); // keep it simple, just use border layout
 		setUndecorated(true); // hide the frame
 		setType(Type.UTILITY); // keeps the frame from appearing in the task bar frames

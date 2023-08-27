@@ -51,6 +51,7 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 
 public class MainFrame extends JFrame implements Callable<Integer> {
+	private final File layoutFile;
 	@CommandLine.Option(names = "--laf", required = true, description = "look and feel to use. one of: system, light, dark, github-dark or solarized-dark")
 	String lookAndFeel;
 
@@ -63,8 +64,15 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 	@CommandLine.Option(names = "--always-use-tabs", defaultValue = "false", description = "always use tabs, even when there is only 1 dockable in the tab group")
 	boolean alwaysUseTabs;
 
-	public MainFrame() {
+	@CommandLine.Option(names = "--create-docking-instance", defaultValue = "false", description = "create a separate instance of the framework for this MainFrame")
+	boolean createDockingInstance;
+
+	private DockingInstance docking;
+
+	public MainFrame(File layoutFile) {
+		this.layoutFile = layoutFile;
 	}
+
 	static Random rng = new Random();
 	public static String generateString(String characters, int length)
 	{
@@ -80,12 +88,23 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 	@Override
 	public void setVisible(boolean visible) {
-		setTitle("Modern Docking Basic Demo");
+
 
 		setSize(800, 600);
 
-		Docking.initialize(this);
-		DockingUI.initialize(this);
+		if (createDockingInstance) {
+			setTitle("Modern Docking Basic Demo (" + layoutFile.getName() + ")");
+
+			docking = new DockingInstance(this);
+		}
+		else {
+			setTitle("Modern Docking Basic Demo");
+
+			Docking.initialize(this);
+			DockingUI.initialize(this);
+
+			docking = Docking.getSingleInstance();
+		}
 
 		Docking.setAlwaysDisplayTabMode(alwaysUseTabs);
 
@@ -108,7 +127,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 				ApplicationLayout layout = DockingState.getApplicationLayout();
 
 				try {
-					ApplicationLayoutXML.saveLayoutToFile(selectedFile, layout);
+					ApplicationLayoutXML.saveLayoutToFile(docking, selectedFile, layout);
 				}
 				catch (DockingLayoutException ex) {
 					ex.printStackTrace();
@@ -125,8 +144,8 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		createPanel.addActionListener(e -> {
 			String panelName = JOptionPane.showInputDialog("Panel name");
 
-			SimplePanel panel = new SimplePanel(panelName, panelName);
-			Docking.dock(panel, MainFrame.this, DockingRegion.EAST);
+			SimplePanel panel = new SimplePanel(docking, panelName, panelName);
+			docking.dock(panel, MainFrame.this, DockingRegion.EAST);
 		});
 		file.add(createPanel);
 
@@ -139,27 +158,27 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 				ApplicationLayout layout = null;
 				try {
-					layout = ApplicationLayoutXML.loadLayoutFromFile(selectedFile);
+					layout = ApplicationLayoutXML.loadLayoutFromFile(docking, selectedFile);
 				}
 				catch (DockingLayoutException ex) {
 					ex.printStackTrace();
 				}
 
 				if (layout != null) {
-					DockingState.restoreApplicationLayout(layout);
+					DockingState.restoreApplicationLayout(docking, layout);
 				}
 			}
 		});
 
 		JMenu window = new JMenu("Window");
-		window.add(new LayoutsMenu());
+		window.add(new LayoutsMenu(docking));
 
 		menuBar.add(window);
 
 		JMenuItem dialogTest = new JMenuItem("Dialog Test");
 
 		dialogTest.addActionListener(e -> {
-			DialogWithDocking dialog = new DialogWithDocking();
+			DialogWithDocking dialog = new DialogWithDocking(docking);
 			Point loc = getLocation();
 
 			//SwingUtilities.convertPointToScreen(loc, MainFrame.this);
@@ -179,19 +198,19 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		SimplePanel one = new SimplePanel("one", "one");
-		SimplePanel two = new SimplePanel("two", "two");
-		SimplePanel three = new SimplePanel("three", "three");
-		SimplePanel four = new SimplePanel("four", "four");
-		SimplePanel five = new SimplePanel("five", "five");
-		SimplePanel six = new SimplePanel("six", "six");
-		SimplePanel seven = new SimplePanel("seven", "seven");
-		SimplePanel eight = new SimplePanel("eight", "eight");
-		ToolPanel explorer = new ToolPanel("Explorer", "explorer", DockableStyle.VERTICAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
-		ToolPanel output = new OutputPanel("Output", "output", DockableStyle.HORIZONTAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
-		AlwaysDisplayedPanel alwaysDisplayed = new AlwaysDisplayedPanel("always displayed", "always-displayed");
+		SimplePanel one = new SimplePanel(docking, "one", "one");
+		SimplePanel two = new SimplePanel(docking, "two", "two");
+		SimplePanel three = new SimplePanel(docking, "three", "three");
+		SimplePanel four = new SimplePanel(docking, "four", "four");
+		SimplePanel five = new SimplePanel(docking, "five", "five");
+		SimplePanel six = new SimplePanel(docking, "six", "six");
+		SimplePanel seven = new SimplePanel(docking, "seven", "seven");
+		SimplePanel eight = new SimplePanel(docking, "eight", "eight");
+		ToolPanel explorer = new ToolPanel(docking, "Explorer", "explorer", DockableStyle.VERTICAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
+		ToolPanel output = new OutputPanel(docking, "Output", "output", DockableStyle.HORIZONTAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
+		AlwaysDisplayedPanel alwaysDisplayed = new AlwaysDisplayedPanel(docking, "always displayed", "always-displayed");
 
-		ThemesPanel themes = new ThemesPanel();
+		ThemesPanel themes = new ThemesPanel(docking);
 
 		one.setTitleBackground(new Color(0xa1f2ff));
 		two.setTitleBackground(new Color(0xdda1ff));
@@ -215,24 +234,24 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		JMenuItem createNewDockable = new JMenuItem();
 		createNewDockable.addActionListener(e -> {
-			SimplePanel rand = new SimplePanel(generateString("alpha", 6), generateString("abcdefg", 10));
+			SimplePanel rand = new SimplePanel(docking, generateString("alpha", 6), generateString("abcdefg", 10));
 			Docking.dock(rand, one, DockingRegion.WEST);
 		});
 		view.add(createNewDockable);
 
-		view.add(actionListenDock(one));
-		view.add(actionListenDock(two));
-		view.add(actionListenDock(three));
-		view.add(actionListenDock(four));
-		view.add(actionListenDock(five));
-		view.add(actionListenDock(six));
-		view.add(actionListenDock(seven));
-		view.add(actionListenDock(eight));
-		view.add(actionListenDock(explorer));
-		view.add(actionListenDock(output));
-		view.add(new DockableMenuItem(() -> ((Dockable) alwaysDisplayed).getPersistentID(), ((Dockable) alwaysDisplayed).getTabText()));
+		view.add(actionListenDock(docking, one));
+		view.add(actionListenDock(docking, two));
+		view.add(actionListenDock(docking, three));
+		view.add(actionListenDock(docking, four));
+		view.add(actionListenDock(docking, five));
+		view.add(actionListenDock(docking, six));
+		view.add(actionListenDock(docking, seven));
+		view.add(actionListenDock(docking, eight));
+		view.add(actionListenDock(docking, explorer));
+		view.add(actionListenDock(docking, output));
+		view.add(new DockableMenuItem(docking, () -> ((Dockable) alwaysDisplayed).getPersistentID(), ((Dockable) alwaysDisplayed).getTabText()));
 		view.add(changeText);
-		view.add(actionListenDock(themes));
+		view.add(actionListenDock(docking, themes));
 
 		JMenuItem storeCurrentLayout = new JMenuItem("Store Current Layout...");
 		storeCurrentLayout.addActionListener(e -> {
@@ -242,7 +261,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		});
 		window.add(storeCurrentLayout);
 
-		JMenuItem restoreDefaultLayout = new ApplicationLayoutMenuItem("default", "Restore Default Layout");
+		JMenuItem restoreDefaultLayout = new ApplicationLayoutMenuItem(docking, "default", "Restore Default Layout");
 		window.add(restoreDefaultLayout);
 
 		setLayout(new GridBagLayout());
@@ -254,7 +273,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
 
-		RootDockingPanel dockingPanel = new RootDockingPanel(this);
+		RootDockingPanel dockingPanel = new RootDockingPanel(docking, this);
 //		dockingPanel.setPinningSupported(false);
 
 		gbc.insets = new Insets(0, 5, 5, 5);
@@ -265,7 +284,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		gbc.weighty = 0;
 		gbc.fill = GridBagConstraints.NONE;
 
-		ApplicationLayout defaultLayout = new WindowLayoutBuilder(alwaysDisplayed.getPersistentID())
+		ApplicationLayout defaultLayout = new WindowLayoutBuilder(docking, alwaysDisplayed.getPersistentID())
 				.dock(one.getPersistentID(), alwaysDisplayed.getPersistentID())
 				.dock(two.getPersistentID(), one.getPersistentID(), DockingRegion.SOUTH)
 				.dockToRoot(three.getPersistentID(), DockingRegion.WEST)
@@ -282,12 +301,12 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		super.setVisible(visible);
 	}
 
-	private JMenuItem actionListenDock(Dockable dockable) {
-		return new DockableMenuItem(dockable.getPersistentID(), dockable.getTabText());
+	private JMenuItem actionListenDock(DockingInstance docking, Dockable dockable) {
+		return new DockableMenuItem(docking, dockable.getPersistentID(), dockable.getTabText());
 	}
 
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> new CommandLine(new MainFrame()).execute(args));
+		SwingUtilities.invokeLater(() -> new CommandLine(new MainFrame(new File("basic_demo_layout.xml"))).execute(args));
 	}
 
 	private void configureLookAndFeel() {
@@ -347,10 +366,10 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 			setVisible(true);
 
 			// now that the main frame is set up with the defaults, we can restore the layout
-			AppState.setPersistFile(new File("basic_demo_layout.xml"));
+			AppState.setPersistFile(docking, layoutFile);
 
 			try {
-				AppState.restore();
+				AppState.restore(docking);
 			} catch (DockingLayoutException e) {
 				// something happened trying to load the layout file, record it here
 				e.printStackTrace();

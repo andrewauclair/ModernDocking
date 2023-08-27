@@ -67,7 +67,7 @@ public class DockableWrapper {
 		headerUI = dockable.createHeaderUI(headerController, headerModel);
 		headerController.setUI(headerUI);
 
-		floatListener = new FloatListener(this, docking, (JComponent) headerUI);
+		floatListener = new FloatListener(docking, this, (JComponent) headerUI);
 		displayPanel = new DisplayPanel(this);
 	}
 
@@ -98,7 +98,7 @@ public class DockableWrapper {
 		this.parent = parent;
 
 		if (parent instanceof DockedTabbedPanel && Docking.alwaysDisplayTabsMode()) {
-			floatListener = new FloatListener(this, docking, ((DockedTabbedPanel) parent).getTabForDockable(this));
+			floatListener = new FloatListener(docking, this, ((DockedTabbedPanel) parent).getTabForDockable(this));
 		}
 
 		displayPanel.parentChanged();

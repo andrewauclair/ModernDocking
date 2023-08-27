@@ -21,10 +21,7 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.DockableStyle;
-import ModernDocking.Docking;
-import ModernDocking.DockingRegion;
-import ModernDocking.RootDockingPanel;
+import ModernDocking.*;
 
 import javax.swing.*;
 
@@ -35,17 +32,17 @@ public class DialogWithDocking extends JDialog {
 	private final ToolPanel explorer;
 	private final SimplePanel one;
 
-	DialogWithDocking() {
+	DialogWithDocking(DockingInstance docking) {
 		root = new RootDockingPanel(this);
 
 		setModalityType(ModalityType.TOOLKIT_MODAL);
 
 		add(root);
 
-		output = new ToolPanel("output", "output-dialog", DockableStyle.HORIZONTAL);
-		explorer = new ToolPanel("explorer", "explorer-dialog", DockableStyle.VERTICAL);
+		output = new ToolPanel(docking, "output", "output-dialog", DockableStyle.HORIZONTAL);
+		explorer = new ToolPanel(docking, "explorer", "explorer-dialog", DockableStyle.VERTICAL);
 
-		one = new SimplePanel("one", "one-dialog");
+		one = new SimplePanel(docking, "one", "one-dialog");
 
 		output.limitToRoot = true;
 		explorer.limitToRoot = true;

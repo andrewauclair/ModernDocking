@@ -33,7 +33,7 @@ import java.util.List;
  * Panel that should be added to each frame that should support docking
  */
 public class RootDockingPanel extends DockingPanel {
-	private DockingInstance docking = Docking.getSingleInstance();
+	private DockingInstance docking;
 
 	private Window window;
 
@@ -72,7 +72,7 @@ public class RootDockingPanel extends DockingPanel {
 	 * @param window Window this root panel is attached to
 	 */
 	public RootDockingPanel(Window window) {
-		this(window, Docking.getSingleInstance());
+		this(Docking.getSingleInstance(), window);
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class RootDockingPanel extends DockingPanel {
 	 * @param window Window this root panel is attached to
 	 * @param docking Instance of the docking framework to use, if multiple are in use
 	 */
-	public RootDockingPanel(Window window, DockingInstance docking) {
+	public RootDockingPanel(DockingInstance docking, Window window) {
 		setLayout(new GridBagLayout());
 
 		this.window = window;

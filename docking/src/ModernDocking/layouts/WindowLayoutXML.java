@@ -42,6 +42,10 @@ public class WindowLayoutXML {
 
 	// saves a docking layout to the given file, returns true if successful, false otherwise
 	public static boolean saveLayoutToFile(File file, WindowLayout layout) {
+		return saveLayoutToFile(Docking.getSingleInstance(), file, layout);
+	}
+
+	public static boolean saveLayoutToFile(DockingInstance docking, File file, WindowLayout layout) {
 		file.getParentFile().mkdirs();
 
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
@@ -57,7 +61,7 @@ public class WindowLayoutXML {
 		try {
 			writer.writeStartDocument();
 
-			saveLayoutToFile(writer, layout, false);
+			saveLayoutToFile(docking, writer, layout, false);
 
 			writer.writeEndDocument();
 		}
@@ -77,7 +81,7 @@ public class WindowLayoutXML {
 		return true;
 	}
 
-	static void saveLayoutToFile(XMLStreamWriter writer, WindowLayout layout, boolean isMainFrame) throws XMLStreamException {
+	static void saveLayoutToFile(DockingInstance docking, XMLStreamWriter writer, WindowLayout layout, boolean isMainFrame) throws XMLStreamException {
 		writer.writeCharacters(NL);
 		writer.writeStartElement("layout");
 		writer.writeAttribute("main-frame", String.valueOf(isMainFrame));
@@ -127,21 +131,21 @@ public class WindowLayoutXML {
 		writer.writeEndElement();
 		writer.writeCharacters(NL);
 
-		writeNodeToFile(writer, layout.getRootNode());
+		writeNodeToFile(docking, writer, layout.getRootNode());
 
 		writer.writeEndElement();
 		writer.writeCharacters(NL);
 	}
 
-	private static void writeNodeToFile(XMLStreamWriter writer, DockingLayoutNode node) throws XMLStreamException {
+	private static void writeNodeToFile(DockingInstance docking, XMLStreamWriter writer, DockingLayoutNode node) throws XMLStreamException {
 		if (node instanceof DockingSimplePanelNode) {
-			writeSimpleNodeToFile(writer, (DockingSimplePanelNode) node);
+			writeSimpleNodeToFile(docking, writer, (DockingSimplePanelNode) node);
 		}
 		else if (node instanceof DockingSplitPanelNode) {
-			writeSplitNodeToFile(writer, (DockingSplitPanelNode) node);
+			writeSplitNodeToFile(docking, writer, (DockingSplitPanelNode) node);
 		}
 		else if (node instanceof DockingTabPanelNode) {
-			writeTabbedNodeToFile(writer, (DockingTabPanelNode) node);
+			writeTabbedNodeToFile(docking, writer, (DockingTabPanelNode) node);
 		}
 	}
 
@@ -172,7 +176,7 @@ public class WindowLayoutXML {
 		writer.writeCharacters(NL);
 	}
 
-	private static void writeSplitNodeToFile(XMLStreamWriter writer, DockingSplitPanelNode node) throws XMLStreamException {
+	private static void writeSplitNodeToFile(DockingInstance docking, XMLStreamWriter writer, DockingSplitPanelNode node) throws XMLStreamException {
 		writer.writeStartElement("split");
 		writer.writeAttribute("orientation", String.valueOf(node.getOrientation()));
 		writer.writeAttribute("divider-proportion", String.valueOf(node.getDividerProportion()));
@@ -180,13 +184,13 @@ public class WindowLayoutXML {
 
 		writer.writeStartElement("left");
 		writer.writeCharacters(NL);
-		writeNodeToFile(writer, node.getLeft());
+		writeNodeToFile(docking, writer, node.getLeft());
 		writer.writeEndElement();
 		writer.writeCharacters(NL);
 
 		writer.writeStartElement("right");
 		writer.writeCharacters(NL);
-		writeNodeToFile(writer, node.getRight());
+		writeNodeToFile(docking, writer, node.getRight());
 		writer.writeEndElement();
 		writer.writeCharacters(NL);
 
@@ -194,7 +198,7 @@ public class WindowLayoutXML {
 		writer.writeCharacters(NL);
 	}
 
-	private static void writeTabbedNodeToFile(XMLStreamWriter writer, DockingTabPanelNode node) throws XMLStreamException {
+	private static void writeTabbedNodeToFile(DockingInstance docking, XMLStreamWriter writer, DockingTabPanelNode node) throws XMLStreamException {
 		writer.writeStartElement("tabbed");
 		writer.writeCharacters(NL);
 
@@ -237,6 +241,10 @@ public class WindowLayoutXML {
 	 * @return The loaded WindowLayout
 	 */
 	public static WindowLayout loadLayoutFromFile(File file) {
+		return loadLayoutFromFile(Docking.getSingleInstance(), file);
+	}
+
+	public static WindowLayout loadLayoutFromFile(DockingInstance docking, File file) {
 		XMLInputFactory factory = XMLInputFactory.newInstance();
 		XMLStreamReader reader;
 		try {
@@ -254,7 +262,7 @@ public class WindowLayoutXML {
 				int next = reader.nextTag();
 
 				if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("layout")) {
-					layout = readLayoutFromReader(reader);
+					layout = readLayoutFromReader(docking, reader);
 					break;
 				}
 			}
@@ -273,7 +281,7 @@ public class WindowLayoutXML {
 		return layout;
 	}
 
-	static WindowLayout readLayoutFromReader(XMLStreamReader reader) throws XMLStreamException {
+	static WindowLayout readLayoutFromReader(DockingInstance docking, XMLStreamReader reader) throws XMLStreamException {
 		boolean isMainFrame = Boolean.parseBoolean(reader.getAttributeValue(0));
 		String locStr = reader.getAttributeValue(1);
 		String sizeStr = reader.getAttributeValue(2);
@@ -287,7 +295,7 @@ public class WindowLayoutXML {
 		List<String> eastToolbar = readToolbarFromFile(reader, "eastToolbar");
 		List<String> southToolbar = readToolbarFromFile(reader, "southToolbar");
 
-		WindowLayout layout = new WindowLayout(isMainFrame, location, size, state, readNodeFromFile(reader, "layout"));
+		WindowLayout layout = new WindowLayout(isMainFrame, location, size, state, readNodeFromFile(docking, reader, "layout"));
 
 		layout.setWestUnpinnedToolbarIDs(westToolbar);
 		layout.setEastUnpinnedToolbarIDs(eastToolbar);
@@ -327,7 +335,7 @@ public class WindowLayoutXML {
 
 			if (next == XMLStreamConstants.START_ELEMENT) {
 				if (reader.getLocalName().equals("simple")) {
-					node = readSimpleNodeFromFile(reader);
+					node = readSimpleNodeFromFile(docking, reader);
 				}
 				else if (reader.getLocalName().equals("split")) {
 					node = readSplitNodeFromFile(docking, reader);
@@ -393,10 +401,10 @@ public class WindowLayoutXML {
 
 			if (next == XMLStreamConstants.START_ELEMENT) {
 				if (reader.getLocalName().equals("left")) {
-					left = readNodeFromFile(reader, "left");
+					left = readNodeFromFile(docking, reader, "left");
 				}
 				else if (reader.getLocalName().equals("right")) {
-					right = readNodeFromFile(reader, "right");
+					right = readNodeFromFile(docking, reader, "right");
 				}
 			}
 			else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("split")) {

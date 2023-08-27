@@ -149,7 +149,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 			if ((splitPane.getWidth() > 0) && (splitPane.getHeight() > 0)) {
 				splitPane.setDividerLocation(location);
 
-				AppState.persist();
+				AppState.persist(docking);
 			}
 			else {
 				// split hasn't been completely calculated yet, wait until componentResize
@@ -353,7 +353,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		AppState.persist();
+		AppState.persist(docking);
 	}
 
 	@Override
@@ -366,6 +366,6 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		AppState.persist();
+		AppState.persist(docking);
 	}
 }

@@ -22,6 +22,7 @@ SOFTWARE.
 package basic;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockingInstance;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -33,8 +34,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class ThemesPanel extends BasePanel implements Dockable {
-    public ThemesPanel() {
-        super("Themes", "themes");
+    public ThemesPanel(DockingInstance docking) {
+        super(docking, "Themes", "themes");
 
         JTable table = new JTable() {
             @Override

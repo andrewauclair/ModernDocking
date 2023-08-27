@@ -23,6 +23,7 @@ package basic;
 
 import ModernDocking.DockableStyle;
 import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 import ModernDocking.DockingRegion;
 import ModernDocking.internal.DockableToolbar;
 
@@ -34,14 +35,14 @@ public class ToolPanel extends BasePanel {
 
 	public boolean limitToRoot = false;
 
-	public ToolPanel(String title, String persistentID, DockableStyle style) {
-		super(title, persistentID);
+	public ToolPanel(DockingInstance docking, String title, String persistentID, DockableStyle style) {
+		super(docking, title, persistentID);
 		this.style = style;
 		this.icon = null;
 	}
 
-	public ToolPanel(String title, String persistentID, DockableStyle style, Icon icon) {
-		super(title, persistentID);
+	public ToolPanel(DockingInstance docking, String title, String persistentID, DockableStyle style, Icon icon) {
+		super(docking, title, persistentID);
 		this.style = style;
 		this.icon = icon;
 

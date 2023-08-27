@@ -232,7 +232,7 @@ public class DockingComponentUtils {
 			}
 		}
 
-		AppState.persist();
+		AppState.persist(docking);
 	}
 
 	private static boolean shouldUndock(Container container) {

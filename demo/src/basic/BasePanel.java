@@ -23,6 +23,7 @@ package basic;
 
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 import ModernDocking.ui.DefaultHeaderUI;
 import com.formdev.flatlaf.FlatLaf;
 import ModernDocking.ui.DockingHeaderUI;
@@ -36,7 +37,7 @@ public abstract class BasePanel extends JPanel implements Dockable {
 	private final String title;
 	private final String persistentID;
 
-	public BasePanel(String title, String persistentID) {
+	public BasePanel(DockingInstance docking, String title, String persistentID) {
 		super(new BorderLayout());
 
 		this.title = title;
@@ -47,7 +48,7 @@ public abstract class BasePanel extends JPanel implements Dockable {
 		add(panel, BorderLayout.CENTER);
 
 		// the single call to register any docking panel extending this abstract class
-		Docking.registerDockable(this);
+		docking.registerDockable(this);
 	}
 
 	@Override

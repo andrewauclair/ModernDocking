@@ -345,7 +345,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		AppState.persist();
+		AppState.persist(docking);
 
 		if (tabs.getSelectedIndex() == -1) {
 			return;

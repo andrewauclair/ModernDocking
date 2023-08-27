@@ -21,6 +21,8 @@ SOFTWARE.
  */
 package ModernDocking.ui;
 
+import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 import ModernDocking.DockingState;
 import ModernDocking.event.DockingLayoutEvent;
 import ModernDocking.event.DockingLayoutListener;
@@ -33,23 +35,29 @@ import javax.swing.*;
  * Custom JMenu that displays all the layouts in DockingLayouts as menu items
  */
 public class LayoutsMenu extends JMenu implements DockingLayoutListener {
+	private final DockingInstance docking;
+
 	/**
 	 * Create a new layouts menu. Add a listener for when layouts change.
 	 */
 	public LayoutsMenu() {
+		this(Docking.getSingleInstance());
+	}
+
+	public LayoutsMenu(DockingInstance docking) {
 		super("Layouts");
+		this.docking = docking;
 
 		DockingLayouts.addLayoutsListener(this);
 
 		rebuildOptions();
 	}
-
 	private void rebuildOptions() {
 		removeAll();
 
 		for (String name : DockingLayouts.getLayoutNames()) {
 			JMenuItem item = new JMenuItem(name);
-			item.addActionListener(e -> DockingState.restoreApplicationLayout(DockingLayouts.getLayout(name)));
+			item.addActionListener(e -> DockingState.restoreApplicationLayout(docking, DockingLayouts.getLayout(name)));
 
 			add(item);
 		}

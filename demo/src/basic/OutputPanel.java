@@ -1,6 +1,7 @@
 package basic;
 
 import ModernDocking.DockableStyle;
+import ModernDocking.DockingInstance;
 import ModernDocking.DockingProperty;
 import ModernDocking.persist.AppState;
 
@@ -21,8 +22,8 @@ public class OutputPanel extends ToolPanel {
 
     private Map<String, String> properties = new HashMap<>();
 
-    public OutputPanel(String title, String persistentID, DockableStyle style, Icon icon) {
-        super(title, persistentID, style, icon);
+    public OutputPanel(DockingInstance docking, String title, String persistentID, DockableStyle style, Icon icon) {
+        super(docking, title, persistentID, style, icon);
 
         add(new JScrollPane(table));
 
@@ -42,14 +43,14 @@ public class OutputPanel extends ToolPanel {
             public void columnMoved(TableColumnModelEvent e) {
                 updateColumnsProp();
 
-                AppState.persist();
+                AppState.persist(docking);
             }
 
             @Override
             public void columnMarginChanged(ChangeEvent e) {
                 updateColumnSizesProp();
 
-                AppState.persist();
+                AppState.persist(docking);
             }
 
             @Override

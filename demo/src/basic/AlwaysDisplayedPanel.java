@@ -21,12 +21,14 @@ SOFTWARE.
  */
 package basic;
 
+import ModernDocking.DockingInstance;
+
 // TODO current changes are breaking the intended functionality here
 // Docking panel that is always displayed and cannot be closed
 public class AlwaysDisplayedPanel extends SimplePanel {
 	// create a new basic.AlwaysDisplayedPanel with the given title and persistentID
-	public AlwaysDisplayedPanel(String title, String persistentID) {
-		super(title, persistentID);
+	public AlwaysDisplayedPanel(DockingInstance docking, String title, String persistentID) {
+		super(docking, title, persistentID);
 	}
 
 	@Override

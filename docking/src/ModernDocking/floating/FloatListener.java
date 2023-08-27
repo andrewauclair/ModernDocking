@@ -73,7 +73,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 	private ModalityType modalityType = ModalityType.MODELESS;
 
-	public FloatListener(DockableWrapper dockable, DockingInstance docking, Component dragSource) {
+	public FloatListener(DockingInstance docking, DockableWrapper dockable, Component dragSource) {
 		this.floatingDockable = dockable;
 		this.docking = docking;
 
@@ -105,12 +105,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 				}
 			});
 		}
-	}
-
-	public static void reset() {
-		// used when creating a new Docking instance, mostly to hack the tests
-		utilFrames.clear();
-		windowToDispose = null;
 	}
 
 	public void removeListeners() {
@@ -209,11 +203,11 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		currentTargetWindow = null;
 		originalWindow = DockingComponentUtils.findWindowForDockable(docking, floatingDockable.getDockable());
 
-		rootState = DockingState.getRootState(originalWindow);
+		rootState = DockingState.getRootState(docking, originalWindow);
 
 		RootDockingPanel currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
 
-		floatingFrame = new TempFloatingFrame(floatingDockable.getDockable(), docking, (JComponent) floatingDockable.getHeaderUI());
+		floatingFrame = new TempFloatingFrame(docking, floatingDockable.getDockable(), (JComponent) floatingDockable.getHeaderUI());
 
 		docking.undock(floatingDockable.getDockable());
 
@@ -262,7 +256,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			docking.dock(floatingDockable.getDockable(), currentTopWindow, region, 0.25);
 		}
 		else if (floatingDockable.getDockable().isLimitedToRoot() && floatingDockable.getRoot() != root) {
-			DockingState.restoreState(originalWindow, rootState);
+			DockingState.restoreState(docking, originalWindow, rootState);
 		}
 		else if (currentTopWindow != null && dockingPanel != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToDockable()) {
 			docking.dock(floatingDockable.getDockable(), dockableAtPos, region);
@@ -271,14 +265,14 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			docking.dock(floatingDockable.getDockable(), currentTopWindow, region);
 		}
 		else if (!floatingDockable.getDockable().isFloatingAllowed()) {
-			DockingState.restoreState(originalWindow, rootState);
+			DockingState.restoreState(docking, originalWindow, rootState);
 		}
 		else {
 			new FloatingFrame(docking, floatingDockable.getDockable(), floatingFrame);
 		}
 
 		// auto persist the new layout to the file
-		AppState.persist();
+		AppState.persist(docking);
 
 		if (originalWindow instanceof JDialog) {
 			((JDialog) originalWindow).setModalityType(modalityType);

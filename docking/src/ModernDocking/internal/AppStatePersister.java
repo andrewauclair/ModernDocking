@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package ModernDocking.internal;
 
+import ModernDocking.DockingInstance;
 import ModernDocking.persist.AppState;
 
 import java.awt.*;
@@ -33,6 +34,11 @@ import java.awt.event.WindowStateListener;
  * simple internal class that calls AppState.persist() whenever a frame resizes, moves or changes state
  */
 public class AppStatePersister extends ComponentAdapter implements WindowStateListener {
+	private final DockingInstance docking;
+
+	public AppStatePersister(DockingInstance docking) {
+		this.docking = docking;
+	}
 	/**
 	 * Add a window to this persister. The persister will listen for any changes to the window and trigger the
 	 * auto persistence.
@@ -56,16 +62,16 @@ public class AppStatePersister extends ComponentAdapter implements WindowStateLi
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		AppState.persist();
+		AppState.persist(docking);
 	}
 
 	@Override
 	public void componentMoved(ComponentEvent e) {
-		AppState.persist();
+		AppState.persist(docking);
 	}
 
 	@Override
 	public void windowStateChanged(WindowEvent e) {
-		AppState.persist();
+		AppState.persist(docking);
 	}
 }

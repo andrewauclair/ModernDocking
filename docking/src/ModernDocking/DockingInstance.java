@@ -29,14 +29,12 @@ public class DockingInstance {
     // this may look unused, but we need to create an instance of it to make it work
     private final ActiveDockableHighlighter activeDockableHighlighter = new ActiveDockableHighlighter(this);
 
-    private final AppStatePersister appStatePersister = new AppStatePersister();
+    private final AppStatePersister appStatePersister = new AppStatePersister(this);
 
     private boolean isInOnDockingCallback = false;
 
     public DockingInstance(Window mainWindow) {
         this.mainWindow = mainWindow;
-
-        FloatListener.reset();
 
         // listen for L&F changes so that we can update dockable panels properly when not displayed
         UIManager.addPropertyChangeListener(e -> {
@@ -299,7 +297,7 @@ public class DockingInstance {
         // fire a docked event when the component is actually added
         DockingListeners.fireDockedEvent(dockable);
 
-        AppState.persist();
+        AppState.persist(this);
 
         dockable.onDocked();
     }
@@ -401,7 +399,7 @@ public class DockingInstance {
 
         DockingListeners.fireDockedEvent(source);
 
-        AppState.persist();
+        AppState.persist(this);
     }
 
     /**
@@ -530,7 +528,7 @@ public class DockingInstance {
             window.dispose();
         }
 
-        AppState.persist();
+        AppState.persist(this);
 
         // force this dockable to dock again if we're not floating it
         if (!dockable.isClosable() && !FloatListener.isFloating) {

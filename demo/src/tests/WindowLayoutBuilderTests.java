@@ -55,7 +55,7 @@ public class WindowLayoutBuilderTests extends JFrame implements DockingLayoutLis
         List<SimplePanel> panels = new ArrayList<>();
 
         for (int i = 1; i <= 16; i++) {
-            panels.add(new SimplePanel(String.valueOf(i), String.valueOf(i)));
+            panels.add(new SimplePanel(Docking.getSingleInstance(), String.valueOf(i), String.valueOf(i)));
         }
 
         JMenuBar menuBar = new JMenuBar();

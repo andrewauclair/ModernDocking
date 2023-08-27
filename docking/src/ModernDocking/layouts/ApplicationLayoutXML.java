@@ -76,10 +76,10 @@ public class ApplicationLayoutXML {
 			writer.writeCharacters(NL);
 			writer.writeStartElement("app-layout");
 
-			WindowLayoutXML.saveLayoutToFile(writer, layout.getMainFrameLayout(), true);
+			WindowLayoutXML.saveLayoutToFile(docking, writer, layout.getMainFrameLayout(), true);
 
 			for (WindowLayout frameLayout : layout.getFloatingFrameLayouts()) {
-				WindowLayoutXML.saveLayoutToFile(writer, frameLayout, false);
+				WindowLayoutXML.saveLayoutToFile(docking, writer, frameLayout, false);
 			}
 
 			writer.writeStartElement("undocked");
@@ -87,7 +87,7 @@ public class ApplicationLayoutXML {
 
 			for (Dockable dockable : docking.getDockables()) {
 				if (!docking.isDocked(dockable)) {
-					WindowLayoutXML.writeSimpleNodeToFile(writer, new DockingSimplePanelNode(docking, dockable.getPersistentID(), dockable.getClass().getCanonicalName(), DockableProperties.saveProperties(dockable)));
+					WindowLayoutXML.writeSimpleNodeToFile(docking, writer, new DockingSimplePanelNode(docking, dockable.getPersistentID(), dockable.getClass().getCanonicalName(), DockableProperties.saveProperties(dockable)));
 				}
 			}
 
@@ -113,7 +113,7 @@ public class ApplicationLayoutXML {
 	 * @throws DockingLayoutException Thrown if we failed to read from the file or something went wrong with loading the layout
 	 */
 	public static ApplicationLayout loadLayoutFromFile(File file) throws DockingLayoutException {
-		return loadLayoutFromFile(file, Docking.getSingleInstance());
+		return loadLayoutFromFile(Docking.getSingleInstance(), file);
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class ApplicationLayoutXML {
 	 * @return ApplicationLayout loaded from the file
 	 * @throws DockingLayoutException Thrown if we failed to read from the file or something went wrong with loading the layout
 	 */
-	public static ApplicationLayout loadLayoutFromFile(File file, DockingInstance docking) throws DockingLayoutException {
+	public static ApplicationLayout loadLayoutFromFile(DockingInstance docking, File file) throws DockingLayoutException {
 		XMLInputFactory factory = XMLInputFactory.newInstance();
 
 		XMLStreamReader reader = null;
@@ -137,10 +137,10 @@ public class ApplicationLayoutXML {
 				int next = reader.nextTag();
 
 				if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("layout")) {
-					layout.addFrame(WindowLayoutXML.readLayoutFromReader(reader));
+					layout.addFrame(WindowLayoutXML.readLayoutFromReader(docking, reader));
 				}
 				else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("undocked")) {
-					readUndocked(reader, docking);
+					readUndocked(docking, reader);
 				}
 				else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("app-layout")) {
 					break;
@@ -164,13 +164,13 @@ public class ApplicationLayoutXML {
 		}
 	}
 
-	private static void readUndocked(XMLStreamReader reader, DockingInstance docking) throws XMLStreamException {
+	private static void readUndocked(DockingInstance docking, XMLStreamReader reader) throws XMLStreamException {
 		while (reader.hasNext()) {
 			int next = reader.nextTag();
 
 			if (next == XMLStreamConstants.START_ELEMENT) {
 				if (reader.getLocalName().equals("simple")) {
-					DockingSimplePanelNode node = WindowLayoutXML.readSimpleNodeFromFile(reader);
+					DockingSimplePanelNode node = WindowLayoutXML.readSimpleNodeFromFile(docking, reader);
 
 					DockableProperties.configureProperties(docking.getDockable(node.getPersistentID()), node.getProperties());
 				}

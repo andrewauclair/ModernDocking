@@ -48,6 +48,7 @@ public class DockingState {
     public static RootDockState getRootState(Window window) {
         return getRootState(Docking.getSingleInstance(), window);
     }
+
     public static RootDockState getRootState(DockingInstance docking, Window window) {
         RootDockingPanel root = DockingComponentUtils.rootForWindow(docking, window);
 
@@ -75,7 +76,7 @@ public class DockingState {
             return maxLayout;
         }
 
-        return DockingLayouts.layoutFromRoot(root);
+        return DockingLayouts.layoutFromRoot(docking, root);
     }
 
     public static ApplicationLayout getApplicationLayout() {
@@ -90,11 +91,11 @@ public class DockingState {
     public static ApplicationLayout getApplicationLayout(DockingInstance docking) {
         ApplicationLayout layout = new ApplicationLayout();
 
-        layout.setMainFrame(getWindowLayout(docking.getMainWindow()));
+        layout.setMainFrame(getWindowLayout(docking, docking.getMainWindow()));
 
         for (Window frame : docking.getRootPanels().keySet()) {
             if (frame != docking.getMainWindow()) {
-                layout.addFrame(getWindowLayout(frame));
+                layout.addFrame(getWindowLayout(docking, frame));
             }
         }
 
@@ -130,17 +131,17 @@ public class DockingState {
         AppState.setPaused(true);
 
         // setup main frame
-        restoreWindowLayout(docking.getMainWindow(), layout.getMainFrameLayout());
+        restoreWindowLayout(docking, docking.getMainWindow(), layout.getMainFrameLayout());
 
         // setup rest of floating windows from layout
         for (WindowLayout frameLayout : layout.getFloatingFrameLayouts()) {
             FloatingFrame frame = new FloatingFrame(docking, frameLayout.getLocation(), frameLayout.getSize(), frameLayout.getState());
 
-            restoreWindowLayout(frame, frameLayout);
+            restoreWindowLayout(docking, frame, frameLayout);
         }
 
         AppState.setPaused(false);
-        AppState.persist();
+        AppState.persist(docking);
 
         DockingInternal.fireDockedEventForAll(docking);
     }
@@ -225,10 +226,14 @@ public class DockingState {
     }
 
     public static void restoreWindowLayout_PreserveSizeAndPos(Window window, WindowLayout layout) {
+        restoreWindowLayout_PreserveSizeAndPos(Docking.getSingleInstance(), window, layout);
+    }
+
+    public static void restoreWindowLayout_PreserveSizeAndPos(DockingInstance docking, Window window, WindowLayout layout) {
         Point location = window.getLocation();
         Dimension size = window.getSize();
 
-        restoreWindowLayout(window, layout);
+        restoreWindowLayout(docking, window, layout);
 
         window.setLocation(location);
         window.setSize(size);
@@ -257,7 +262,7 @@ public class DockingState {
         AppState.setPaused(paused);
 
         if (!paused) {
-            AppState.persist();
+            AppState.persist(docking);
         }
     }
 

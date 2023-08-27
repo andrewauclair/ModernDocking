@@ -21,6 +21,8 @@ SOFTWARE.
  */
 package ModernDocking.persist;
 
+import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 import ModernDocking.DockingState;
 import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.layouts.ApplicationLayout;
@@ -29,6 +31,8 @@ import ModernDocking.layouts.ApplicationLayoutXML;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,7 +44,7 @@ public class AppState {
 	private static final int PERSIST_TIMER_DELAY_MS = 500;
 
 	private static boolean autoPersist = false;
-	private static File autoPersistFile = null;
+	private static Map<DockingInstance, File> autoPersistFiles = new HashMap<>();
 
 	private static ApplicationLayout defaultAppLayout = null;
 
@@ -73,7 +77,11 @@ public class AppState {
 	 * @param file File to persist layout to
 	 */
 	public static void setPersistFile(File file) {
-		autoPersistFile = file;
+		setPersistFile(Docking.getSingleInstance(), file);
+	}
+
+	public static void setPersistFile(DockingInstance docking, File file) {
+		autoPersistFiles.put(docking, file);
 	}
 
 	/**
@@ -82,7 +90,11 @@ public class AppState {
 	 * @return The file we are currently persisting to
 	 */
 	public static File getPersistFile() {
-		return autoPersistFile;
+		return autoPersistFiles.get(Docking.getSingleInstance());
+	}
+
+	public static File getPersistFile(DockingInstance docking) {
+		return autoPersistFiles.get(docking);
 	}
 
 	/**
@@ -108,7 +120,11 @@ public class AppState {
 	 * This is a no-op if auto persistence is turned off, it's paused or there is no file
 	 */
 	public static void persist() {
-		if (!autoPersist || paused || autoPersistFile == null) {
+		persist(Docking.getSingleInstance());
+	}
+
+	public static void persist(DockingInstance docking) {
+		if (!autoPersist || paused || autoPersistFiles == null) {
 			return;
 		}
 
@@ -122,10 +138,10 @@ public class AppState {
 					if (!paused) {
 						System.out.println("persist full docking layout");
 
-						ApplicationLayout layout = DockingState.getApplicationLayout();
+						ApplicationLayout layout = DockingState.getApplicationLayout(docking);
 
 						try {
-							ApplicationLayoutXML.saveLayoutToFile(autoPersistFile, layout);
+							ApplicationLayoutXML.saveLayoutToFile(docking, autoPersistFiles.get(docking), layout);
 						}
 						catch (DockingLayoutException ex) {
 							logger.log(Level.INFO, ex.getMessage(), ex);
@@ -144,7 +160,9 @@ public class AppState {
 		}
 	}
 
-	// returns
+	public static boolean restore() throws DockingLayoutException {
+		return restore(Docking.getSingleInstance());
+	}
 
 	/**
 	 * Restore the application layout from the auto persist file.
@@ -152,12 +170,12 @@ public class AppState {
 	 * @return true if and only if a layout is restored from a file. Restoring from the default layout will return false.
 	 * @throws DockingLayoutException Thrown for any issues with the layout file.
 	 */
-	public static boolean restore() throws DockingLayoutException {
+	public static boolean restore(DockingInstance docking) throws DockingLayoutException {
 		// don't restore if auto persist is disabled
-		if (autoPersistFile == null || !autoPersistFile.exists()) {
+		if (!autoPersistFiles.containsKey(docking) || !autoPersistFiles.get(docking).exists()) {
 			// restore the default layout if we have one
 			if (defaultAppLayout != null) {
-				DockingState.restoreApplicationLayout(defaultAppLayout);
+				DockingState.restoreApplicationLayout(docking, defaultAppLayout);
 			}
 			return false;
 		}
@@ -165,15 +183,15 @@ public class AppState {
 		try {
 			AppState.setPaused(true);
 
-			ApplicationLayout layout = ApplicationLayoutXML.loadLayoutFromFile(autoPersistFile);
+			ApplicationLayout layout = ApplicationLayoutXML.loadLayoutFromFile(docking, autoPersistFiles.get(docking));
 
-			DockingState.restoreApplicationLayout(layout);
+			DockingState.restoreApplicationLayout(docking, layout);
 
 			return true;
 		}
 		catch (Exception e) {
 			if (defaultAppLayout != null) {
-				DockingState.restoreApplicationLayout(defaultAppLayout);
+				DockingState.restoreApplicationLayout(docking, defaultAppLayout);
 			}
 
 			if (e instanceof DockingLayoutException) {

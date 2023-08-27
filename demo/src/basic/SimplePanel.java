@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package basic;
 
+import ModernDocking.DockingInstance;
 import ModernDocking.DockingProperty;
 import ModernDocking.ui.DefaultHeaderUI;
 import ModernDocking.ui.DockingHeaderUI;
@@ -71,8 +72,8 @@ public class SimplePanel extends BasePanel {
 	@DockingProperty(name = "test_int_1", defaultValue = "5")
 	private int test_int_1;
 
-	public SimplePanel(String title, String persistentID) {
-		super(title, persistentID);
+	public SimplePanel(DockingInstance docking, String title, String persistentID) {
+		super(docking, title, persistentID);
 		tabText = title;
 	}
 
