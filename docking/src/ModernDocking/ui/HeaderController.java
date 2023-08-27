@@ -23,6 +23,7 @@ package ModernDocking.ui;
 
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 import ModernDocking.event.DockingEvent;
 import ModernDocking.event.DockingListener;
 import ModernDocking.event.MaximizeListener;
@@ -33,12 +34,15 @@ import ModernDocking.internal.DockingListeners;
  */
 public class HeaderController implements MaximizeListener, DockingListener {
 	private final Dockable dockable;
+	private final DockingInstance docking;
+
 	private final HeaderModel model;
 
 	private DockingHeaderUI ui;
 
-	public HeaderController(Dockable dockable, HeaderModel model) {
+	public HeaderController(Dockable dockable, DockingInstance docking, HeaderModel model) {
 		this.dockable = dockable;
+		this.docking = docking;
 		this.model = model;
 
 		DockingListeners.addMaximizeListener(this);
@@ -58,39 +62,39 @@ public class HeaderController implements MaximizeListener, DockingListener {
 	 * Pin the dockable
 	 */
 	public void pinDockable() {
-		Docking.pinDockable(dockable);
+		docking.pinDockable(dockable);
 	}
 
 	/**
 	 * Set the dockable to unpinned
 	 */
 	public void unpinDockable() {
-		Docking.unpinDockable(dockable);
+		docking.unpinDockable(dockable);
 	}
 
 	/**
 	 * Launch the dockable in a new window
 	 */
 	public void newWindow() {
-		Docking.newWindow(dockable);
+		docking.newWindow(dockable);
 	}
 
 	/**
 	 * Minimize the dockable
 	 */
 	public void minimize() {
-		Docking.minimize(dockable);
+		docking.minimize(dockable);
 	}
 
 	/**
 	 * Maximize the dockable
 	 */
 	public void maximize() {
-		Docking.maximize(dockable);
+		docking.maximize(dockable);
 	}
 
 	public void close() {
-		Docking.undock(dockable);
+		docking.undock(dockable);
 	}
 
 	@Override

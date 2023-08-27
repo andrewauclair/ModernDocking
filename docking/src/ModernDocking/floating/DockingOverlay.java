@@ -21,10 +21,7 @@ SOFTWARE.
  */
 package ModernDocking.floating;
 
-import ModernDocking.Dockable;
-import ModernDocking.DockableStyle;
-import ModernDocking.DockingRegion;
-import ModernDocking.RootDockingPanel;
+import ModernDocking.*;
 import ModernDocking.internal.DockingInternal;
 import ModernDocking.ui.DockingSettings;
 
@@ -58,6 +55,7 @@ public class DockingOverlay {
 	// the total size of the overlay, used for drawing
 	private Dimension size;
 
+	private final DockingInstance docking;
 	// the utility frame that this overlay belongs to
 	private final JFrame utilFrame;
 
@@ -73,7 +71,8 @@ public class DockingOverlay {
 	 * @param utilFrame The utility frame this overlay covers
 	 * @param root The root of the frame under the utility frame
 	 */
-	public DockingOverlay(JFrame utilFrame, RootDockingPanel root) {
+	public DockingOverlay(DockingInstance docking, JFrame utilFrame, RootDockingPanel root) {
+		this.docking = docking;
 		this.utilFrame = utilFrame;
 
 		targetRoot = root;
@@ -163,7 +162,7 @@ public class DockingOverlay {
 			this.size = size;
 		}
 		else if (targetDockable != null && dockableRegion != null) {
-			JComponent component = DockingInternal.getWrapper(targetDockable).getDisplayPanel();
+			JComponent component = docking.getWrapper(targetDockable).getDisplayPanel();
 
 			Point point = component.getLocation();
 			Dimension size = component.getSize();
@@ -199,7 +198,7 @@ public class DockingOverlay {
 			this.size = size;
 		}
 		else if (targetDockable != null) {
-			JComponent component = DockingInternal.getWrapper(targetDockable).getDisplayPanel();
+			JComponent component = docking.getWrapper(targetDockable).getDisplayPanel();
 
 			Point framePoint = new Point(screenPos);
 			SwingUtilities.convertPointFromScreen(framePoint, utilFrame);
@@ -284,7 +283,7 @@ public class DockingOverlay {
 		// use the target dockable if we have one, otherwise use the root
 		JComponent component;
 		if (targetDockable != null) {
-			component = DockingInternal.getWrapper(targetDockable).getDisplayPanel();
+			component = docking.getWrapper(targetDockable).getDisplayPanel();
 		}
 		else {
 			component = targetRoot;

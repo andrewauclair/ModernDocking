@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockingInstance;
 import ModernDocking.RootDockingPanel;
 import ModernDocking.util.CombinedIcon;
 import ModernDocking.util.RotatedIcon;
@@ -42,6 +43,8 @@ import java.util.stream.Collectors;
  * that are unpinned
  */
 public class DockableToolbar extends JPanel implements ComponentListener {
+	private final DockingInstance docking;
+
 	/**
 	 * Location of the toolbar. Toolbars are supported to the West, South and East of a window
 	 */
@@ -103,8 +106,9 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	 * @param root The root of the attached window
 	 * @param location The location of this toolbar within the window
 	 */
-	public DockableToolbar(Window window, RootDockingPanel root, Location location) {
+	public DockableToolbar(DockingInstance docking, Window window, RootDockingPanel root, Location location) {
 		super(new GridBagLayout());
+		this.docking = docking;
 
 		// the window must be a JFrame or a JDialog to support pinning (we need a JLayeredPane)
 		assert window instanceof JFrame || window instanceof JDialog;
@@ -193,8 +197,6 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	 */
 	public void addDockable(Dockable dockable) {
 		if (!hasDockable(dockable)) {
-			DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
-
 			JToggleButton button = new JToggleButton();
 
 			button.setIcon(dockable.getIcon());
@@ -203,8 +205,8 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 				TextIcon textIcon = new TextIcon(button, dockable.getTabText(), TextIcon.Layout.HORIZONTAL);
 				RotatedIcon rotatedIcon = new RotatedIcon(textIcon, location == Location.WEST ? RotatedIcon.Rotate.UP : RotatedIcon.Rotate.DOWN);
 
-				if (wrapper.getDockable().getIcon() != null) {
-					button.setIcon(new CombinedIcon(wrapper.getDockable().getIcon(), rotatedIcon));
+				if (dockable.getIcon() != null) {
+					button.setIcon(new CombinedIcon(dockable.getIcon(), rotatedIcon));
 				}
 				else {
 					button.setIcon(rotatedIcon);
@@ -220,9 +222,9 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 				button.setText(dockable.getTabText());
 			}
 
-			DockedUnpinnedPanel panel = new DockedUnpinnedPanel(dockable, root, this);
+			DockedUnpinnedPanel panel = new DockedUnpinnedPanel(docking, dockable, root, this);
 
-			wrapper.setWindow(window);
+			docking.getWrapper(dockable).setWindow(window);
 
 			// update all the buttons and panels
 			button.addActionListener(e -> updateButtons());

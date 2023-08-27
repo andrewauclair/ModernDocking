@@ -23,6 +23,7 @@ package ModernDocking.ui;
 
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 import ModernDocking.internal.DockingInternal;
 
 import javax.swing.*;
@@ -43,6 +44,7 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 	 * The persistent ID of the dockable which will be displayed when this dockable is clicked
 	 */
 	private final String persistentID;
+	private final DockingInstance docking;
 
 	/**
 	 * Create a new DockableMenuItem
@@ -50,15 +52,26 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 	 * @param dockable The dockable to dock when this menu item is selected
 	 */
 	public DockableMenuItem(Dockable dockable) {
-		this(dockable.getPersistentID(), dockable.getTabText());
+		this(Docking.getSingleInstance(), dockable);
 	}
+
+	public DockableMenuItem(DockingInstance docking, Dockable dockable) {
+		this(docking, dockable.getPersistentID(), dockable.getTabText());
+	}
+
 	/**
 	 *
 	 * @param persistentID The dockable this menu item refers to
 	 * @param text The display text for this menu item
 	 */
 	public DockableMenuItem(String persistentID, String text) {
+		this(Docking.getSingleInstance(), persistentID, text);
+	}
+
+	public DockableMenuItem(DockingInstance docking, String persistentID, String text) {
 		super(text);
+
+		this.docking = docking;
 
 		this.persistentIDProvider = null;
 		this.persistentID = persistentID;
@@ -72,7 +85,13 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 	 * @param text The display text for this menu item
 	 */
 	public DockableMenuItem(Supplier<String> persistentIDProvider, String text) {
+		this(Docking.getSingleInstance(), persistentIDProvider, text);
+	}
+
+	public DockableMenuItem(DockingInstance docking, Supplier<String> persistentIDProvider, String text) {
 		super(text);
+
+		this.docking = docking;
 
 		this.persistentIDProvider = persistentIDProvider;
 		this.persistentID = "";
@@ -85,24 +104,24 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 		super.addNotify();
 
 		// update the menu item, it's about to be displayed
-		Dockable dockable = DockingInternal.getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
-		setSelected(Docking.isDocked(dockable));
+		Dockable dockable = docking.getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
+		setSelected(docking.isDocked(dockable));
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Dockable dockable = DockingInternal.getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
+		Dockable dockable = docking.getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
 
 		// if dockable is already docked then bring it to the front
 		// else, dock it
-		if (Docking.isDocked(dockable)) {
-			Docking.bringToFront(dockable);
+		if (docking.isDocked(dockable)) {
+			docking.bringToFront(dockable);
 		}
 		else {
-			Docking.display(dockable);
+			docking.display(dockable);
 		}
 
 		// set this menu item to the state of the dockable, should be docked at this point
-		setSelected(Docking.isDocked(dockable));
+		setSelected(docking.isDocked(dockable));
 	}
 }

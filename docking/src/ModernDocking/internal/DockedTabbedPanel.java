@@ -23,6 +23,7 @@ package ModernDocking.internal;
 
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 import ModernDocking.DockingRegion;
 import ModernDocking.floating.FloatListener;
 import ModernDocking.persist.AppState;
@@ -49,6 +50,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	private final List<DockableWrapper> panels = new ArrayList<>();
 
 	private final JTabbedPane tabs = new JTabbedPane();
+	private final DockingInstance docking;
 
 	/**
 	 * The parent of this DockedTabbedPanel
@@ -67,7 +69,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 *
 	 * @param dockable The first dockable in the tabbed pane
 	 */
-	public DockedTabbedPanel(DockableWrapper dockable) {
+	public DockedTabbedPanel(DockingInstance docking, DockableWrapper dockable) {
+		this.docking = docking;
 		setLayout(new BorderLayout());
 
 		// set the initial border. Docking handles the border after this using a global AWT listener
@@ -117,7 +120,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		panel.add(menu, gbc);
 
 		tabs.putClientProperty("JTabbedPane.trailingComponent", panel);
-		tabs.putClientProperty("JTabbedPane.tabCloseCallback", (IntConsumer) tabIndex -> Docking.undock(panels.get(tabIndex).getDockable()));
+		tabs.putClientProperty("JTabbedPane.tabCloseCallback", (IntConsumer) tabIndex -> docking.undock(panels.get(tabIndex).getDockable()));
 	}
 
 	private void setupButton(JButton button) {
@@ -232,23 +235,23 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 	@Override
 	public void dock(Dockable dockable, DockingRegion region, double dividerProportion) {
-		DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
+		DockableWrapper wrapper = docking.getWrapper(dockable);
 		wrapper.setWindow(panels.get(0).getWindow());
 
 		if (region == DockingRegion.CENTER) {
 			addPanel(wrapper);
 		}
 		else {
-			DockedSplitPanel split = new DockedSplitPanel(panels.get(0).getWindow());
+			DockedSplitPanel split = new DockedSplitPanel(docking, panels.get(0).getWindow());
 			parent.replaceChild(this, split);
 
 			DockingPanel newPanel;
 
 			if (Docking.alwaysDisplayTabsMode()) {
-				newPanel = new DockedTabbedPanel(wrapper);
+				newPanel = new DockedTabbedPanel(docking, wrapper);
 			}
 			else {
-				newPanel = new DockedSimplePanel(wrapper);
+				newPanel = new DockedSimplePanel(docking, wrapper);
 			}
 
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
@@ -277,10 +280,10 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 	@Override
 	public void undock(Dockable dockable) {
-		removePanel(DockingInternal.getWrapper(dockable));
+		removePanel(docking.getWrapper(dockable));
 
 		if (!Docking.alwaysDisplayTabsMode() && tabs.getTabCount() == 1 && parent != null) {
-			parent.replaceChild(this, new DockedSimplePanel(panels.get(0)));
+			parent.replaceChild(this, new DockedSimplePanel(docking, panels.get(0)));
 		}
 
 		if (tabs.getTabCount() == 0) {

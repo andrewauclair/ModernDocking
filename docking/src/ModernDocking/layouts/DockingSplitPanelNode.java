@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.layouts;
 
  import ModernDocking.Docking;
+ import ModernDocking.DockingInstance;
  import ModernDocking.DockingRegion;
  import ModernDocking.internal.DockingInternal;
 
@@ -31,7 +32,8 @@ package ModernDocking.layouts;
   * Layout node that represents a splitpane
   */
  public class DockingSplitPanelNode implements DockingLayoutNode {
-	private DockingLayoutNode left;
+	 private final DockingInstance docking;
+	 private DockingLayoutNode left;
 	private DockingLayoutNode right;
 	private final int orientation;
 	private final double dividerProportion;
@@ -46,7 +48,8 @@ package ModernDocking.layouts;
 	  * @param orientation The orientation of the split
 	  * @param dividerProportion The divider proportion of the split
 	  */
-	public DockingSplitPanelNode(DockingLayoutNode left, DockingLayoutNode right, int orientation, double dividerProportion) {
+	public DockingSplitPanelNode(DockingInstance docking, DockingLayoutNode left, DockingLayoutNode right, int orientation, double dividerProportion) {
+		this.docking = docking;
 		this.left = left;
 		this.right = right;
 		this.orientation = orientation;
@@ -95,14 +98,14 @@ package ModernDocking.layouts;
 			DockingLayoutNode right;
 
 			if (Docking.alwaysDisplayTabsMode()) {
-				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingTabPanelNode(persistentID) : this;
-				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(persistentID);
+				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingTabPanelNode(docking, persistentID) : this;
+				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(docking, persistentID);
 			}
 			else {
-				String className = DockingInternal.getDockable(persistentID).getClass().getCanonicalName();
+				String className = docking.getDockable(persistentID).getClass().getCanonicalName();
 
-				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(persistentID, className) : this;
-				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(persistentID, className);
+				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(docking, persistentID, className) : this;
+				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(docking, persistentID, className);
 			}
 
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
@@ -110,7 +113,7 @@ package ModernDocking.layouts;
 			}
 
 			DockingLayoutNode oldParent = parent;
-			DockingSplitPanelNode split = new DockingSplitPanelNode(left, right, orientation, dividerProportion);
+			DockingSplitPanelNode split = new DockingSplitPanelNode(docking, left, right, orientation, dividerProportion);
 			oldParent.replaceChild(this, split);
 		}
 	}

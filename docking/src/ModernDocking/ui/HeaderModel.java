@@ -23,6 +23,7 @@ package ModernDocking.ui;
 
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 
 import javax.swing.*;
 
@@ -35,13 +36,16 @@ public class HeaderModel {
 	 */
 	public final Dockable dockable;
 
+	private final DockingInstance docking;
+
 	/**
 	 * Create a new model for the given dockable
 	 *
 	 * @param dockable Dockable for the model
 	 */
-	public HeaderModel(Dockable dockable) {
+	public HeaderModel(Dockable dockable, DockingInstance docking) {
 		this.dockable = dockable;
+		this.docking = docking;
 	}
 
 	/**
@@ -81,7 +85,7 @@ public class HeaderModel {
 	}
 
 	public boolean isUnpinned() {
-		return Docking.isUnpinned(dockable);
+		return docking.isUnpinned(dockable);
 	}
 
 	/**
@@ -94,7 +98,7 @@ public class HeaderModel {
 	}
 
 	public boolean isMaximized() {
-		return Docking.isMaximized(dockable);
+		return docking.isMaximized(dockable);
 	}
 
 	public boolean isCloseAllowed() {

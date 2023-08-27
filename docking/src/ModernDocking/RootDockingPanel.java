@@ -33,6 +33,8 @@ import java.util.List;
  * Panel that should be added to each frame that should support docking
  */
 public class RootDockingPanel extends DockingPanel {
+	private DockingInstance docking = Docking.getSingleInstance();
+
 	private Window window;
 
 	private DockingPanel panel;
@@ -70,20 +72,31 @@ public class RootDockingPanel extends DockingPanel {
 	 * @param window Window this root panel is attached to
 	 */
 	public RootDockingPanel(Window window) {
+		this(window, Docking.getSingleInstance());
+	}
+
+	/**
+	 * Create a new RootDockingPanel for the given window with a specific docking instance
+	 *
+	 * @param window Window this root panel is attached to
+	 * @param docking Instance of the docking framework to use, if multiple are in use
+	 */
+	public RootDockingPanel(Window window, DockingInstance docking) {
 		setLayout(new GridBagLayout());
 
 		this.window = window;
+		this.docking = docking;
 
 		if (window instanceof JFrame) {
-			Docking.registerDockingPanel(this, (JFrame) window);
+			docking.registerDockingPanel(this, (JFrame) window);
 		}
 		else {
-			Docking.registerDockingPanel(this, (JDialog) window);
+			docking.registerDockingPanel(this, (JDialog) window);
 		}
 
-		southToolbar = new DockableToolbar(window, this, DockableToolbar.Location.SOUTH);
-		westToolbar = new DockableToolbar(window, this, DockableToolbar.Location.WEST);
-		eastToolbar = new DockableToolbar(window, this, DockableToolbar.Location.EAST);
+		southToolbar = new DockableToolbar(docking, window, this, DockableToolbar.Location.SOUTH);
+		westToolbar = new DockableToolbar(docking, window, this, DockableToolbar.Location.WEST);
+		eastToolbar = new DockableToolbar(docking, window, this, DockableToolbar.Location.EAST);
 
 		supportedToolbars = EnumSet.allOf(DockableToolbar.Location.class);
 		pinningSupported = !supportedToolbars.isEmpty();
@@ -109,20 +122,20 @@ public class RootDockingPanel extends DockingPanel {
 	 */
 	public void setWindow(Window window) {
 		if (this.window != null) {
-			Docking.deregisterDockingPanel(this.window);
+			docking.deregisterDockingPanel(this.window);
 		}
 		this.window = window;
 
 		if (window instanceof JFrame) {
-			Docking.registerDockingPanel(this, (JFrame) window);
+			docking.registerDockingPanel(this, (JFrame) window);
 		}
 		else {
-			Docking.registerDockingPanel(this, (JDialog) window);
+			docking.registerDockingPanel(this, (JDialog) window);
 		}
 
-		southToolbar = new DockableToolbar(window, this, DockableToolbar.Location.SOUTH);
-		westToolbar = new DockableToolbar(window, this, DockableToolbar.Location.WEST);
-		eastToolbar = new DockableToolbar(window, this, DockableToolbar.Location.EAST);
+		southToolbar = new DockableToolbar(docking, window, this, DockableToolbar.Location.SOUTH);
+		westToolbar = new DockableToolbar(docking, window, this, DockableToolbar.Location.WEST);
+		eastToolbar = new DockableToolbar(docking, window, this, DockableToolbar.Location.EAST);
 
 		supportedToolbars = EnumSet.allOf(DockableToolbar.Location.class);
 	}
@@ -231,7 +244,7 @@ public class RootDockingPanel extends DockingPanel {
 	@Override
 	public void removeNotify() {
 		Window rootWindow = (Window) SwingUtilities.getRoot(this);
-		Docking.deregisterDockingPanel(rootWindow);
+		docking.deregisterDockingPanel(rootWindow);
 
 		super.removeNotify();
 	}
@@ -248,12 +261,12 @@ public class RootDockingPanel extends DockingPanel {
 			panel.dock(dockable, region, dividerProportion);
 		}
 		else if (Docking.alwaysDisplayTabsMode()) {
-			setPanel(new DockedTabbedPanel(DockingInternal.getWrapper(dockable)));
-			DockingInternal.getWrapper(dockable).setWindow(window);
+			setPanel(new DockedTabbedPanel(docking, docking.getWrapper(dockable)));
+			docking.getWrapper(dockable).setWindow(window);
 		}
 		else {
-			setPanel(new DockedSimplePanel(DockingInternal.getWrapper(dockable)));
-			DockingInternal.getWrapper(dockable).setWindow(window);
+			setPanel(new DockedSimplePanel(docking, docking.getWrapper(dockable)));
+			docking.getWrapper(dockable).setWindow(window);
 		}
 	}
 

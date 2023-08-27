@@ -49,6 +49,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 	// current floating dockable
 	private final DockableWrapper floatingDockable;
+	private final DockingInstance docking;
 
 	// our drag source to support dragging the dockables
 	private final DragSource dragSource = new DragSource();
@@ -72,8 +73,9 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 	private ModalityType modalityType = ModalityType.MODELESS;
 
-	public FloatListener(DockableWrapper dockable, Component dragSource) {
+	public FloatListener(DockableWrapper dockable, DockingInstance docking, Component dragSource) {
 		this.floatingDockable = dockable;
+		this.docking = docking;
 
 		if (dragSource != null) {
 			this.dragSource.addDragSourceMotionListener(FloatListener.this);
@@ -117,8 +119,8 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		floatingDockable.removedListeners();
 	}
 
-	public static void registerDockingWindow(Window window, RootDockingPanel root) {
-		utilFrames.put(window, new DockingUtilsFrame(window, root));
+	public static void registerDockingWindow(DockingInstance docking, Window window, RootDockingPanel root) {
+		utilFrames.put(window, new DockingUtilsFrame(docking, window, root));
 	}
 
 	public static void deregisterDockingWindow(Window window) {
@@ -131,7 +133,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		floatingFrame.setLocation(framePos);
 
 		// find the frame at our current position
-		Window frame = DockingComponentUtils.findRootAtScreenPos(mousePosOnScreen);
+		Window frame = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
 
 		// findRootAtScreenPos has a tendency to find the last added frame at the position. meaning it ignores Z order. override it here because we know better.
 		if (currentTopWindow != null && currentTopWindow.getBounds().contains(mousePosOnScreen)) {
@@ -205,19 +207,19 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		dragOffset.x = Math.max(5, dragOffset.x);
 
 		currentTargetWindow = null;
-		originalWindow = DockingComponentUtils.findWindowForDockable(floatingDockable.getDockable());
+		originalWindow = DockingComponentUtils.findWindowForDockable(docking, floatingDockable.getDockable());
 
 		rootState = DockingState.getRootState(originalWindow);
 
-		RootDockingPanel currentRoot = DockingComponentUtils.rootForWindow(originalWindow);
+		RootDockingPanel currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
 
-		floatingFrame = new TempFloatingFrame(floatingDockable.getDockable(), (JComponent) floatingDockable.getHeaderUI());
+		floatingFrame = new TempFloatingFrame(floatingDockable.getDockable(), docking, (JComponent) floatingDockable.getHeaderUI());
 
-		Docking.undock(floatingDockable.getDockable());
+		docking.undock(floatingDockable.getDockable());
 
-		DockingComponentUtils.removeIllegalFloats(originalWindow);
+		DockingComponentUtils.removeIllegalFloats(docking, originalWindow);
 
-		if (originalWindow != null && currentRoot != null && currentRoot.getPanel() == null && Docking.canDisposeWindow(originalWindow)) {
+		if (originalWindow != null && currentRoot != null && currentRoot.getPanel() == null && docking.canDisposeWindow(originalWindow)) {
 			windowToDispose = originalWindow;
 			windowToDispose.setVisible(false);
 		}
@@ -249,7 +251,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 		Point point = MouseInfo.getPointerInfo().getLocation();
 
-		RootDockingPanel root = currentTopWindow == null ? null : DockingComponentUtils.rootForWindow(currentTopWindow);
+		RootDockingPanel root = currentTopWindow == null ? null : DockingComponentUtils.rootForWindow(docking, currentTopWindow);
 
 		DockingPanel dockingPanel = DockingComponentUtils.findDockingPanelAtScreenPos(point, currentTopWindow);
 		Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(point, currentTopWindow);
@@ -257,22 +259,22 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		DockingRegion region = activeUtilsFrame != null ? activeUtilsFrame.getRegion(mousePos) : DockingRegion.CENTER;
 
 		if (root != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToRoot()) {
-			Docking.dock(floatingDockable.getDockable(), currentTopWindow, region, 0.25);
+			docking.dock(floatingDockable.getDockable(), currentTopWindow, region, 0.25);
 		}
 		else if (floatingDockable.getDockable().isLimitedToRoot() && floatingDockable.getRoot() != root) {
 			DockingState.restoreState(originalWindow, rootState);
 		}
 		else if (currentTopWindow != null && dockingPanel != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToDockable()) {
-			Docking.dock(floatingDockable.getDockable(), dockableAtPos, region);
+			docking.dock(floatingDockable.getDockable(), dockableAtPos, region);
 		}
 		else if (root != null && region != DockingRegion.CENTER && activeUtilsFrame == null) {
-			Docking.dock(floatingDockable.getDockable(), currentTopWindow, region);
+			docking.dock(floatingDockable.getDockable(), currentTopWindow, region);
 		}
 		else if (!floatingDockable.getDockable().isFloatingAllowed()) {
 			DockingState.restoreState(originalWindow, rootState);
 		}
 		else {
-			new FloatingFrame(floatingDockable.getDockable(), floatingFrame);
+			new FloatingFrame(docking, floatingDockable.getDockable(), floatingFrame);
 		}
 
 		// auto persist the new layout to the file
@@ -286,7 +288,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 		// if we're disposing the frame we started dragging from, dispose of it now
 		if (windowToDispose != null) {
-			Docking.deregisterDockingPanel(windowToDispose);
+			docking.deregisterDockingPanel(windowToDispose);
 			windowToDispose.dispose();
 			windowToDispose = null;
 		}

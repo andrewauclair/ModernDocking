@@ -21,6 +21,8 @@ SOFTWARE.
  */
 package ModernDocking.layouts;
 
+import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 import ModernDocking.internal.DockingInternal;
 
 import javax.xml.stream.*;
@@ -144,9 +146,13 @@ public class WindowLayoutXML {
 	}
 
 	public static void writeSimpleNodeToFile(XMLStreamWriter writer, DockingSimplePanelNode node) throws XMLStreamException {
+		writeSimpleNodeToFile(Docking.getSingleInstance(), writer, node);
+	}
+
+	public static void writeSimpleNodeToFile(DockingInstance docking, XMLStreamWriter writer, DockingSimplePanelNode node) throws XMLStreamException {
 		writer.writeStartElement("simple");
 		writer.writeAttribute("persistentID", node.getPersistentID());
-		writer.writeAttribute("class-name", DockingInternal.getDockable(node.getPersistentID()).getClass().getCanonicalName());
+		writer.writeAttribute("class-name", docking.getDockable(node.getPersistentID()).getClass().getCanonicalName());
 		writer.writeCharacters(NL);
 
 		writer.writeStartElement("properties");
@@ -311,6 +317,10 @@ public class WindowLayoutXML {
 	}
 
 	private static DockingLayoutNode readNodeFromFile(XMLStreamReader reader, String name) throws XMLStreamException {
+		return readNodeFromFile(Docking.getSingleInstance(), reader, name);
+	}
+
+	private static DockingLayoutNode readNodeFromFile(DockingInstance docking, XMLStreamReader reader, String name) throws XMLStreamException {
 		DockingLayoutNode node = null;
 		while (reader.hasNext()) {
 			int next = reader.nextTag();
@@ -320,10 +330,10 @@ public class WindowLayoutXML {
 					node = readSimpleNodeFromFile(reader);
 				}
 				else if (reader.getLocalName().equals("split")) {
-					node = readSplitNodeFromFile(reader);
+					node = readSplitNodeFromFile(docking, reader);
 				}
 				else if (reader.getLocalName().equals("tabbed")) {
-					node = readTabNodeFromFile(reader);
+					node = readTabNodeFromFile(docking, reader);
 				}
 			}
 			else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals(name)) {
@@ -334,10 +344,14 @@ public class WindowLayoutXML {
 	}
 
 	public static DockingSimplePanelNode readSimpleNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
+		return readSimpleNodeFromFile(Docking.getSingleInstance(), reader);
+	}
+
+	public static DockingSimplePanelNode readSimpleNodeFromFile(DockingInstance docking, XMLStreamReader reader) throws XMLStreamException {
 		String persistentID = reader.getAttributeValue(0);
 		String className = reader.getAttributeValue(1);
 
-		return new DockingSimplePanelNode(persistentID, className, readProperties(reader));
+		return new DockingSimplePanelNode(docking, persistentID, className, readProperties(reader));
 	}
 
 	private static Map<String, String> readProperties(XMLStreamReader reader) throws XMLStreamException {
@@ -360,7 +374,7 @@ public class WindowLayoutXML {
 		return properties;
 	}
 
-	private static DockingSplitPanelNode readSplitNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
+	private static DockingSplitPanelNode readSplitNodeFromFile(DockingInstance docking, XMLStreamReader reader) throws XMLStreamException {
 		DockingLayoutNode left = null;
 		DockingLayoutNode right = null;
 
@@ -389,10 +403,10 @@ public class WindowLayoutXML {
 				break;
 			}
 		}
-		return new DockingSplitPanelNode(left, right, orientation, dividerProportion);
+		return new DockingSplitPanelNode(docking, left, right, orientation, dividerProportion);
 	}
 
-	private static DockingTabPanelNode readTabNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
+	private static DockingTabPanelNode readTabNodeFromFile(DockingInstance docking, XMLStreamReader reader) throws XMLStreamException {
 		DockingTabPanelNode node = null;//new DockingTabPanelNode("");
 
 		String currentPersistentID = "";
@@ -402,7 +416,7 @@ public class WindowLayoutXML {
 
 			if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("selectedTab")) {
 				String persistentID = reader.getAttributeValue(0);
-				node = new DockingTabPanelNode(persistentID);
+				node = new DockingTabPanelNode(docking, persistentID);
 			}
 			else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("tab")) {
 				currentPersistentID = reader.getAttributeValue(0);

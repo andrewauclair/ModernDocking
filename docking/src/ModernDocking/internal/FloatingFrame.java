@@ -23,16 +23,18 @@ package ModernDocking.internal;
 
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 import ModernDocking.RootDockingPanel;
 import ModernDocking.floating.TempFloatingFrame;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static ModernDocking.internal.DockingInternal.getWrapper;
-
 public class FloatingFrame extends JFrame {
-	public FloatingFrame() {
+	private final DockingInstance docking;
+
+	public FloatingFrame(DockingInstance docking) {
+		this.docking = docking;
 		setLayout(new BorderLayout());
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -43,14 +45,15 @@ public class FloatingFrame extends JFrame {
 		add(root, BorderLayout.CENTER);
 
 		// allow pinning for this frame
-		Docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
+		docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
 
 		setVisible(true);
 
 		pack();
 	}
 
-	public FloatingFrame(Point location, Dimension size, int state) {
+	public FloatingFrame(DockingInstance docking, Point location, Dimension size, int state) {
+		this.docking = docking;
 		setLocation(location);
 		setSize(size);
 		setExtendedState(state);
@@ -65,15 +68,17 @@ public class FloatingFrame extends JFrame {
 		add(root, BorderLayout.CENTER);
 
 		// allow pinning for this frame
-		Docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
+		docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
 
 		setVisible(true);
 
 	}
 
 	// create a new floating frame. this is used when calling Docking.newWindow or when restoring the layout from a file
-	public FloatingFrame(Dockable dockable, Point location, Dimension size, int state) {
-		DisplayPanel displayPanel = getWrapper(dockable).getDisplayPanel();
+	public FloatingFrame(DockingInstance docking, Dockable dockable, Point location, Dimension size, int state) {
+		this.docking = docking;
+
+		DisplayPanel displayPanel = docking.getWrapper(dockable).getDisplayPanel();
 
 		Point point = displayPanel.getLocation();
 		SwingUtilities.convertPointToScreen(point, displayPanel.getParent());
@@ -92,7 +97,7 @@ public class FloatingFrame extends JFrame {
 		add(root, BorderLayout.CENTER);
 
 		// allow pinning for this frame
-		Docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
+		docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
 
 		setVisible(true);
 
@@ -100,11 +105,12 @@ public class FloatingFrame extends JFrame {
 	}
 
 	// create a floating frame from a temporary frame as a result of docking
-	public FloatingFrame(Dockable dockable, TempFloatingFrame floatingFrame) {
+	public FloatingFrame(DockingInstance docking, Dockable dockable, TempFloatingFrame floatingFrame) {
+		this.docking = docking;
 		setLayout(new BorderLayout());
 
 		// size the frame to the dockable size + the border size of the frame
-		Dimension size = getWrapper(dockable).getDisplayPanel().getSize();
+		Dimension size = docking.getWrapper(dockable).getDisplayPanel().getSize();
 
 		setSize(size);
 
@@ -119,10 +125,10 @@ public class FloatingFrame extends JFrame {
 		add(root, BorderLayout.CENTER);
 
 		// allow pinning on this frame
-		Docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
+		docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
 
 		// finally, dock the dockable and show this frame
-		Docking.dock(dockable, this);
+		docking.dock(dockable, this);
 
 		setVisible(true);
 
@@ -135,7 +141,7 @@ public class FloatingFrame extends JFrame {
 	private void finalizeSize(Dockable dockable, Point onScreenPoint, Dimension onScreenSize) {
 		SwingUtilities.invokeLater(() -> {
 			// adjust the floating frame such that the dockable is in the correct location
-			DisplayPanel displayPanel = getWrapper(dockable).getDisplayPanel();
+			DisplayPanel displayPanel = docking.getWrapper(dockable).getDisplayPanel();
 
 
 			Point point = displayPanel.getLocation();
@@ -159,7 +165,7 @@ public class FloatingFrame extends JFrame {
 	@Override
 	public void dispose() {
 		// deregister the root panel now that we're disposing this frame
-		Docking.deregisterDockingPanel(this);
+		docking.deregisterDockingPanel(this);
 
 		super.dispose();
 	}

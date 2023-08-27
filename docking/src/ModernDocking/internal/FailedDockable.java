@@ -23,6 +23,7 @@ package ModernDocking.internal;
 
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 
 import javax.swing.*;
 
@@ -32,6 +33,7 @@ import javax.swing.*;
  * These are stripped out after restoring from the layout.
  */
 public class FailedDockable extends JPanel implements Dockable {
+	private final DockingInstance docking;
 	/**
 	 * Persistent ID that no dockable has been registered for
 	 */
@@ -42,17 +44,18 @@ public class FailedDockable extends JPanel implements Dockable {
 	 *
 	 * @param persistentID Persistent ID that has failed to load
 	 */
-	public FailedDockable(String persistentID) {
+	public FailedDockable(DockingInstance docking, String persistentID) {
+		this.docking = docking;
 		this.persistentID = persistentID;
 
-		Docking.registerDockable(this);
+		docking.registerDockable(this);
 	}
 
 	/**
 	 * Deregister this dockable
 	 */
 	public void destroy() {
-		Docking.deregisterDockable(this);
+		docking.deregisterDockable(this);
 	}
 
 	@Override

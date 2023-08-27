@@ -23,6 +23,7 @@ package ModernDocking.internal;
 
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 import ModernDocking.DockingRegion;
 
 import javax.swing.*;
@@ -37,6 +38,8 @@ public class DockedSimplePanel extends DockingPanel {
 	 */
 	private final DockableWrapper dockable;
 
+	private final DockingInstance docking;
+
 	/**
 	 * Parent panel of this simple panel
 	 */
@@ -47,7 +50,7 @@ public class DockedSimplePanel extends DockingPanel {
 	 *
 	 * @param dockable Wrapper of the dockable in this simple panel
 	 */
-	public DockedSimplePanel(DockableWrapper dockable) {
+	public DockedSimplePanel(DockingInstance docking, DockableWrapper dockable) {
 		setLayout(new BorderLayout());
 
 		setNotSelectedBorder();
@@ -55,6 +58,7 @@ public class DockedSimplePanel extends DockingPanel {
 		dockable.setParent(this);
 
 		this.dockable = dockable;
+		this.docking = docking;
 
 		add(dockable.getDisplayPanel(), BorderLayout.CENTER);
 	}
@@ -77,14 +81,14 @@ public class DockedSimplePanel extends DockingPanel {
 	public void dock(Dockable dockable, DockingRegion region, double dividerProportion) {
 		// docking to CENTER: Simple -> Tabbed
 		// docking else where: Simple -> Split
-		DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
+		DockableWrapper wrapper = docking.getWrapper(dockable);
 		wrapper.setWindow(this.dockable.getWindow());
 
 		if (getParent() instanceof DockedTabbedPanel) {
 			((DockedTabbedPanel) parent).addPanel(wrapper);
 		}
 		else if (region == DockingRegion.CENTER) {
-			DockedTabbedPanel tabbedPanel = new DockedTabbedPanel(this.dockable);
+			DockedTabbedPanel tabbedPanel = new DockedTabbedPanel(docking, this.dockable);
 
 			tabbedPanel.addPanel(wrapper);
 
@@ -94,16 +98,16 @@ public class DockedSimplePanel extends DockingPanel {
 			parent.replaceChild(this, tabbedPanel);
 		}
 		else {
-			DockedSplitPanel split = new DockedSplitPanel(this.dockable.getWindow());
+			DockedSplitPanel split = new DockedSplitPanel(docking, this.dockable.getWindow());
 			parent.replaceChild(this, split);
 
 			DockingPanel newPanel;
 
 			if (Docking.alwaysDisplayTabsMode()) {
-				newPanel = new DockedTabbedPanel(wrapper);
+				newPanel = new DockedTabbedPanel(docking, wrapper);
 			}
 			else {
-				newPanel = new DockedSimplePanel(wrapper);
+				newPanel = new DockedSimplePanel(docking, wrapper);
 			}
 
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {

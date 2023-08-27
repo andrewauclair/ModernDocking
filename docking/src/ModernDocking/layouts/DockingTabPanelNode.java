@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.layouts;
 
 import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 import ModernDocking.DockingRegion;
 import ModernDocking.internal.DockingInternal;
 
@@ -36,6 +37,7 @@ import java.util.Optional;
  */
 public class DockingTabPanelNode implements DockingLayoutNode {
 	private final List<DockingSimplePanelNode> tabs = new ArrayList<>();
+	private final DockingInstance docking;
 	private String selectedTabID;
 
 	private DockingLayoutNode parent;
@@ -45,7 +47,8 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 *
 	 * @param selectedTabID Persistent ID of first dockable
 	 */
-	public DockingTabPanelNode(String selectedTabID) {
+	public DockingTabPanelNode(DockingInstance docking, String selectedTabID) {
+		this.docking = docking;
 		addTab(selectedTabID);
 		this.selectedTabID = selectedTabID;
 	}
@@ -56,7 +59,8 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 * @param selectedTabID Persistent ID of first dockable
 	 * @param properties Properties of the dockable
 	 */
-	public DockingTabPanelNode(String selectedTabID, Map<String, String> properties) {
+	public DockingTabPanelNode(DockingInstance docking, String selectedTabID, Map<String, String> properties) {
+		this.docking = docking;
 		addTab(selectedTabID, properties);
 		this.selectedTabID = selectedTabID;
 	}
@@ -70,9 +74,9 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 		if (findNode(persistentID) != null) {
 			return;
 		}
-		String className = DockingInternal.getDockable(persistentID).getClass().getCanonicalName();
+		String className = docking.getDockable(persistentID).getClass().getCanonicalName();
 
-		DockingSimplePanelNode tab = new DockingSimplePanelNode(persistentID, className);
+		DockingSimplePanelNode tab = new DockingSimplePanelNode(docking, persistentID, className);
 		tab.setParent(this);
 		tabs.add(tab);
 	}
@@ -87,9 +91,9 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 		if (findNode(persistentID) != null) {
 			return;
 		}
-		String className = DockingInternal.getDockable(persistentID).getClass().getCanonicalName();
+		String className = docking.getDockable(persistentID).getClass().getCanonicalName();
 
-		DockingSimplePanelNode tab = new DockingSimplePanelNode(persistentID, className, properties);
+		DockingSimplePanelNode tab = new DockingSimplePanelNode(docking, persistentID, className, properties);
 		tab.setParent(this);
 		tabs.add(tab);
 	}
@@ -152,14 +156,14 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 			DockingLayoutNode right;
 
 			if (Docking.alwaysDisplayTabsMode()) {
-				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingTabPanelNode(persistentID) : this;
-				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(persistentID);
+				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingTabPanelNode(docking, persistentID) : this;
+				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(docking, persistentID);
 			}
 			else {
-				String className = DockingInternal.getDockable(persistentID).getClass().getCanonicalName();
+				String className = docking.getDockable(persistentID).getClass().getCanonicalName();
 
-				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(persistentID, className) : this;
-				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(persistentID, className);
+				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(docking, persistentID, className) : this;
+				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(docking, persistentID, className);
 			}
 
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
@@ -167,7 +171,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 			}
 
 			DockingLayoutNode oldParent = parent;
-			DockingSplitPanelNode split = new DockingSplitPanelNode(left, right, orientation, dividerProportion);
+			DockingSplitPanelNode split = new DockingSplitPanelNode(docking, left, right, orientation, dividerProportion);
 			oldParent.replaceChild(this, split);
 		}
 	}

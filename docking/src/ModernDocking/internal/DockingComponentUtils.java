@@ -23,6 +23,7 @@ package ModernDocking.internal;
 
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 import ModernDocking.RootDockingPanel;
 import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.persist.AppState;
@@ -30,8 +31,6 @@ import ModernDocking.persist.AppState;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Optional;
-
-import static ModernDocking.internal.DockingInternal.getWrapper;
 
 /**
  * set of internal utilities for dealing with the component hierarchy of dockables
@@ -45,13 +44,13 @@ public class DockingComponentUtils {
 	 *
 	 * @param container Container to undock all components from
 	 */
-	public static void undockComponents(Container container) {
+	public static void undockComponents(DockingInstance docking, Container container) {
 		for (Component component : container.getComponents()) {
 			if (component instanceof DisplayPanel) {
-				Docking.undock(((DisplayPanel) component).getWrapper().getDockable());
+				docking.undock(((DisplayPanel) component).getWrapper().getDockable());
 			}
 			else if (component instanceof Container) {
-				undockComponents((Container) component);
+				undockComponents(docking, (Container) component);
 			}
 		}
 	}
@@ -62,8 +61,8 @@ public class DockingComponentUtils {
 	 * @param screenPos The screen position to search at
 	 * @return The window at screenPos. null if not found.
 	 */
-	public static Window findRootAtScreenPos(Point screenPos) {
-		for (Window window : Docking.getRootPanels().keySet()) {
+	public static Window findRootAtScreenPos(DockingInstance docking, Point screenPos) {
+		for (Window window : docking.getRootPanels().keySet()) {
 			Rectangle bounds = new Rectangle(window.getX(), window.getY(), window.getWidth(), window.getHeight());
 
 			if (bounds.contains(screenPos) && window.isVisible()) {
@@ -78,8 +77,8 @@ public class DockingComponentUtils {
 	 * @param dockable The dockable to find a window for.
 	 * @return The window containing the dockable. null if not found.
 	 */
-	public static Window findWindowForDockable(Dockable dockable) {
-		return getWrapper(dockable).getWindow();
+	public static Window findWindowForDockable(DockingInstance docking, Dockable dockable) {
+		return docking.getWrapper(dockable).getWindow();
 	}
 
 	//
@@ -91,9 +90,9 @@ public class DockingComponentUtils {
 	 * @param window The window to find a root for
 	 * @return The root of the given window
 	 */
-	public static RootDockingPanel rootForWindow(Window window) {
-		if (Docking.getRootPanels().containsKey(window)) {
-			return Docking.getRootPanels().get(window);
+	public static RootDockingPanel rootForWindow(DockingInstance docking, Window window) {
+		if (docking.getRootPanels().containsKey(window)) {
+			return docking.getRootPanels().get(window);
 		}
 		throw new DockableRegistrationFailureException("No root panel for window has been registered.");
 	}
@@ -104,9 +103,9 @@ public class DockingComponentUtils {
 	 * @param root The root to find a window for
 	 * @return The window for the root or null
 	 */
-	public static Window windowForRoot(RootDockingPanel root) {
-		Optional<Window> first = Docking.getRootPanels().keySet().stream()
-				.filter(frame -> Docking.getRootPanels().get(frame) == root)
+	public static Window windowForRoot(DockingInstance docking, RootDockingPanel root) {
+		Optional<Window> first = docking.getRootPanels().keySet().stream()
+				.filter(frame -> docking.getRootPanels().get(frame) == root)
 				.findFirst();
 
 		return first.orElse(null);
@@ -118,8 +117,8 @@ public class DockingComponentUtils {
 	 * @param screenPos Screen position to check for a dockable at
 	 * @return Dockable under the screen position, or null if none is found
 	 */
-	public static Dockable findDockableAtScreenPos(Point screenPos) {
-		Window window = findRootAtScreenPos(screenPos);
+	public static Dockable findDockableAtScreenPos(DockingInstance docking, Point screenPos) {
+		Window window = findRootAtScreenPos(docking, screenPos);
 
 		// no window found at the location, return null
 		if (window == null) {
@@ -169,8 +168,8 @@ public class DockingComponentUtils {
 	 * @param screenPos Screen position to check for a dockable at
 	 * @return DockingPanel under the screen position, or null if none is found
 	 */
-	public static DockingPanel findDockingPanelAtScreenPos(Point screenPos) {
-		Window window = findRootAtScreenPos(screenPos);
+	public static DockingPanel findDockingPanelAtScreenPos(DockingInstance docking, Point screenPos) {
+		Window window = findRootAtScreenPos(docking, screenPos);
 
 		// no window found at the location, return null
 		if (window == null) {
@@ -219,15 +218,15 @@ public class DockingComponentUtils {
 	 *
 	 * @param window The window to remove illegal floating dockables from
 	 */
-	public static void removeIllegalFloats(Window window) {
+	public static void removeIllegalFloats(DockingInstance docking, Window window) {
 		// don't touch any dockables on a JDialog, they are their own little environment
 		if (window instanceof JDialog) {
 			return;
 		}
 
-		RootDockingPanel root = rootForWindow(window);
+		RootDockingPanel root = rootForWindow(docking, window);
 
-		if (Docking.canDisposeWindow(window) && root != null) {
+		if (docking.canDisposeWindow(window) && root != null) {
 			if (shouldUndock(root)) {
 				undockIllegalFloats(root);
 			}
@@ -277,8 +276,8 @@ public class DockingComponentUtils {
 	 * @param type The type to search for
 	 * @return The first Dockable of the given type, if any exist
 	 */
-	public static Optional<Dockable> findFirstDockableOfType(int type) {
-		RootDockingPanel mainRoot = rootForWindow(Docking.getMainWindow());
+	public static Optional<Dockable> findFirstDockableOfType(DockingInstance docking, int type) {
+		RootDockingPanel mainRoot = rootForWindow(docking, docking.getMainWindow());
 
 		Optional<Dockable> mainPanelDockable = findDockableOfType(type, mainRoot.getPanel());
 
@@ -286,7 +285,7 @@ public class DockingComponentUtils {
 			return mainPanelDockable;
 		}
 
-		for (RootDockingPanel panel : Docking.getRootPanels().values()) {
+		for (RootDockingPanel panel : docking.getRootPanels().values()) {
 			Optional<Dockable> dockable = findDockableOfType(type, panel);
 
 			if (dockable.isPresent()) {

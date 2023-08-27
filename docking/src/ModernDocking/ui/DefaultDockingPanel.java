@@ -52,18 +52,18 @@ public class DefaultDockingPanel extends JPanel implements Dockable, DockingList
 
     public DefaultDockingPanel() {
         if (persistentID != null) {
-            Docking.registerDockable(this);
+            Docking.getSingleInstance().registerDockable(this);
         }
-        Docking.addDockingListener(this);
+        Docking.getSingleInstance().addDockingListener(this);
     }
 
     public DefaultDockingPanel(String persistentID, String text) {
         this.persistentID = persistentID;
         this.tabText = text;
 
-        Docking.registerDockable(this);
+        Docking.getSingleInstance().registerDockable(this);
 
-        Docking.addDockingListener(this);
+        Docking.getSingleInstance().addDockingListener(this);
     }
 
     @Override

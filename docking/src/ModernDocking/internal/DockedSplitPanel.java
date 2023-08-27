@@ -23,6 +23,7 @@ package ModernDocking.internal;
 
 import ModernDocking.Dockable;
 import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 import ModernDocking.DockingRegion;
 import ModernDocking.persist.AppState;
 
@@ -49,6 +50,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 
 	private final JSplitPane splitPane = new JSplitPane();
 	private DockingPanel parent;
+	private final DockingInstance docking;
 	private final Window window;
 
 	/**
@@ -61,7 +63,8 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	 *
 	 * @param window The window this panel is in. Used to tell the child DockableWrappers what Window they are a part of
 	 */
-	public DockedSplitPanel(Window window) {
+	public DockedSplitPanel(DockingInstance docking, Window window) {
+		this.docking = docking;
 		this.window = window;
 		setLayout(new BorderLayout());
 
@@ -266,7 +269,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 
 	@Override
 	public void dock(Dockable dockable, DockingRegion region, double dividerProportion) {
-		DockableWrapper wrapper = DockingInternal.getWrapper(dockable);
+		DockableWrapper wrapper = docking.getWrapper(dockable);
 
 		// docking to the center of a split isn't something we allow
 		// wouldn't be difficult to support, but isn't a complication we want in this framework
@@ -276,16 +279,16 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 
 		wrapper.setWindow(window);
 
-		DockedSplitPanel split = new DockedSplitPanel(window);
+		DockedSplitPanel split = new DockedSplitPanel(docking, window);
 		parent.replaceChild(this, split);
 
 		DockingPanel newPanel;
 
 		if (Docking.alwaysDisplayTabsMode()) {
-			newPanel = new DockedTabbedPanel(wrapper);
+			newPanel = new DockedTabbedPanel(docking, wrapper);
 		}
 		else {
-			newPanel = new DockedSimplePanel(wrapper);
+			newPanel = new DockedSimplePanel(docking, wrapper);
 		}
 
 		if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {

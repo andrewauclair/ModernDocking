@@ -22,13 +22,12 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockingInstance;
 import ModernDocking.ui.DockingSettings;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-
-import static ModernDocking.internal.DockingInternal.getWrapper;
 
 /**
  * This class is responsible for adding a selected border around the dockable at the current mouse position.
@@ -42,11 +41,11 @@ public class ActiveDockableHighlighter {
 	/**
 	 * Default constructor to create the highlighter
 	 */
-	public ActiveDockableHighlighter() {
+	public ActiveDockableHighlighter(DockingInstance docking) {
 		// use an AWT event listener to set a border around the dockable that the mouse is currently over
 		Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
 			if (e.getID() == MouseEvent.MOUSE_ENTERED || e.getID() == MouseEvent.MOUSE_EXITED) {
-				DockingPanel dockable = DockingComponentUtils.findDockingPanelAtScreenPos(((MouseEvent) e).getLocationOnScreen());
+				DockingPanel dockable = DockingComponentUtils.findDockingPanelAtScreenPos(docking, ((MouseEvent) e).getLocationOnScreen());
 
 				if (activePanel != null && dockable == null) {
 					setNotSelectedBorder(activePanel);
@@ -63,13 +62,13 @@ public class ActiveDockableHighlighter {
 
 			}
 			else if (e.getID() == MouseEvent.MOUSE_PRESSED) {
-				Dockable dockable = DockingComponentUtils.findDockableAtScreenPos(((MouseEvent) e).getLocationOnScreen());
+				Dockable dockable = DockingComponentUtils.findDockableAtScreenPos(docking, ((MouseEvent) e).getLocationOnScreen());
 
 				if (dockable != null) {
-					Window window = DockingComponentUtils.findWindowForDockable(dockable);
+					Window window = DockingComponentUtils.findWindowForDockable(docking, dockable);
 
-					if (!getWrapper(dockable).isUnpinned()) {
-						DockingComponentUtils.rootForWindow(window).hideUnpinnedPanels();
+					if (!docking.getWrapper(dockable).isUnpinned()) {
+						DockingComponentUtils.rootForWindow(docking, window).hideUnpinnedPanels();
 					}
 				}
 			}

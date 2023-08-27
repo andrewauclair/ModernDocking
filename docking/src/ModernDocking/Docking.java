@@ -22,39 +22,17 @@ SOFTWARE.
 package ModernDocking;
 
 import ModernDocking.event.DockingListener;
-import ModernDocking.exception.DockableRegistrationFailureException;
-import ModernDocking.exception.NotDockedException;
-import ModernDocking.floating.FloatListener;
-import ModernDocking.internal.*;
-import ModernDocking.layouts.WindowLayout;
-import ModernDocking.persist.AppState;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
-
-import static ModernDocking.internal.DockingInternal.getDockable;
-import static ModernDocking.internal.DockingInternal.getWrapper;
+import java.util.Map;
 
 /**
- * Main class for the docking framework
- * register and dock/undock dockables here
+ * Convenience class for apps that only need a single instance of the docking framework. Working with the static functions
+ * is easier than passing an instance of the Docking class all over the app codebase.
  */
 public class Docking {
-	// map of all the root panels in the application
-	private final Map<Window, RootDockingPanel> rootPanels = new HashMap<>();
-
-	// the applications main frame
-	private final Window mainWindow;
-
-	private static Docking instance;
-
-	// this may look unused, but we need to create an instance of it to make it work
-	private final ActiveDockableHighlighter activeDockableHighlighter = new ActiveDockableHighlighter();
-
-	private final AppStatePersister appStatePersister = new AppStatePersister();
-
-	private static boolean isInOnDockingCallback = false;
+	private static DockingInstance instance;
 
 	private static boolean alwaysDisplayTabsMode = false;
 
@@ -67,21 +45,9 @@ public class Docking {
 	 * @param mainWindow The main window of the application
 	 */
 	public static void initialize(Window mainWindow) {
-		new Docking(mainWindow);
-	}
-
-	private Docking(Window mainWindow) {
-		this.mainWindow = mainWindow;
-		instance = this;
-
-		FloatListener.reset();
-
-		// listen for L&F changes so that we can update dockable panels properly when not displayed
-		UIManager.addPropertyChangeListener(e -> {
-			if ("lookAndFeel".equals(e.getPropertyName())) {
-				SwingUtilities.invokeLater(DockingInternal::updateLAF);
-			}
-		});
+		if (instance == null) {
+			instance = new DockingInstance(mainWindow);
+		}
 	}
 
 	/**
@@ -90,7 +56,7 @@ public class Docking {
 	 * @return map of root panels
 	 */
 	public static Map<Window, RootDockingPanel> getRootPanels() {
-		return instance.rootPanels;
+		return instance.getRootPanels();
 	}
 
 	/**
@@ -99,7 +65,7 @@ public class Docking {
 	 * @return main window
 	 */
 	public static Window getMainWindow() {
-		return instance.mainWindow;
+		return instance.getMainWindow();
 	}
 
 	/**
@@ -108,7 +74,7 @@ public class Docking {
 	 * @param dockable Dockable to register
 	 */
 	public static void registerDockable(Dockable dockable) {
-		DockingInternal.registerDockable(dockable);
+		instance.registerDockable(dockable);
 	}
 
 	/**
@@ -117,26 +83,14 @@ public class Docking {
 	 * @param dockable Dockable to deregister
 	 */
 	public static void deregisterDockable(Dockable dockable) {
-		DockingInternal.deregisterDockable(dockable);
+		instance.deregisterDockable(dockable);
 	}
 
 	/**
 	 * Deregister all dockables that have been registered. This action will also undock all dockables.
 	 */
 	public static void deregisterAllDockables() {
-		Set<Window> windows = new HashSet<>(Docking.getRootPanels().keySet());
-		for (Window window : windows) {
-			DockingComponentUtils.undockComponents(window);
-
-			// only dispose this window if we created it
-			if (window instanceof FloatingFrame) {
-				window.dispose();
-			}
-		}
-
-		for (Dockable dockable : DockingInternal.getDockables()) {
-			deregisterDockable(dockable);
-		}
+		instance.deregisterAllDockables();
 	}
 
 	/**
@@ -146,14 +100,7 @@ public class Docking {
 	 * @param parent The parent frame of the panel
 	 */
 	public static void registerDockingPanel(RootDockingPanel panel, JFrame parent) {
-		if (instance.rootPanels.containsKey(parent)) {
-			throw new DockableRegistrationFailureException("RootDockingPanel already registered for frame: " + parent);
-		}
-
-		instance.rootPanels.put(parent, panel);
-		FloatListener.registerDockingWindow(parent, panel);
-
-		instance.appStatePersister.addWindow(parent);
+		instance.registerDockingPanel(panel, parent);
 	}
 
 	/**
@@ -163,14 +110,7 @@ public class Docking {
 	 * @param parent The parent JDialog of the panel
 	 */
 	public static void registerDockingPanel(RootDockingPanel panel, JDialog parent) {
-		if (instance.rootPanels.containsKey(parent)) {
-			throw new DockableRegistrationFailureException("RootDockingPanel already registered for frame: " + parent);
-		}
-
-		instance.rootPanels.put(parent, panel);
-		FloatListener.registerDockingWindow(parent, panel);
-
-		instance.appStatePersister.addWindow(parent);
+		instance.registerDockingPanel(panel, parent);
 	}
 
 	/**
@@ -179,35 +119,14 @@ public class Docking {
 	 * @param parent The parent of the panel that we're deregistering
 	 */
 	public static void deregisterDockingPanel(Window parent) {
-		// if there is no Docking instance skip this code to prevent issues in GUI builders
-		if (instance == null) {
-			return;
-		}
-		if (instance.rootPanels.containsKey(parent)) {
-			RootDockingPanel root = instance.rootPanels.get(parent);
-
-			DockingComponentUtils.undockComponents(root);
-		}
-
-		instance.rootPanels.remove(parent);
-		FloatListener.deregisterDockingWindow(parent);
-
-		instance.appStatePersister.removeWindow(parent);
+		instance.deregisterDockingPanel(parent);
 	}
 
 	/**
 	 * Deregister all registered panels. Additionally, dispose any windows created by Modern Docking.
 	 */
 	public static void deregisterAllDockingPanels() {
-		Set<Window> windows = new HashSet<>(Docking.getRootPanels().keySet());
-		for (Window window : windows) {
-			deregisterDockingPanel(window);
-
-			// only dispose this window if we created it
-			if (window instanceof FloatingFrame) {
-				window.dispose();
-			}
-		}
+		instance.deregisterAllDockingPanels();
 	}
 
 	/**
@@ -218,13 +137,7 @@ public class Docking {
 	 * @param allow Whether pinning is allowed on this Window
 	 */
 	public static void configurePinning(Window window, int layer, boolean allow) {
-		if (!instance.rootPanels.containsKey(window)) {
-			throw new DockableRegistrationFailureException("No root panel for window has been registered.");
-		}
-
-		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
-		root.setPinningSupported(allow);
-		root.setPinningLayer(layer);
+		instance.configurePinning(window, layer, allow);
 	}
 
 	/**
@@ -234,9 +147,7 @@ public class Docking {
 	 * @return Whether the dockable can be pinned
 	 */
 	public static boolean pinningAllowed(Dockable dockable) {
-		RootDockingPanel root = DockingComponentUtils.rootForWindow(DockingComponentUtils.findWindowForDockable(dockable));
-
-		return dockable.isPinningAllowed() && root.isPinningSupported();
+		return instance.pinningAllowed(dockable);
 	}
 
 	/**
@@ -248,7 +159,7 @@ public class Docking {
 	 * @param window The window to dock into
 	 */
 	public static void dock(String persistentID, Window window) {
-		dock(getDockable(persistentID), window, DockingRegion.CENTER);
+		instance.dock(persistentID, window);
 	}
 
 	/**
@@ -260,7 +171,7 @@ public class Docking {
 	 * @param window The window to dock into
 	 */
 	public static void dock(Dockable dockable, Window window) {
-		dock(dockable, window, DockingRegion.CENTER);
+		instance.dock(dockable, window);
 	}
 
 	/**
@@ -271,7 +182,7 @@ public class Docking {
 	 * @param region The region to dock into
 	 */
 	public static void dock(String persistentID, Window window, DockingRegion region) {
-		dock(getDockable(persistentID), window, region, 0.25);
+		instance.dock(persistentID, window, region);
 	}
 
 	/**
@@ -282,7 +193,7 @@ public class Docking {
 	 * @param region The region to dock into
 	 */
 	public static void dock(Dockable dockable, Window window, DockingRegion region) {
-		dock(dockable, window, region, 0.25);
+		instance.dock(dockable, window, region);
 	}
 
 	/**
@@ -294,7 +205,7 @@ public class Docking {
 	 * @param dividerProportion The proportion to use if docking in a split pane
 	 */
 	public static void dock(String persistentID, Window window, DockingRegion region, double dividerProportion) {
-		dock(getDockable(persistentID), window, region, dividerProportion);
+		instance.dock(persistentID, window, region, dividerProportion);
 	}
 
 	/**
@@ -306,44 +217,7 @@ public class Docking {
 	 * @param dividerProportion The proportion to use if docking in a split pane
 	 */
 	public static void dock(Dockable dockable, Window window, DockingRegion region, double dividerProportion) {
-		RootDockingPanel root = instance.rootPanels.get(window);
-
-		if (root == null) {
-			throw new DockableRegistrationFailureException("Window does not have a RootDockingPanel: " + window);
-		}
-
-		// if the source is already docked we need to undock it before docking it again, otherwise we might steal it from its UI parent
-		if (Docking.isDocked(dockable)) {
-			DockableWrapper wrapper = getWrapper(dockable);
-
-			wrapper.getParent().undock(dockable);
-
-			// don't fire an undocked event for this one
-		}
-
-		// if the dockable has decided to do something else, skip out of this function
-		if (!isInOnDockingCallback)  {
-			isInOnDockingCallback = true;
-
-			boolean dockingHandled = dockable.onDocking();
-
-			isInOnDockingCallback = false;
-
-			if (dockingHandled) {
-				return;
-			}
-		}
-
-		root.dock(dockable, region, dividerProportion);
-
-		getWrapper(dockable).setWindow(window);
-
-		// fire a docked event when the component is actually added
-		DockingListeners.fireDockedEvent(dockable);
-
-		AppState.persist();
-
-		dockable.onDocked();
+		instance.dock(dockable, window, region, dividerProportion);
 	}
 
 	/**
@@ -354,7 +228,7 @@ public class Docking {
 	 * @param region The region on the source dockable to dock into
 	 */
 	public static void dock(String sourcePersistentID, String targetPersistentID, DockingRegion region) {
-		dock(getDockable(sourcePersistentID), getDockable(targetPersistentID), region, 0.5);
+		instance.dock(sourcePersistentID, targetPersistentID, region);
 	}
 
 	/**
@@ -365,7 +239,7 @@ public class Docking {
 	 * @param region The region on the source dockable to dock into
 	 */
 	public static void dock(String sourcePersistentID, Dockable target, DockingRegion region) {
-		dock(getDockable(sourcePersistentID), target, region, 0.5);
+		instance.dock(sourcePersistentID, target, region);
 	}
 
 	/**
@@ -376,7 +250,7 @@ public class Docking {
 	 * @param region The region on the source dockable to dock into
 	 */
 	public static void dock(Dockable source, String targetPersistentID, DockingRegion region) {
-		dock(source, getDockable(targetPersistentID), region, 0.5);
+		instance.dock(source, targetPersistentID, region);
 	}
 
 	/**
@@ -387,7 +261,7 @@ public class Docking {
 	 * @param region The region on the source dockable to dock into
 	 */
 	public static void dock(Dockable source, Dockable target, DockingRegion region) {
-		dock(source, target, region, 0.5);
+		instance.dock(source, target, region);
 	}
 
 	/**
@@ -399,7 +273,7 @@ public class Docking {
 	 * @param dividerProportion The proportion to use if docking in a split pane
 	 */
 	public static void dock(String sourcePersistentID, String targetPersistentID, DockingRegion region, double dividerProportion) {
-		dock(getDockable(sourcePersistentID), getDockable(targetPersistentID), region, dividerProportion);
+		instance.dock(sourcePersistentID, targetPersistentID, region, dividerProportion);
 	}
 
 	/**
@@ -411,39 +285,7 @@ public class Docking {
 	 * @param dividerProportion The proportion to use if docking in a split pane
 	 */
 	public static void dock(Dockable source, Dockable target, DockingRegion region, double dividerProportion) {
-		if (!isDocked(target)) {
-			throw new NotDockedException(target);
-		}
-
-		// if the source is already docked we need to undock it before docking it again, otherwise we might steal it from its UI parent
-		if (Docking.isDocked(source)) {
-			DockableWrapper wrapper = getWrapper(source);
-
-			wrapper.getParent().undock(source);
-		}
-
-		// if the source dockable has decided to do something else, skip out of this function
-		if (!isInOnDockingCallback)  {
-			isInOnDockingCallback = true;
-
-			boolean dockingHandled = source.onDocking();
-
-			isInOnDockingCallback = false;
-
-			if (dockingHandled) {
-				return;
-			}
-		}
-
-		DockableWrapper wrapper = getWrapper(target);
-
-		wrapper.getParent().dock(source, region, dividerProportion);
-
-		getWrapper(source).setWindow(wrapper.getWindow());
-
-		DockingListeners.fireDockedEvent(source);
-
-		AppState.persist();
+		instance.dock(source, target, region, dividerProportion);
 	}
 
 	/**
@@ -452,7 +294,7 @@ public class Docking {
 	 * @param persistentID The persistent ID of the dockable to float in a new window
 	 */
 	public static void newWindow(String persistentID) {
-		newWindow(getDockable(persistentID));
+		instance.newWindow(persistentID);
 	}
 
 	/**
@@ -461,22 +303,7 @@ public class Docking {
 	 * @param dockable The dockable to float in a new window
 	 */
 	public static void newWindow(Dockable dockable) {
-		DisplayPanel displayPanel = getWrapper(dockable).getDisplayPanel();
-
-		if (isDocked(dockable)) {
-			Point location = displayPanel.getLocationOnScreen();
-			Dimension size = displayPanel.getSize();
-
-			newWindow(dockable, location, size);
-		}
-		else {
-			FloatingFrame frame = new FloatingFrame();
-
-			dock(dockable, frame);
-
-			frame.pack();
-			frame.setLocationRelativeTo(getMainWindow());
-		}
+		instance.newWindow(dockable);
 	}
 
 	/**
@@ -487,7 +314,7 @@ public class Docking {
 	 * @param size The size of the new frame
 	 */
 	public static void newWindow(String persistentID, Point location, Dimension size) {
-		newWindow(getDockable(persistentID), location, size);
+		instance.newWindow(persistentID, location, size);
 	}
 
 	/**
@@ -498,12 +325,7 @@ public class Docking {
 	 * @param size The size of the new frame
 	 */
 	public static void newWindow(Dockable dockable, Point location, Dimension size) {
-		FloatingFrame frame = new FloatingFrame(dockable, location, size, JFrame.NORMAL);
-
-		undock(dockable);
-		dock(dockable, frame);
-
-		SwingUtilities.invokeLater(() -> bringToFront(dockable));
+		instance.newWindow(dockable, location, size);
 	}
 
 	/**
@@ -512,18 +334,7 @@ public class Docking {
 	 * @param dockable Dockable to bring to the front
 	 */
 	public static void bringToFront(Dockable dockable) {
-		if (!isDocked(dockable)) {
-			throw new NotDockedException(dockable);
-		}
-
-		Window window = DockingComponentUtils.findWindowForDockable(dockable);
-		window.setAlwaysOnTop(true);
-		window.setAlwaysOnTop(false);
-
-		if (getWrapper(dockable).getParent() instanceof DockedTabbedPanel) {
-			DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) getWrapper(dockable).getParent();
-			tabbedPanel.bringToFront(dockable);
-		}
+		instance.bringToFront(dockable);
 	}
 
 	/**
@@ -532,7 +343,7 @@ public class Docking {
 	 * @param persistentID The persistentID of the dockable to undock
 	 */
 	public static void undock(String persistentID) {
-		undock(getDockable(persistentID));
+		instance.undock(persistentID);
 	}
 
 	/**
@@ -541,46 +352,7 @@ public class Docking {
 	 * @param dockable The dockable to undock
 	 */
 	public static void undock(Dockable dockable) {
-		if (!isDocked(dockable)) {
-			// nothing to undock
-			return;
-		}
-
-		Window window = DockingComponentUtils.findWindowForDockable(dockable);
-
-		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
-
-		DockableWrapper wrapper = getWrapper(dockable);
-
-		wrapper.setRoot(root);
-
-		if (isUnpinned(dockable)) {
-			root.undock(dockable);
-			wrapper.setParent(null);
-			wrapper.setUnpinned(false);
-		}
-		else {
-			wrapper.getParent().undock(dockable);
-		}
-		wrapper.setWindow(null);
-
-		DockingListeners.fireUndockedEvent(dockable);
-
-		// make sure that can dispose this window and we're not floating the last dockable in it
-		if (window != null && root != null && canDisposeWindow(window) && root.isEmpty() && !FloatListener.isFloating) {
-			deregisterDockingPanel(window);
-			window.dispose();
-		}
-
-		AppState.persist();
-
-		// force this dockable to dock again if we're not floating it
-		if (!dockable.isClosable() && !FloatListener.isFloating) {
-			dock(dockable, instance.mainWindow);
-		}
-		else {
-			dockable.onUndocked();
-		}
+		instance.undock(dockable);
 	}
 
 	/**
@@ -590,7 +362,7 @@ public class Docking {
 	 * @return Whether the dockable is docked
 	 */
 	public static boolean isDocked(String persistentID) {
-		return isDocked(getDockable(persistentID));
+		return instance.isDocked(persistentID);
 	}
 
 	/**
@@ -600,7 +372,7 @@ public class Docking {
 	 * @return Whether the dockable is docked
 	 */
 	public static boolean isDocked(Dockable dockable) {
-		return getWrapper(dockable).getParent() != null;
+		return instance.isDocked(dockable);
 	}
 
 	/**
@@ -610,7 +382,7 @@ public class Docking {
 	 * @return Whether the dockable is unpinned
 	 */
 	public static boolean isUnpinned(String persistentID) {
-		return isUnpinned(getDockable(persistentID));
+		return instance.isUnpinned(persistentID);
 	}
 
 	/**
@@ -620,7 +392,7 @@ public class Docking {
 	 * @return Whether the dockable is unpinned
 	 */
 	public static boolean isUnpinned(Dockable dockable) {
-		return getWrapper(dockable).isUnpinned();
+		return instance.isUnpinned(dockable);
 	}
 
 	/**
@@ -630,15 +402,7 @@ public class Docking {
 	 * @return Boolean indicating if the specified Window can be disposed
 	 */
 	public static boolean canDisposeWindow(Window window) {
-		// don't dispose of any docking windows that are JDialogs
-		if (window instanceof JDialog) {
-			return false;
-		}
-		if (DockingState.maximizeRestoreLayout.containsKey(window)) {
-			return false;
-		}
-		// only dispose this window if we created it
-		return window instanceof FloatingFrame;
+		return instance.canDisposeWindow(window);
 	}
 
 	/**
@@ -648,7 +412,7 @@ public class Docking {
 	 * @return Whether the dockable is maximized
 	 */
 	public static boolean isMaximized(Dockable dockable) {
-		return getWrapper(dockable).isMaximized();
+		return instance.isMaximized(dockable);
 	}
 
 	/**
@@ -657,23 +421,7 @@ public class Docking {
 	 * @param dockable Dockable to maximize
 	 */
 	public static void maximize(Dockable dockable) {
-		Window window = DockingComponentUtils.findWindowForDockable(dockable);
-		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
-
-		// can only maximize one panel per root
-		if (!DockingState.maximizeRestoreLayout.containsKey(window) && root != null) {
-			getWrapper(dockable).setMaximized(true);
-			DockingListeners.fireMaximizeEvent(dockable, true);
-
-			WindowLayout layout = DockingState.getWindowLayout(window);
-			layout.setMaximizedDockable(dockable.getPersistentID());
-
-			DockingState.maximizeRestoreLayout.put(window, layout);
-
-			DockingComponentUtils.undockComponents(root);
-
-			dock(dockable, window);
-		}
+		instance.maximize(dockable);
 	}
 
 	/**
@@ -682,19 +430,7 @@ public class Docking {
 	 * @param dockable Dockable to minimize
 	 */
 	public static void minimize(Dockable dockable) {
-		Window window = DockingComponentUtils.findWindowForDockable(dockable);
-
-		// can only minimize if already maximized
-		if (DockingState.maximizeRestoreLayout.containsKey(window)) {
-			getWrapper(dockable).setMaximized(false);
-			DockingListeners.fireMaximizeEvent(dockable, false);
-
-			DockingState.restoreWindowLayout(window, DockingState.maximizeRestoreLayout.get(window));
-
-			DockingState.maximizeRestoreLayout.remove(window);
-
-			DockingInternal.fireDockedEventForFrame(window);
-		}
+		instance.minimize(dockable);
 	}
 
 	/**
@@ -703,16 +439,7 @@ public class Docking {
 	 * @param dockable Dockable to pin
 	 */
 	public static void pinDockable(Dockable dockable) {
-		Window window = DockingComponentUtils.findWindowForDockable(dockable);
-		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
-
-		if (getWrapper(dockable).isUnpinned()) {
-			root.setDockablePinned(dockable);
-
-			getWrapper(dockable).setUnpinned(false);
-
-			DockingListeners.firePinnedEvent(dockable);
-		}
+		instance.pinDockable(dockable);
 	}
 
 	// TODO looks like this could get called on an already unpinned dockable
@@ -721,56 +448,7 @@ public class Docking {
 	 * @param dockable Dockable to unpin
 	 */
 	public static void unpinDockable(Dockable dockable) {
-		Window window = DockingComponentUtils.findWindowForDockable(dockable);
-		RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
-
-		Component component = (Component) dockable;
-
-		Point posInFrame = component.getLocation();
-		SwingUtilities.convertPointToScreen(posInFrame, component.getParent());
-		SwingUtilities.convertPointFromScreen(posInFrame, root);
-
-		posInFrame.x += component.getWidth() / 2;
-		posInFrame.y += component.getHeight() / 2;
-
-		if (!root.isPinningSupported()) {
-			return;
-		}
-		undock(dockable);
-
-		// reset the window, undocking the dockable sets it to null
-		getWrapper(dockable).setWindow(window);
-		getWrapper(dockable).setUnpinned(true);
-
-		DockableToolbar.Location preferredLocation = dockable.onUnpinning();
-
-		if (preferredLocation == null || !root.isLocationSupported(preferredLocation)) {
-			boolean allowedSouth = dockable.getStyle() == DockableStyle.BOTH || dockable.getStyle() == DockableStyle.HORIZONTAL;
-
-			int westDist = posInFrame.x;
-			int eastDist = window.getWidth() - posInFrame.x;
-			int southDist = window.getHeight() - posInFrame.y;
-
-			boolean east = eastDist <= westDist;
-			boolean south = southDist < westDist && southDist < eastDist;
-
-			if (south && allowedSouth) {
-				root.setDockableUnpinned(dockable, DockableToolbar.Location.SOUTH);
-			}
-			else if (east) {
-				root.setDockableUnpinned(dockable, DockableToolbar.Location.EAST);
-			}
-			else {
-				root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
-			}
-		}
-		else {
-			root.setDockableUnpinned(dockable, preferredLocation);
-		}
-
-		DockingListeners.fireUnpinnedEvent(dockable);
-		dockable.onHidden();
-		DockingListeners.fireHiddenEvent(dockable);
+		instance.unpinDockable(dockable);
 	}
 
 	/**
@@ -779,7 +457,7 @@ public class Docking {
 	 * @param persistentID The persistentID of the dockable to display
 	 */
 	public static void display(String persistentID) {
-		display(getDockable(persistentID));
+		instance.display(persistentID);
 	}
 
 	/**
@@ -791,21 +469,7 @@ public class Docking {
 	 * @param dockable The dockable to display
 	 */
 	public static void display(Dockable dockable) {
-		if (isDocked(dockable)) {
-			bringToFront(dockable);
-		}
-		else {
-			// go through all the dockables and find the first one that is the same type
-			Optional<Dockable> firstOfType = DockingComponentUtils.findFirstDockableOfType(dockable.getType());
-
-			if (firstOfType.isPresent()) {
-				dock(dockable, firstOfType.get(), DockingRegion.CENTER);
-			}
-			else {
-				// if we didn't find any dockables of the same type, we'll dock to north
-				dock(dockable, instance.mainWindow, DockingRegion.NORTH);
-			}
-		}
+		instance.display(dockable);
 	}
 
 	/**
@@ -814,7 +478,7 @@ public class Docking {
 	 * @param persistentID The persistentID of the dockable to update
 	 */
 	public static void updateTabInfo(String persistentID) {
-		updateTabInfo(getDockable(persistentID));
+		instance.updateTabInfo(persistentID);
 	}
 
 	/**
@@ -823,20 +487,7 @@ public class Docking {
 	 * @param dockable The dockable to update
 	 */
 	public static void updateTabInfo(Dockable dockable) {
-		if (!isDocked(dockable)) {
-			// if the dockable isn't docked then we don't have to do anything to update its tab text
-			return;
-		}
-
-		DockableWrapper wrapper = getWrapper(dockable);
-
-		wrapper.getHeaderUI().update();
-
-		DockingPanel parent = wrapper.getParent();
-
-		if (parent instanceof DockedTabbedPanel) {
-			((DockedTabbedPanel) parent).updateTabInfo(dockable);
-		}
+		instance.updateTabInfo(dockable);
 	}
 
 	public static boolean alwaysDisplayTabsMode() {
@@ -872,5 +523,9 @@ public class Docking {
 
 	public static void removeDockingListener(DockingListener listener) {
 
+	}
+
+	public static DockingInstance getSingleInstance() {
+		return instance;
 	}
 }

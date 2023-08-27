@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.floating;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockingInstance;
 import ModernDocking.DockingRegion;
 import ModernDocking.RootDockingPanel;
 
@@ -53,7 +54,7 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 	 * @param referenceDockingWindow Window that this utility frame is tied to
 	 * @param root The root of the tied window
 	 */
-	public DockingUtilsFrame(Window referenceDockingWindow, RootDockingPanel root) {
+	public DockingUtilsFrame(DockingInstance docking, Window referenceDockingWindow, RootDockingPanel root) {
 		setLayout(null); // don't use a layout manager for this custom painted frame
 		setUndecorated(true); // don't want to see a frame border
 		setType(Type.UTILITY); // hide this frame from the task bar
@@ -81,7 +82,7 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		// remember the reference docking frame and create the handles and over components
 		this.referenceDockingWindow = referenceDockingWindow;
 		handles = new DockingHandles(this, root);
-		overlay = new DockingOverlay(this, root);
+		overlay = new DockingOverlay(docking, this, root);
 	}
 
 	@Override

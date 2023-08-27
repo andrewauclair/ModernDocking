@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.layouts;
 
 import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 import ModernDocking.DockingRegion;
 import ModernDocking.internal.DockingInternal;
 
@@ -29,7 +30,12 @@ import ModernDocking.internal.DockingInternal;
  * The root node of a docking layout
  */
 public class DockingLayoutRootNode implements DockingLayoutNode {
+    private final DockingInstance docking;
     private DockingLayoutNode node;
+
+    public DockingLayoutRootNode(DockingInstance docking) {
+        this.docking = docking;
+    }
 
     @Override
     public DockingLayoutNode findNode(String persistentID) {
@@ -42,13 +48,13 @@ public class DockingLayoutRootNode implements DockingLayoutNode {
             node.dock(persistentID, region, dividerProportion);
         }
         else if (Docking.alwaysDisplayTabsMode()) {
-            node = new DockingTabPanelNode(persistentID);
+            node = new DockingTabPanelNode(docking, persistentID);
             node.setParent(this);
         }
         else {
-            String className = DockingInternal.getDockable(persistentID).getClass().getCanonicalName();
+            String className = docking.getDockable(persistentID).getClass().getCanonicalName();
 
-            node = new DockingSimplePanelNode(persistentID, className);
+            node = new DockingSimplePanelNode(docking, persistentID, className);
             node.setParent(this);
         }
     }

@@ -21,13 +21,15 @@ SOFTWARE.
  */
 package ModernDocking.layouts;
 
+import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 import ModernDocking.DockingRegion;
 
 /**
  * Utility to help create layouts without directly applying them to the actual app
  */
 public class WindowLayoutBuilder {
-	private final DockingLayoutRootNode rootNode = new DockingLayoutRootNode();
+	private final DockingLayoutRootNode rootNode;
 
 	/**
 	 * Start building a new layout
@@ -35,6 +37,11 @@ public class WindowLayoutBuilder {
 	 * @param firstID First dockable ID in the layout
 	 */
 	public WindowLayoutBuilder(String firstID) {
+		this(Docking.getSingleInstance(), firstID);
+	}
+
+	public WindowLayoutBuilder(DockingInstance docking, String firstID) {
+		rootNode = new DockingLayoutRootNode(docking);
 		rootNode.dock(firstID, DockingRegion.CENTER, 0.0);
 	}
 

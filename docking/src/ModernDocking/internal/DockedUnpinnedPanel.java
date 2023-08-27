@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockingInstance;
 import ModernDocking.RootDockingPanel;
 import ModernDocking.util.SlideBorder;
 
@@ -57,7 +58,7 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener, Mo
 	 * @param root The root panel of the Window
 	 * @param toolbar The toolbar this panel is in
 	 */
-	public DockedUnpinnedPanel(Dockable dockable, RootDockingPanel root, DockableToolbar toolbar) {
+	public DockedUnpinnedPanel(DockingInstance docking, Dockable dockable, RootDockingPanel root, DockableToolbar toolbar) {
 		this.root = root;
 		this.toolbar = toolbar;
 
@@ -71,7 +72,7 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener, Mo
 		gbc.gridy = 0;
 
 
-		DockedSimplePanel panel = new DockedSimplePanel(DockingInternal.getWrapper(dockable));
+		DockedSimplePanel panel = new DockedSimplePanel(docking, docking.getWrapper(dockable));
 		SlideBorder slideBorder = new SlideBorder(toolbar.getDockedLocation());
 
 		if (toolbar.getDockedLocation() == DockableToolbar.Location.SOUTH) {
