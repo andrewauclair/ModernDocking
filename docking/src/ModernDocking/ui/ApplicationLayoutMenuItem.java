@@ -21,6 +21,8 @@ SOFTWARE.
  */
 package ModernDocking.ui;
 
+import ModernDocking.Docking;
+import ModernDocking.DockingInstance;
 import ModernDocking.DockingState;
 import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.DockingLayouts;
@@ -33,6 +35,7 @@ import java.awt.event.ActionListener;
  * Special JMenuItem which will restore an ApplicationLayout when selected
  */
 public class ApplicationLayoutMenuItem extends JMenuItem implements ActionListener {
+    private final DockingInstance docking;
     /**
      * The name of the ApplicationLayout, used to get the layout from DockingLayouts
      */
@@ -44,7 +47,12 @@ public class ApplicationLayoutMenuItem extends JMenuItem implements ActionListen
      * @param layoutName Name of the ApplicationLayout this ApplicationLayoutMenuItem will restore
      */
     public ApplicationLayoutMenuItem(String layoutName) {
+        this(Docking.getSingleInstance(), layoutName);
+    }
+
+    public ApplicationLayoutMenuItem(DockingInstance docking, String layoutName) {
         super(layoutName);
+        this.docking = docking;
 
         this.layoutName = layoutName;
         addActionListener(this);
@@ -57,7 +65,12 @@ public class ApplicationLayoutMenuItem extends JMenuItem implements ActionListen
      * @param text Display text of the JMenuItem
      */
     public ApplicationLayoutMenuItem(String layoutName, String text) {
+        this(Docking.getSingleInstance(), layoutName, text);
+    }
+
+    public ApplicationLayoutMenuItem(DockingInstance docking, String layoutName, String text) {
         super(text);
+        this.docking = docking;
 
         this.layoutName = layoutName;
         addActionListener(this);
@@ -71,7 +84,7 @@ public class ApplicationLayoutMenuItem extends JMenuItem implements ActionListen
             JOptionPane.showMessageDialog(this, "Layout " + layoutName + " does not exist.");
         }
         else {
-            DockingState.restoreApplicationLayout(layout);
+            DockingState.restoreApplicationLayout(docking, layout);
         }
     }
 }

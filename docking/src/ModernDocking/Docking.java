@@ -526,6 +526,9 @@ public class Docking {
 	}
 
 	public static DockingInstance getSingleInstance() {
+		if (instance == null) {
+			throw new RuntimeException("No docking instance available.");
+		}
 		return instance;
 	}
 }

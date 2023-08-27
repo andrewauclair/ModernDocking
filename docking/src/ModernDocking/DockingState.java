@@ -107,15 +107,15 @@ public class DockingState {
      * @param layout Application layout to restore
      */
     public static void restoreApplicationLayout(ApplicationLayout layout) {
-
+        restoreApplicationLayout(Docking.getSingleInstance(), layout);
     }
+
     /**
      * Restore the application layout, creating any necessary windows
      *
      * @param layout Application layout to restore
      */
     public static void restoreApplicationLayout(DockingInstance docking, ApplicationLayout layout) {
-        System.out.println("restore application layout");
         // get rid of all existing windows and undock all dockables
         Set<Window> windows = new HashSet<>(docking.getRootPanels().keySet());
         for (Window window : windows) {
