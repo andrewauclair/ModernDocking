@@ -1,0 +1,100 @@
+plugins {
+	id 'java'
+	id 'idea'
+	id 'maven-publish'
+	id 'signing'
+	id "com.github.ben-manes.versions" version "0.46.0"
+}
+
+allprojects {
+	sourceCompatibility = JavaVersion.VERSION_1_9
+	targetCompatibility = JavaVersion.VERSION_1_9
+}
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+	maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+sourceSets.main.java.srcDirs = ['src']
+sourceSets.main.resources.srcDirs = ['resources']
+
+group = "io.github.andrewauclair"
+archivesBaseName = "modern-docking-single-app"
+version = "0.9.0-SNAPSHOT"
+
+dependencies {
+	implementation 'io.github.andrewauclair:modern-docking-api:' + version
+}
+
+java {
+	withJavadocJar()
+	withSourcesJar()
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifactId = 'ModernDocking'
+			from components.java
+			versionMapping {
+				usage('java-api') {
+					fromResolutionOf('runtimeClasspath')
+				}
+				usage('java-runtime') {
+					fromResolutionResult()
+				}
+			}
+			pom {
+				name = 'Java Modern Docking'
+				description = 'Modern docking library for Java Swing'
+				url = 'https://github.com/andrewauclair/ModernDocking'
+				licenses {
+					license {
+						name = 'The MIT License'
+						url = 'https://opensource.org/licenses/MIT'
+					}
+				}
+				developers {
+					developer {
+						id = 'andrewauclair'
+						name = 'Andrew Auclair'
+						email = 'mightymalakai33@gmail.com'
+					}
+				}
+				scm {
+					connection = 'scm:git:git//github.com/andrewauclair/ModernDocking.git'
+					developerConnection = 'scm:git:ssh//github.com/andrewauclair/ModernDocking.git'
+					url = 'https://github.com/andrewauclair/ModernDocking'
+				}
+			}
+		}
+	}
+	repositories {
+		maven {
+			credentials {
+				if (project.hasProperty('sonatypeUsername')) {
+					username = "$sonatypeUsername"
+				}
+				if (project.hasProperty('sonatypePassword')) {
+					password = "$sonatypePassword"
+				}
+			}
+
+			url = version.endsWith('SNAPSHOT') ?
+					'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+					: 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+		}
+	}
+}
+
+signing {
+	sign publishing.publications.mavenJava
+}
+
+javadoc {
+	if(JavaVersion.current().isJava9Compatible()) {
+		options.addBooleanOption('html5', true)
+	}
+}

@@ -21,7 +21,6 @@ SOFTWARE.
  */
 package docking.ui;
 
-import ModernDocking.Docking;
 import ModernDocking.internal.DockedTabbedPanel;
 import ModernDocking.internal.DockingInternal;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
@@ -33,7 +32,7 @@ public class DockingUI {
     private static boolean initialized = false;
 
     public static void initialize(Window mainWindow) {
-        Docking.initialize(mainWindow);
+//        Docking.initialize(mainWindow);
 
         configureDockingUI();
     }

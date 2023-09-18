@@ -1,3 +1,5 @@
+import groovy.transform.Field
+
 plugins {
 	id 'java'
 	id 'idea'
@@ -20,14 +22,12 @@ repositories {
 sourceSets.main.java.srcDirs = ['src']
 sourceSets.main.resources.srcDirs = ['resources']
 
-group = "io.github.andrewauclair.ModernDocking"
-archivesBaseName = "ModernDockingUI"
-version = "0.8.0"
+group = "io.github.andrewauclair"
+archivesBaseName = "modern-docking-ui"
+version = "0.9.0-SNAPSHOT"
 
 dependencies {
-	implementation project(':docking')
-
-	implementation group + ":ModernDocking:" + version
+	implementation 'io.github.andrewauclair:modern-docking-api:' + version
 	implementation 'com.formdev:flatlaf:3.2'
 	implementation 'com.formdev:flatlaf-extras:3.2'
 }
@@ -44,7 +44,7 @@ java {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			artifactId = 'ModernDockingUI'
+			artifactId = 'modern-docking-ui'
 			from components.java
 			versionMapping {
 				usage('java-api') {
