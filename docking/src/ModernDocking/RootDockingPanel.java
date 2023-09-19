@@ -62,6 +62,8 @@ public class RootDockingPanel extends DockingPanel {
 	 */
 	public RootDockingPanel() {
 		setLayout(new GridBagLayout());
+
+		supportedToolbars = EnumSet.noneOf(DockableToolbar.Location.class);
 	}
 
 	/**
@@ -357,9 +359,21 @@ public class RootDockingPanel extends DockingPanel {
 	 */
 	public List<String> unpinnedPersistentIDs(DockableToolbar.Location location) {
 		switch (location) {
-			case WEST: return westToolbar.getPersistentIDs();
-			case EAST: return eastToolbar.getPersistentIDs();
-			case SOUTH: return southToolbar.getPersistentIDs();
+			case WEST: {
+				if (westToolbar != null) {
+					return westToolbar.getPersistentIDs();
+				}
+			}
+			case EAST: {
+				if (eastToolbar != null) {
+					return eastToolbar.getPersistentIDs();
+				}
+			}
+			case SOUTH: {
+				if (southToolbar != null) {
+					return southToolbar.getPersistentIDs();
+				}
+			}
 		}
 		return Collections.emptyList();
 	}
@@ -375,7 +389,7 @@ public class RootDockingPanel extends DockingPanel {
 		gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.VERTICAL;
 
-		if (isPinningSupported() && westToolbar.shouldDisplay()) {
+		if (isPinningSupported() && westToolbar != null && westToolbar.shouldDisplay()) {
 			add(westToolbar, gbc);
 			gbc.gridx++;
 		}
@@ -396,7 +410,7 @@ public class RootDockingPanel extends DockingPanel {
 		gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.VERTICAL;
 
-		if (isPinningSupported() && eastToolbar.shouldDisplay()) {
+		if (isPinningSupported() && eastToolbar != null && eastToolbar.shouldDisplay()) {
 			add(eastToolbar, gbc);
 		}
 
@@ -406,7 +420,7 @@ public class RootDockingPanel extends DockingPanel {
 		gbc.weightx = 1.0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 
-		if (isPinningSupported() && southToolbar.shouldDisplay()) {
+		if (isPinningSupported() && southToolbar != null && southToolbar.shouldDisplay()) {
 			add(southToolbar, gbc);
 		}
 
@@ -418,9 +432,15 @@ public class RootDockingPanel extends DockingPanel {
 	 * Hide all unpinned panels on the west, south and east toolbars
 	 */
 	public void hideUnpinnedPanels() {
-		westToolbar.hideAll();
-		southToolbar.hideAll();
-		eastToolbar.hideAll();
+		if (westToolbar != null) {
+			westToolbar.hideAll();
+		}
+		if (southToolbar != null) {
+			southToolbar.hideAll();
+		}
+		if (eastToolbar != null) {
+			eastToolbar.hideAll();
+		}
 	}
 
 	/**
