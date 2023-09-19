@@ -48,6 +48,10 @@ public class DockedSimplePanel extends DockingPanel {
 	 * @param dockable Wrapper of the dockable in this simple panel
 	 */
 	public DockedSimplePanel(DockableWrapper dockable) {
+		this(dockable, dockable.getDisplayPanel());
+	}
+
+	public DockedSimplePanel(DockableWrapper dockable, DisplayPanel displayPanel) {
 		setLayout(new BorderLayout());
 
 		setNotSelectedBorder();
@@ -58,7 +62,6 @@ public class DockedSimplePanel extends DockingPanel {
 
 		add(dockable.getDisplayPanel(), BorderLayout.CENTER);
 	}
-
 	/**
 	 * Get the wrapper of the dockable contained in this simple panel
 	 *

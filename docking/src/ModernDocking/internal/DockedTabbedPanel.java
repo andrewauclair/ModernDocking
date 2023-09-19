@@ -183,6 +183,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 		if (Docking.alwaysDisplayTabsMode()) {
 			JLabel tabComponent = new JLabel(dockable.getDockable().getTabText());
+			tabComponent.setIcon(dockable.getDockable().getIcon());
 			tabComponent.setToolTipText(dockable.getDockable().getTabTooltip());
 
 			tabComponent.addMouseListener(new MouseAdapter() {
