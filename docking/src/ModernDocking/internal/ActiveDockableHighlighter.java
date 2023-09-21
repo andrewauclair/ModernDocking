@@ -22,6 +22,8 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.RootDockingPanel;
+import ModernDocking.exception.DockableRegistrationFailureException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -68,7 +70,12 @@ public class ActiveDockableHighlighter {
 					Window window = DockingComponentUtils.findWindowForDockable(dockable);
 
 					if (!getWrapper(dockable).isUnpinned()) {
-						DockingComponentUtils.rootForWindow(window).hideUnpinnedPanels();
+						try {
+							RootDockingPanel root = DockingComponentUtils.rootForWindow(window);
+							root.hideUnpinnedPanels();
+						}
+						catch (DockableRegistrationFailureException ignore) {
+						}
 					}
 				}
 			}
