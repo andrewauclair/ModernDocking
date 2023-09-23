@@ -27,7 +27,7 @@ archivesBaseName = "modern-docking-ui"
 version = "0.9.0-SNAPSHOT"
 
 dependencies {
-	implementation 'io.github.andrewauclair:modern-docking-api:' + version
+	implementation project(':docking-api')
 	implementation 'com.formdev:flatlaf:3.2'
 	implementation 'com.formdev:flatlaf-extras:3.2'
 }

@@ -1,1 +1,5 @@
 rootProject.name = 'docking-ui'
+
+include ':docking-api'
+
+project(':docking-api').projectDir = file('../docking-api')
