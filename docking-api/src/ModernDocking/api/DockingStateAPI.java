@@ -128,6 +128,8 @@ public class DockingStateAPI {
         docking.getAppState().persist();
 
         DockingInternal.fireDockedEventForAll(docking);
+
+        DockingLayouts.layoutRestored(layout);
     }
 
     /**

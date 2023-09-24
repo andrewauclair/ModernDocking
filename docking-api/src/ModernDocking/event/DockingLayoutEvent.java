@@ -27,7 +27,7 @@ public class DockingLayoutEvent {
     public enum ID {
         ADDED,
         REMOVED,
-        LOADED,
+        RESTORED,
         PERSISTED
     }
 

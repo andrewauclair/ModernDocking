@@ -21,8 +21,10 @@ SOFTWARE.
  */
 package ModernDocking.api;
 
+import ModernDocking.event.DockingLayoutEvent;
 import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.layouts.ApplicationLayout;
+import ModernDocking.layouts.DockingLayouts;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -40,7 +42,7 @@ public class AppStateAPI {
 	private static final int PERSIST_TIMER_DELAY_MS = 500;
 
 	private static boolean autoPersist = false;
-	private static Map<DockingAPI, File> autoPersistFiles = new HashMap<>();
+	private static final Map<DockingAPI, File> autoPersistFiles = new HashMap<>();
 
 	private static ApplicationLayout defaultAppLayout = null;
 
@@ -113,7 +115,7 @@ public class AppStateAPI {
 	 * This is a no-op if auto persistence is turned off, it's paused or there is no file
 	 */
 	public void persist() {
-		if (!autoPersist || paused || autoPersistFiles == null) {
+		if (!autoPersist || paused) {
 			return;
 		}
 
@@ -131,6 +133,8 @@ public class AppStateAPI {
 
 						try {
 							docking.getLayoutPersistence().saveLayoutToFile(autoPersistFiles.get(docking), layout);
+
+							DockingLayouts.layoutPersisted(layout);
 						}
 						catch (DockingLayoutException ex) {
 							logger.log(Level.INFO, ex.getMessage(), ex);

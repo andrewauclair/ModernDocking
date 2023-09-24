@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.layouts;
 
 import ModernDocking.Dockable;
+import ModernDocking.api.AppStateAPI;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.event.DockingLayoutEvent;
@@ -65,6 +66,14 @@ public class DockingLayouts {
 		if (layout != null) {
 			listeners.forEach(l -> l.layoutChange(new DockingLayoutEvent(DockingLayoutEvent.ID.REMOVED, name, layout)));
 		}
+	}
+
+	public static void layoutRestored(ApplicationLayout layout) {
+		listeners.forEach(l -> l.layoutChange(new DockingLayoutEvent(DockingLayoutEvent.ID.RESTORED, "current", layout)));
+	}
+
+	public static void layoutPersisted(ApplicationLayout layout) {
+		listeners.forEach(l -> l.layoutChange(new DockingLayoutEvent(DockingLayoutEvent.ID.PERSISTED, "current", layout)));
 	}
 
 	/**
