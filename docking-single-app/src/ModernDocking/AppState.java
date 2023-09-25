@@ -68,17 +68,9 @@ public class AppState {
      * Used to persist the current app layout to the layout file.
      * This is a no-op if auto persistence is turned off, it's paused or there is no file
      */
-//	public static void persist() {
-//		persist(Docking.getSingleInstance());
-//	}
-
     public static void persist() {
         instance.persist();
     }
-
-//	public static boolean restore() throws DockingLayoutException {
-//		return restore(Docking.getSingleInstance());
-//	}
 
     /**
      * Restore the application layout from the auto persist file.

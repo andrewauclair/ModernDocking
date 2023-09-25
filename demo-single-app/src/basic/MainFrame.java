@@ -25,6 +25,7 @@ import ModernDocking.*;
 import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.DockingLayouts;
+import ModernDocking.settings.Settings;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -84,7 +85,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		Docking.initialize(this);
 		DockingUI.initialize(this);
 
-		Docking.setAlwaysDisplayTabMode(alwaysUseTabs);
+		Settings.setAlwaysDisplayTabMode(alwaysUseTabs);
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -152,27 +153,6 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		window.add(new LayoutsMenu());
 
 		menuBar.add(window);
-
-		JMenuItem dialogTest = new JMenuItem("Dialog Test");
-
-		dialogTest.addActionListener(e -> {
-			DialogWithDocking dialog = new DialogWithDocking();
-			Point loc = getLocation();
-
-			//SwingUtilities.convertPointToScreen(loc, MainFrame.this);
-			loc.x -= 250;
-			loc.y -= 250;
-
-			loc.x += getSize().width / 2;
-			loc.y += getSize().height / 2;
-			dialog.setLocation(loc);
-
-			dialog.setSize(500, 500);
-
-			dialog.setVisible(true);
-
-		});
-		window.add(dialogTest);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
