@@ -171,6 +171,8 @@ public class DockableWrapper {
 	 */
 	public void setUnpinned(boolean unpinned) {
 		this.unpinned = unpinned;
+
+		displayPanel.parentChanged();
 	}
 
 	/**

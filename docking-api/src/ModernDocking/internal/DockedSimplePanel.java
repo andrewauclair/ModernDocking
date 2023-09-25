@@ -48,9 +48,21 @@ public class DockedSimplePanel extends DockingPanel {
 	/**
 	 * Create a new instance of DockedSimplePanel with a wrapper
 	 *
+	 * @param docking Instance of the docking framework that this panel belongs to
 	 * @param dockable Wrapper of the dockable in this simple panel
 	 */
 	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable) {
+		this(docking, dockable, dockable.getDisplayPanel());
+	}
+
+	/**
+	 * Create a new instance of DockedSimplePanel with a wrapper
+	 *
+	 * @param docking Instance of the docking framework that this panel belongs to
+	 * @param dockable Wrapper of the dockable in this simple panel
+	 * @param displayPanel The panel to display in the DockedSimplePanel for this dockable
+	 */
+	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable, DisplayPanel displayPanel) {
 		setLayout(new BorderLayout());
 
 		setNotSelectedBorder();
@@ -60,7 +72,7 @@ public class DockedSimplePanel extends DockingPanel {
 		this.dockable = dockable;
 		this.docking = docking;
 
-		add(dockable.getDisplayPanel(), BorderLayout.CENTER);
+		add(displayPanel, BorderLayout.CENTER);
 	}
 
 	/**

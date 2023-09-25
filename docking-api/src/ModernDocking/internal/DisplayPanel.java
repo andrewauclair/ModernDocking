@@ -58,7 +58,7 @@ public class DisplayPanel extends JPanel {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 
-		if (!Settings.alwaysDisplayTabsMode()) {
+		if (!Settings.alwaysDisplayTabsMode() || wrapper.isUnpinned()) {
 			if (!(wrapper.getParent() instanceof DockedTabbedPanel) || ((DockedTabbedPanel) wrapper.getParent()).isUsingBottomTabs()) {
 				add((Component) wrapper.getHeaderUI(), gbc);
 				gbc.gridy++;

@@ -28,6 +28,7 @@ import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.DockingLayouts;
 import ModernDocking.api.WindowLayoutBuilderAPI;
+import ModernDocking.settings.Settings;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -85,7 +86,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		docking = new Docking(this);
 
-//		Docking.setAlwaysDisplayTabMode(alwaysUseTabs);
+		Settings.setAlwaysDisplayTabMode(alwaysUseTabs);
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
