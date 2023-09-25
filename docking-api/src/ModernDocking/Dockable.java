@@ -188,67 +188,6 @@ public interface Dockable {
 	}
 
 	/**
-	 * called when the Docking framework is about to dock this Dockable. Allows the action to be overridden.
-	 * return true if the docking action has been performed separately.
-	 *
-	 * @return True if docking was handled separately. False if the framework should proceed with docking
-	 */
-	default boolean onDocking() {
-		return false;
-	}
-
-	/**
-	 * called when the Docking framework is about to set a dockable to unpinned. Allows the destination location to be
-	 * overridden.
-	 *
-	 * @return Target toolbar location for this dockable or null for the framework to decide.
-	 */
-	default DockableToolbar.Location onUnpinning() {
-		return null;
-	}
-
-	/**
-	 * called after the Dockable has been docked
-	 */
-	default void onDocked() {
-	}
-
-	/**
-	 * called after the Dockable has been undocked
-	 */
-	default void onUndocked() {
-	}
-
-	/**
-	 * called when the dockable is shown
-	 */
-	default void onShown() {
-	}
-
-	/**
-	 * called when the dockable is hidden
-	 */
-	default void onHidden() {
-	}
-
-	/**
-	 * Get the properties of the dockable
-	 *
-	 * @return map of the dockable properties
-	 */
-	default Map<String, String> getProperties() {
-		return new HashMap<>();
-	}
-
-	/**
-	 * Set the properties of the dockable
-	 *
-	 * @param properties map of the dockable properties
-	 */
-	default void setProperties(Map<String, String> properties) {
-	}
-
-	/**
 	 * The member variables with the DockingProperty annotation have been updated from the layout file
 	 */
 	default void updateProperties() {

@@ -33,8 +33,8 @@ public class FlatLafHeaderUI extends DefaultHeaderUI implements DockingHeaderUI 
 	/**
 	 * Settings icon for the header. Uses an SVG icon for sharper icons
 	 */
-
 	private final FlatSVGIcon settingsIcon = new FlatSVGIcon("icons/settings.svg");
+
 	/**
 	 * Close icon for the header. Uses an SVG icon for sharper icons
 	 */

@@ -7,41 +7,43 @@
 </eastToolbar>
 <southToolbar>
 </southToolbar>
-<split orientation="1" divider-proportion="0.7477242946624756">
+<split orientation="1" divider-proportion="0.745123565196991">
 <left>
 <split orientation="0" divider-proportion="0.7495462894439697">
 <left>
-<split orientation="1" divider-proportion="0.24736842513084412">
+<split orientation="0" divider-proportion="0.5">
+<left>
+<split orientation="1" divider-proportion="0.4982394278049469">
 <left>
 <simple persistentID="three" class-name="basic.SimplePanel">
-<properties></properties>
+<properties test="one" test11="twelve" test10="eleven" test_int_1="5" test1="two" test4="five" test5="six" test2="three" test3="four" test8="nine" test9="ten" test6="seven" test7="eight"></properties>
 </simple>
 </left>
 <right>
-<split orientation="0" divider-proportion="0.5">
-<left>
 <tabbed>
 <selectedTab persistentID="one">
 </selectedTab>
 <tab persistentID="one">
-<properties></properties>
+<properties test="one" test11="twelve" test10="eleven" test_int_1="5" test1="two" test4="five" test5="six" test2="three" test3="four" test8="nine" test9="ten" test6="seven" test7="eight"></properties>
 </tab>
 <tab persistentID="always-displayed">
 <properties></properties>
 </tab>
 </tabbed>
+</right>
+</split>
 </left>
 <right>
-<tabbed>
-<selectedTab persistentID="four">
-</selectedTab>
-<tab persistentID="four">
-<properties></properties>
-</tab>
-<tab persistentID="two">
-<properties></properties>
-</tab>
-</tabbed>
+<split orientation="1" divider-proportion="0.4982394278049469">
+<left>
+<simple persistentID="four" class-name="basic.SimplePanel">
+<properties test="one" test11="twelve" test10="eleven" test_int_1="5" test1="two" test4="five" test5="six" test2="three" test3="four" test8="nine" test9="ten" test6="seven" test7="eight"></properties>
+</simple>
+</left>
+<right>
+<simple persistentID="two" class-name="basic.SimplePanel">
+<properties test="one" test11="twelve" test10="eleven" test_int_1="5" test1="two" test4="five" test5="six" test2="three" test3="four" test8="nine" test9="ten" test6="seven" test7="eight"></properties>
+</simple>
 </right>
 </split>
 </right>
@@ -49,7 +51,7 @@
 </left>
 <right>
 <simple persistentID="output" class-name="basic.OutputPanel">
-<properties></properties>
+<properties first-column-name="one"></properties>
 </simple>
 </right>
 </split>
@@ -70,7 +72,7 @@
 </left>
 <right>
 <simple persistentID="five" class-name="basic.SimplePanel">
-<properties></properties>
+<properties test="one" test11="twelve" test10="eleven" test_int_1="5" test1="two" test4="five" test5="six" test2="three" test3="four" test8="nine" test9="ten" test6="seven" test7="eight"></properties>
 </simple>
 </right>
 </split>
@@ -79,13 +81,13 @@
 </layout>
 <undocked>
 <simple persistentID="six" class-name="basic.SimplePanel">
-<properties></properties>
+<properties test="one" test11="twelve" test10="eleven" test_int_1="5" test1="two" test4="five" test5="six" test2="three" test3="four" test8="nine" test9="ten" test6="seven" test7="eight"></properties>
 </simple>
 <simple persistentID="seven" class-name="basic.SimplePanel">
-<properties></properties>
+<properties test="one" test11="twelve" test10="eleven" test_int_1="5" test1="two" test4="five" test5="six" test2="three" test3="four" test8="nine" test9="ten" test6="seven" test7="eight"></properties>
 </simple>
 <simple persistentID="eight" class-name="basic.SimplePanel">
-<properties></properties>
+<properties test="one" test11="twelve" test10="eleven" test_int_1="5" test1="two" test4="five" test5="six" test2="three" test3="four" test8="nine" test9="ten" test6="seven" test7="eight"></properties>
 </simple>
 </undocked>
 </app-layout>

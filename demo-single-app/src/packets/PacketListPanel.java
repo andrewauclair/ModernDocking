@@ -39,18 +39,8 @@ public class PacketListPanel extends JPanel implements Dockable {
 	}
 
 	@Override
-	public int getType() {
-		return 0;
-	}
-
-	@Override
 	public String getTabText() {
 		return "Packets";
-	}
-
-	@Override
-	public Icon getIcon() {
-		return null;
 	}
 
 	@Override
@@ -66,30 +56,5 @@ public class PacketListPanel extends JPanel implements Dockable {
 	@Override
 	public boolean isClosable() {
 		return packetListCount > 1;
-	}
-
-	@Override
-	public boolean isPinningAllowed() {
-		return false;
-	}
-
-	@Override
-	public boolean isMinMaxAllowed() {
-		return false;
-	}
-
-	@Override
-	public boolean getHasMoreOptions() {
-		return false;
-	}
-
-	@Override
-	public void onDocked() {
-		packetListCount++;
-	}
-
-	@Override
-	public void onUndocked() {
-		packetListCount--;
 	}
 }

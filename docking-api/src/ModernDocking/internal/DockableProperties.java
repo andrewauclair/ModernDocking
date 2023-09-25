@@ -31,11 +31,6 @@ import java.util.stream.Collectors;
 
 public class DockableProperties {
     public static void configureProperties(Dockable dockable, Map<String, String> properties) {
-        if (!Settings.getExperimentalPropertyMode()) {
-            dockable.setProperties(properties);
-            return;
-        }
-
         List<Field> dockingPropFields = Arrays.stream(dockable.getClass().getDeclaredFields())
                 .filter(field -> field.getAnnotation(DockingProperty.class) != null)
                 .collect(Collectors.toList());
@@ -64,10 +59,6 @@ public class DockableProperties {
     }
 
     public static Map<String, String> saveProperties(Dockable dockable) {
-        if (!Settings.getExperimentalPropertyMode()) {
-            return new HashMap<>(dockable.getProperties());
-        }
-
         Map<String, String> properties = new HashMap<>();
 
         List<Field> dockingPropFields = Arrays.stream(dockable.getClass().getDeclaredFields())

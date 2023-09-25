@@ -28,7 +28,6 @@ public class DockingAPI {
 
     private final AppStatePersister appStatePersister = new AppStatePersister(this);
 
-    private boolean isInOnDockingCallback = false;
     // map of all the root panels in the application
     private  final Map<Window, RootDockingPanelAPI> rootPanels = new HashMap<>();
 
@@ -293,19 +292,6 @@ public class DockingAPI {
             // don't fire an undocked event for this one
         }
 
-        // if the dockable has decided to do something else, skip out of this function
-        if (!isInOnDockingCallback)  {
-            isInOnDockingCallback = true;
-
-            boolean dockingHandled = dockable.onDocking();
-
-            isInOnDockingCallback = false;
-
-            if (dockingHandled) {
-                return;
-            }
-        }
-
         root.dock(dockable, region, dividerProportion);
 
         internals.getWrapper(dockable).setWindow(window);
@@ -314,8 +300,6 @@ public class DockingAPI {
         DockingListeners.fireDockedEvent(dockable);
 
         appState.persist();
-
-        dockable.onDocked();
     }
 
     /**
@@ -392,19 +376,6 @@ public class DockingAPI {
             DockableWrapper wrapper = internals.getWrapper(source);
 
             wrapper.getParent().undock(source);
-        }
-
-        // if the source dockable has decided to do something else, skip out of this function
-        if (!isInOnDockingCallback)  {
-            isInOnDockingCallback = true;
-
-            boolean dockingHandled = source.onDocking();
-
-            isInOnDockingCallback = false;
-
-            if (dockingHandled) {
-                return;
-            }
         }
 
         DockableWrapper wrapper = internals.getWrapper(target);
@@ -549,9 +520,6 @@ public class DockingAPI {
         // force this dockable to dock again if we're not floating it
         if (!dockable.isClosable() && !FloatListener.isFloating) {
             dock(dockable, mainWindow);
-        }
-        else {
-            dockable.onUndocked();
         }
     }
 
@@ -714,34 +682,26 @@ public class DockingAPI {
         internals.getWrapper(dockable).setWindow(window);
         internals.getWrapper(dockable).setUnpinned(true);
 
-        DockableToolbar.Location preferredLocation = dockable.onUnpinning();
+        boolean allowedSouth = dockable.getStyle() == DockableStyle.BOTH || dockable.getStyle() == DockableStyle.HORIZONTAL;
 
-        if (preferredLocation == null || !root.isLocationSupported(preferredLocation)) {
-            boolean allowedSouth = dockable.getStyle() == DockableStyle.BOTH || dockable.getStyle() == DockableStyle.HORIZONTAL;
+        int westDist = posInFrame.x;
+        int eastDist = window.getWidth() - posInFrame.x;
+        int southDist = window.getHeight() - posInFrame.y;
 
-            int westDist = posInFrame.x;
-            int eastDist = window.getWidth() - posInFrame.x;
-            int southDist = window.getHeight() - posInFrame.y;
+        boolean east = eastDist <= westDist;
+        boolean south = southDist < westDist && southDist < eastDist;
 
-            boolean east = eastDist <= westDist;
-            boolean south = southDist < westDist && southDist < eastDist;
-
-            if (south && allowedSouth) {
-                root.setDockableUnpinned(dockable, DockableToolbar.Location.SOUTH);
-            }
-            else if (east) {
-                root.setDockableUnpinned(dockable, DockableToolbar.Location.EAST);
-            }
-            else {
-                root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
-            }
+        if (south && allowedSouth) {
+            root.setDockableUnpinned(dockable, DockableToolbar.Location.SOUTH);
+        }
+        else if (east) {
+            root.setDockableUnpinned(dockable, DockableToolbar.Location.EAST);
         }
         else {
-            root.setDockableUnpinned(dockable, preferredLocation);
+            root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
         }
 
         DockingListeners.fireUnpinnedEvent(dockable);
-        dockable.onHidden();
         DockingListeners.fireHiddenEvent(dockable);
     }
 
