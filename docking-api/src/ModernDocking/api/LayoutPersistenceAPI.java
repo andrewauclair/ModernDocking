@@ -266,7 +266,9 @@ public class LayoutPersistenceAPI {
         for (String key : properties.keySet()) {
             String value = properties.get(key);
 
-            writer.writeAttribute(key, value);
+            if (value != null) {
+                writer.writeAttribute(key, value);
+            }
         }
 
         writer.writeEndElement();
@@ -320,7 +322,9 @@ public class LayoutPersistenceAPI {
             for (String key : properties.keySet()) {
                 String value = properties.get(key);
 
-                writer.writeAttribute(key, value);
+                if (value != null) {
+                    writer.writeAttribute(key, value);
+                }
             }
 
             writer.writeEndElement();

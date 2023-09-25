@@ -22,6 +22,7 @@ SOFTWARE.
 package basic;
 
 import ModernDocking.DockingProperty;
+import ModernDocking.internal.DockableToolbar;
 import ModernDocking.ui.DefaultHeaderUI;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
@@ -69,6 +70,9 @@ public class SimplePanel extends BasePanel {
 
 	@DockingProperty(name = "test_int_1", defaultValue = "5")
 	private int test_int_1;
+
+//	@DockingProperty(name = "toolbar_location", defaultValue = "1")
+//	private DockableToolbar.Location toolbarLocation;
 
 	private static final Random rand = new Random();
 

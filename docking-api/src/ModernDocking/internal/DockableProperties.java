@@ -37,8 +37,11 @@ public class DockableProperties {
 
         for (Field field : dockingPropFields) {
             try {
-                // make sure we can access the field if it is private/protected
-                field.setAccessible(true);
+                // make sure we can access the field if it is private/protected. only try this if we're sure we can't already access it
+                // because it may result in an IllegalAccessException for trying
+                if (!field.canAccess(dockable)) {
+                    field.setAccessible(true);
+                }
 
                 // grab the property and store the value by its name
                 DockingProperty property = field.getAnnotation(DockingProperty.class);
@@ -49,9 +52,8 @@ public class DockableProperties {
                 else if (!Objects.equals(property.defaultValue(), "__no_default_value__")) {
                     setProperty(dockable, field, property.defaultValue());
                 }
-            } catch (IllegalAccessException e) {
+            } catch (IllegalAccessException | SecurityException e) {
                 e.printStackTrace();
-
             }
         }
 
@@ -109,6 +111,10 @@ public class DockableProperties {
         else if (type == String.class) {
             return (String) field.get(dockable);
         }
+//        else if (type.isEnum()) {
+//            return Integer.toString(((Enum<?>) field.get(dockable)).ordinal());
+//            return "";
+//        }
         else {
             throw new RuntimeException("Unsupported property type");
         }
@@ -141,6 +147,11 @@ public class DockableProperties {
         else if (type == String.class) {
             field.set(dockable, value);
         }
+//        else if (type.isEnum()) {
+//            int ordinal = Integer.parseInt(value);
+//
+//            field.set(dockable, type.getEnumConstants()[ordinal]);
+//        }
         else {
             throw new RuntimeException("Unsupported property type");
         }

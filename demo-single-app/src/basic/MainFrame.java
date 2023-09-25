@@ -168,6 +168,8 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		ToolPanel output = new OutputPanel("Output", "output", DockableStyle.HORIZONTAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
 		AlwaysDisplayedPanel alwaysDisplayed = new AlwaysDisplayedPanel("always displayed", "always-displayed");
 
+		PropertiesDemoPanel propertiesDemoPanel = new PropertiesDemoPanel();
+
 		ThemesPanel themes = new ThemesPanel();
 
 		one.setTitleBackground(new Color(0xa1f2ff));
@@ -207,6 +209,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		view.add(actionListenDock(eight));
 		view.add(actionListenDock(explorer));
 		view.add(actionListenDock(output));
+		view.add(actionListenDock(propertiesDemoPanel));
 		view.add(new DockableMenuItem(() -> ((Dockable) alwaysDisplayed).getPersistentID(), ((Dockable) alwaysDisplayed).getTabText()));
 		view.add(changeText);
 		view.add(actionListenDock(themes));
@@ -247,6 +250,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 				.dock(two.getPersistentID(), one.getPersistentID(), DockingRegion.SOUTH)
 				.dockToRoot(three.getPersistentID(), DockingRegion.WEST)
 				.dock(four.getPersistentID(), two.getPersistentID(), DockingRegion.CENTER)
+				.dock(propertiesDemoPanel.getPersistentID(), four.getPersistentID(), DockingRegion.CENTER)
 				.dockToRoot(output.getPersistentID(), DockingRegion.SOUTH)
 				.dockToRoot(themes.getPersistentID(), DockingRegion.EAST)
 				.dock(explorer.getPersistentID(), themes.getPersistentID(), DockingRegion.CENTER)
