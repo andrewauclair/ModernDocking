@@ -68,7 +68,12 @@ public class DisplayPanel extends JPanel {
 		gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
 
-		add((Component) wrapper.getDockable(), gbc);
+		if (wrapper.getDockable().isWrappableInScrollpane()) {
+			add(new JScrollPane((Component) wrapper.getDockable()), gbc);
+		}
+		else {
+			add((Component) wrapper.getDockable(), gbc);
+		}
 	}
 
 	/**

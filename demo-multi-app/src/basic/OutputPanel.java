@@ -141,4 +141,9 @@ public class OutputPanel extends ToolPanel {
         // properties have now been loaded, use them
         table.getColumnModel().getColumn(0).setHeaderValue(firstColumnName);
     }
+
+    @Override
+    public boolean isWrappableInScrollpane() {
+        return false;
+    }
 }

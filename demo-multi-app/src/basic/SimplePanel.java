@@ -32,6 +32,7 @@ import com.formdev.flatlaf.FlatLaf;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
+import java.util.Random;
 
 public class SimplePanel extends BasePanel {
 	private String tabText = "";
@@ -70,9 +71,43 @@ public class SimplePanel extends BasePanel {
 	@DockingProperty(name = "test_int_1", defaultValue = "5")
 	private int test_int_1;
 
+	private static final Random rand = new Random();
+
 	public SimplePanel(DockingAPI docking, String title, String persistentID) {
 		super(docking, title, persistentID);
 		tabText = title;
+
+		setLayout(new GridBagLayout());
+
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		int numberOfControls = rand.nextInt(15);
+
+		for (int i = 0; i < numberOfControls; i++) {
+			int randControl = rand.nextInt(4);
+
+			switch (randControl) {
+				case 0:
+					add(new JLabel("Label Here"), gbc);
+					break;
+				case 1:
+					add(new JTextField(), gbc);
+					break;
+				case 2:
+					add(new JCheckBox(), gbc);
+					break;
+				case 3:
+					add(new JRadioButton(), gbc);
+					break;
+			}
+
+			if (rand.nextBoolean()) {
+				gbc.gridy++;
+			}
+			else {
+				gbc.gridx++;
+			}
+		}
 	}
 
 	public void setTitleBackground(Color color) {

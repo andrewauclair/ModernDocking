@@ -86,11 +86,6 @@ public interface Dockable {
 		return null;
 	}
 
-	//
-	//
-	//
-	//
-
 	/**
 	 * indicates that this dockable is allowed to be floated as its own new window.
 	 * if floating is not allowed and an attempt is made to float the dockable, it will be returned to where it was undocked.
@@ -151,6 +146,16 @@ public interface Dockable {
 	 */
 	default boolean isMinMaxAllowed() {
 		return false;
+	}
+
+	/**
+	 * Dockables can be displayed with less room than they need. By default, this interface will tell the docking framework
+	 * to wrap the Dockable in a JScrollPane. To disable this functionality, override this method and return false.
+	 *
+	 * @return True if this dockable should be wrapped in a JScrollPane internally in the docking framework when displayed
+	 */
+	default boolean isWrappableInScrollpane() {
+		return true;
 	}
 
 	/**

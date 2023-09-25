@@ -107,4 +107,9 @@ public class ThemesPanel extends BasePanel implements Dockable {
     public boolean isClosable() {
         return false;
     }
+
+    @Override
+    public boolean isWrappableInScrollpane() {
+        return false;
+    }
 }
