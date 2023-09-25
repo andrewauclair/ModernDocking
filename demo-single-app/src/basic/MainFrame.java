@@ -83,7 +83,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		setTitle("Modern Docking Basic Demo");
 
 		Docking.initialize(this);
-		DockingUI.initialize(this);
+		DockingUI.initialize();
 
 		Settings.setAlwaysDisplayTabMode(alwaysUseTabs);
 

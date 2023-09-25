@@ -31,16 +31,10 @@ import java.awt.*;
 public class DockingUI {
     private static boolean initialized = false;
 
-    public static void initialize(Window mainWindow) {
-//        Docking.initialize(mainWindow);
-
-        configureDockingUI();
-    }
-
     /**
-     * Call this directly when using the multi-instance configuration with ModernDockingUI
+     * Initialize the FlatLaf UI extension. This reconfigures the docking framework to use FlatLaf SVG icons and color filters.
      */
-    public static void configureDockingUI() {
+    public static void initialize() {
         if (initialized) {
             return;
         }

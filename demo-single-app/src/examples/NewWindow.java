@@ -13,7 +13,7 @@ public class NewWindow extends JFrame {
     public NewWindow() {
         setSize(300, 200);
 
-        DockingUI.initialize(this);
+        DockingUI.initialize();
 
         RootDockingPanel root = new RootDockingPanel(this);
         add(root, BorderLayout.CENTER);

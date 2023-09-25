@@ -266,7 +266,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
-			DockingUI.configureDockingUI();
+			DockingUI.initialize();
 
 			MainFrame one = new MainFrame(new File("multiframe_demo_layout_1.xml"));
 			MainFrame two = new MainFrame(new File("multiframe_demo_layout_2.xml"));
