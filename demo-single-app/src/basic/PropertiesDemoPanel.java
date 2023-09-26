@@ -88,10 +88,60 @@ public class PropertiesDemoPanel extends BasePanel {
         gbc.gridx = 0;
         gbc.gridy++;
 
+        add(new JLabel("Short:"), gbc);
+        gbc.gridx++;
+        add(shortField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+
+        add(new JLabel("Integer:"), gbc);
+        gbc.gridx++;
+        add(intField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+
+        add(new JLabel("Long:"), gbc);
+        gbc.gridx++;
+        add(longField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+
+        add(new JLabel("Float:"), gbc);
+        gbc.gridx++;
+        add(floatField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+
+        add(new JLabel("Double:"), gbc);
+        gbc.gridx++;
+        add(doubleField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+
+        add(new JLabel("Char:"), gbc);
+        gbc.gridx++;
+        add(charField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+
+        add(new JLabel("String:"), gbc);
+        gbc.gridx++;
+        add(stringField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+
         JButton save = new JButton("Save");
         add(save);
         save.addActionListener(e -> {
             byteValue = Byte.parseByte(byteField.getText());
+            shortValue = Short.parseShort(shortField.getText());
+            intValue = Integer.parseInt(intField.getText());
+            longValue = Long.parseLong(longField.getText());
+            floatValue = Float.parseFloat(floatField.getText());
+            doubleValue = Double.parseDouble(doubleField.getText());
+            charValue = charField.getText().length() > 0 ? charField.getText().charAt(0) : ' ';
+            stringValue = stringField.getText();
+
             AppState.persist();
         });
     }
@@ -99,6 +149,13 @@ public class PropertiesDemoPanel extends BasePanel {
     @Override
     public void updateProperties() {
         byteField.setText(Byte.toString(byteValue));
+        shortField.setText(Short.toString(shortValue));
+        intField.setText(Integer.toString(intValue));
+        longField.setText(Long.toString(longValue));
+        floatField.setText(Float.toString(floatValue));
+        doubleField.setText(Double.toString(doubleValue));
+        charField.setText(String.valueOf(charValue));
+        stringField.setText(stringValue);
     }
 
     class MyIntFilter extends DocumentFilter {
