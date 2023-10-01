@@ -200,7 +200,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		JMenu view = new JMenu("View");
 		menuBar.add(view);
 
-		JMenuItem createNewDockable = new JMenuItem();
+		JMenuItem createNewDockable = new JMenuItem("Generate Random Dockable");
 		createNewDockable.addActionListener(e -> {
 			SimplePanel rand = new SimplePanel(generateString("alpha", 6), generateString("abcdefg", 10));
 			Docking.dock(rand, one, DockingRegion.WEST);

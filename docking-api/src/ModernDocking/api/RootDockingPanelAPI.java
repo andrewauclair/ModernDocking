@@ -471,4 +471,16 @@ public class RootDockingPanelAPI extends DockingPanel {
 	public boolean isLocationSupported(DockableToolbar.Location location) {
 		return supportedToolbars.contains(location);
 	}
+
+	public void updateLAF() {
+		if (southToolbar != null) {
+			SwingUtilities.updateComponentTreeUI(southToolbar);
+		}
+		if (westToolbar != null) {
+			SwingUtilities.updateComponentTreeUI(westToolbar);
+		}
+		if (eastToolbar != null) {
+			SwingUtilities.updateComponentTreeUI(eastToolbar);
+		}
+	}
 }

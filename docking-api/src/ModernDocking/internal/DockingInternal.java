@@ -142,6 +142,7 @@ public class DockingInternal {
 		}
 
 		for (RootDockingPanelAPI root : docking.getRootPanels().values()) {
+			root.updateLAF();
 			updateLAF(root.getPanel());
 		}
 	}
