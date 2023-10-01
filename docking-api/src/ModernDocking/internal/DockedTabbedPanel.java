@@ -167,8 +167,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 */
 	public void addPanel(DockableWrapper dockable) {
 		// we only support tabs on top if we have FlatLaf because we can add a trailing component for our menu
-		// TODO this isn't thorough enough to know if we're running a L&F from the IntelliJ themes
-		boolean usingFlatLaf = tabs.getUI().getClass().getSimpleName().startsWith("Flat");
+		boolean usingFlatLaf = tabs.getUI().getClass().getPackageName().startsWith("com.formdev.flatlaf");
 
 		if (Settings.alwaysDisplayTabsMode() && usingFlatLaf) {
 			tabs.setTabPlacement(JTabbedPane.TOP);
