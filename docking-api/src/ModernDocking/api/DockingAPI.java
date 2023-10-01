@@ -1,6 +1,8 @@
 package ModernDocking.api;
 
-import ModernDocking.*;
+import ModernDocking.Dockable;
+import ModernDocking.DockableStyle;
+import ModernDocking.DockingRegion;
 import ModernDocking.event.DockingListener;
 import ModernDocking.event.MaximizeListener;
 import ModernDocking.exception.DockableRegistrationFailureException;
@@ -8,11 +10,11 @@ import ModernDocking.exception.NotDockedException;
 import ModernDocking.floating.FloatListener;
 import ModernDocking.internal.*;
 import ModernDocking.layouts.WindowLayout;
+import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 /**
  * Single instance of the docking framework. Useful when a single JVM is to host multiple instances of an application
@@ -709,13 +711,13 @@ public class DockingAPI {
         boolean south = southDist < westDist && southDist < eastDist;
 
         if (south && allowedSouth) {
-            root.setDockableUnpinned(dockable, DockableToolbar.Location.SOUTH);
+            root.setDockableUnpinned(dockable, ToolbarLocation.SOUTH);
         }
         else if (east) {
-            root.setDockableUnpinned(dockable, DockableToolbar.Location.EAST);
+            root.setDockableUnpinned(dockable, ToolbarLocation.EAST);
         }
         else {
-            root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
+            root.setDockableUnpinned(dockable, ToolbarLocation.WEST);
         }
 
         DockingListeners.fireUnpinnedEvent(dockable);

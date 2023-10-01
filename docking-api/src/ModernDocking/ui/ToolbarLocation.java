@@ -19,23 +19,22 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package ModernDocking;
+package ModernDocking.ui;
 
-import ModernDocking.api.RootDockingPanelAPI;
-import ModernDocking.ui.ToolbarLocation;
-
-import java.awt.*;
-import java.util.EnumSet;
-
-public class RootDockingPanel extends RootDockingPanelAPI {
-    public RootDockingPanel() {
-    }
-
-    public RootDockingPanel(Window window) {
-        super(Docking.getSingleInstance(), window);
-    }
-
-    public RootDockingPanel(Window window, EnumSet<ToolbarLocation> supportedToolbars) {
-        super(Docking.getSingleInstance(), window, supportedToolbars);
-    }
+/**
+ * Location of the toolbar. Toolbars are supported to the West, South and East of a window
+ */
+public enum ToolbarLocation {
+    /**
+     * Toolbar is on the west of the root panel
+     */
+    WEST,
+    /**
+     * Toolbar is on the south of the root panel
+     */
+    SOUTH,
+    /**
+     * Toolbar is on the east of the root panel
+     */
+    EAST
 }

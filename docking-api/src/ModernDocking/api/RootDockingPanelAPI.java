@@ -25,6 +25,7 @@ import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
 import ModernDocking.internal.*;
 import ModernDocking.settings.Settings;
+import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,7 +61,7 @@ public class RootDockingPanelAPI extends DockingPanel {
 	 */
 	private DockableToolbar eastToolbar;
 
-	private EnumSet<DockableToolbar.Location> supportedToolbars;
+	private EnumSet<ToolbarLocation> supportedToolbars;
 
 	/**
 	 * Create root panel with GridBagLayout as the layout
@@ -88,11 +89,11 @@ public class RootDockingPanelAPI extends DockingPanel {
 			docking.registerDockingPanel(this, (JDialog) window);
 		}
 
-		southToolbar = new DockableToolbar(docking, window, this, DockableToolbar.Location.SOUTH);
-		westToolbar = new DockableToolbar(docking, window, this, DockableToolbar.Location.WEST);
-		eastToolbar = new DockableToolbar(docking, window, this, DockableToolbar.Location.EAST);
+		southToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.SOUTH);
+		westToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.WEST);
+		eastToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.EAST);
 
-		supportedToolbars = EnumSet.allOf(DockableToolbar.Location.class);
+		supportedToolbars = EnumSet.allOf(ToolbarLocation.class);
 		pinningSupported = !supportedToolbars.isEmpty();
 	}
 
@@ -102,7 +103,7 @@ public class RootDockingPanelAPI extends DockingPanel {
 	 * @param window Window this root panel is attached to
 	 * @param supportedToolbars Supported toolbars
 	 */
-	protected RootDockingPanelAPI(DockingAPI docking, Window window, EnumSet<DockableToolbar.Location> supportedToolbars) {
+	protected RootDockingPanelAPI(DockingAPI docking, Window window, EnumSet<ToolbarLocation> supportedToolbars) {
 		this(docking, window);
 
 		this.supportedToolbars = supportedToolbars;
@@ -127,11 +128,11 @@ public class RootDockingPanelAPI extends DockingPanel {
 			docking.registerDockingPanel(this, (JDialog) window);
 		}
 
-		southToolbar = new DockableToolbar(docking, window, this, DockableToolbar.Location.SOUTH);
-		westToolbar = new DockableToolbar(docking, window, this, DockableToolbar.Location.WEST);
-		eastToolbar = new DockableToolbar(docking, window, this, DockableToolbar.Location.EAST);
+		southToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.SOUTH);
+		westToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.WEST);
+		eastToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.EAST);
 
-		supportedToolbars = EnumSet.allOf(DockableToolbar.Location.class);
+		supportedToolbars = EnumSet.allOf(ToolbarLocation.class);
 	}
 
 	/**
@@ -268,13 +269,13 @@ public class RootDockingPanelAPI extends DockingPanel {
 
 	@Override
 	public void undock(Dockable dockable) {
-		if (supportedToolbars.contains(DockableToolbar.Location.WEST) && westToolbar.hasDockable(dockable)) {
+		if (supportedToolbars.contains(ToolbarLocation.WEST) && westToolbar.hasDockable(dockable)) {
 			westToolbar.removeDockable(dockable);
 		}
-		else if (supportedToolbars.contains(DockableToolbar.Location.EAST) && eastToolbar.hasDockable(dockable)) {
+		else if (supportedToolbars.contains(ToolbarLocation.EAST) && eastToolbar.hasDockable(dockable)) {
 			eastToolbar.removeDockable(dockable);
 		}
-		else if (supportedToolbars.contains(DockableToolbar.Location.SOUTH) && southToolbar.hasDockable(dockable)) {
+		else if (supportedToolbars.contains(ToolbarLocation.SOUTH) && southToolbar.hasDockable(dockable)) {
 			southToolbar.removeDockable(dockable);
 		}
 
@@ -304,17 +305,17 @@ public class RootDockingPanelAPI extends DockingPanel {
 	 */
 	public void setDockablePinned(Dockable dockable) {
 		// if the dockable is currently unpinned, remove it from the toolbar, then adjust the toolbars
-		if (supportedToolbars.contains(DockableToolbar.Location.WEST) && westToolbar.hasDockable(dockable)) {
+		if (supportedToolbars.contains(ToolbarLocation.WEST) && westToolbar.hasDockable(dockable)) {
 			westToolbar.removeDockable(dockable);
 
 			dock(dockable, DockingRegion.WEST, 0.25f);
 		}
-		else if (supportedToolbars.contains(DockableToolbar.Location.EAST) && eastToolbar.hasDockable(dockable)) {
+		else if (supportedToolbars.contains(ToolbarLocation.EAST) && eastToolbar.hasDockable(dockable)) {
 			eastToolbar.removeDockable(dockable);
 
 			dock(dockable, DockingRegion.EAST, 0.25f);
 		}
-		else if (supportedToolbars.contains(DockableToolbar.Location.SOUTH) && southToolbar.hasDockable(dockable)) {
+		else if (supportedToolbars.contains(ToolbarLocation.SOUTH) && southToolbar.hasDockable(dockable)) {
 			southToolbar.removeDockable(dockable);
 
 			dock(dockable, DockingRegion.SOUTH, 0.25f);
@@ -329,26 +330,26 @@ public class RootDockingPanelAPI extends DockingPanel {
 	 * @param dockable Dockable to unpin
 	 * @param location Toolbar to unpin to
 	 */
-	public void setDockableUnpinned(Dockable dockable, DockableToolbar.Location location) {
+	public void setDockableUnpinned(Dockable dockable, ToolbarLocation location) {
 		if (!isPinningSupported()) {
 			return;
 		}
 
 		switch (location) {
 			case WEST: {
-				if (supportedToolbars.contains(DockableToolbar.Location.WEST)) {
+				if (supportedToolbars.contains(ToolbarLocation.WEST)) {
 					westToolbar.addDockable(dockable);
 				}
 				break;
 			}
 			case SOUTH: {
-				if (supportedToolbars.contains(DockableToolbar.Location.SOUTH)) {
+				if (supportedToolbars.contains(ToolbarLocation.SOUTH)) {
 					southToolbar.addDockable(dockable);
 				}
 				break;
 			}
 			case EAST: {
-				if (supportedToolbars.contains(DockableToolbar.Location.EAST)) {
+				if (supportedToolbars.contains(ToolbarLocation.EAST)) {
 					eastToolbar.addDockable(dockable);
 				}
 				break;
@@ -364,7 +365,7 @@ public class RootDockingPanelAPI extends DockingPanel {
 	 * @param location Toolbar location
 	 * @return List of unpinned dockables
 	 */
-	public List<String> unpinnedPersistentIDs(DockableToolbar.Location location) {
+	public List<String> unpinnedPersistentIDs(ToolbarLocation location) {
 		switch (location) {
 			case WEST: return westToolbar.getPersistentIDs();
 			case EAST: return eastToolbar.getPersistentIDs();
@@ -468,7 +469,7 @@ public class RootDockingPanelAPI extends DockingPanel {
 		return southToolbar.getPersistentIDs();
 	}
 
-	public boolean isLocationSupported(DockableToolbar.Location location) {
+	public boolean isLocationSupported(ToolbarLocation location) {
 		return supportedToolbars.contains(location);
 	}
 

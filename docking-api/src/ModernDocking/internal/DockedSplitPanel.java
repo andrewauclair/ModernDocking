@@ -24,7 +24,6 @@ package ModernDocking.internal;
 import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
-import ModernDocking.api.AppStateAPI;
 import ModernDocking.settings.Settings;
 
 import javax.swing.*;

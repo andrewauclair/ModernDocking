@@ -21,7 +21,9 @@ SOFTWARE.
  */
 package ModernDocking.floating;
 
-import ModernDocking.*;
+import ModernDocking.Dockable;
+import ModernDocking.DockableStyle;
+import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.internal.DockingInternal;

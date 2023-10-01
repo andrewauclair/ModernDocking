@@ -21,8 +21,8 @@ SOFTWARE.
  */
 package ModernDocking.layouts;
 
-import ModernDocking.api.DockingAPI;
 import ModernDocking.DockingRegion;
+import ModernDocking.api.DockingAPI;
 import ModernDocking.settings.Settings;
 
 import javax.swing.*;

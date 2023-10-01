@@ -22,8 +22,9 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
-import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.api.DockingAPI;
+import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.ui.ToolbarLocation;
 import ModernDocking.util.SlideBorder;
 
 import javax.swing.*;
@@ -75,7 +76,7 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener, Mo
 		DockedSimplePanel panel = new DockedSimplePanel(docking, DockingInternal.get(docking).getWrapper(dockable));
 		SlideBorder slideBorder = new SlideBorder(toolbar.getDockedLocation());
 
-		if (toolbar.getDockedLocation() == DockableToolbar.Location.SOUTH) {
+		if (toolbar.getDockedLocation() == ToolbarLocation.SOUTH) {
 			gbc.weightx = 1.0;
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			add(slideBorder, gbc);
@@ -85,7 +86,7 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener, Mo
 			gbc.gridy++;
 			add(panel, gbc);
 		}
-		else if (toolbar.getDockedLocation() == DockableToolbar.Location.EAST) {
+		else if (toolbar.getDockedLocation() == ToolbarLocation.EAST) {
 			gbc.weighty = 1.0;
 			gbc.fill = GridBagConstraints.VERTICAL;
 			add(slideBorder, gbc);
@@ -143,7 +144,7 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener, Mo
 			Point location = new Point(toolbarLocation.x + toolbarSize.width, toolbarLocation.y);
 			Dimension size = new Dimension(width, height);
 
-			if (toolbar.getDockedLocation() == DockableToolbar.Location.EAST) {
+			if (toolbar.getDockedLocation() == ToolbarLocation.EAST) {
 				location.x = toolbarLocation.x - width;
 			}
 
@@ -200,10 +201,10 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener, Mo
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		// dragging the divider, update the size and location of the unpinned panel
-		if (toolbar.getDockedLocation() == DockableToolbar.Location.SOUTH) {
+		if (toolbar.getDockedLocation() == ToolbarLocation.SOUTH) {
 			setLocationAndSize(-e.getY());
 		}
-		else if (toolbar.getDockedLocation() == DockableToolbar.Location.WEST) {
+		else if (toolbar.getDockedLocation() == ToolbarLocation.WEST) {
 			setLocationAndSize(e.getX());
 		}
 		else {

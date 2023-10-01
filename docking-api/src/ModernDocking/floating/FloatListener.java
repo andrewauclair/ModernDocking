@@ -21,15 +21,14 @@ SOFTWARE.
  */
 package ModernDocking.floating;
 
-import ModernDocking.*;
+import ModernDocking.Dockable;
+import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
-import ModernDocking.api.DockingStateAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.internal.DockableWrapper;
 import ModernDocking.internal.DockingComponentUtils;
 import ModernDocking.internal.DockingPanel;
 import ModernDocking.internal.FloatingFrame;
-import ModernDocking.api.AppStateAPI;
 import ModernDocking.persist.RootDockState;
 
 import javax.swing.*;

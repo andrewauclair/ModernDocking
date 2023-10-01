@@ -21,8 +21,8 @@ SOFTWARE.
  */
 package ModernDocking.layouts;
 
-import ModernDocking.api.DockingAPI;
 import ModernDocking.DockingRegion;
+import ModernDocking.api.DockingAPI;
 import ModernDocking.internal.DockingInternal;
 import ModernDocking.settings.Settings;
 

@@ -23,7 +23,6 @@ package ModernDocking.internal;
 
 import ModernDocking.Dockable;
 import ModernDocking.DockingProperty;
-import ModernDocking.settings.Settings;
 
 import java.lang.reflect.Field;
 import java.util.*;

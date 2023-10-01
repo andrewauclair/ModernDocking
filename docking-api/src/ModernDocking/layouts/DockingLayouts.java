@@ -22,7 +22,6 @@ SOFTWARE.
 package ModernDocking.layouts;
 
 import ModernDocking.Dockable;
-import ModernDocking.api.AppStateAPI;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.event.DockingLayoutEvent;
@@ -30,7 +29,10 @@ import ModernDocking.event.DockingLayoutListener;
 import ModernDocking.internal.*;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DockingLayouts {
 	private static final List<DockingLayoutListener> listeners = new ArrayList<>();

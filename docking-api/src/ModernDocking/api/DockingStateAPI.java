@@ -27,6 +27,7 @@ import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.internal.*;
 import ModernDocking.layouts.*;
 import ModernDocking.persist.*;
+import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -165,7 +166,7 @@ public class DockingStateAPI {
 
         for (String id : layout.getWestUnpinnedToolbarIDs()) {
             Dockable dockable = getDockable(docking, id);
-            root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
+            root.setDockableUnpinned(dockable, ToolbarLocation.WEST);
             root.hideUnpinnedPanels();
             DockingInternal.get(docking).getWrapper(dockable).setUnpinned(true);
             getWrapper(dockable).setUnpinned(true);
@@ -173,14 +174,14 @@ public class DockingStateAPI {
 
         for (String id : layout.getEastUnpinnedToolbarIDs()) {
             Dockable dockable = getDockable(docking, id);
-            root.setDockableUnpinned(dockable, DockableToolbar.Location.EAST);
+            root.setDockableUnpinned(dockable, ToolbarLocation.EAST);
             root.hideUnpinnedPanels();
             getWrapper(dockable).setUnpinned(true);
         }
 
         for (String id : layout.getSouthUnpinnedToolbarIDs()) {
             Dockable dockable = getDockable(docking, id);
-            root.setDockableUnpinned(dockable, DockableToolbar.Location.SOUTH);
+            root.setDockableUnpinned(dockable, ToolbarLocation.SOUTH);
             root.hideUnpinnedPanels();
             getWrapper(dockable).setUnpinned(true);
         }

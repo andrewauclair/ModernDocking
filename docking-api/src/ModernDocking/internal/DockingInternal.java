@@ -22,10 +22,13 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
-import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.api.DockingAPI;
+import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.exception.DockableRegistrationFailureException;
-import ModernDocking.ui.*;
+import ModernDocking.ui.DefaultHeaderUI;
+import ModernDocking.ui.DockingHeaderUI;
+import ModernDocking.ui.HeaderController;
+import ModernDocking.ui.HeaderModel;
 
 import javax.swing.*;
 import java.awt.*;

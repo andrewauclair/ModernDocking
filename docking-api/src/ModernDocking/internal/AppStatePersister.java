@@ -22,7 +22,6 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.api.DockingAPI;
-import ModernDocking.api.AppStateAPI;
 
 import java.awt.*;
 import java.awt.event.ComponentAdapter;

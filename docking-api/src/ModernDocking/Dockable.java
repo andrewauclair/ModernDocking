@@ -21,15 +21,12 @@ SOFTWARE.
  */
 package ModernDocking;
 
-import ModernDocking.internal.DockableToolbar;
 import ModernDocking.internal.DockingInternal;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
 import ModernDocking.ui.HeaderModel;
 
 import javax.swing.*;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * this is the main interface for a Dockable. Any panel that an application wishes to be dockable must implement

@@ -21,7 +21,7 @@ SOFTWARE.
  */
 package ModernDocking.util;
 
-import ModernDocking.internal.DockableToolbar;
+import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,22 +33,22 @@ public class SlideBorder extends JPanel {
 	/**
 	 * The location of the toolbar that this slide border is for. Used to determine the correct orientation of the panel
 	 */
-	private final DockableToolbar.Location location;
+	private final ToolbarLocation location;
 
 	/**
 	 * Create a SlideBorder with the given toolbar location
 	 *
 	 * @param location Location of the toolbar
 	 */
-	public SlideBorder(DockableToolbar.Location location) {
+	public SlideBorder(ToolbarLocation location) {
 		this.location = location;
-		setCursor(location == DockableToolbar.Location.SOUTH ? Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR) : Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
+		setCursor(location == ToolbarLocation.SOUTH ? Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR) : Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
 	}
 
 	@Override
 	public Dimension getMinimumSize() {
 		Dimension size = super.getMinimumSize();
-		if (location == DockableToolbar.Location.SOUTH) {
+		if (location == ToolbarLocation.SOUTH) {
 			size.height = 6;
 		}
 		else {
@@ -60,7 +60,7 @@ public class SlideBorder extends JPanel {
 	@Override
 	public Dimension getPreferredSize() {
 		Dimension size = super.getPreferredSize();
-		if (location == DockableToolbar.Location.SOUTH) {
+		if (location == ToolbarLocation.SOUTH) {
 			size.height = 6;
 		}
 		else {

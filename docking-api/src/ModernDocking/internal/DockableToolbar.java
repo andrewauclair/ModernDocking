@@ -22,8 +22,9 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
-import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.api.DockingAPI;
+import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.ui.ToolbarLocation;
 import ModernDocking.util.CombinedIcon;
 import ModernDocking.util.RotatedIcon;
 import ModernDocking.util.TextIcon;
@@ -44,28 +45,9 @@ import java.util.stream.Collectors;
  */
 public class DockableToolbar extends JPanel implements ComponentListener {
 	private final DockingAPI docking;
-
-	/**
-	 * Location of the toolbar. Toolbars are supported to the West, South and East of a window
-	 */
-	public enum Location {
-		/**
-		 * Toolbar is on the west of the root panel
-		 */
-		WEST,
-		/**
-		 * Toolbar is on the south of the root panel
-		 */
-		SOUTH,
-		/**
-		 * Toolbar is on the east of the root panel
-		 */
-		EAST
-	}
-
 	private final Window window;
 	private final RootDockingPanelAPI root;
-	private final Location location;
+	private final ToolbarLocation location;
 
 	private static class Entry {
 		private final Dockable dockable;
@@ -106,7 +88,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	 * @param root The root of the attached window
 	 * @param location The location of this toolbar within the window
 	 */
-	public DockableToolbar(DockingAPI docking, Window window, RootDockingPanelAPI root, Location location) {
+	public DockableToolbar(DockingAPI docking, Window window, RootDockingPanelAPI root, ToolbarLocation location) {
 		super(new GridBagLayout());
 		this.docking = docking;
 
@@ -125,7 +107,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	 *
 	 * @return Location, west, south or east
 	 */
-	public Location getDockedLocation() {
+	public ToolbarLocation getDockedLocation() {
 		return location;
 	}
 
@@ -135,7 +117,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	 * @return True if vertical
 	 */
 	public boolean isVertical() {
-		return location == Location.EAST || location == Location.WEST;
+		return location == ToolbarLocation.EAST || location == ToolbarLocation.WEST;
 	}
 
 	private void createContents() {
@@ -197,7 +179,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 
 			if (isVertical()) {
 				TextIcon textIcon = new TextIcon(button, dockable.getTabText(), TextIcon.Layout.HORIZONTAL);
-				RotatedIcon rotatedIcon = new RotatedIcon(textIcon, location == Location.WEST ? RotatedIcon.Rotate.UP : RotatedIcon.Rotate.DOWN);
+				RotatedIcon rotatedIcon = new RotatedIcon(textIcon, location == ToolbarLocation.WEST ? RotatedIcon.Rotate.UP : RotatedIcon.Rotate.DOWN);
 
 				if (dockable.getIcon() != null) {
 					button.setIcon(new CombinedIcon(dockable.getIcon(), rotatedIcon));

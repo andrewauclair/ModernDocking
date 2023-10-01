@@ -1,6 +1,5 @@
 package ModernDocking;
 
-import ModernDocking.api.DockingAPI;
 import ModernDocking.api.LayoutPersistenceAPI;
 import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.layouts.ApplicationLayout;
