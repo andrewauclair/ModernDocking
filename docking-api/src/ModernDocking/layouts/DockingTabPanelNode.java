@@ -99,7 +99,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 
 	public void setProperties(String persistentID, Map<String, String> properties) {
 		Optional<DockingSimplePanelNode> first = tabs.stream()
-				.filter(dockingSimplePanelNode -> !dockingSimplePanelNode.getPersistentID().equals(persistentID))
+				.filter(dockingSimplePanelNode -> dockingSimplePanelNode.getPersistentID().equals(persistentID))
 				.findFirst();
 
 		first.ifPresent(dockingSimplePanelNode -> dockingSimplePanelNode.setProperties(properties));

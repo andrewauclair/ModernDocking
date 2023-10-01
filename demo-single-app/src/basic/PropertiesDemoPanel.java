@@ -58,15 +58,15 @@ public class PropertiesDemoPanel extends BasePanel {
 //    @DockingProperty(name = "sample_enum", defaultValue = "0")
 //    private DockingRegion dockingRegion;
 
-    private JTextField byteField = new JTextField();
-    private JTextField shortField = new JTextField();
-    private JTextField intField = new JTextField();
-    private JTextField longField = new JTextField();
-    private JTextField floatField = new JTextField();
-    private JTextField doubleField = new JTextField();
-    private JTextField charField = new JTextField();
-    private JTextField stringField = new JTextField();
-    private JComboBox<DockingRegion> enumField = new JComboBox<>();
+    private final JTextField byteField = new JTextField();
+    private final JTextField shortField = new JTextField();
+    private final JTextField intField = new JTextField();
+    private final JTextField longField = new JTextField();
+    private final JTextField floatField = new JTextField();
+    private final JTextField doubleField = new JTextField();
+    private final JTextField charField = new JTextField();
+    private final JTextField stringField = new JTextField();
+    private final JComboBox<DockingRegion> enumField = new JComboBox<>();
 
     public PropertiesDemoPanel() {
         super("Properties Demo", "props-demo");

@@ -454,6 +454,7 @@ public class LayoutPersistenceAPI {
         return new DockingSimplePanelNode(docking, persistentID, className, readProperties(reader));
     }
 
+    // expects that we haven't already read the starting element for <properties>
     private Map<String, String> readProperties(XMLStreamReader reader) throws XMLStreamException {
         Map<String, String> properties = new HashMap<>();
 
@@ -520,10 +521,21 @@ public class LayoutPersistenceAPI {
             }
             else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("tab")) {
                 currentPersistentID = reader.getAttributeValue(0);
-                node.addTab(currentPersistentID);
+
+                if (node != null) {
+                    node.addTab(currentPersistentID);
+                }
             }
             else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("properties")) {
-                node.setProperties(currentPersistentID, readProperties(reader));
+                Map<String, String> properties = new HashMap<>();
+
+                for (int i = 0; i < reader.getAttributeCount(); i++) {
+                    properties.put(String.valueOf(reader.getAttributeName(i)), reader.getAttributeValue(i));
+                }
+
+                if (node != null) {
+                    node.setProperties(currentPersistentID, properties);
+                }
             }
             else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("tabbed")) {
                 break;
