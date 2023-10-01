@@ -24,6 +24,8 @@ package ModernDocking;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.event.DockingListener;
+import ModernDocking.event.MaximizeListener;
+import ModernDocking.internal.DockingListeners;
 
 import javax.swing.*;
 import java.awt.*;
@@ -486,12 +488,30 @@ public class Docking {
         instance.updateTabInfo(dockable);
     }
 
-    public static void addDockingListener(DockingListener listener) {
+    /**
+     * Add a new maximize listener. Will be called when a dockable is maximized
+     *
+     * @param listener Listener to add
+     */
+    public static void addMaximizeListener(MaximizeListener listener) {
+        instance.addMaximizeListener(listener);
+    }
 
+    /**
+     * Remove a previously added maximize listener. No-op if the listener isn't in the list
+     *
+     * @param listener Listener to remove
+     */
+    public static void removeMaximizeListener(MaximizeListener listener) {
+        instance.removeMaximizeListener(listener);
+    }
+
+    public static void addDockingListener(DockingListener listener) {
+        instance.addDockingListener(listener);
     }
 
     public static void removeDockingListener(DockingListener listener) {
-
+        instance.removeDockingListener(listener);
     }
 
     public static DockingAPI getSingleInstance() {

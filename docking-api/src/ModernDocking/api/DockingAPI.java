@@ -2,6 +2,7 @@ package ModernDocking.api;
 
 import ModernDocking.*;
 import ModernDocking.event.DockingListener;
+import ModernDocking.event.MaximizeListener;
 import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.exception.NotDockedException;
 import ModernDocking.floating.FloatListener;
@@ -784,11 +785,29 @@ public class DockingAPI {
         }
     }
 
-    public static void addDockingListener(DockingListener listener) {
-
+    /**
+     * Add a new maximize listener. Will be called when a dockable is maximized
+     *
+     * @param listener Listener to add
+     */
+    public void addMaximizeListener(MaximizeListener listener) {
+        DockingListeners.addMaximizeListener(listener);
     }
 
-    public static void removeDockingListener(DockingListener listener) {
+    /**
+     * Remove a previously added maximize listener. No-op if the listener isn't in the list
+     *
+     * @param listener Listener to remove
+     */
+    public void removeMaximizeListener(MaximizeListener listener) {
+        DockingListeners.removeMaximizeListener(listener);
+    }
 
+    public void addDockingListener(DockingListener listener) {
+        DockingListeners.addDockingListener(listener);
+    }
+
+    public void removeDockingListener(DockingListener listener) {
+        DockingListeners.removeDockingListener(listener);
     }
 }
