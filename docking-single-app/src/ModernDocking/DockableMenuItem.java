@@ -92,14 +92,7 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 	public void actionPerformed(ActionEvent e) {
 		Dockable dockable = DockingInternal.get(Docking.getSingleInstance()).getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
 
-		// if dockable is already docked then bring it to the front
-		// else, dock it
-		if (Docking.isDocked(dockable)) {
-			Docking.bringToFront(dockable);
-		}
-		else {
-			Docking.display(dockable);
-		}
+		Docking.display(dockable);
 
 		// set this menu item to the state of the dockable, should be docked at this point
 		setSelected(Docking.isDocked(dockable));
