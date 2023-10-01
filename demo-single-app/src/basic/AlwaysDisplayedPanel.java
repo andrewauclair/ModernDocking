@@ -21,7 +21,6 @@ SOFTWARE.
  */
 package basic;
 
-// TODO current changes are breaking the intended functionality here
 // Docking panel that is always displayed and cannot be closed
 public class AlwaysDisplayedPanel extends SimplePanel {
 	// create a new basic.AlwaysDisplayedPanel with the given title and persistentID

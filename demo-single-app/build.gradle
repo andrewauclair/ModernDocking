@@ -26,9 +26,6 @@ dependencies {
     implementation project(':docking-ui')
     implementation project(':docking-single-app')
 
-//    implementation 'io.github.andrewauclair:modern-docking-api:' + version
-//    implementation 'io.github.andrewauclair:modern-docking-ui:' + version
-//
     implementation 'com.formdev:flatlaf:3.1.1'
     implementation 'com.formdev:flatlaf-extras:3.1.1'
     implementation 'com.formdev:flatlaf-intellij-themes:3.1.1'

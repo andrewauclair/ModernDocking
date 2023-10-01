@@ -669,12 +669,15 @@ public class DockingAPI {
         }
     }
 
-    // TODO looks like this could get called on an already unpinned dockable
     /**
      * unpin a dockable. only valid if the dockable is pinned
      * @param dockable Dockable to unpin
      */
     public void unpinDockable(Dockable dockable) {
+        if (isUnpinned(dockable)) {
+            return;
+        }
+
         Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
         RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
 

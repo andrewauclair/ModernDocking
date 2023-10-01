@@ -440,7 +440,6 @@ public class Docking {
         instance.pinDockable(dockable);
     }
 
-    // TODO looks like this could get called on an already unpinned dockable
     /**
      * unpin a dockable. only valid if the dockable is pinned
      * @param dockable Dockable to unpin

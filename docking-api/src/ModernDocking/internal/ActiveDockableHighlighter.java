@@ -91,7 +91,6 @@ public class ActiveDockableHighlighter {
 		activePanel.setBorder(BorderFactory.createLineBorder(color, 2));
 	}
 
-	// TODO if this is ever anything but the default, it looks weird because we don't set the not selected border until the dockable has been selected once
 	public static void setNotSelectedBorder(DockingPanel panel) {
 		Color color = DockingSettings.getHighlighterNotSelectedBorder();
 
