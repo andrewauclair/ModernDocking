@@ -208,6 +208,9 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		view.add(createNewDockable);
 
 		view.add(actionListenDock(one));
+		JMenuItem oneToCenter = new JMenuItem("one (to center of window)");
+		oneToCenter.addActionListener(e -> Docking.dock("one", this));
+		view.add(oneToCenter);
 		view.add(actionListenDock(two));
 		view.add(actionListenDock(three));
 		view.add(actionListenDock(four));

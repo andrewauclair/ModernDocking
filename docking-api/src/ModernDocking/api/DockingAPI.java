@@ -100,6 +100,7 @@ public class DockingAPI {
      */
     public void deregisterAllDockables() {
         Set<Window> windows = new HashSet<>(getRootPanels().keySet());
+
         for (Window window : windows) {
             DockingComponentUtils.undockComponents(this, window);
 
@@ -248,11 +249,23 @@ public class DockingAPI {
     /**
      * docks a dockable into the specified region of the root of the window with 25% divider proportion
      *
+     * NOTE: Nothing will be done if docking to the CENTER of the window and the window root panel is not empty
      * @param dockable The dockable to dock
      * @param window The window to dock into
      * @param region The region to dock into
      */
     public void dock(Dockable dockable, Window window, DockingRegion region) {
+        RootDockingPanelAPI root = rootPanels.get(window);
+
+        if (root == null) {
+            throw new DockableRegistrationFailureException("Window does not have a RootDockingPanel: " + window);
+        }
+
+        if (!root.isEmpty() && region == DockingRegion.CENTER) {
+            // can't dock here, so stop
+            return;
+        }
+
         dock(dockable, window, region, 0.25);
     }
 
