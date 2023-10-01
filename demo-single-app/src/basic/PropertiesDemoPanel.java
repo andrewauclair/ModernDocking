@@ -158,7 +158,7 @@ public class PropertiesDemoPanel extends BasePanel {
         stringField.setText(stringValue);
     }
 
-    class MyIntFilter extends DocumentFilter {
+    static class MyIntFilter extends DocumentFilter {
         @Override
         public void insertString(FilterBypass fb, int offset, String string,
                                  AttributeSet attr) throws BadLocationException {

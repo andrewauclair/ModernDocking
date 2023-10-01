@@ -92,10 +92,6 @@ public class DockingLayouts {
 		return new ArrayList<>(layouts.keySet());
 	}
 
-//	public static WindowLayout layoutFromRoot(RootDockingPanelAPI root) {
-//		return layoutFromRoot(Docking.getSingleInstance(), root);
-//	}
-
 	public static WindowLayout layoutFromRoot(DockingAPI docking, RootDockingPanelAPI root) {
 		WindowLayout layout = new WindowLayout(DockingComponentUtils.windowForRoot(docking, root), panelToNode(docking, root.getPanel()));
 

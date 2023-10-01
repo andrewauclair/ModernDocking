@@ -251,8 +251,9 @@ public class DockingAPI {
 
     /**
      * docks a dockable into the specified region of the root of the window with 25% divider proportion
-     *
+     * <p>
      * NOTE: Nothing will be done if docking to the CENTER of the window and the window root panel is not empty
+     *
      * @param dockable The dockable to dock
      * @param window The window to dock into
      * @param region The region to dock into

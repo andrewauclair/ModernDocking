@@ -232,9 +232,4 @@ public class SimplePanel extends BasePanel {
 		System.out.println(test11);
 		System.out.println(test_int_1);
 	}
-
-//	@Override
-//	public void setProperties(Map<String, String> properties) {
-//		System.out.println("Set props for " + getPersistentID());
-//	}
 }

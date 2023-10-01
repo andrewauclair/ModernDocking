@@ -17,9 +17,9 @@ public class OutputPanel extends ToolPanel {
     @DockingProperty(name = "first-column-name", defaultValue = "one")
     private String firstColumnName;
 
-    private JTable table = new JTable(new DefaultTableModel(new String[] { "one", "two"}, 0));
+    private final JTable table = new JTable(new DefaultTableModel(new String[] { "one", "two"}, 0));
 
-    private Map<String, String> properties = new HashMap<>();
+    private final Map<String, String> properties = new HashMap<>();
 
     public OutputPanel(String title, String persistentID, DockableStyle style, Icon icon) {
         super(title, persistentID, style, icon);
@@ -61,27 +61,27 @@ public class OutputPanel extends ToolPanel {
     private void updateColumnsProp() {
         Enumeration<TableColumn> columns = table.getColumnModel().getColumns();
 
-        String prop = "";
+        StringBuilder prop = new StringBuilder();
 
         while (columns.hasMoreElements()) {
-            prop += columns.nextElement().getHeaderValue().toString();
-            prop += ",";
+            prop.append(columns.nextElement().getHeaderValue().toString());
+            prop.append(",");
         }
 
-        properties.put("columns", prop);
+        properties.put("columns", prop.toString());
     }
 
     private void updateColumnSizesProp() {
         Enumeration<TableColumn> columns = table.getColumnModel().getColumns();
 
-        String prop = "";
+        StringBuilder prop = new StringBuilder();
 
         while (columns.hasMoreElements()) {
-            prop += columns.nextElement().getWidth();
-            prop += ",";
+            prop.append(columns.nextElement().getWidth());
+            prop.append(",");
         }
 
-        properties.put("column-sizes", prop);
+        properties.put("column-sizes", prop.toString());
     }
 
     @Override

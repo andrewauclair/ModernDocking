@@ -98,9 +98,8 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		persistOn.setSelected(true);
 
-		persistOn.addActionListener(e -> {
-			AppState.setAutoPersist(persistOn.isSelected());
-		});
+		persistOn.addActionListener(e -> AppState.setAutoPersist(persistOn.isSelected()));
+
 		JMenuItem saveLayout = new JMenuItem("Save Layout to File...");
 		file.add(saveLayout);
 
@@ -288,26 +287,27 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 			System.setProperty("flatlaf.uiScale", String.valueOf(uiScale));
 
-			if (lookAndFeel.equals("light")) {
-				UIManager.setLookAndFeel(new FlatLightLaf());
-			}
-			else if (lookAndFeel.equals("dark")) {
-				UIManager.setLookAndFeel(new FlatDarkLaf());
-			}
-			else if (lookAndFeel.equals("github-dark")) {
-				UIManager.setLookAndFeel(new FlatGitHubDarkIJTheme());
-			}
-			else if (lookAndFeel.equals("solarized-dark")) {
-				UIManager.setLookAndFeel(new FlatSolarizedDarkIJTheme());
-			}
-			else {
-				try {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-				}
-				catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
-					   UnsupportedLookAndFeelException ex) {
-					throw new RuntimeException(ex);
-				}
+			switch (lookAndFeel) {
+				case "light":
+					UIManager.setLookAndFeel(new FlatLightLaf());
+					break;
+				case "dark":
+					UIManager.setLookAndFeel(new FlatDarkLaf());
+					break;
+				case "github-dark":
+					UIManager.setLookAndFeel(new FlatGitHubDarkIJTheme());
+					break;
+				case "solarized-dark":
+					UIManager.setLookAndFeel(new FlatSolarizedDarkIJTheme());
+					break;
+				default:
+					try {
+						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+							 UnsupportedLookAndFeelException ex) {
+						throw new RuntimeException(ex);
+					}
+					break;
 			}
 			FlatLaf.updateUI();
 		}

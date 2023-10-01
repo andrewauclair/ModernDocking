@@ -62,12 +62,8 @@ public class MainFrame extends JFrame {
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 
-//		add(toolBar, gbc);
-
-//		gbc.gridy++;
 		gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
 

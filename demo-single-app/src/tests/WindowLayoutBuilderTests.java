@@ -162,12 +162,6 @@ public class WindowLayoutBuilderTests extends JFrame implements DockingLayoutLis
 
             WindowLayoutBuilderTests mainFrame = new WindowLayoutBuilderTests();
             mainFrame.setVisible(true);
-
-            // now that the main frame is setup with the defaults, we can restore the layout
-            //AppState.setPersistFile(new File("auto_persist_layout.xml"));
-            //AppState.setDefaultApplicationLayout(mainFrame.applicationLayout);
-            //AppState.restore();
-            //AppState.setAutoPersist(true);
         });
     }
 

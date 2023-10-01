@@ -25,6 +25,7 @@ import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.event.DockingListener;
 import ModernDocking.event.MaximizeListener;
+import ModernDocking.internal.DockingListeners;
 
 import javax.swing.*;
 import java.awt.*;
