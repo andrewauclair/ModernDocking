@@ -24,6 +24,7 @@ package ModernDocking.floating;
 import ModernDocking.*;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.internal.DockingInternal;
 import ModernDocking.ui.DockingSettings;
 
 import javax.swing.*;
@@ -163,7 +164,7 @@ public class DockingOverlay {
 			this.size = size;
 		}
 		else if (targetDockable != null && dockableRegion != null) {
-			JComponent component = docking.getWrapper(targetDockable).getDisplayPanel();
+			JComponent component = DockingInternal.get(docking).getWrapper(targetDockable).getDisplayPanel();
 
 			Point point = component.getLocation();
 			Dimension size = component.getSize();
@@ -199,7 +200,7 @@ public class DockingOverlay {
 			this.size = size;
 		}
 		else if (targetDockable != null) {
-			JComponent component = docking.getWrapper(targetDockable).getDisplayPanel();
+			JComponent component = DockingInternal.get(docking).getWrapper(targetDockable).getDisplayPanel();
 
 			Point framePoint = new Point(screenPos);
 			SwingUtilities.convertPointFromScreen(framePoint, utilFrame);
@@ -284,7 +285,7 @@ public class DockingOverlay {
 		// use the target dockable if we have one, otherwise use the root
 		JComponent component;
 		if (targetDockable != null) {
-			component = docking.getWrapper(targetDockable).getDisplayPanel();
+			component = DockingInternal.get(docking).getWrapper(targetDockable).getDisplayPanel();
 		}
 		else {
 			component = targetRoot;

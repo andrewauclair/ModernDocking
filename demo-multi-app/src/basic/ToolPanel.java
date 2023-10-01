@@ -97,26 +97,4 @@ public class ToolPanel extends BasePanel {
 		menu.add(new JMenuItem("Something"));
 		menu.add(new JMenuItem("Else"));
 	}
-
-//	@Override
-//	public boolean onDocking() {
-//		if (style == DockableStyle.VERTICAL) {
-//			Docking.dock(this, Docking.getMainWindow(), DockingRegion.EAST);
-//		}
-//		else if (style == DockableStyle.HORIZONTAL) {
-//			Docking.dock(this, Docking.getMainWindow(), DockingRegion.SOUTH);
-//		}
-//		else {
-//			Docking.dock(this, Docking.getMainWindow(), DockingRegion.NORTH);
-//		}
-//		return true;
-//	}
-
-	@Override
-	public DockableToolbar.Location onUnpinning() {
-		if (style == DockableStyle.VERTICAL) {
-			return DockableToolbar.Location.EAST;
-		}
-		return DockableToolbar.Location.SOUTH;
-	}
 }

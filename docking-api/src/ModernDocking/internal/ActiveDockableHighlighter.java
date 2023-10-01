@@ -67,7 +67,7 @@ public class ActiveDockableHighlighter {
 				if (dockable != null) {
 					Window window = DockingComponentUtils.findWindowForDockable(docking, dockable);
 
-					if (!docking.getWrapper(dockable).isUnpinned()) {
+					if (!DockingInternal.get(docking).getWrapper(dockable).isUnpinned()) {
 						DockingComponentUtils.rootForWindow(docking, window).hideUnpinnedPanels();
 					}
 				}

@@ -3,6 +3,7 @@ package ModernDocking.api;
 import ModernDocking.Dockable;
 import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.internal.DockableProperties;
+import ModernDocking.internal.DockingInternal;
 import ModernDocking.layouts.*;
 
 import javax.xml.stream.*;
@@ -64,7 +65,7 @@ public class LayoutPersistenceAPI {
             writer.writeStartElement("undocked");
             writer.writeCharacters(NL);
 
-            for (Dockable dockable : docking.getDockables()) {
+            for (Dockable dockable : DockingInternal.get(docking).getDockables()) {
                 if (!docking.isDocked(dockable)) {
                     writeSimpleNodeToFile(writer, new DockingSimplePanelNode(docking, dockable.getPersistentID(), dockable.getClass().getCanonicalName(), DockableProperties.saveProperties(dockable)));
                 }
@@ -140,7 +141,7 @@ public class LayoutPersistenceAPI {
                 if (reader.getLocalName().equals("simple")) {
                     DockingSimplePanelNode node = readSimpleNodeFromFile(reader);
 
-                    DockableProperties.configureProperties(docking.getDockable(node.getPersistentID()), node.getProperties());
+                    DockableProperties.configureProperties(DockingInternal.get(docking).getDockable(node.getPersistentID()), node.getProperties());
                 }
             }
             else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("undocked")) {
@@ -256,7 +257,7 @@ public class LayoutPersistenceAPI {
     private void writeSimpleNodeToFile(XMLStreamWriter writer, DockingSimplePanelNode node) throws XMLStreamException {
         writer.writeStartElement("simple");
         writer.writeAttribute("persistentID", node.getPersistentID());
-        writer.writeAttribute("class-name", docking.getDockable(node.getPersistentID()).getClass().getCanonicalName());
+        writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(node.getPersistentID()).getClass().getCanonicalName());
         writer.writeCharacters(NL);
 
         writer.writeStartElement("properties");

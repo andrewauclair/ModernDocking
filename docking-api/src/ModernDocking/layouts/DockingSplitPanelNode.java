@@ -23,6 +23,7 @@ package ModernDocking.layouts;
 
  import ModernDocking.api.DockingAPI;
  import ModernDocking.DockingRegion;
+ import ModernDocking.internal.DockingInternal;
  import ModernDocking.settings.Settings;
 
  import javax.swing.*;
@@ -101,7 +102,7 @@ package ModernDocking.layouts;
 				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(docking, persistentID);
 			}
 			else {
-				String className = docking.getDockable(persistentID).getClass().getCanonicalName();
+				String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();
 
 				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(docking, persistentID, className) : this;
 				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(docking, persistentID, className);

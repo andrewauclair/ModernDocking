@@ -167,21 +167,22 @@ public class DockingStateAPI {
             Dockable dockable = getDockable(docking, id);
             root.setDockableUnpinned(dockable, DockableToolbar.Location.WEST);
             root.hideUnpinnedPanels();
-            docking.getWrapper(dockable).setUnpinned(true);
+            DockingInternal.get(docking).getWrapper(dockable).setUnpinned(true);
+            getWrapper(dockable).setUnpinned(true);
         }
 
         for (String id : layout.getEastUnpinnedToolbarIDs()) {
             Dockable dockable = getDockable(docking, id);
             root.setDockableUnpinned(dockable, DockableToolbar.Location.EAST);
             root.hideUnpinnedPanels();
-            docking.getWrapper(dockable).setUnpinned(true);
+            getWrapper(dockable).setUnpinned(true);
         }
 
         for (String id : layout.getSouthUnpinnedToolbarIDs()) {
             Dockable dockable = getDockable(docking, id);
             root.setDockableUnpinned(dockable, DockableToolbar.Location.SOUTH);
             root.hideUnpinnedPanels();
-            docking.getWrapper(dockable).setUnpinned(true);
+            getWrapper(dockable).setUnpinned(true);
         }
 
         if (layout.getMaximizedDockable() != null) {
@@ -269,7 +270,7 @@ public class DockingStateAPI {
 
             docking.undock(dockable);
 
-            DockableWrapper wrapper = docking.getWrapper(dockable);
+            DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
             wrapper.setWindow(window);
 
             if (panel == null) {
@@ -310,7 +311,7 @@ public class DockingStateAPI {
 
         docking.undock(dockable);
 
-        DockableWrapper wrapper = docking.getWrapper(dockable);
+        DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
         wrapper.setWindow(window);
 
         return new DockedSimplePanel(docking, wrapper);
@@ -356,7 +357,7 @@ public class DockingStateAPI {
 
             docking.undock(dockable);
 
-            DockableWrapper wrapper = docking.getWrapper(dockable);
+            DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
             wrapper.setWindow(window);
 
             if (panel == null) {
@@ -405,7 +406,7 @@ public class DockingStateAPI {
         // undock the dockable in case it is currently docked somewhere else
         docking.undock(dockable);
 
-        DockableWrapper wrapper = docking.getWrapper(dockable);
+        DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
         wrapper.setWindow(window);
 
         return new DockedSimplePanel(docking, wrapper);
@@ -413,10 +414,14 @@ public class DockingStateAPI {
 
     private Dockable getDockable(DockingAPI docking, String persistentID) {
         try {
-            return docking.getDockable(persistentID);
+            return DockingInternal.get(docking).getDockable(persistentID);
         } catch (DockableRegistrationFailureException ignore) {
         }
         return new FailedDockable(docking, persistentID);
+    }
+
+    private DockableWrapper getWrapper(Dockable dockable) {
+        return DockingInternal.get(docking).getWrapper(dockable);
     }
 
     private void undockFailedComponents(DockingAPI docking, Container container) {

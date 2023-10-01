@@ -494,10 +494,6 @@ public class Docking {
 
     }
 
-    public static Dockable getDockable(String persistentID) {
-        return instance.getDockable(persistentID);
-    }
-
     public static DockingAPI getSingleInstance() {
         if (instance == null) {
             throw new RuntimeException("No docking instance available.");

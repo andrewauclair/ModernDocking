@@ -23,6 +23,7 @@ package ModernDocking.layouts;
 
 import ModernDocking.api.DockingAPI;
 import ModernDocking.DockingRegion;
+import ModernDocking.internal.DockingInternal;
 import ModernDocking.settings.Settings;
 
 /**
@@ -51,7 +52,7 @@ public class DockingLayoutRootNode implements DockingLayoutNode {
             node.setParent(this);
         }
         else {
-            String className = docking.getDockable(persistentID).getClass().getCanonicalName();
+            String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();
 
             node = new DockingSimplePanelNode(docking, persistentID, className);
             node.setParent(this);

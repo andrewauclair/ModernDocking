@@ -144,7 +144,7 @@ public class DockingLayouts {
 	}
 
 	private static DockingLayoutNode tabbedPanelToNode(DockingAPI docking, DockedTabbedPanel panel) {
-		DockingTabPanelNode node = new DockingTabPanelNode(docking, panel.getSelectedTabID(), DockableProperties.saveProperties(docking.getDockable(panel.getSelectedTabID())));
+		DockingTabPanelNode node = new DockingTabPanelNode(docking, panel.getSelectedTabID(), DockableProperties.saveProperties(DockingInternal.get(docking).getDockable(panel.getSelectedTabID())));
 
 		for (DockableWrapper dockable : panel.getDockables()) {
 			node.addTab(dockable.getDockable().getPersistentID(), DockableProperties.saveProperties(dockable.getDockable()));

@@ -42,9 +42,17 @@ public class DockingInternal {
 	private final Map<String, DockableWrapper> dockables = new HashMap<>();
 	private final DockingAPI docking;
 
+	private static final Map<DockingAPI, DockingInternal> internals = new HashMap<>();
+
 	public DockingInternal(DockingAPI docking) {
 		this.docking = docking;
+		internals.put(docking, this);
 	}
+
+	public static DockingInternal get(DockingAPI docking) {
+		return internals.get(docking);
+	}
+
 	/**
 	 * Get access to the registered dockables
 	 *
@@ -117,7 +125,7 @@ public class DockingInternal {
 	 * everything has been restored, go through the list of dockables and fire docked events for the ones that are docked
 	 */
 	public static void fireDockedEventForAll(DockingAPI docking) {
-		for (Dockable dockable : docking.getDockables()) {
+		for (Dockable dockable : DockingInternal.get(docking).getDockables()) {
 			if (docking.isDocked(dockable)) {
 				DockingListeners.fireDockedEvent(dockable);
 			}

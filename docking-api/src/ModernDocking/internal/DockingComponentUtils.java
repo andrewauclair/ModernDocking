@@ -77,7 +77,7 @@ public class DockingComponentUtils {
 	 * @return The window containing the dockable. null if not found.
 	 */
 	public static Window findWindowForDockable(DockingAPI docking, Dockable dockable) {
-		return docking.getWrapper(dockable).getWindow();
+		return DockingInternal.get(docking).getWrapper(dockable).getWindow();
 	}
 
 	//

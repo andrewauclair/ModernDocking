@@ -72,7 +72,7 @@ public class DockedUnpinnedPanel extends JPanel implements ComponentListener, Mo
 		gbc.gridy = 0;
 
 
-		DockedSimplePanel panel = new DockedSimplePanel(docking, docking.getWrapper(dockable));
+		DockedSimplePanel panel = new DockedSimplePanel(docking, DockingInternal.get(docking).getWrapper(dockable));
 		SlideBorder slideBorder = new SlideBorder(toolbar.getDockedLocation());
 
 		if (toolbar.getDockedLocation() == DockableToolbar.Location.SOUTH) {

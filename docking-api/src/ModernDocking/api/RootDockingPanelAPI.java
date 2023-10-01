@@ -249,18 +249,20 @@ public class RootDockingPanelAPI extends DockingPanel {
 
 	@Override
 	public void dock(Dockable dockable, DockingRegion region, double dividerProportion) {
+		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
 		// pass docking to panel if it exists
 		// panel does not exist, create new simple panel
 		if (panel != null) {
 			panel.dock(dockable, region, dividerProportion);
 		}
 		else if (Settings.alwaysDisplayTabsMode()) {
-			setPanel(new DockedTabbedPanel(docking, docking.getWrapper(dockable)));
-			docking.getWrapper(dockable).setWindow(window);
+			setPanel(new DockedTabbedPanel(docking, wrapper));
+			wrapper.setWindow(window);
 		}
 		else {
-			setPanel(new DockedSimplePanel(docking, docking.getWrapper(dockable)));
-			docking.getWrapper(dockable).setWindow(window);
+			setPanel(new DockedSimplePanel(docking, wrapper));
+			wrapper.setWindow(window);
 		}
 	}
 

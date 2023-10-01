@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking;
 
 import ModernDocking.api.DockingAPI;
+import ModernDocking.internal.DockingInternal;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -101,13 +102,13 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 		super.addNotify();
 
 		// update the menu item, it's about to be displayed
-		Dockable dockable = docking.getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
+		Dockable dockable = DockingInternal.get(docking).getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
 		setSelected(docking.isDocked(dockable));
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Dockable dockable = docking.getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
+		Dockable dockable = DockingInternal.get(docking).getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
 
 		// if dockable is already docked then bring it to the front
 		// else, dock it

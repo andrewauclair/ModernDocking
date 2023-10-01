@@ -236,7 +236,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 	@Override
 	public void dock(Dockable dockable, DockingRegion region, double dividerProportion) {
-		DockableWrapper wrapper = docking.getWrapper(dockable);
+		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 		wrapper.setWindow(panels.get(0).getWindow());
 
 		if (region == DockingRegion.CENTER) {
@@ -281,7 +281,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 	@Override
 	public void undock(Dockable dockable) {
-		removePanel(docking.getWrapper(dockable));
+		removePanel(DockingInternal.get(docking).getWrapper(dockable));
 
 		if (!Settings.alwaysDisplayTabsMode() && tabs.getTabCount() == 1 && parent != null) {
 			parent.replaceChild(this, new DockedSimplePanel(docking, panels.get(0)));

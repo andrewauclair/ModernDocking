@@ -23,6 +23,7 @@ package ModernDocking.layouts;
 
 import ModernDocking.api.DockingAPI;
 import ModernDocking.DockingRegion;
+import ModernDocking.internal.DockingInternal;
 import ModernDocking.settings.Settings;
 
 import javax.swing.*;
@@ -73,7 +74,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 		if (findNode(persistentID) != null) {
 			return;
 		}
-		String className = docking.getDockable(persistentID).getClass().getCanonicalName();
+		String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();
 
 		DockingSimplePanelNode tab = new DockingSimplePanelNode(docking, persistentID, className);
 		tab.setParent(this);
@@ -90,7 +91,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 		if (findNode(persistentID) != null) {
 			return;
 		}
-		String className = docking.getDockable(persistentID).getClass().getCanonicalName();
+		String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();
 
 		DockingSimplePanelNode tab = new DockingSimplePanelNode(docking, persistentID, className, properties);
 		tab.setParent(this);
@@ -159,7 +160,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(docking, persistentID);
 			}
 			else {
-				String className = docking.getDockable(persistentID).getClass().getCanonicalName();
+				String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();
 
 				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(docking, persistentID, className) : this;
 				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(docking, persistentID, className);

@@ -269,7 +269,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 
 	@Override
 	public void dock(Dockable dockable, DockingRegion region, double dividerProportion) {
-		DockableWrapper wrapper = docking.getWrapper(dockable);
+		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 
 		// docking to the center of a split isn't something we allow
 		// wouldn't be difficult to support, but isn't a complication we want in this framework

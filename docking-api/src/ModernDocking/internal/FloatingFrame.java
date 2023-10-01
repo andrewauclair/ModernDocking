@@ -77,7 +77,7 @@ public class FloatingFrame extends JFrame {
 	public FloatingFrame(DockingAPI docking, Dockable dockable, Point location, Dimension size, int state) {
 		this.docking = docking;
 
-		DisplayPanel displayPanel = docking.getWrapper(dockable).getDisplayPanel();
+		DisplayPanel displayPanel = DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel();
 
 		Point point = displayPanel.getLocation();
 		SwingUtilities.convertPointToScreen(point, displayPanel.getParent());
@@ -109,7 +109,7 @@ public class FloatingFrame extends JFrame {
 		setLayout(new BorderLayout());
 
 		// size the frame to the dockable size + the border size of the frame
-		Dimension size = docking.getWrapper(dockable).getDisplayPanel().getSize();
+		Dimension size = DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel().getSize();
 
 		setSize(size);
 
@@ -140,7 +140,7 @@ public class FloatingFrame extends JFrame {
 	private void finalizeSize(Dockable dockable, Point onScreenPoint, Dimension onScreenSize) {
 		SwingUtilities.invokeLater(() -> {
 			// adjust the floating frame such that the dockable is in the correct location
-			DisplayPanel displayPanel = docking.getWrapper(dockable).getDisplayPanel();
+			DisplayPanel displayPanel = DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel();
 
 
 			Point point = displayPanel.getLocation();

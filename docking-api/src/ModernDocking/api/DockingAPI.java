@@ -791,17 +791,4 @@ public class DockingAPI {
     public static void removeDockingListener(DockingListener listener) {
 
     }
-
-    public List<Dockable> getDockables() {
-        return internals.getDockables();
-    }
-
-    public Dockable getDockable(String persistentID) {
-        return internals.getDockable(persistentID);
-    }
-
-    // TODO I really don't want to expose this
-    public DockableWrapper getWrapper(Dockable dockable) {
-        return internals.getWrapper(dockable);
-    }
 }
