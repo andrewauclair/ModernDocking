@@ -93,6 +93,14 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		JMenu file = new JMenu("File");
 		menuBar.add(file);
 
+		JCheckBoxMenuItem persistOn = new JCheckBoxMenuItem("Auto Persist Layout");
+		file.add(persistOn);
+
+		persistOn.setSelected(true);
+
+		persistOn.addActionListener(e -> {
+			AppState.setAutoPersist(persistOn.isSelected());
+		});
 		JMenuItem saveLayout = new JMenuItem("Save Layout to File...");
 		file.add(saveLayout);
 
