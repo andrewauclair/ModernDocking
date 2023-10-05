@@ -23,6 +23,8 @@ package ModernDocking.internal;
 
 import ModernDocking.Dockable;
 import ModernDocking.api.DockingAPI;
+import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.ui.DockingSettings;
 
 import javax.swing.*;
@@ -68,7 +70,12 @@ public class ActiveDockableHighlighter {
 					Window window = DockingComponentUtils.findWindowForDockable(docking, dockable);
 
 					if (!DockingInternal.get(docking).getWrapper(dockable).isUnpinned()) {
-						DockingComponentUtils.rootForWindow(docking, window).hideUnpinnedPanels();
+						try {
+							RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, window);
+							root.hideUnpinnedPanels();
+						}
+						catch (DockableRegistrationFailureException ignore) {
+						}
 					}
 				}
 			}
