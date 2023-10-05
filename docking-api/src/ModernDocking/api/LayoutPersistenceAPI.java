@@ -1,6 +1,7 @@
 package ModernDocking.api;
 
 import ModernDocking.Dockable;
+import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.internal.DockableProperties;
 import ModernDocking.internal.DockingInternal;
@@ -133,15 +134,22 @@ public class LayoutPersistenceAPI {
         }
     }
 
+    // read undocked dockables from the file and configure their properties on the actual dockable already loaded in memory
+    // if the dockable does not exist, we simply ignore it and the properties disappear.
     private void readUndocked(XMLStreamReader reader) throws XMLStreamException {
         while (reader.hasNext()) {
             int next = reader.nextTag();
 
             if (next == XMLStreamConstants.START_ELEMENT) {
                 if (reader.getLocalName().equals("simple")) {
+
                     DockingSimplePanelNode node = readSimpleNodeFromFile(reader);
 
-                    DockableProperties.configureProperties(DockingInternal.get(docking).getDockable(node.getPersistentID()), node.getProperties());
+                    try {
+                        DockableProperties.configureProperties(DockingInternal.get(docking).getDockable(node.getPersistentID()), node.getProperties());
+                    }
+                    catch (DockableRegistrationFailureException ignored) {
+                    }
                 }
             }
             else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("undocked")) {
