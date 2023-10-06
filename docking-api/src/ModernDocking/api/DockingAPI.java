@@ -702,7 +702,7 @@ public class DockingAPI {
         internals.getWrapper(dockable).setWindow(window);
         internals.getWrapper(dockable).setUnpinned(true);
 
-        boolean allowedSouth = dockable.getStyle() == DockableStyle.BOTH || dockable.getStyle() == DockableStyle.HORIZONTAL;
+        boolean allowedSouth = dockable.getPinningStyle() == DockableStyle.BOTH || dockable.getPinningStyle() == DockableStyle.HORIZONTAL;
 
         int westDist = posInFrame.x;
         int eastDist = window.getWidth() - posInFrame.x;

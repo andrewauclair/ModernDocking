@@ -117,6 +117,16 @@ public interface Dockable {
 	}
 
 	/**
+	 * pinning style of the dockable. separate from getStyle, which is used for docking. this option allows the dockable to have different
+	 * preferences on pinning than it does on docking.
+	 *
+	 * @return The pinning style of this dockable
+	 */
+	default DockableStyle getPinningStyle() {
+		return DockableStyle.BOTH;
+	}
+
+	/**
 	 * helper function to determine if the header close option should be enabled
 	 *
 	 * @return Can this dockable be closed?
