@@ -72,6 +72,11 @@ public class ToolPanel extends BasePanel {
 	}
 
 	@Override
+	public DockableStyle getPinningStyle() {
+		return style;
+	}
+
+	@Override
 	public boolean isClosable() {
 		return true;
 	}

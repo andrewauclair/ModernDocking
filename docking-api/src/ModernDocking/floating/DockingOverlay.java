@@ -28,6 +28,7 @@ import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.internal.DockingInternal;
 import ModernDocking.ui.DockingSettings;
+import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,6 +54,7 @@ public class DockingOverlay {
 
 	// the region on the root that is being docked to, this comes from the handles? I think
 	private DockingRegion rootRegion;
+	private ToolbarLocation pinToolbarLocation;
 
 	// the top left location where the overlay starts
 	private Point location = new Point(0, 0);
@@ -334,6 +336,10 @@ public class DockingOverlay {
 		return DockingRegion.CENTER;
 	}
 
+	public ToolbarLocation getToolbarLocation() {
+		return pinToolbarLocation;
+	}
+
 	/**
 	 * Check if the floating dockable is targeting a root docking handle
 	 *
@@ -356,6 +362,10 @@ public class DockingOverlay {
 		return dockableRegion != null || targetDockable != null;
 	}
 
+	public boolean isDockingToPin() {
+		return pinToolbarLocation != null;
+	}
+
 	// set a region from the handles if we're moused over a root handle
 	public void setTargetRootRegion(DockingRegion region) {
 		rootRegion = region;
@@ -367,6 +377,13 @@ public class DockingOverlay {
 	// set a region from the handles if we're moused over a dockable handle
 	public void setTargetDockableRegion(DockingRegion region) {
 		dockableRegion = region;
+
+		// we should only be visible if we're docking to a root or dockable. otherwise the overlay should be hidden.
+		visibleOverride = !isDockingToRoot() && !isDockingToDockable();
+	}
+
+	public void setTargetPinRegion(ToolbarLocation region) {
+		pinToolbarLocation = region;
 
 		// we should only be visible if we're docking to a root or dockable. otherwise the overlay should be hidden.
 		visibleOverride = !isDockingToRoot() && !isDockingToDockable();

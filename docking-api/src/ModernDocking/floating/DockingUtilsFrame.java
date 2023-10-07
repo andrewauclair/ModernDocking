@@ -25,6 +25,7 @@ import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -111,6 +112,7 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 
 		overlay.setTargetRootRegion(handles.getRootRegion());
 		overlay.setTargetDockableRegion(handles.getDockableRegion());
+		overlay.setTargetPinRegion(handles.getPinningRegion());
 	}
 
 	/**
@@ -153,6 +155,9 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		return overlay.getRegion(screenPos);
 	}
 
+	public ToolbarLocation getToolbarLocation() {
+		return overlay.getToolbarLocation();
+	}
 	/**
 	 * checks if docking to the root. This is only possible when the mouse is over a root docking handle
 	 *
@@ -160,6 +165,10 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 	 */
 	public boolean isDockingToRoot() {
 		return overlay.isDockingToRoot();
+	}
+
+	public boolean isDockingToPin() {
+		return overlay.isDockingToPin();
 	}
 
 	/**

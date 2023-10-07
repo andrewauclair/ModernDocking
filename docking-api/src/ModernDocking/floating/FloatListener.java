@@ -254,7 +254,10 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 		DockingRegion region = activeUtilsFrame != null ? activeUtilsFrame.getRegion(mousePos) : DockingRegion.CENTER;
 
-		if (root != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToRoot()) {
+		if (activeUtilsFrame.isDockingToPin()) {
+			docking.unpinDockable(floatingDockable.getDockable(), activeUtilsFrame.getToolbarLocation(), currentTopWindow, root);
+		}
+		else if (root != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToRoot()) {
 			docking.dock(floatingDockable.getDockable(), currentTopWindow, region, 0.25);
 		}
 		else if (floatingDockable.getDockable().isLimitedToRoot() && floatingDockable.getRoot() != root) {

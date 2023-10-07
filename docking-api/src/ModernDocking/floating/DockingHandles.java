@@ -26,6 +26,7 @@ import ModernDocking.DockableStyle;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.ui.DockingSettings;
+import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,6 +46,10 @@ public class DockingHandles {
 	private final DockingHandle rootEast = new DockingHandle(DockingRegion.EAST, true);
 	private final DockingHandle rootSouth = new DockingHandle(DockingRegion.SOUTH, true);
 
+	private final DockingHandle pinWest = new DockingHandle(DockingRegion.WEST);
+	private final DockingHandle pinEast = new DockingHandle(DockingRegion.EAST);
+	private final DockingHandle pinSouth = new DockingHandle(DockingRegion.SOUTH);
+
 	private final DockingHandle dockableCenter = new DockingHandle(DockingRegion.CENTER, false);
 	private final DockingHandle dockableWest = new DockingHandle(DockingRegion.WEST, false);
 	private final DockingHandle dockableNorth = new DockingHandle(DockingRegion.NORTH, false);
@@ -55,6 +60,7 @@ public class DockingHandles {
 
 	private DockingRegion rootRegion = null;
 	private DockingRegion dockableRegion = null;
+	private ToolbarLocation pinRegion = null;
 
 	private final JFrame utilFrame;
 	private final RootDockingPanelAPI targetRoot;
@@ -81,6 +87,10 @@ public class DockingHandles {
 		setupHandle(rootEast);
 		setupHandle(rootSouth);
 
+		setupHandle(pinWest);
+		setupHandle(pinEast);
+		setupHandle(pinSouth);
+
 		setupHandle(dockableCenter);
 		setupHandle(dockableWest);
 		setupHandle(dockableNorth);
@@ -104,6 +114,15 @@ public class DockingHandles {
 	 */
 	public DockingRegion getRootRegion() {
 		return rootRegion;
+	}
+
+	/**
+	 * Get the current pin region that we are moused over
+	 *
+	 * @return The current pin region, possibly null
+	 */
+	public ToolbarLocation getPinningRegion() {
+		return pinRegion;
 	}
 
 	/**
@@ -136,6 +155,10 @@ public class DockingHandles {
 		rootEast.setVisible(targetRoot != null && targetRoot.getPanel() != null && isRegionAllowed(DockingRegion.EAST));
 		rootSouth.setVisible(targetRoot != null && targetRoot.getPanel() != null && isRegionAllowed(DockingRegion.SOUTH));
 
+		pinWest.setVisible(targetRoot != null && isPinningRegionAllowed(DockingRegion.WEST));
+		pinEast.setVisible(targetRoot != null && isPinningRegionAllowed(DockingRegion.EAST));
+		pinSouth.setVisible(targetRoot != null && isPinningRegionAllowed(DockingRegion.SOUTH));
+
 		if (targetRoot != null) {
 			Point location = targetRoot.getLocation();
 			Dimension size = targetRoot.getSize();
@@ -150,6 +173,10 @@ public class DockingHandles {
 			setLocation(rootNorth, location.x, location.y - (size.height / 2) + rootHandleSpacing(rootNorth));
 			setLocation(rootEast, location.x + (size.width / 2) - rootHandleSpacing(rootEast), location.y);
 			setLocation(rootSouth, location.x, location.y + (size.height / 2) - rootHandleSpacing(rootSouth));
+
+			setLocation(pinWest, location.x - (size.width / 2) + rootHandleSpacing(pinWest), location.y - (size.height / 3));
+			setLocation(pinEast, location.x + (size.width / 2) - rootHandleSpacing(pinEast), location.y - (size.height / 3));
+			setLocation(pinSouth, location.x - (size.width / 3), location.y + (size.height / 2) - rootHandleSpacing(pinSouth));
 		}
 	}
 
@@ -169,7 +196,6 @@ public class DockingHandles {
 	 * @param handle The handle label
 	 * @return width
 	 */
-	// TODO I think this causes issues on linux. the root handles get bigger. but not on windows?
 	private int rootHandleSpacing(JLabel handle) {
 		return handle.getWidth() + 16;
 	}
@@ -203,6 +229,20 @@ public class DockingHandles {
 		return floating.getStyle() == DockableStyle.VERTICAL;
 	}
 
+	private boolean isPinningRegionAllowed(DockingRegion region) {
+		if (!floating.isPinningAllowed()) {
+			return false;
+		}
+
+		if (floating.getPinningStyle() == DockableStyle.BOTH) {
+			return true;
+		}
+		if (region == DockingRegion.NORTH || region == DockingRegion.SOUTH) {
+			return floating.getPinningStyle() == DockableStyle.HORIZONTAL;
+		}
+		return floating.getPinningStyle() == DockableStyle.VERTICAL;
+	}
+
 	private void setDockableHandleLocations() {
 		dockableCenter.setVisible(targetDockable != null);
 		dockableWest.setVisible(targetDockable != null && isRegionAllowed(DockingRegion.WEST));
@@ -218,13 +258,14 @@ public class DockingHandles {
 			location.y += size.height / 2;
 
 			SwingUtilities.convertPointToScreen(location, ((Component) targetDockable).getParent());
-
 			SwingUtilities.convertPointFromScreen(location, utilFrame);
+
 			setLocation(dockableCenter, location.x, location.y);
 			setLocation(dockableWest, location.x - handleSpacing(dockableWest), location.y);
 			setLocation(dockableNorth, location.x, location.y - handleSpacing(dockableNorth));
 			setLocation(dockableEast, location.x + handleSpacing(dockableEast), location.y);
 			setLocation(dockableSouth, location.x, location.y + handleSpacing(dockableSouth));
+
 		}
 	}
 
@@ -264,6 +305,19 @@ public class DockingHandles {
 			if (over) {
 				if (handle.isRoot()) {
 					rootRegion = handle.getRegion();
+				}
+				else if (handle.isPin()) {
+					switch (handle.getRegion()) {
+						case WEST:
+							pinRegion = ToolbarLocation.WEST;
+							break;
+						case EAST:
+							pinRegion = ToolbarLocation.EAST;
+							break;
+						case SOUTH:
+							pinRegion = ToolbarLocation.SOUTH;
+							break;
+					}
 				}
 				else {
 					dockableRegion = handle.getRegion();
@@ -348,6 +402,10 @@ public class DockingHandles {
 		paintHandle(g, g2, rootWest);
 		paintHandle(g, g2, rootNorth);
 		paintHandle(g, g2, rootSouth);
+
+		paintHandle(g, g2, pinWest);
+		paintHandle(g, g2, pinEast);
+		paintHandle(g, g2, pinSouth);
 
 		// draw the dockable handles background over the root handles in case they overlap
 		if (targetDockable != null) {

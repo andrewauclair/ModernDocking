@@ -693,15 +693,6 @@ public class DockingAPI {
         posInFrame.x += component.getWidth() / 2;
         posInFrame.y += component.getHeight() / 2;
 
-        if (!root.isPinningSupported()) {
-            return;
-        }
-        undock(dockable);
-
-        // reset the window, undocking the dockable sets it to null
-        internals.getWrapper(dockable).setWindow(window);
-        internals.getWrapper(dockable).setUnpinned(true);
-
         boolean allowedSouth = dockable.getPinningStyle() == DockableStyle.BOTH || dockable.getPinningStyle() == DockableStyle.HORIZONTAL;
 
         int westDist = posInFrame.x;
@@ -711,15 +702,62 @@ public class DockingAPI {
         boolean east = eastDist <= westDist;
         boolean south = southDist < westDist && southDist < eastDist;
 
+        ToolbarLocation location;
+
         if (south && allowedSouth) {
-            root.setDockableUnpinned(dockable, ToolbarLocation.SOUTH);
+            location = ToolbarLocation.SOUTH;
         }
         else if (east) {
-            root.setDockableUnpinned(dockable, ToolbarLocation.EAST);
+            location = ToolbarLocation.EAST;
         }
         else {
-            root.setDockableUnpinned(dockable, ToolbarLocation.WEST);
+            location = ToolbarLocation.WEST;
         }
+
+        unpinDockable(dockable, location);
+    }
+
+    /**
+     * unpin a dockable. only valid if the dockable is pinned
+     * @param dockable Dockable to unpin
+     * @param location Toolbar location to unpin the dockable to
+     */
+    public void unpinDockable(Dockable dockable, ToolbarLocation location) {
+        Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
+        RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
+
+        unpinDockable(dockable, location, window, root);
+    }
+
+    /**
+     * unpin a dockable. only valid if the dockable is pinned
+     * @param dockable Dockable to unpin
+     * @param location Toolbar location to unpin the dockable to
+     */
+    public void unpinDockable(Dockable dockable, ToolbarLocation location, Window window, RootDockingPanelAPI root) {
+        if (isUnpinned(dockable)) {
+            return;
+        }
+
+        Component component = (Component) dockable;
+
+        Point posInFrame = component.getLocation();
+        SwingUtilities.convertPointToScreen(posInFrame, component.getParent());
+        SwingUtilities.convertPointFromScreen(posInFrame, root);
+
+        posInFrame.x += component.getWidth() / 2;
+        posInFrame.y += component.getHeight() / 2;
+
+        if (!root.isPinningSupported()) {
+            return;
+        }
+        undock(dockable);
+
+        // reset the window, undocking the dockable sets it to null
+        internals.getWrapper(dockable).setWindow(window);
+        internals.getWrapper(dockable).setUnpinned(true);
+
+        root.setDockableUnpinned(dockable, location);
 
         DockingListeners.fireUnpinnedEvent(dockable);
         DockingListeners.fireHiddenEvent(dockable);

@@ -44,6 +44,7 @@ public class DockingHandle extends JLabel {
 	 * Flag indicating whether this handle display is for the root handles
 	 */
 	private final boolean isRoot;
+	private final boolean isPin;
 
 	/**
 	 * Create a new DockingHandle
@@ -54,6 +55,17 @@ public class DockingHandle extends JLabel {
 	public DockingHandle(DockingRegion region, boolean isRoot) {
 		this.region = region;
 		this.isRoot = isRoot;
+		this.isPin = false;
+
+		// set the bounds (we're not in a layout manager) and make sure this handle isn't visible
+		setBounds(0, 0, HANDLE_ICON_SIZE, HANDLE_ICON_SIZE);
+		setVisible(false);
+	}
+
+	public DockingHandle(DockingRegion region) {
+		this.region = region;
+		this.isRoot = false;
+		this.isPin = true;
 
 		// set the bounds (we're not in a layout manager) and make sure this handle isn't visible
 		setBounds(0, 0, HANDLE_ICON_SIZE, HANDLE_ICON_SIZE);
@@ -79,6 +91,15 @@ public class DockingHandle extends JLabel {
 	}
 
 	/**
+	 * Check if this DockingHandle is for pinning
+	 *
+	 * @return Whether this is a pinning handle
+	 */
+	public boolean isPin() {
+		return isPin;
+	}
+
+	/**
 	 * Paint the handle
 	 *
 	 * @param g used to do the main paint operations
@@ -88,18 +109,24 @@ public class DockingHandle extends JLabel {
 	public void paintHandle(Graphics g, Graphics2D g2, boolean mouseOver) {
 		Rectangle bounds = getBounds();
 
-		Color background = DockingSettings.getHandleBackground();//DockingProperties.getHandlesBackground();
-		Color hover = DockingSettings.getHandleForeground();//DockingProperties.getHandlesFill();
-		Color outline = DockingSettings.getHandleForeground();//DockingProperties.getHandlesOutline();
+		Color background = DockingSettings.getHandleBackground();
+		Color hover = DockingSettings.getHandleForeground();
+		Color outline = DockingSettings.getHandleForeground();
 
 		// each root handle has its own background. we have to draw them here.
 		// the dockables all share one big root that is drawn in DockingHandles
-		if (isRoot) {
+		if (isRoot || isPin) {
 			g.setColor(background);
 			drawBackground(g);
 		}
 
-		if (mouseOver) {
+		if (mouseOver && isPin) {
+			int quarterWidth = bounds.width / 4;
+			int x1 = getX() + quarterWidth;
+
+			g.fillRect(x1, bounds.y, bounds.width / 2, bounds.height / 2);
+		}
+		else if (mouseOver) {
 			g.setColor(hover);
 			fillMouseOverRegion(g);
 		}
@@ -109,12 +136,24 @@ public class DockingHandle extends JLabel {
 		g2.setColor(outline);
 
 		// only draw the dashed line if the region isn't center and these are not root handles
-		if (region != DockingRegion.CENTER && !isRoot) {
+		if (region != DockingRegion.CENTER && !isRoot && !isPin) {
 			drawDashedLine(g2);
 		}
 
 		if (isRoot && region != DockingRegion.CENTER) {
 			drawRootOutline(g);
+		}
+		else if (isPin) {
+			int quarterWidth = bounds.width / 4;
+			int x1 = getX() + quarterWidth;
+
+			g.drawLine(x1, bounds.y, x1 + (bounds.width / 2), bounds.y);
+			g.drawLine(x1, bounds.y+ (bounds.height / 2), x1 + (bounds.width / 2), bounds.y+ (bounds.height / 2));
+
+			g.drawLine(x1, bounds.y, x1, bounds.y + (bounds.height / 2));
+			g.drawLine(x1 + (bounds.width / 2), bounds.y, x1 + (bounds.width / 2), bounds.y + (bounds.height / 2));
+
+			g.drawLine(x1 + quarterWidth, bounds.y + (bounds.height / 2), x1 + quarterWidth, bounds.y + (bounds.height));
 		}
 		else {
 			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
@@ -131,7 +170,7 @@ public class DockingHandle extends JLabel {
 
 		g.fillRect(x, y, width, height);
 
-		Color border = DockingSettings.getHandleForeground();//DockingProperties.getHandlesBackgroundBorder();
+		Color border = DockingSettings.getHandleForeground();
 
 		g.setColor(border);
 		g.drawRect(x, y, width, height);
