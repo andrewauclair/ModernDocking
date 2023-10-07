@@ -148,6 +148,18 @@ public class DockingAPI {
             throw new DockableRegistrationFailureException("RootDockingPanel already registered for frame: " + parent);
         }
 
+        if (rootPanels.containsValue(panel)) {
+            // we already checked above that we have this value
+            //noinspection OptionalGetWithoutIsPresent
+            Window window = rootPanels.entrySet().stream()
+                    .filter(entry -> entry.getValue() == panel)
+                    .findFirst()
+                    .map(Map.Entry::getKey)
+                    .get();
+
+            throw new DockableRegistrationFailureException("RootDockingPanel already registered for window: " + window);
+        }
+
         rootPanels.put(parent, panel);
         FloatListener.registerDockingWindow(this, parent, panel);
 
@@ -163,6 +175,18 @@ public class DockingAPI {
     public void registerDockingPanel(RootDockingPanelAPI panel, JDialog parent) {
         if (rootPanels.containsKey(parent)) {
             throw new DockableRegistrationFailureException("RootDockingPanel already registered for frame: " + parent);
+        }
+
+        if (rootPanels.containsValue(panel)) {
+            // we already checked above that we have this value
+            //noinspection OptionalGetWithoutIsPresent
+            Window window = rootPanels.entrySet().stream()
+                    .filter(entry -> entry.getValue() == panel)
+                    .findFirst()
+                    .map(Map.Entry::getKey)
+                    .get();
+
+            throw new DockableRegistrationFailureException("RootDockingPanel already registered for window: " + window);
         }
 
         rootPanels.put(parent, panel);
@@ -194,6 +218,7 @@ public class DockingAPI {
      */
     public void deregisterAllDockingPanels() {
         Set<Window> windows = new HashSet<>(getRootPanels().keySet());
+
         for (Window window : windows) {
             deregisterDockingPanel(window);
 
@@ -610,9 +635,11 @@ public class DockingAPI {
         if (window instanceof JDialog) {
             return false;
         }
+
         if (dockingState.maximizeRestoreLayout.containsKey(window)) {
             return false;
         }
+
         // only dispose this window if we created it
         return window instanceof FloatingFrame;
     }
@@ -812,6 +839,7 @@ public class DockingAPI {
             }
             else {
                 // if we didn't find any dockables of the same type, we'll dock to north
+                // TODO this is a bit boring. we should have a better way to do this
                 dock(dockable, mainWindow, DockingRegion.NORTH);
             }
         }
