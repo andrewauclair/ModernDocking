@@ -168,7 +168,6 @@ public class DockingStateAPI {
             Dockable dockable = getDockable(docking, id);
             root.setDockableUnpinned(dockable, ToolbarLocation.WEST);
             root.hideUnpinnedPanels();
-            DockingInternal.get(docking).getWrapper(dockable).setUnpinned(true);
             getWrapper(dockable).setUnpinned(true);
         }
 
@@ -225,11 +224,14 @@ public class DockingStateAPI {
         boolean paused = docking.getAppState().isPaused();
         docking.getAppState().setPaused(true);
 
-        root.setPanel(restoreState(docking, state.getState(), window));
+        try {
+            root.setPanel(restoreState(docking, state.getState(), window));
 
-        restoreProperSplitLocations(root);
-
-        docking.getAppState().setPaused(paused);
+            restoreProperSplitLocations(root);
+        }
+        finally {
+            docking.getAppState().setPaused(paused);
+        }
 
         if (!paused) {
             docking.getAppState().persist();
@@ -239,11 +241,14 @@ public class DockingStateAPI {
     private DockingPanel restoreState(DockingAPI docking, DockableState state, Window window) {
         if (state instanceof PanelState) {
             return restoreSimple(docking, (PanelState) state, window);
-        } else if (state instanceof SplitState) {
+        }
+        else if (state instanceof SplitState) {
             return restoreSplit(docking, (SplitState) state, window);
-        } else if (state instanceof TabState) {
+        }
+        else if (state instanceof TabState) {
             return restoreTabbed(docking, (TabState) state, window);
-        } else {
+        }
+        else {
             throw new RuntimeException("Unknown state type");
         }
     }
@@ -321,14 +326,18 @@ public class DockingStateAPI {
     private DockingPanel restoreState(DockingAPI docking, DockingLayoutNode node, Window window) {
         if (node instanceof DockingSimplePanelNode) {
             return restoreSimple(docking, (DockingSimplePanelNode) node, window);
-        } else if (node instanceof DockingSplitPanelNode) {
+        }
+        else if (node instanceof DockingSplitPanelNode) {
             return restoreSplit(docking, (DockingSplitPanelNode) node, window);
-        } else if (node instanceof DockingTabPanelNode) {
+        }
+        else if (node instanceof DockingTabPanelNode) {
             return restoreTabbed(docking, (DockingTabPanelNode) node, window);
-        } else if (node == null) {
+        }
+        else if (node == null) {
             // the main window root can contain a null panel if nothing is docked
             return null;
-        } else {
+        }
+        else {
             throw new RuntimeException("Unknown state type");
         }
     }

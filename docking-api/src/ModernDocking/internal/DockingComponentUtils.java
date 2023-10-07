@@ -79,9 +79,6 @@ public class DockingComponentUtils {
 		return DockingInternal.get(docking).getWrapper(dockable).getWindow();
 	}
 
-	//
-	//
-
 	/**
 	 * find the root for the given window, throws an exception if the window doesn't have a root panel
 	 *
@@ -237,6 +234,8 @@ public class DockingComponentUtils {
 		for (Component component : container.getComponents()) {
 			if (component instanceof DisplayPanel) {
 				DisplayPanel panel = (DisplayPanel) component;
+
+				// there is at least one dockable that is allowed to float alone, we shouldn't undock
 				if (panel.getWrapper().getDockable().isFloatingAllowed()) {
 					return false;
 				}
