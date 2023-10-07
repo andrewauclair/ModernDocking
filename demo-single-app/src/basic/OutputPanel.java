@@ -91,7 +91,7 @@ public class OutputPanel extends ToolPanel {
 
     @Override
     public void addMoreOptions(JPopupMenu menu) {
-        JMenuItem rename = new JMenuItem();
+        JMenuItem rename = new JMenuItem("Rename");
         rename.addActionListener(e -> {
             firstColumnName = "changed";
             table.getColumnModel().getColumn(0).setHeaderValue(firstColumnName);
