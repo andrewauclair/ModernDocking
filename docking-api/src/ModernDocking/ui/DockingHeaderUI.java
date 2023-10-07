@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.ui;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Interface used for defining Docking header UIs that can be updated
@@ -38,4 +39,18 @@ public interface DockingHeaderUI {
 	 * @param settings Settings button to display menu at
 	 */
 	void displaySettingsMenu(JButton settings);
+
+	/**
+	 * Set the background color override of the header UI
+	 *
+	 * @param color Background color. null to clear override
+	 */
+	void setBackgroundOverride(Color color);
+
+	/**
+	 * Set the foreground color override of the header UI
+	 *
+	 * @param color Foreground color. null to clear override
+	 */
+	void setForegroundOverride(Color color);
 }

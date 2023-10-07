@@ -86,6 +86,9 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 	 */
 	protected boolean initialized = false;
 
+	private Color backgroundOverride = null;
+	private Color foregroundOverride = null;
+
 	/**
 	 * Create a new DefaultHeaderUI
 	 *
@@ -263,7 +266,21 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 	}
 
 	@Override
+	public void setBackgroundOverride(Color color) {
+		backgroundOverride = color;
+	}
+
+	@Override
+	public void setForegroundOverride(Color color) {
+		foregroundOverride = color;
+	}
+
+	@Override
 	public void setBackground(Color bg) {
+		if (backgroundOverride != null) {
+			bg = backgroundOverride;
+		}
+
 		super.setBackground(bg);
 
 		if (close != null) close.setBackground(bg);
@@ -272,6 +289,10 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 
 	@Override
 	public void setForeground(Color fg) {
+		if (foregroundOverride != null) {
+			fg = foregroundOverride;
+		}
+
 		super.setForeground(fg);
 
 		if (titleLabel != null) titleLabel.setForeground(fg);

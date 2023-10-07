@@ -22,12 +22,9 @@ SOFTWARE.
 package basic;
 
 import ModernDocking.DockingProperty;
-import ModernDocking.internal.DockableToolbar;
-import ModernDocking.ui.DefaultHeaderUI;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
 import ModernDocking.ui.HeaderModel;
-import com.formdev.flatlaf.FlatLaf;
 
 import javax.swing.*;
 import java.awt.*;
@@ -75,6 +72,7 @@ public class SimplePanel extends BasePanel {
 //	private DockableToolbar.Location toolbarLocation;
 
 	private static final Random rand = new Random();
+	private DockingHeaderUI headerUI;
 
 	public SimplePanel(String title, String persistentID) {
 		super(title, persistentID);
@@ -113,78 +111,31 @@ public class SimplePanel extends BasePanel {
 		}
 	}
 
-	public static class ListNode {
-		ListNode next;
-	}
 	public void setTitleBackground(Color color) {
 		this.backgroundColor = color;
+
+		headerUI.setBackgroundOverride(backgroundColor);
 	}
 
 	public void setTitleForeground(Color color) {
 		this.foregroundColor = color;
+
+		headerUI.setForegroundOverride(foregroundColor);
 	}
 
 	@Override
 	public DockingHeaderUI createHeaderUI(HeaderController headerController, HeaderModel headerModel) {
-		if (!(UIManager.getLookAndFeel() instanceof FlatLaf)) {
-			return new DefaultHeaderUI(headerController, headerModel) {
-				@Override
-				public void setBackground(Color bg) {
-					if (backgroundColor != null) {
-						super.setBackground(backgroundColor);
-					} else {
-						super.setBackground(bg);
-					}
-				}
+		headerUI = super.createHeaderUI(headerController, headerModel);
 
-				@Override
-				public void setForeground(Color bg) {
-					if (foregroundColor != null) {
-						super.setForeground(foregroundColor);
-					} else {
-						super.setForeground(bg);
-					}
-				}
-			};
-		}
-		else {
-			return new DefaultHeaderUI(headerController, headerModel) {
-				@Override
-				public void setBackground(Color bg) {
-					if (backgroundColor != null) {
-						super.setBackground(backgroundColor);
-					}
-					else {
-						super.setBackground(bg);
-					}
-				}
+		headerUI.setBackgroundOverride(backgroundColor);
+		headerUI.setForegroundOverride(foregroundColor);
 
-				@Override
-				public void setForeground(Color bg) {
-					if (foregroundColor != null) {
-						super.setForeground(foregroundColor);
-					}
-					else {
-						super.setForeground(bg);
-					}
-				}
-			};
-		}
+		return headerUI;
 	}
 
 	@Override
 	public int getType() {
 		return 1;
-	}
-
-	@Override
-	public boolean isFloatingAllowed() {
-		return true;
-	}
-
-	@Override
-	public boolean isClosable() {
-		return true;
 	}
 
 	@Override
