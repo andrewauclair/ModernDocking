@@ -29,6 +29,7 @@ import ModernDocking.internal.DockableWrapper;
 import ModernDocking.internal.DockingComponentUtils;
 import ModernDocking.internal.DockingPanel;
 import ModernDocking.internal.FloatingFrame;
+import ModernDocking.layouts.WindowLayout;
 import ModernDocking.persist.RootDockState;
 
 import javax.swing.*;
@@ -71,7 +72,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 	private Window currentTargetWindow = null;
 	private Window originalWindow;
 
-	private RootDockState rootState;
+	private WindowLayout windowLayout;
 
 	private ModalityType modalityType = ModalityType.MODELESS;
 
@@ -205,7 +206,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		currentTargetWindow = null;
 		originalWindow = DockingComponentUtils.findWindowForDockable(docking, floatingDockable.getDockable());
 
-		rootState = docking.getDockingState().getRootState(originalWindow);
+		windowLayout = docking.getDockingState().getWindowLayout(originalWindow);
 
 		RootDockingPanelAPI currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
 
@@ -261,7 +262,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			docking.dock(floatingDockable.getDockable(), currentTopWindow, region, 0.25);
 		}
 		else if (floatingDockable.getDockable().isLimitedToRoot() && floatingDockable.getRoot() != root) {
-			docking.getDockingState().restoreState(originalWindow, rootState);
+			docking.getDockingState().restoreWindowLayout(originalWindow, windowLayout);
 		}
 		else if (currentTopWindow != null && dockingPanel != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToDockable()) {
 			docking.dock(floatingDockable.getDockable(), dockableAtPos, region);
@@ -270,7 +271,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			docking.dock(floatingDockable.getDockable(), currentTopWindow, region);
 		}
 		else if (!floatingDockable.getDockable().isFloatingAllowed()) {
-			docking.getDockingState().restoreState(originalWindow, rootState);
+			docking.getDockingState().restoreWindowLayout(originalWindow, windowLayout);
 		}
 		else {
 			new FloatingFrame(docking, floatingDockable.getDockable(), floatingFrame);
