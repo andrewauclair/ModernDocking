@@ -39,6 +39,8 @@ public class DockingAPI {
 
     private final LayoutPersistenceAPI layoutPersistence = new LayoutPersistenceAPI(this);
 
+    private boolean deregistering = false;
+
     public AppStateAPI getAppState() {
         return appState;
     }
@@ -95,26 +97,43 @@ public class DockingAPI {
      * @param dockable Dockable to deregister
      */
     public void deregisterDockable(Dockable dockable) {
-        internals.deregisterDockable(dockable);
+        deregistering = true;
+
+        try {
+            // make sure we undock the dockable from the UI before deregistering
+            undock(dockable);
+
+            internals.deregisterDockable(dockable);
+        }
+        finally {
+            deregistering = false;
+        }
     }
 
     /**
      * Deregister all dockables that have been registered. This action will also undock all dockables.
      */
     public void deregisterAllDockables() {
-        Set<Window> windows = new HashSet<>(getRootPanels().keySet());
+        deregistering = true;
 
-        for (Window window : windows) {
-            DockingComponentUtils.undockComponents(this, window);
+        try {
+            Set<Window> windows = new HashSet<>(getRootPanels().keySet());
 
-            // only dispose this window if we created it
-            if (window instanceof FloatingFrame) {
-                window.dispose();
+            for (Window window : windows) {
+                DockingComponentUtils.undockComponents(this, window);
+
+                // only dispose this window if we created it
+                if (window instanceof FloatingFrame) {
+                    window.dispose();
+                }
+            }
+
+            for (Dockable dockable : internals.getDockables()) {
+                deregisterDockable(dockable);
             }
         }
-
-        for (Dockable dockable : internals.getDockables()) {
-            deregisterDockable(dockable);
+        finally {
+            deregistering = false;
         }
     }
 
@@ -526,7 +545,7 @@ public class DockingAPI {
 
         DockingListeners.fireUndockedEvent(dockable);
 
-        // make sure that can dispose this window and we're not floating the last dockable in it
+        // make sure that can dispose this window, and we're not floating the last dockable in it
         if (window != null && root != null && canDisposeWindow(window) && root.isEmpty() && !FloatListener.isFloating) {
             deregisterDockingPanel(window);
             window.dispose();
@@ -535,7 +554,7 @@ public class DockingAPI {
         appState.persist();
 
         // force this dockable to dock again if we're not floating it
-        if (!dockable.isClosable() && !FloatListener.isFloating) {
+        if (!dockable.isClosable() && !FloatListener.isFloating && !deregistering) {
             dock(dockable, mainWindow);
         }
     }
