@@ -395,9 +395,16 @@ public class DockingOverlay {
 	 * @param g Graphics to use for painting
 	 */
 	public void paint(Graphics g) {
-		if (visible && !visibleOverride) {
+		if (!isDockingToRoot() && !isDockingToDockable()) {
+			return;
+		}
+
+		if (isDockingToPin()) {
+			return;
+		}
+
+		if (visible) {
 			g.setColor(DockingSettings.getOverlayBackground());
-//			g.setColor(DockingProperties.getDockingOverlay());
 			g.fillRect(location.x, location.y, size.width, size.height);
 		}
 	}

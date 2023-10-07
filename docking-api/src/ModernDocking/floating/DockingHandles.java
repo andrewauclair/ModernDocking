@@ -296,6 +296,7 @@ public class DockingHandles {
 
 		rootRegion = null;
 		dockableRegion = null;
+		pinRegion = null;
 
 		for (DockingHandle handle : mouseOver.keySet()) {
 			boolean over = handle.isVisible() && handle.getBounds().contains(framePoint);
