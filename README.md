@@ -11,18 +11,20 @@ Modern Docking binaries are available on <b>Maven Central.</b>
 
 If you use Maven or Gradle, add a dependency with the following coordinates to your build script:
 
-    groupId:     io.github.andrewauclair.ModernDocking
-    artifactId:  ModernDocking
+    groupId:     io.github.andrewauclair
+    artifactId:  modern-docking-single-app
     version:     (see button below)
 
 Otherwise download `ModernDocking-<version>.jar` here:
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair.ModernDocking/ModernDocking/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair.ModernDocking/ModernDocking)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-single-app/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair.ModernDocking/ModernDocking)
+
+For use in apps that have multiple instances in a single JVM, use artifact `modern-docking-multi-app`.
 
 ### Snapshots
 
 Modern Docking snapshot binaries are available on
-[Sonatype OSSRH](https://oss.sonatype.org/content/repositories/snapshots/io/github/andrewauclair/ModernDocking/).
+[Sonatype OSSRH](https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/andrewauclair/).
 To access the latest snapshot, change the Modern Docking version in your dependencies
 to `<version>-SNAPSHOT` (e.g. `0.1.0-SNAPSHOT`) and add the repository
 `https://oss.sonatype.org/content/repositories/snapshots/` to your build (see
@@ -51,13 +53,13 @@ Modern Docking UI binaries are available on <b>Maven Central.</b>
 
 If you use Maven or Gradle, add a dependency with the following coordinates to your build script:
 
-    groupId:     io.github.andrewauclair.ModernDocking
-    artifactId:  ModernDockingUI
+    groupId:     io.github.andrewauclair
+    artifactId:  modern-docking-ui
     version:     (see button below)
 
 Otherwise download `ModernDockingUI-<version>.jar` here:
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair.ModernDocking/ModernDockingUI/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair.ModernDocking/ModernDockingUI)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-ui/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair.ModernDocking/ModernDockingUI)
 
 
 ## Examples
