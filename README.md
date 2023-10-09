@@ -33,9 +33,15 @@ Also add either `modern-docking-single-app` or `modern-docking-multi-app`. `mode
 
 Otherwise download `ModernDocking-<version>.jar` here:
 
+`modern-docking-api`
+
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-api/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-api)
 
+`modern-docking-single-app`
+
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-single-app/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-single-app)
+
+`modern-docking-multi-app`
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-multi-app/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-multi-app)
 
