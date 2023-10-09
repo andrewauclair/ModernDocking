@@ -17,7 +17,7 @@ If you use Maven or Gradle, add a dependency with the following coordinates to y
 
 Otherwise download `ModernDocking-<version>.jar` here:
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-single-app/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair.ModernDocking/ModernDocking)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-single-app/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-single-app)
 
 For use in apps that have multiple instances in a single JVM, use artifact `modern-docking-multi-app`.
 
