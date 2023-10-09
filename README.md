@@ -59,7 +59,7 @@ If you use Maven or Gradle, add a dependency with the following coordinates to y
 
 Otherwise download `ModernDockingUI-<version>.jar` here:
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-ui/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair.ModernDocking/ModernDockingUI)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-ui/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-ui)
 
 
 ## Examples
