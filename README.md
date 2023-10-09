@@ -11,13 +11,33 @@ Modern Docking binaries are available on <b>Maven Central.</b>
 
 If you use Maven or Gradle, add a dependency with the following coordinates to your build script:
 
+```
+    groupId:     io.github.andrewauclair
+    artifactId:  modern-docking-api
+    version:     (see button below)
+```
+
+Also add either `modern-docking-single-app` or `modern-docking-multi-app`. `modern-docking-single-app` is used by applications that create a single instance of the application per JVM instance. `modern-docking-multi-app` is used by applications that create multiple instances of the application per JVM, for example IntelliJ IDEA works this way.
+
+```
     groupId:     io.github.andrewauclair
     artifactId:  modern-docking-single-app
     version:     (see button below)
+```
+
+```
+    groupId:     io.github.andrewauclair
+    artifactId:  modern-docking-multi-app
+    version:     (see button below)
+```
 
 Otherwise download `ModernDocking-<version>.jar` here:
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-api/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-api)
+
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-single-app/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-single-app)
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-multi-app/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-multi-app)
 
 For use in apps that have multiple instances in a single JVM, use artifact `modern-docking-multi-app`.
 
