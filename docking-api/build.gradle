@@ -30,7 +30,7 @@ java {
 
 group = "io.github.andrewauclair"
 archivesBaseName = "modern-docking-api"
-version = "0.9.0"
+version = "0.9.1"
 
 publishing {
 	publications {
