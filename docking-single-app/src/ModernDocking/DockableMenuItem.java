@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package ModernDocking;
 
+import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.internal.DockingInternal;
 
 import javax.swing.*;
@@ -84,8 +85,13 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 		super.addNotify();
 
 		// update the menu item, it's about to be displayed
-		Dockable dockable = DockingInternal.get(Docking.getSingleInstance()).getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
-		setSelected(Docking.isDocked(dockable));
+		try {
+			Dockable dockable = DockingInternal.get(Docking.getSingleInstance()).getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
+			setSelected(Docking.isDocked(dockable));
+		}
+		catch (DockableRegistrationFailureException ignored) {
+			setVisible(false);
+		}
 	}
 
 	@Override
