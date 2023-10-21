@@ -107,6 +107,9 @@ public class DockableProperties {
         else if (type == char.class) {
             return Character.toString((Character) field.get(dockable));
         }
+        else if (type == boolean.class) {
+            return Boolean.toString((Boolean) field.get(dockable));
+        }
         else if (type == String.class) {
             return (String) field.get(dockable);
         }
@@ -142,6 +145,9 @@ public class DockableProperties {
         }
         else if (type == char.class) {
             field.set(dockable, value.charAt(0));
+        }
+        else if (type == boolean.class) {
+            field.set(dockable, Boolean.parseBoolean(value));
         }
         else if (type == String.class) {
             field.set(dockable, value);
