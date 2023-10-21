@@ -52,6 +52,9 @@ public class PropertiesDemoPanel extends BasePanel {
     @DockingProperty(name = "sample_char", defaultValue = "a")
     private char charValue;
 
+    @DockingProperty(name = "sample_boolean", defaultValue = "false")
+    private boolean booleanValue;
+
     @DockingProperty(name = "sample_string")
     private String stringValue;
 
@@ -65,6 +68,7 @@ public class PropertiesDemoPanel extends BasePanel {
     private final JTextField floatField = new JTextField();
     private final JTextField doubleField = new JTextField();
     private final JTextField charField = new JTextField();
+    private final JTextField booleanField = new JTextField();
     private final JTextField stringField = new JTextField();
     private final JComboBox<DockingRegion> enumField = new JComboBox<>();
 
@@ -124,6 +128,12 @@ public class PropertiesDemoPanel extends BasePanel {
         gbc.gridx = 0;
         gbc.gridy++;
 
+        add(new JLabel("Boolean:"), gbc);
+        gbc.gridx++;
+        add(booleanField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+
         add(new JLabel("String:"), gbc);
         gbc.gridx++;
         add(stringField, gbc);
@@ -140,6 +150,7 @@ public class PropertiesDemoPanel extends BasePanel {
             floatValue = Float.parseFloat(floatField.getText());
             doubleValue = Double.parseDouble(doubleField.getText());
             charValue = charField.getText().length() > 0 ? charField.getText().charAt(0) : ' ';
+            booleanValue = Boolean.parseBoolean(booleanField.getText());
             stringValue = stringField.getText();
 
             AppState.persist();
@@ -155,6 +166,7 @@ public class PropertiesDemoPanel extends BasePanel {
         floatField.setText(Float.toString(floatValue));
         doubleField.setText(Double.toString(doubleValue));
         charField.setText(String.valueOf(charValue));
+        booleanField.setText(Boolean.toString(booleanValue));
         stringField.setText(stringValue);
     }
 
