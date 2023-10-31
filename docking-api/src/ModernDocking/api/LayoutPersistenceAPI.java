@@ -4,6 +4,7 @@ import ModernDocking.Dockable;
 import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.internal.DockableProperties;
+import ModernDocking.internal.DockableWrapper;
 import ModernDocking.internal.DockingInternal;
 import ModernDocking.layouts.*;
 
@@ -68,7 +69,9 @@ public class LayoutPersistenceAPI {
 
             for (Dockable dockable : DockingInternal.get(docking).getDockables()) {
                 if (!docking.isDocked(dockable)) {
-                    writeSimpleNodeToFile(writer, new DockingSimplePanelNode(docking, dockable.getPersistentID(), dockable.getClass().getCanonicalName(), DockableProperties.saveProperties(dockable)));
+                    DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
+                    writeSimpleNodeToFile(writer, new DockingSimplePanelNode(docking, dockable.getPersistentID(), dockable.getClass().getCanonicalName(), DockableProperties.saveProperties(wrapper)));
                 }
             }
 
@@ -146,7 +149,9 @@ public class LayoutPersistenceAPI {
                     DockingSimplePanelNode node = readSimpleNodeFromFile(reader);
 
                     try {
-                        DockableProperties.configureProperties(DockingInternal.get(docking).getDockable(node.getPersistentID()), node.getProperties());
+                        DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(DockingInternal.get(docking).getDockable(node.getPersistentID()));
+
+                        DockableProperties.configureProperties(wrapper, node.getProperties());
                     }
                     catch (DockableRegistrationFailureException ignored) {
                     }

@@ -106,11 +106,11 @@ public class DockingLayouts {
 		DockingLayoutNode node;
 
 		if (panel instanceof DockedSimplePanel) {
-			Dockable dockable = ((DockedSimplePanel) panel).getWrapper().getDockable();
+			DockableWrapper wrapper = ((DockedSimplePanel) panel).getWrapper();
 
-			Map<String, String> properties = DockableProperties.saveProperties(dockable);
+			Map<String, String> properties = DockableProperties.saveProperties(wrapper);
 
-			node = new DockingSimplePanelNode(docking, dockable.getPersistentID(), dockable.getClass().getCanonicalName(), properties);
+			node = new DockingSimplePanelNode(docking, wrapper.getDockable().getPersistentID(), wrapper.getDockable().getClass().getCanonicalName(), properties);
 		}
 		else if (panel instanceof DockedSplitPanel) {
 			node = splitPanelToNode(docking, (DockedSplitPanel) panel);
@@ -142,10 +142,12 @@ public class DockingLayouts {
 	}
 
 	private static DockingLayoutNode tabbedPanelToNode(DockingAPI docking, DockedTabbedPanel panel) {
-		DockingTabPanelNode node = new DockingTabPanelNode(docking, panel.getSelectedTabID(), DockableProperties.saveProperties(DockingInternal.get(docking).getDockable(panel.getSelectedTabID())));
+		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(DockingInternal.get(docking).getDockable(panel.getSelectedTabID()));
+
+		DockingTabPanelNode node = new DockingTabPanelNode(docking, panel.getSelectedTabID(), DockableProperties.saveProperties(wrapper));
 
 		for (DockableWrapper dockable : panel.getDockables()) {
-			node.addTab(dockable.getDockable().getPersistentID(), DockableProperties.saveProperties(dockable.getDockable()));
+			node.addTab(dockable.getDockable().getPersistentID(), DockableProperties.saveProperties(dockable));
 		}
 		return node;
 	}

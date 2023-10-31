@@ -363,11 +363,12 @@ public class DockingStateAPI {
                 throw new DockableNotFoundException(simpleNode.getPersistentID());
             }
 
-            DockableProperties.configureProperties(dockable, simpleNode.getProperties());
+            DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
+            DockableProperties.configureProperties(wrapper, simpleNode.getProperties());
 
             docking.undock(dockable);
 
-            DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
             wrapper.setWindow(window);
 
             if (panel == null) {
@@ -411,12 +412,13 @@ public class DockingStateAPI {
             throw new DockableNotFoundException(node.getPersistentID());
         }
 
-        DockableProperties.configureProperties(dockable, node.getProperties());
+        DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
+        DockableProperties.configureProperties(wrapper, node.getProperties());
 
         // undock the dockable in case it is currently docked somewhere else
         docking.undock(dockable);
 
-        DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
         wrapper.setWindow(window);
 
         return new DockedSimplePanel(docking, wrapper);

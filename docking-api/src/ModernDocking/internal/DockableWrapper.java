@@ -32,6 +32,9 @@ import ModernDocking.ui.HeaderModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * internal wrapper around the Dockable implemented by the application.
@@ -52,6 +55,8 @@ public class DockableWrapper {
 	private boolean maximized = false;
 	private boolean unpinned = false;
 	private RootDockingPanelAPI root;
+
+	private Map<String, String> properties = new HashMap<>();
 
 	/**
 	 * Create a new wrapper for the dockable
@@ -209,5 +214,21 @@ public class DockableWrapper {
 	 */
 	public RootDockingPanelAPI getRoot() {
 		return root;
+	}
+
+	public Map<String, String> getProperties() {
+		return Collections.unmodifiableMap(properties);
+	}
+
+	public String getProperty(String propertyName) {
+		return properties.get(propertyName);
+	}
+
+	public void setProperty(String propertyName, String value) {
+		properties.put(propertyName, value);
+	}
+
+	public void removeProperty(String propertyName) {
+		properties.remove(propertyName);
 	}
 }

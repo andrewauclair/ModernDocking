@@ -21,7 +21,10 @@ SOFTWARE.
  */
 package ModernDocking.api;
 
+import ModernDocking.Dockable;
 import ModernDocking.exception.DockingLayoutException;
+import ModernDocking.internal.DockableWrapper;
+import ModernDocking.internal.DockingInternal;
 import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.DockingLayouts;
 
@@ -201,5 +204,23 @@ public class AppStateAPI {
 	 */
 	public void setDefaultApplicationLayout(ApplicationLayout layout) {
 		defaultAppLayout = layout;
+	}
+
+	public String getProperty(Dockable dockable, String propertyName) {
+		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
+		return wrapper.getProperty(propertyName);
+	}
+
+	public void setProperty(Dockable dockable, String propertyName, String value) {
+		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
+		wrapper.setProperty(propertyName, value);
+	}
+
+	public void removeProperty(Dockable dockable, String propertyName) {
+		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
+		wrapper.removeProperty(propertyName);
 	}
 }

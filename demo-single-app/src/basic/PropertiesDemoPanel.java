@@ -143,6 +143,8 @@ public class PropertiesDemoPanel extends BasePanel {
         JButton save = new JButton("Save");
         add(save);
         save.addActionListener(e -> {
+            AppState.setProperty(this, "static-prop-test", "5");
+
             byteValue = Byte.parseByte(byteField.getText());
             shortValue = Short.parseShort(shortField.getText());
             intValue = Integer.parseInt(intField.getText());
@@ -159,6 +161,8 @@ public class PropertiesDemoPanel extends BasePanel {
 
     @Override
     public void updateProperties() {
+        System.out.println("static-prop-test: " + AppState.getProperty(this, "static-prop-test"));
+
         byteField.setText(Byte.toString(byteValue));
         shortField.setText(Short.toString(shortValue));
         intField.setText(Integer.toString(intValue));

@@ -91,4 +91,16 @@ public class AppState {
     public static void setDefaultApplicationLayout(ApplicationLayout layout) {
         instance.setDefaultApplicationLayout(layout);
     }
+
+    public static String getProperty(Dockable dockable, String propertyName) {
+        return instance.getProperty(dockable, propertyName);
+    }
+
+    public static void setProperty(Dockable dockable, String propertyName, String value) {
+        instance.setProperty(dockable, propertyName, value);
+    }
+
+    public static void removeProperty(Dockable dockable, String propertyName) {
+        instance.removeProperty(dockable, propertyName);
+    }
 }

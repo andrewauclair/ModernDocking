@@ -29,7 +29,19 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class DockableProperties {
-    public static void configureProperties(Dockable dockable, Map<String, String> properties) {
+    public static void configureProperties(DockableWrapper wrapper, Map<String, String> properties) {
+        Dockable dockable = wrapper.getDockable();
+
+        // remove any existing properties
+        for (String key : wrapper.getProperties().keySet()) {
+            wrapper.removeProperty(key);
+        }
+
+        // add all properties to the wrapper
+        for (String key : properties.keySet()) {
+            wrapper.setProperty(key, properties.get(key));
+        }
+
         List<Field> dockingPropFields = Arrays.stream(dockable.getClass().getDeclaredFields())
                 .filter(field -> field.getAnnotation(DockingProperty.class) != null)
                 .collect(Collectors.toList());
@@ -47,9 +59,15 @@ public class DockableProperties {
 
                 if (properties.containsKey(property.name())) {
                     setProperty(dockable, field, properties.get(property.name()));
+
+                    // remove the property from the wrapper as it is more specific than the static props
+                    wrapper.removeProperty(property.name());
                 }
                 else if (!Objects.equals(property.defaultValue(), "__no_default_value__")) {
                     setProperty(dockable, field, property.defaultValue());
+
+                    // remove the property from the wrapper as it is more specific than the static props
+                    wrapper.removeProperty(property.name());
                 }
             } catch (IllegalAccessException | SecurityException e) {
                 e.printStackTrace();
@@ -59,8 +77,10 @@ public class DockableProperties {
         dockable.updateProperties();
     }
 
-    public static Map<String, String> saveProperties(Dockable dockable) {
-        Map<String, String> properties = new HashMap<>();
+    public static Map<String, String> saveProperties(DockableWrapper wrapper) {
+        Dockable dockable = wrapper.getDockable();
+
+        Map<String, String> properties = new HashMap<>(wrapper.getProperties());
 
         List<Field> dockingPropFields = Arrays.stream(dockable.getClass().getDeclaredFields())
                 .filter(field -> field.getAnnotation(DockingProperty.class) != null)
@@ -74,7 +94,7 @@ public class DockableProperties {
                 // grab the property and store the value by its name
                 DockingProperty property = field.getAnnotation(DockingProperty.class);
 
-                properties.put(property.name(), getProperty(dockable, field));
+                properties.put(property.name(), getProperty(wrapper, field));
             }
             catch (IllegalAccessException ignore) {
             }
@@ -83,7 +103,9 @@ public class DockableProperties {
         return properties;
     }
 
-    private static String getProperty(Dockable dockable, Field field) throws IllegalAccessException {
+    private static String getProperty(DockableWrapper wrapper, Field field) throws IllegalAccessException {
+        Dockable dockable = wrapper.getDockable();
+
         Class<?> type = field.getType();
 
         if (type == byte.class) {
