@@ -22,7 +22,7 @@ sourceSets.main.resources.srcDirs = ['resources']
 
 group = "io.github.andrewauclair"
 archivesBaseName = "modern-docking-multi-app"
-version = "0.9.2"
+version = "0.10.0-SNAPSHOT"
 
 dependencies {
 	implementation project(':docking-api')
