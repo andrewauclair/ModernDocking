@@ -25,10 +25,7 @@ import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
-import ModernDocking.internal.DockableWrapper;
-import ModernDocking.internal.DockingComponentUtils;
-import ModernDocking.internal.DockingPanel;
-import ModernDocking.internal.FloatingFrame;
+import ModernDocking.internal.*;
 import ModernDocking.layouts.WindowLayout;
 import ModernDocking.persist.RootDockState;
 
@@ -124,6 +121,8 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		utilFrames.remove(window);
 	}
 
+	boolean isInTabbedPane = false;
+
 	private void updateFramePosition(Point mousePosOnScreen) {
 		// update the frames position to our mouse position
 		Point framePos = new Point(mousePosOnScreen.x - dragOffset.x, mousePosOnScreen.y - dragOffset.y);
@@ -153,6 +152,58 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			activeUtilsFrame.setFloating(floatingDockable.getDockable());
 			activeUtilsFrame.setTargetDockable(dockable);
 			activeUtilsFrame.update(mousePosOnScreen);
+		}
+
+		CustomTabbedPane tabbedPane = (CustomTabbedPane) DockingComponentUtils.findTabbedPaneAtPos(mousePosOnScreen, currentTopWindow);
+
+		if (activeUtilsFrame != null) {
+			boolean overTab = dockable == null && tabbedPane != null;
+
+			if (overTab) {
+				int targetTabIndex = tabbedPane.getTargetTabIndex(mousePosOnScreen);
+
+				Rectangle boundsAt;
+				boolean last = false;
+				if (targetTabIndex != -1) {
+					boundsAt = tabbedPane.getBoundsAt(targetTabIndex);
+
+					Point p = new Point(boundsAt.x, boundsAt.y);
+					SwingUtilities.convertPointToScreen(p, tabbedPane);
+					SwingUtilities.convertPointFromScreen(p, activeUtilsFrame);
+					boundsAt.x = p.x;
+					boundsAt.y = p.y;
+
+					boundsAt.width /=2;
+				} else {
+					boundsAt = tabbedPane.getBoundsAt(tabbedPane.getTabCount() - 1);
+
+					Point p = new Point(boundsAt.x, boundsAt.y);
+					SwingUtilities.convertPointToScreen(p, tabbedPane);
+					SwingUtilities.convertPointFromScreen(p, activeUtilsFrame);
+					boundsAt.x = p.x;
+					boundsAt.y = p.y;
+					boundsAt.x += boundsAt.width;
+					last = true;
+				}
+
+				activeUtilsFrame.setOverTab(true, boundsAt, last);
+				activeUtilsFrame.update(mousePosOnScreen);
+				floatingFrame.setVisible(false);
+			}
+			else {
+				activeUtilsFrame.setOverTab(false, null, false);
+				floatingFrame.setVisible(true);
+			}
+		}
+
+		if (tabbedPane != null && tabbedPane.getSelectedComponent() instanceof DisplayPanel) {
+			DisplayPanel panel = (DisplayPanel) tabbedPane.getSelectedComponent();
+
+			if (activeUtilsFrame != null) {
+				activeUtilsFrame.setFloating(floatingDockable.getDockable());
+				activeUtilsFrame.setTargetDockable(panel.getWrapper().getDockable());
+				activeUtilsFrame.update(mousePosOnScreen);
+			}
 		}
 	}
 
@@ -264,7 +315,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		else if (floatingDockable.getDockable().isLimitedToRoot() && floatingDockable.getRoot() != root) {
 			docking.getDockingState().restoreWindowLayout(originalWindow, windowLayout);
 		}
-		else if (currentTopWindow != null && dockingPanel != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToDockable()) {
+		else if (dockableAtPos != null && currentTopWindow != null && dockingPanel != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToDockable()) {
 			docking.dock(floatingDockable.getDockable(), dockableAtPos, region);
 		}
 		else if (root != null && region != DockingRegion.CENTER && activeUtilsFrame == null) {
@@ -272,6 +323,42 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		}
 		else if (!floatingDockable.getDockable().isFloatingAllowed()) {
 			docking.getDockingState().restoreWindowLayout(originalWindow, windowLayout);
+		}
+		else if (dockableAtPos == null) {
+			// we're inserting at a specific position in a tabbed pane
+			CustomTabbedPane tabbedPane = (CustomTabbedPane) DockingComponentUtils.findTabbedPaneAtPos(point, currentTopWindow);
+
+			if (tabbedPane != null) {
+				DockedTabbedPanel parent = (DockedTabbedPanel) tabbedPane.getParent();
+
+				int targetTabIndex = tabbedPane.getTargetTabIndex(point);
+
+				Rectangle boundsAt;
+				boolean last = false;
+				if (targetTabIndex != -1) {
+					boundsAt = tabbedPane.getBoundsAt(targetTabIndex);
+
+					Point p = new Point(boundsAt.x, boundsAt.y);
+					SwingUtilities.convertPointToScreen(p, tabbedPane);
+					SwingUtilities.convertPointFromScreen(p, activeUtilsFrame);
+					boundsAt.x = p.x;
+					boundsAt.y = p.y;
+
+					boundsAt.width /= 2;
+				} else {
+					boundsAt = tabbedPane.getBoundsAt(tabbedPane.getTabCount() - 1);
+
+					Point p = new Point(boundsAt.x, boundsAt.y);
+					SwingUtilities.convertPointToScreen(p, tabbedPane);
+					SwingUtilities.convertPointFromScreen(p, activeUtilsFrame);
+					boundsAt.x = p.x;
+					boundsAt.y = p.y;
+					boundsAt.x += boundsAt.width;
+					last = true;
+				}
+
+				parent.dockAtIndex(floatingDockable.getDockable(), targetTabIndex);
+			}
 		}
 		else {
 			new FloatingFrame(docking, floatingDockable.getDockable(), floatingFrame);

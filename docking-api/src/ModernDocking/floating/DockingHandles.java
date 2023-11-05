@@ -70,6 +70,8 @@ public class DockingHandles {
 	// the dockable that the mouse is currently over, can be null
 	private Dockable targetDockable = null;
 
+	public boolean overTab = false;
+
 	/**
 	 * Create a new instance of the DockingHandles
 	 *

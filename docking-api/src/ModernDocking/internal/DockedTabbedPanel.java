@@ -48,7 +48,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 */
 	private final List<DockableWrapper> panels = new ArrayList<>();
 
-	private final JTabbedPane tabs = new JTabbedPane();
+	private final JTabbedPane tabs = new CustomTabbedPane();
 	private final DockingAPI docking;
 
 	/**
@@ -275,6 +275,26 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 		revalidate();
 		repaint();
+	}
+
+	public void dockAtIndex(Dockable dockable, int index) {
+		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+		wrapper.setWindow(panels.get(0).getWindow());
+
+		addPanel(DockingInternal.get(docking).getWrapper(dockable));
+
+		if (index != -1) {
+			int lastIndex = tabs.getTabCount() - 1;
+
+			for (int i = index; i < lastIndex; i++) {
+				DockableWrapper panel = panels.get(index);
+
+				removePanel(panel);
+				addPanel(panel);
+			}
+
+			tabs.setSelectedIndex(index);
+		}
 	}
 
 	@Override

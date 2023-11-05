@@ -49,6 +49,8 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 	 */
 	private final Window referenceDockingWindow;
 
+	private boolean overTab = false;
+
 	/**
 	 * create a new DockingUtilsFrame with a frame and its root panel
 	 *
@@ -123,6 +125,16 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 	public void setFloating(Dockable floating) {
 		handles.setFloating(floating);
 		overlay.setFloating(floating);
+	}
+
+	public void setOverTab(boolean overTab, Rectangle rect, boolean last) {
+		this.overTab = overTab;
+
+		overlay.setTargetDockableRegion(DockingRegion.CENTER);
+		handles.overTab = overTab;
+		overlay.overTab = overTab;
+		overlay.targetTab = rect;
+		overlay.beforeTab = !last;
 	}
 
 	/**
@@ -204,7 +216,9 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		super.paint(g);
 
 		// paint the handles and overlays. nothing is painted if they aren't visible
-		handles.paint(g);
+		if (!overTab) {
+			handles.paint(g);
+		}
 		overlay.paint(g);
 	}
 }

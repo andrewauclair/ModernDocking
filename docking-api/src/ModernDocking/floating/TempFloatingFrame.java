@@ -33,7 +33,8 @@ import java.awt.*;
  */
 public class TempFloatingFrame extends JFrame {
 	private static final int BORDER_SIZE = 2;
-
+	private final JPanel panel;
+	GridBagConstraints gbc = new GridBagConstraints();
 	/**
 	 * Create a new temporary floating frame to contain a dockable that has started to float
 	 *
@@ -61,9 +62,9 @@ public class TempFloatingFrame extends JFrame {
 		setLocation(newPoint);
 
 		// put the dockable in a panel with a border around it to make it look better
-		JPanel panel = new JPanel(new GridBagLayout());
+		panel = new JPanel(new GridBagLayout());
 
-		GridBagConstraints gbc = new GridBagConstraints();
+//		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.gridy = 0;
 		gbc.gridx = 0;
@@ -79,5 +80,12 @@ public class TempFloatingFrame extends JFrame {
 		add(panel, BorderLayout.CENTER);
 
 		setVisible(true);
+	}
+
+	public void remove(DockingAPI docking, Dockable dockable) {
+		panel.remove(DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel());
+	}
+	public void readd(DockingAPI docking, Dockable dockable) {
+		panel.add(DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel(), gbc);
 	}
 }

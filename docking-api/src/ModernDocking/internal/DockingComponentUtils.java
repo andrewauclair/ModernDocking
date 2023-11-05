@@ -157,6 +157,33 @@ public class DockingComponentUtils {
 		return ((DisplayPanel) component).getWrapper().getDockable();
 	}
 
+	public static JTabbedPane findTabbedPaneAtPos(Point screenPos, Window window) {
+		// window is null so there's no dockable to find
+		if (window == null) {
+			return null;
+		}
+
+		Point framePoint = new Point(screenPos);
+		SwingUtilities.convertPointFromScreen(framePoint, window);
+
+		Component component = SwingUtilities.getDeepestComponentAt(window, framePoint.x, framePoint.y);
+
+		// no component found at the position, return null
+		if (component == null) {
+			return null;
+		}
+
+		while (!(component instanceof JTabbedPane) && component.getParent() != null) {
+			component = component.getParent();
+		}
+
+		// didn't find a Dockable, return null
+		if (!(component instanceof JTabbedPane)) {
+			return null;
+		}
+		return (JTabbedPane) component;
+	}
+
 	/**
 	 * find a docking panel at a given screen position
 	 *
