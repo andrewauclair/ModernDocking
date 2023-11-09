@@ -6,7 +6,7 @@ plugins {
 	id "com.github.ben-manes.versions" version "0.46.0"
 }
 
-allprojects {
+java {
 	sourceCompatibility = JavaVersion.VERSION_1_9
 	targetCompatibility = JavaVersion.VERSION_1_9
 }
@@ -28,9 +28,11 @@ java {
 	withSourcesJar()
 }
 
-group = "io.github.andrewauclair"
-archivesBaseName = "modern-docking-api"
-version = "0.10.0-SNAPSHOT"
+base {
+	group = "io.github.andrewauclair"
+	archivesBaseName = "modern-docking-api"
+	version = "0.10.0-SNAPSHOT"
+}
 
 publishing {
 	publications {
@@ -76,8 +78,6 @@ publishing {
 			credentials {
 				username = System.getenv("MAVEN_USERNAME")
 				password = System.getenv("MAVEN_PASSWORD")
-
-				println System.getenv("MAVEN_USERNAME")
 			}
 
 			url = version.endsWith('SNAPSHOT') ?

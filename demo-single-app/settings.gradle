@@ -1,9 +1,0 @@
-rootProject.name = 'single-demo'
-
-include ':docking-api'
-include ':docking-ui'
-include ':docking-single-app'
-
-project(':docking-api').projectDir = file('../docking-api')
-project(':docking-ui').projectDir = file('../docking-ui')
-project(':docking-single-app').projectDir = file('../docking-single-app')

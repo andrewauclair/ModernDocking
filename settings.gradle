@@ -1,6 +1,8 @@
 rootProject.name = 'root'
 
 include ':docking-api'
+include ':docking-ui'
 include ':docking-single-app'
 include ':docking-multi-app'
-include ':docking-ui'
+include ':demo-single-app'
+include ':demo-multi-app'
