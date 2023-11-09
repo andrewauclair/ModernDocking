@@ -74,12 +74,8 @@ publishing {
 	repositories {
 		maven {
 			credentials {
-				if (project.hasProperty('sonatypeUsername')) {
-					username = "$sonatypeUsername"
-				}
-				if (project.hasProperty('sonatypePassword')) {
-					password = "$sonatypePassword"
-				}
+				username = System.getenv("MAVEN_USERNAME")
+				password = System.getenv("MAVEN_PASSWORD")
 			}
 
 			url = version.endsWith('SNAPSHOT') ?

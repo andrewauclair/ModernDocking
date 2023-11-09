@@ -81,8 +81,8 @@ publishing {
 	repositories {
 		maven {
 			credentials {
-				username = System.getEnv("GITHUB_ACTOR")
-				password = System.getEnv("GITHUB_TOKEN")
+				username = System.getenv("MAVEN_USERNAME")
+				password = System.getenv("MAVEN_PASSWORD")
 			}
 
 			url = version.endsWith('SNAPSHOT') ?

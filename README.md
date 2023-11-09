@@ -53,7 +53,7 @@ Modern Docking snapshot binaries are available on
 [Sonatype OSSRH](https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/andrewauclair/).
 To access the latest snapshot, change the Modern Docking version in your dependencies
 to `<version>-SNAPSHOT` (e.g. `0.1.0-SNAPSHOT`) and add the repository
-`https://oss.sonatype.org/content/repositories/snapshots/` to your build (see
+`https://s01.oss.sonatype.org/content/repositories/snapshots/` to your build (see
 [Maven](https://maven.apache.org/guides/mini/guide-multiple-repositories.html)
 and
 [Gradle](https://docs.gradle.org/current/userguide/declaring_repositories.html#sec:declaring_custom_repository)
