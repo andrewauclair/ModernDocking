@@ -539,6 +539,22 @@ public class DockingAPI {
         undock(internals.getDockable(persistentID));
     }
 
+    public void undock(JPanel panel) {
+        if (panel instanceof DisplayPanel) {
+            DockableWrapper wrapper = ((DisplayPanel) panel).getWrapper();
+
+            undock(wrapper.getDockable());
+        }
+        else {
+            DockedTabbedPanel tabs = (DockedTabbedPanel) panel;
+
+            for (DockableWrapper wrapper : tabs.getDockables()) {
+                wrapper.setWindow(null);
+
+                DockingListeners.fireUndockedEvent(wrapper.getDockable());
+            }
+        }
+    }
     /**
      * undock a dockable
      *
@@ -551,6 +567,8 @@ public class DockingAPI {
         }
 
         Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
+
+        Objects.requireNonNull(window);
 
         RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
 
