@@ -26,6 +26,7 @@ import ModernDocking.DockableStyle;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.internal.DisplayPanel;
 import ModernDocking.internal.DockedSimplePanel;
 import ModernDocking.internal.DockingInternal;
 import ModernDocking.internal.DockingPanel;
@@ -126,8 +127,8 @@ public class DockingOverlay {
 
 	// check if the floating dockable is allowed to dock to this region
 	private boolean isRegionAllowed(DockingRegion region) {
-		if (floating instanceof DockedSimplePanel) {
-			DockedSimplePanel panel = (DockedSimplePanel) this.floating;
+		if (floating instanceof DisplayPanel) {
+			DisplayPanel panel = (DisplayPanel) this.floating;
 			Dockable floating = panel.getWrapper().getDockable();
 
 			if (floating.getStyle() == DockableStyle.BOTH) {
