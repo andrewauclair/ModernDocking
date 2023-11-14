@@ -206,7 +206,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		CustomTabbedPane tabbedPane = (CustomTabbedPane) DockingComponentUtils.findTabbedPaneAtPos(mousePosOnScreen, currentTopWindow);
 
 		if (activeUtilsFrame != null) {
-			boolean overTab = dockable == null && tabbedPane != null;
+			boolean overTab = dockable == null && tabbedPane != null && source instanceof DisplayPanel;
 
 			if (overTab) {
 				int targetTabIndex = tabbedPane.getTargetTabIndex(mousePosOnScreen);
@@ -395,13 +395,17 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 			if (activeUtilsFrame != null && activeUtilsFrame.isDockingToPin()) {
 				docking.unpinDockable(floatingDockable.getDockable(), activeUtilsFrame.getToolbarLocation(), currentTopWindow, root);
-			} else if (root != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToRoot()) {
+			}
+			else if (root != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToRoot()) {
 				docking.dock(floatingDockable.getDockable(), currentTopWindow, region, 0.25);
-			} else if (floatingDockable.getDockable().isLimitedToRoot() && floatingDockable.getRoot() != root) {
+			}
+			else if (floatingDockable.getDockable().isLimitedToRoot() && floatingDockable.getRoot() != root) {
 				docking.getDockingState().restoreWindowLayout(originalWindow, windowLayout);
-			} else if (dockableAtPos != null && currentTopWindow != null && dockingPanel != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToDockable()) {
+			}
+			else if (dockableAtPos != null && currentTopWindow != null && dockingPanel != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToDockable()) {
 				docking.dock(floatingDockable.getDockable(), dockableAtPos, region);
-			} else if (root != null && region != DockingRegion.CENTER && activeUtilsFrame == null) {
+			}
+			else if (root != null && region != DockingRegion.CENTER && activeUtilsFrame == null) {
 				docking.dock(floatingDockable.getDockable(), currentTopWindow, region);
 			}
 			else if (!floatingDockable.getDockable().isFloatingAllowed()) {
@@ -457,7 +461,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			for (DockableWrapper dockable : dockables) {
 				if (first) {
 					if (dockableAtPos != null && currentTopWindow != null && dockingPanel != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToDockable()) {
-//						tabs.removePanel(dockable);
 						docking.dock(dockable.getDockable(), dockableAtPos, region);
 					}
 					else {
@@ -466,7 +469,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 					firstDockable = dockable.getDockable();
 				}
 				else {
-//					tabs.removePanel(dockable);
 					docking.dock(dockable.getDockable(), firstDockable, DockingRegion.CENTER);
 				}
 				first = false;
