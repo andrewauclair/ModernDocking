@@ -131,7 +131,7 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 	public void setOverTab(boolean overTab, Rectangle rect, boolean last) {
 		this.overTab = overTab;
 
-		overlay.setTargetDockableRegion(DockingRegion.CENTER);
+		overlay.setTargetDockableRegion(overTab ? DockingRegion.CENTER : null);
 		handles.overTab = overTab;
 		overlay.overTab = overTab;
 		overlay.targetTab = rect;
