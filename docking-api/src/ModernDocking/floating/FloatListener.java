@@ -384,9 +384,11 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 				docking.dock(floatingDockable.getDockable(), dockableAtPos, region);
 			} else if (root != null && region != DockingRegion.CENTER && activeUtilsFrame == null) {
 				docking.dock(floatingDockable.getDockable(), currentTopWindow, region);
-			} else if (!floatingDockable.getDockable().isFloatingAllowed()) {
+			}
+			else if (!floatingDockable.getDockable().isFloatingAllowed()) {
 				docking.getDockingState().restoreWindowLayout(originalWindow, windowLayout);
-			} else if (dockableAtPos == null) {
+			}
+			else if (dockableAtPos == null && root != null) {
 				// we're inserting at a specific position in a tabbed pane
 				CustomTabbedPane tabbedPane = (CustomTabbedPane) DockingComponentUtils.findTabbedPaneAtPos(point, currentTopWindow);
 
@@ -421,7 +423,8 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 					parent.dockAtIndex(floatingDockable.getDockable(), targetTabIndex);
 				}
-			} else {
+			}
+			else {
 				new FloatingFrame(docking, floatingDockable.getDockable(), floatingFrame);
 			}
 		}
