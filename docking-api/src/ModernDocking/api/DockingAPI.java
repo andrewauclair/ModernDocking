@@ -15,6 +15,7 @@ import ModernDocking.ui.ToolbarLocation;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * Single instance of the docking framework. Useful when a single JVM is to host multiple instances of an application
@@ -548,11 +549,34 @@ public class DockingAPI {
         else {
             DockedTabbedPanel tabs = (DockedTabbedPanel) panel;
 
-            for (DockableWrapper wrapper : tabs.getDockables()) {
+            List<DockableWrapper> dockables = new ArrayList<>(tabs.getDockables());
+            Window window = dockables.get(0).getWindow();
+
+            Objects.requireNonNull(window);
+
+            RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
+
+            Objects.requireNonNull(root);
+
+            for (DockableWrapper wrapper : dockables) {
                 wrapper.setWindow(null);
+                wrapper.setParent(null);
 
                 DockingListeners.fireUndockedEvent(wrapper.getDockable());
             }
+
+            // make sure that can dispose this window, and we're not floating the last dockable in it
+            if (canDisposeWindow(window) && root.getPanel() == tabs) {
+//                deregisterDockingPanel(window);
+//                window.dispose();
+//                window.setVisible(false);
+            }
+
+            if (root.getPanel() == tabs) {
+                root.setPanel(null);
+            }
+
+            appState.persist();
         }
     }
     /**
@@ -572,6 +596,8 @@ public class DockingAPI {
 
         RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
 
+        Objects.requireNonNull(root);
+
         DockableWrapper wrapper = internals.getWrapper(dockable);
 
         wrapper.setRoot(root);
@@ -589,7 +615,7 @@ public class DockingAPI {
         DockingListeners.fireUndockedEvent(dockable);
 
         // make sure that can dispose this window, and we're not floating the last dockable in it
-        if (window != null && root != null && canDisposeWindow(window) && root.isEmpty() && !FloatListener.isFloating) {
+        if (canDisposeWindow(window) && root.isEmpty() && !FloatListener.isFloating()) {
             deregisterDockingPanel(window);
             window.dispose();
         }
@@ -597,7 +623,7 @@ public class DockingAPI {
         appState.persist();
 
         // force this dockable to dock again if we're not floating it
-        if (!dockable.isClosable() && !FloatListener.isFloating && !deregistering) {
+        if (!dockable.isClosable() && !FloatListener.isFloating() && !deregistering) {
             dock(dockable, mainWindow);
         }
     }

@@ -390,7 +390,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			return;
 		}
 
-		if (selectedTab != -1 && !FloatListener.isFloating) {
+		if (selectedTab != -1 && !FloatListener.isFloating()) {
 			DockingListeners.fireHiddenEvent(panels.get(selectedTab).getDockable());
 		}
 		selectedTab = tabs.getSelectedIndex();

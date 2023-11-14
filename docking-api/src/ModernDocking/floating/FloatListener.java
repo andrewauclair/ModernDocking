@@ -36,7 +36,9 @@ import java.awt.Dialog.ModalityType;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,7 +48,11 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 	/**
 	 * Flag indicating if there is a dockable currently floating
 	 */
-	public static boolean isFloating = false;
+	private static boolean isFloating = false;
+
+	public static boolean isFloating() { return isFloating; }
+
+	private static boolean isOverTab = false;
 
 	// current floating dockable
 //	private final JPanel floatingDockable;
@@ -104,23 +110,19 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 						int targetTabIndex = tabs.getTargetTabIndex(mousePos);
 
 						if (targetTabIndex != -1) {
-							System.out.println("Drag allowed");
 							floatingPanel = tabs.getDockables().get(targetTabIndex).getDisplayPanel();
 						}
 						else if (tabs.isDraggingFromTabGutter(mousePos)) {
-							System.out.println("Drag allowed");
 							floatingPanel = tabs;
 						}
 						else {
-
 							DockingHeaderUI headerUI = tabs.getDockables().get(tabs.getSelectedTabIndex()).getHeaderUI();
 							JPanel panel = (JPanel) headerUI;
+
 							if (panel.contains(mousePos)) {
 								floatingPanel = tabs.getDockables().get(tabs.getSelectedTabIndex()).getDisplayPanel();
-								System.out.println("Drag allowed");
 							}
 							else {
-								System.out.println("Drag not allowed");
 								return;
 							}
 						}
@@ -169,8 +171,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 	public static void deregisterDockingWindow(Window window) {
 		utilFrames.remove(window);
 	}
-
-	boolean isInTabbedPane = false;
 
 	private void updateFramePosition(Point mousePosOnScreen) {
 		// update the frames position to our mouse position
@@ -239,10 +239,14 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 				activeUtilsFrame.update(mousePosOnScreen);
 				floatingFrame.setVisible(false);
 			}
-			else {
+			else if (isOverTab) {
 				activeUtilsFrame.setOverTab(false, null, false);
 				floatingFrame.setVisible(true);
+
+				reorderWindows();
 			}
+
+			isOverTab = overTab;
 		}
 
 		if (tabbedPane != null && tabbedPane.getSelectedComponent() instanceof DisplayPanel) {
@@ -271,27 +275,31 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 				activeUtilsFrame.update(mousePos);
 				activeUtilsFrame.setActive(true);
 
-				// Set all of these as invokeLater to force the order they happen in
-				SwingUtilities.invokeLater(() -> {
-					// check that the current top frame still exists since we invoked later and time might have passed
-					if (currentTopWindow != null) {
-						currentTopWindow.toFront();
-					}
-				});
-				SwingUtilities.invokeLater(() -> {
-					// check that the floating frame still exists since we invoked later and time might have passed
-					if (floatingFrame != null) {
-						floatingFrame.toFront();
-					}
-				});
-				SwingUtilities.invokeLater(() -> {
-					// check that the utils frame still exists since we invoked later and time might have passed
-					if (activeUtilsFrame != null) {
-						activeUtilsFrame.toFront();
-					}
-				});
+				reorderWindows();
 			}
 		}
+	}
+
+	private void reorderWindows() {
+		// Set all of these as invokeLater to force the order they happen in
+		SwingUtilities.invokeLater(() -> {
+			// check that the current top frame still exists since we invoked later and time might have passed
+			if (currentTopWindow != null) {
+				currentTopWindow.toFront();
+			}
+		});
+		SwingUtilities.invokeLater(() -> {
+			// check that the floating frame still exists since we invoked later and time might have passed
+			if (floatingFrame != null) {
+				floatingFrame.toFront();
+			}
+		});
+		SwingUtilities.invokeLater(() -> {
+			// check that the utils frame still exists since we invoked later and time might have passed
+			if (activeUtilsFrame != null) {
+				activeUtilsFrame.toFront();
+			}
+		});
 	}
 
 	public void mouseDragStarted(Point point) {
@@ -304,8 +312,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		dragOffset.x = Math.max(5, dragOffset.x);
 
 		currentTargetWindow = null;
-//		originalWindow = DockingComponentUtils.findWindowForDockable(docking, floatingDockable);
-//		originalWindow = SwingUtilities.windowForComponent(floatingDockable);
 
 		// make sure we are still using the mouse press point, not the current mouse position which might not be over the frame anymore
 		Point mousePos = new Point(point);
@@ -317,14 +323,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		}
 		else {
 			originalWindow = ((DockedTabbedPanel) source).getDockables().get(0).getWindow();
-
-//			floatingPanel = source;
-//
-//			int targetTabIndex = ((DockedTabbedPanel) source).getTargetTabIndex(point);
-//
-//			if (targetTabIndex != -1) {
-//				floatingPanel = ((DockedTabbedPanel) source).getDockables().get(targetTabIndex).getDisplayPanel();
-//			}
 		}
 		windowLayout = docking.getDockingState().getWindowLayout(originalWindow);
 
@@ -426,6 +424,28 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			}
 			else {
 				new FloatingFrame(docking, floatingDockable.getDockable(), floatingFrame);
+			}
+		}
+		else {
+			DockedTabbedPanel tabs = (DockedTabbedPanel) floatingPanel;
+			List<DockableWrapper> dockables = new ArrayList<>(tabs.getDockables());
+
+			boolean first = true;
+			Dockable firstDockable = null;
+			for (DockableWrapper dockable : dockables) {
+				if (first) {
+					if (dockableAtPos != null && currentTopWindow != null && dockingPanel != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToDockable()) {
+						docking.dock(dockable.getDockable(), dockableAtPos, region);
+					}
+					else {
+						new FloatingFrame(docking, dockable.getDockable(), floatingFrame);
+					}
+					firstDockable = dockable.getDockable();
+				}
+				else {
+					docking.dock(dockable.getDockable(), firstDockable, DockingRegion.CENTER);
+				}
+				first = false;
 			}
 		}
 
