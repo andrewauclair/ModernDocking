@@ -550,33 +550,37 @@ public class DockingAPI {
             DockedTabbedPanel tabs = (DockedTabbedPanel) panel;
 
             List<DockableWrapper> dockables = new ArrayList<>(tabs.getDockables());
-            Window window = dockables.get(0).getWindow();
 
-            Objects.requireNonNull(window);
-
-            RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
-
-            Objects.requireNonNull(root);
-
-            for (DockableWrapper wrapper : dockables) {
-                wrapper.setWindow(null);
-                wrapper.setParent(null);
-
-                DockingListeners.fireUndockedEvent(wrapper.getDockable());
+            for (DockableWrapper dockable : dockables) {
+                undock(dockable.getDockable());
             }
-
-            // make sure that can dispose this window, and we're not floating the last dockable in it
-            if (canDisposeWindow(window) && root.getPanel() == tabs) {
-//                deregisterDockingPanel(window);
-//                window.dispose();
-//                window.setVisible(false);
-            }
-
-            if (root.getPanel() == tabs) {
-                root.setPanel(null);
-            }
-
-            appState.persist();
+//            Window window = dockables.get(0).getWindow();
+//
+//            Objects.requireNonNull(window);
+//
+//            RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
+//
+//            Objects.requireNonNull(root);
+//
+//            for (DockableWrapper wrapper : dockables) {
+//                wrapper.setWindow(null);
+//                wrapper.setParent(null);
+//
+//                DockingListeners.fireUndockedEvent(wrapper.getDockable());
+//            }
+//
+//            // make sure that can dispose this window, and we're not floating the last dockable in it
+//            if (canDisposeWindow(window) && root.getPanel() == tabs) {
+////                deregisterDockingPanel(window);
+////                window.dispose();
+////                window.setVisible(false);
+//            }
+//
+//            if (root.getPanel() == tabs) {
+//                root.setPanel(null);
+//            }
+//
+//            appState.persist();
         }
     }
     /**

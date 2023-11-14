@@ -328,9 +328,30 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 		RootDockingPanelAPI currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
 
-		floatingFrame = new TempFloatingFrame(docking, floatingPanel, source);
+		if (source instanceof DisplayPanel) {
+			floatingFrame = new TempFloatingFrame(docking, floatingPanel, source);
 
-		docking.undock(floatingPanel);
+			docking.undock(floatingPanel);
+		}
+		else {
+			DockedTabbedPanel tabs = (DockedTabbedPanel) floatingPanel;
+
+			ArrayList<DockableWrapper> wrappers = new ArrayList<>(tabs.getDockables());
+
+			floatingFrame = new TempFloatingFrame(docking, floatingPanel, source);
+
+			docking.undock(floatingPanel);
+
+			for (DockableWrapper wrapper : wrappers) {
+				// undock does not remove the last panel
+				tabs.removePanel(wrapper);
+			}
+
+			for (DockableWrapper wrapper : wrappers) {
+				tabs.addPanel(wrapper);
+				wrapper.setParent(null); // we don't want this to count as docked
+			}
+		}
 
 		DockingComponentUtils.removeIllegalFloats(docking, originalWindow);
 
@@ -432,9 +453,11 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 			boolean first = true;
 			Dockable firstDockable = null;
+
 			for (DockableWrapper dockable : dockables) {
 				if (first) {
 					if (dockableAtPos != null && currentTopWindow != null && dockingPanel != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToDockable()) {
+//						tabs.removePanel(dockable);
 						docking.dock(dockable.getDockable(), dockableAtPos, region);
 					}
 					else {
@@ -443,6 +466,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 					firstDockable = dockable.getDockable();
 				}
 				else {
+//					tabs.removePanel(dockable);
 					docking.dock(dockable.getDockable(), firstDockable, DockingRegion.CENTER);
 				}
 				first = false;
