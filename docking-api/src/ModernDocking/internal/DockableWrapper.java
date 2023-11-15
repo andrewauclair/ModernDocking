@@ -24,14 +24,12 @@ package ModernDocking.internal;
 import ModernDocking.Dockable;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
-import ModernDocking.floating.DragListener;
 import ModernDocking.floating.FloatListener;
 import ModernDocking.settings.Settings;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
 import ModernDocking.ui.HeaderModel;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,8 +46,6 @@ public class DockableWrapper {
 	private final Dockable dockable;
 	private final DockingAPI docking;
 
-	private FloatListener floatListener;
-	private DragListener dragListener;
 	private final DockingHeaderUI headerUI;
 
 	private final DisplayPanel displayPanel;
@@ -74,8 +70,6 @@ public class DockableWrapper {
 		headerUI = dockable.createHeaderUI(headerController, headerModel);
 		headerController.setUI(headerUI);
 
-//		floatListener = new FloatListener(docking, this, (JComponent) headerUI);
-//		dragListener = new DragListener((Component) headerUI);
 		displayPanel = new DisplayPanel(this);
 	}
 
@@ -105,10 +99,6 @@ public class DockableWrapper {
 	public void setParent(DockingPanel parent) {
 		this.parent = parent;
 
-		if (parent instanceof DockedTabbedPanel && Settings.alwaysDisplayTabsMode()) {
-//			floatListener = new FloatListener(docking, this, ((DockedTabbedPanel) parent).getTabForDockable(this));
-		}
-
 		displayPanel.parentChanged();
 	}
 
@@ -124,16 +114,8 @@ public class DockableWrapper {
 	/**
 	 * Remove any floating listeners that this wrapper has added to the dockables header controller
 	 */
-	public void removedListeners() {
-		if (floatListener != null) {
-			headerController.removeListeners();
-
-			// make sure we don't get a stackoverflow
-			FloatListener listener = floatListener;
-			floatListener = null;
-
-			listener.removeListeners();
-		}
+	public void removeListeners() {
+		headerController.removeListeners();
 	}
 
 	/**

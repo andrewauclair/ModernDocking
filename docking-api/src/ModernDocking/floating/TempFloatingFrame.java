@@ -38,18 +38,8 @@ public class TempFloatingFrame extends JFrame {
 	private final int selectedIndex;
 
 	public TempFloatingFrame(DockableWrapper dockable, JComponent dragSrc, Dimension size) {
-		JPanel panel = new JPanel(new GridBagLayout());
-
 		dockables = Collections.emptyList();
 		selectedIndex = 0;
-
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(0, 0, 0, 0);
-		gbc.gridy = 0;
-		gbc.gridx = 0;
-		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
-		gbc.fill = GridBagConstraints.BOTH;
 
 		build(dockable.getDisplayPanel(), dragSrc, size);
 	}
@@ -57,16 +47,6 @@ public class TempFloatingFrame extends JFrame {
 	public TempFloatingFrame(List<DockableWrapper> dockables, int selectedIndex, JComponent dragSrc, Dimension size) {
 		this.dockables = dockables;
 		this.selectedIndex = selectedIndex;
-		JPanel panel = new JPanel(new GridBagLayout());
-
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(0, 0, 0, 0);
-		gbc.gridy = 0;
-		gbc.gridx = 0;
-		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
-		gbc.fill = GridBagConstraints.BOTH;
-
 
 		JTabbedPane tabs = new JTabbedPane();
 
@@ -85,8 +65,7 @@ public class TempFloatingFrame extends JFrame {
 		}
 		tabs.setSelectedIndex(selectedIndex);
 
-		panel.add(tabs, gbc);
-		build(panel, dragSrc, size);
+		build(tabs, dragSrc, size);
 	}
 
 	/**
@@ -95,14 +74,13 @@ public class TempFloatingFrame extends JFrame {
 	 * @param dockable Dockable in the floating frame
 	 * @param dragSrc The source of the drag
 	 */
-	private void build(JPanel dockable, JComponent dragSrc, Dimension size) {
+	private void build(JComponent dockable, JComponent dragSrc, Dimension size) {
 		setLayout(new BorderLayout()); // keep it simple, just use border layout
 		setUndecorated(true); // hide the frame
 		setType(Type.UTILITY); // keeps the frame from appearing in the task bar frames
 		setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR)); //  this frame is only showing while moving
 
 		// size the frame to the dockable size
-//		Dimension size = dockable.getSize();
 		setSize(size);
 
 		// set the frame position to match the current dockable position
@@ -116,18 +94,23 @@ public class TempFloatingFrame extends JFrame {
 		setLocation(newPoint);
 
 		// put the dockable in a panel with a border around it to make it look better
-//		JPanel panel = new JPanel(new GridBagLayout());
+		JPanel panel = new JPanel(new GridBagLayout());
 
-
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(0, 0, 0, 0);
+		gbc.gridy = 0;
+		gbc.gridx = 0;
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
+		gbc.fill = GridBagConstraints.BOTH;
 
 		// set a border around the panel in the component focus color. this lets us distinguish the dockable panel from other windows.
 		Color color = UIManager.getColor("Component.focusColor");
-		dockable.setBorder(BorderFactory.createLineBorder(color, BORDER_SIZE));
-//		panel.add(dockable, gbc);
+		panel.setBorder(BorderFactory.createLineBorder(color, BORDER_SIZE));
+		panel.add(dockable, gbc);
 
-		add(dockable, BorderLayout.CENTER);
+		add(panel, BorderLayout.CENTER);
 
-//		pack();
 		setVisible(true);
 	}
 

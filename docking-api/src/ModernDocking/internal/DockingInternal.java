@@ -88,7 +88,7 @@ public class DockingInternal {
 	 * @param dockable The dockable to deregister
 	 */
 	public void deregisterDockable(Dockable dockable) {
-		getWrapper(dockable).removedListeners();
+		getWrapper(dockable).removeListeners();
 		dockables.remove(dockable.getPersistentID());
 	}
 

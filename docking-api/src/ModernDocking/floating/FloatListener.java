@@ -54,7 +54,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 	private static boolean isOverTab = false;
 
 	// current floating dockable
-//	private final JPanel floatingDockable;
 	private final JPanel source;
 	private JPanel floatingPanel;
 
@@ -159,8 +158,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 	public void removeListeners() {
 		dragSource.removeDragSourceMotionListener(this);
-
-//		floatingDockable.removedListeners();
 	}
 
 	public static void registerDockingWindow(DockingAPI docking, Window window, RootDockingPanelAPI root) {
@@ -412,7 +409,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 					int targetTabIndex = tabbedPane.getTargetTabIndex(point);
 
 					Rectangle boundsAt;
-					boolean last = false;
+
 					if (targetTabIndex != -1) {
 						boundsAt = tabbedPane.getBoundsAt(targetTabIndex);
 
@@ -432,7 +429,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 						boundsAt.x = p.x;
 						boundsAt.y = p.y;
 						boundsAt.x += boundsAt.width;
-						last = true;
 					}
 
 					parent.dockAtIndex(floatingDockable.getDockable(), targetTabIndex);
