@@ -15,6 +15,7 @@ import ModernDocking.ui.ToolbarLocation;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * Single instance of the docking framework. Useful when a single JVM is to host multiple instances of an application
@@ -552,7 +553,11 @@ public class DockingAPI {
 
         Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
 
+        Objects.requireNonNull(window);
+
         RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
+
+        Objects.requireNonNull(root);
 
         DockableWrapper wrapper = internals.getWrapper(dockable);
 
@@ -571,7 +576,7 @@ public class DockingAPI {
         DockingListeners.fireUndockedEvent(dockable);
 
         // make sure that can dispose this window, and we're not floating the last dockable in it
-        if (window != null && root != null && canDisposeWindow(window) && root.isEmpty() && !FloatListener.isFloating) {
+        if (canDisposeWindow(window) && root.isEmpty() && !FloatListener.isFloating()) {
             deregisterDockingPanel(window);
             window.dispose();
         }
@@ -579,7 +584,7 @@ public class DockingAPI {
         appState.persist();
 
         // force this dockable to dock again if we're not floating it
-        if (!dockable.isClosable() && !FloatListener.isFloating && !deregistering) {
+        if (!dockable.isClosable() && !FloatListener.isFloating() && !deregistering) {
             dock(dockable, mainWindow);
         }
     }

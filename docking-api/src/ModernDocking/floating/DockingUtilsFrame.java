@@ -25,6 +25,7 @@ import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.internal.DockingPanel;
 import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
@@ -122,7 +123,7 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 	 *
 	 * @param floating Floating dockable
 	 */
-	public void setFloating(Dockable floating) {
+	public void setFloating(JPanel floating) {
 		handles.setFloating(floating);
 		overlay.setFloating(floating);
 	}
@@ -130,7 +131,7 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 	public void setOverTab(boolean overTab, Rectangle rect, boolean last) {
 		this.overTab = overTab;
 
-		overlay.setTargetDockableRegion(DockingRegion.CENTER);
+		overlay.setTargetDockableRegion(overTab ? DockingRegion.CENTER : null);
 		handles.overTab = overTab;
 		overlay.overTab = overTab;
 		overlay.targetTab = rect;

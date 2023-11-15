@@ -35,9 +35,11 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.IntConsumer;
+import java.util.stream.Collectors;
 
 /**
  * DockingPanel that has a JTabbedPane inside its center
@@ -48,7 +50,11 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 */
 	private final List<DockableWrapper> panels = new ArrayList<>();
 
-	private final JTabbedPane tabs = new CustomTabbedPane();
+//	private final List<FloatListener> floatListeners = new ArrayList<>();
+
+	private final FloatListener floatListener;
+
+	private final CustomTabbedPane tabs = new CustomTabbedPane();
 	private final DockingAPI docking;
 
 	/**
@@ -87,6 +93,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		add(tabs, BorderLayout.CENTER);
 
 		addPanel(dockable);
+
+		floatListener = new FloatListener(docking, this, tabs);
 	}
 
 	public static void setSettingsIcon(Icon icon) {
@@ -175,6 +183,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			tabs.setTabPlacement(JTabbedPane.BOTTOM);
 		}
 
+//		DockedSimplePanel panel = new DockedSimplePanel(docking, dockable);
 		panels.add(dockable);
 		tabs.add(dockable.getDockable().getTabText(), dockable.getDisplayPanel());
 
@@ -202,6 +211,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		}
 
 		dockable.setParent(this);
+
+//		floatListeners.add(new FloatListener(docking, panel, (Component) dockable.getHeaderUI()));
 	}
 
 	/**
@@ -211,6 +222,11 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 */
 	public void removePanel(DockableWrapper dockable) {
 		if (panels.contains(dockable)) {
+			int index = panels.indexOf(dockable);
+
+//			floatListeners.get(index).removeListeners();
+//			floatListeners.remove(index);
+
 			tabs.remove(dockable.getDisplayPanel());
 			panels.remove(dockable);
 
@@ -224,7 +240,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 * @return List of persistent IDs of dockable tabs
 	 */
 	public List<DockableWrapper> getDockables() {
-		return new ArrayList<>(panels);
+		return Collections.unmodifiableList(panels);
 	}
 
 	@Override
@@ -362,6 +378,10 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		return panels.get(tabs.getSelectedIndex()).getDockable().getPersistentID();
 	}
 
+	public int getSelectedTabIndex() {
+		return tabs.getSelectedIndex();
+	}
+
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		docking.getAppState().persist();
@@ -370,7 +390,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			return;
 		}
 
-		if (selectedTab != -1 && !FloatListener.isFloating) {
+		if (selectedTab != -1 && !FloatListener.isFloating()) {
 			DockingListeners.fireHiddenEvent(panels.get(selectedTab).getDockable());
 		}
 		selectedTab = tabs.getSelectedIndex();
@@ -415,5 +435,16 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 				}
 			}
 		}
+	}
+
+	public int getTargetTabIndex(Point point) {
+		return tabs.getTargetTabIndex(point);
+	}
+
+	public boolean isDraggingFromTabGutter(Point point) {
+		Rectangle boundsAt = tabs.getBoundsAt(0);
+
+		return boundsAt.y <= point.y && (boundsAt.y + boundsAt.height) >= point.y;
+
 	}
 }

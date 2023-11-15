@@ -26,7 +26,10 @@ import ModernDocking.DockableStyle;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.internal.DisplayPanel;
+import ModernDocking.internal.DockedSimplePanel;
 import ModernDocking.internal.DockingInternal;
+import ModernDocking.internal.DockingPanel;
 import ModernDocking.ui.DockingSettings;
 import ModernDocking.ui.ToolbarLocation;
 
@@ -44,7 +47,7 @@ public class DockingOverlay {
 	private final RootDockingPanelAPI targetRoot;
 
 	// the dockable that is currently floating in its own undecoarted frame
-	private Dockable floating;
+	private JPanel floating;
 
 	// the target dockable that the mouse is currently over, could be null
 	private Dockable targetDockable;
@@ -109,7 +112,7 @@ public class DockingOverlay {
 	 *
 	 * @param dockable Current floating dockable
 	 */
-	public void setFloating(Dockable dockable) {
+	public void setFloating(JPanel dockable) {
 		floating = dockable;
 	}
 
@@ -124,13 +127,19 @@ public class DockingOverlay {
 
 	// check if the floating dockable is allowed to dock to this region
 	private boolean isRegionAllowed(DockingRegion region) {
-		if (floating.getStyle() == DockableStyle.BOTH) {
-			return true;
+		if (floating instanceof DisplayPanel) {
+			DisplayPanel panel = (DisplayPanel) this.floating;
+			Dockable floating = panel.getWrapper().getDockable();
+
+			if (floating.getStyle() == DockableStyle.BOTH) {
+				return true;
+			}
+			if (region == DockingRegion.NORTH || region == DockingRegion.SOUTH) {
+				return floating.getStyle() == DockableStyle.HORIZONTAL;
+			}
+			return floating.getStyle() == DockableStyle.VERTICAL;
 		}
-		if (region == DockingRegion.NORTH || region == DockingRegion.SOUTH) {
-			return floating.getStyle() == DockableStyle.HORIZONTAL;
-		}
-		return floating.getStyle() == DockableStyle.VERTICAL;
+		return true;
 	}
 
 	public void update(Point screenPos) {

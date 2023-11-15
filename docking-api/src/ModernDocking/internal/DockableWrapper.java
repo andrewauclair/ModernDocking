@@ -24,6 +24,7 @@ package ModernDocking.internal;
 import ModernDocking.Dockable;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.floating.DragListener;
 import ModernDocking.floating.FloatListener;
 import ModernDocking.settings.Settings;
 import ModernDocking.ui.DockingHeaderUI;
@@ -48,6 +49,7 @@ public class DockableWrapper {
 	private final DockingAPI docking;
 
 	private FloatListener floatListener;
+	private DragListener dragListener;
 	private final DockingHeaderUI headerUI;
 
 	private final DisplayPanel displayPanel;
@@ -72,7 +74,8 @@ public class DockableWrapper {
 		headerUI = dockable.createHeaderUI(headerController, headerModel);
 		headerController.setUI(headerUI);
 
-		floatListener = new FloatListener(docking, this, (JComponent) headerUI);
+//		floatListener = new FloatListener(docking, this, (JComponent) headerUI);
+//		dragListener = new DragListener((Component) headerUI);
 		displayPanel = new DisplayPanel(this);
 	}
 
@@ -103,7 +106,7 @@ public class DockableWrapper {
 		this.parent = parent;
 
 		if (parent instanceof DockedTabbedPanel && Settings.alwaysDisplayTabsMode()) {
-			floatListener = new FloatListener(docking, this, ((DockedTabbedPanel) parent).getTabForDockable(this));
+//			floatListener = new FloatListener(docking, this, ((DockedTabbedPanel) parent).getTabForDockable(this));
 		}
 
 		displayPanel.parentChanged();

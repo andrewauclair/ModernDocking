@@ -24,6 +24,7 @@ package ModernDocking.floating;
 import ModernDocking.Dockable;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.internal.DockingInternal;
+import ModernDocking.internal.DockingPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,14 +42,14 @@ public class TempFloatingFrame extends JFrame {
 	 * @param dockable Dockable in the floating frame
 	 * @param dragSrc The source of the drag
 	 */
-	public TempFloatingFrame(DockingAPI docking, Dockable dockable, JComponent dragSrc) {
+	public TempFloatingFrame(DockingAPI docking, JPanel dockable, JComponent dragSrc) {
 		setLayout(new BorderLayout()); // keep it simple, just use border layout
 		setUndecorated(true); // hide the frame
 		setType(Type.UTILITY); // keeps the frame from appearing in the task bar frames
 		setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR)); //  this frame is only showing while moving
 
 		// size the frame to the dockable size
-		Dimension size = DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel().getSize();
+		Dimension size = dockable.getSize();//DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel().getSize();
 		setSize(size);
 
 		// set the frame position to match the current dockable position
@@ -75,7 +76,7 @@ public class TempFloatingFrame extends JFrame {
 		// set a border around the panel in the component focus color. this lets us distinguish the dockable panel from other windows.
 		Color color = UIManager.getColor("Component.focusColor");
 		panel.setBorder(BorderFactory.createLineBorder(color, BORDER_SIZE));
-		panel.add(DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel(), gbc);
+		panel.add(dockable, gbc);
 
 		add(panel, BorderLayout.CENTER);
 

@@ -25,6 +25,7 @@ import ModernDocking.Dockable;
 import ModernDocking.DockableStyle;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.internal.*;
 import ModernDocking.ui.DockingSettings;
 import ModernDocking.ui.ToolbarLocation;
 
@@ -66,7 +67,7 @@ public class DockingHandles {
 	private final RootDockingPanelAPI targetRoot;
 
 	// the dockable that we're currently trying to dock and is floating in a TempFloatingFrame
-	private Dockable floating;
+	private JPanel floating;
 	// the dockable that the mouse is currently over, can be null
 	private Dockable targetDockable = null;
 
@@ -141,7 +142,7 @@ public class DockingHandles {
 	 *
 	 * @param dockable Dockable that is floating
 	 */
-	public void setFloating(Dockable dockable) {
+	public void setFloating(JPanel dockable) {
 		floating = dockable;
 	}
 
@@ -222,16 +223,27 @@ public class DockingHandles {
 	}
 
 	private boolean isRegionAllowed(DockingRegion region) {
-		if (floating.getStyle() == DockableStyle.BOTH) {
-			return true;
+		if (floating instanceof DockedSimplePanel) {
+			DockedSimplePanel panel = (DockedSimplePanel) this.floating;
+			Dockable floating = panel.getWrapper().getDockable();
+
+			if (floating.getStyle() == DockableStyle.BOTH) {
+				return true;
+			}
+			if (region == DockingRegion.NORTH || region == DockingRegion.SOUTH) {
+				return floating.getStyle() == DockableStyle.HORIZONTAL;
+			}
+			return floating.getStyle() == DockableStyle.VERTICAL;
 		}
-		if (region == DockingRegion.NORTH || region == DockingRegion.SOUTH) {
-			return floating.getStyle() == DockableStyle.HORIZONTAL;
-		}
-		return floating.getStyle() == DockableStyle.VERTICAL;
+		return true;
 	}
 
 	private boolean isPinningRegionAllowed(DockingRegion region) {
+		if (floating instanceof DockedTabbedPanel) {
+			return false;
+		}
+		Dockable floating = ((DisplayPanel) this.floating).getWrapper().getDockable();
+
 		if (!floating.isPinningAllowed()) {
 			return false;
 		}
