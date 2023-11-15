@@ -540,49 +540,6 @@ public class DockingAPI {
         undock(internals.getDockable(persistentID));
     }
 
-    public void undock(JPanel panel) {
-        if (panel instanceof DisplayPanel) {
-            DockableWrapper wrapper = ((DisplayPanel) panel).getWrapper();
-
-            undock(wrapper.getDockable());
-        }
-        else {
-            DockedTabbedPanel tabs = (DockedTabbedPanel) panel;
-
-            List<DockableWrapper> dockables = new ArrayList<>(tabs.getDockables());
-
-            for (DockableWrapper dockable : dockables) {
-                undock(dockable.getDockable());
-            }
-//            Window window = dockables.get(0).getWindow();
-//
-//            Objects.requireNonNull(window);
-//
-//            RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
-//
-//            Objects.requireNonNull(root);
-//
-//            for (DockableWrapper wrapper : dockables) {
-//                wrapper.setWindow(null);
-//                wrapper.setParent(null);
-//
-//                DockingListeners.fireUndockedEvent(wrapper.getDockable());
-//            }
-//
-//            // make sure that can dispose this window, and we're not floating the last dockable in it
-//            if (canDisposeWindow(window) && root.getPanel() == tabs) {
-////                deregisterDockingPanel(window);
-////                window.dispose();
-////                window.setVisible(false);
-//            }
-//
-//            if (root.getPanel() == tabs) {
-//                root.setPanel(null);
-//            }
-//
-//            appState.persist();
-        }
-    }
     /**
      * undock a dockable
      *

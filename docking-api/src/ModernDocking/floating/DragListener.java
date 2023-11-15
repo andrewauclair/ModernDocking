@@ -33,7 +33,7 @@ public class DragListener extends DragSourceAdapter implements DragSourceListene
         this.dragSource.createDefaultDragGestureRecognizer(dragSource, DnDConstants.ACTION_MOVE, dge -> {
             this.dragSource.startDrag(dge, Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR), transferable, DragListener.this);
 
-            docking.undock(panel);
+//            docking.undock(panel);
 
 //            activeUtilsFrame = new DockingUtilsFrame();
 //            mouseDragStarted(dge.getDragOrigin());
