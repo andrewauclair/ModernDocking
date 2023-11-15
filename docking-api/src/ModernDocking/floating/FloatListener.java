@@ -328,10 +328,10 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 		RootDockingPanelAPI currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
 
-		if (source instanceof DisplayPanel) {
+		if (floatingPanel instanceof DisplayPanel) {
 			floatingFrame = new TempFloatingFrame(docking, floatingPanel, source);
 
-			docking.undock(((DockedSimplePanel) floatingPanel).getWrapper().getDockable());
+			docking.undock(((DisplayPanel) floatingPanel).getWrapper().getDockable());
 		}
 		else {
 			DockedTabbedPanel tabs = (DockedTabbedPanel) floatingPanel;
@@ -339,8 +339,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			ArrayList<DockableWrapper> wrappers = new ArrayList<>(tabs.getDockables());
 
 			floatingFrame = new TempFloatingFrame(docking, floatingPanel, source);
-
-//			docking.undock(floatingPanel);
 
 			for (DockableWrapper wrapper : wrappers) {
 				docking.undock(wrapper.getDockable());
