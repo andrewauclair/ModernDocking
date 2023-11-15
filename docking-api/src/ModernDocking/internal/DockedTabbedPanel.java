@@ -50,9 +50,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 */
 	private final List<DockableWrapper> panels = new ArrayList<>();
 
-//	private final List<FloatListener> floatListeners = new ArrayList<>();
-
-	private final FloatListener floatListener;
+	private FloatListener floatListener;
 
 	private final CustomTabbedPane tabs = new CustomTabbedPane();
 	private final DockingAPI docking;
@@ -93,8 +91,6 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		add(tabs, BorderLayout.CENTER);
 
 		addPanel(dockable);
-
-		floatListener = new FloatListener(docking, this, tabs);
 	}
 
 	public static void setSettingsIcon(Icon icon) {
@@ -158,10 +154,14 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		super.addNotify();
 
 		tabs.addChangeListener(this);
+
+		floatListener = new FloatListener(docking, this, tabs);
 	}
 
 	@Override
 	public void removeNotify() {
+		floatListener.removeListeners();
+
 		tabs.removeChangeListener(this);
 
 		super.removeNotify();
@@ -183,7 +183,6 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			tabs.setTabPlacement(JTabbedPane.BOTTOM);
 		}
 
-//		DockedSimplePanel panel = new DockedSimplePanel(docking, dockable);
 		panels.add(dockable);
 		tabs.add(dockable.getDockable().getTabText(), dockable.getDisplayPanel());
 
@@ -211,8 +210,6 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		}
 
 		dockable.setParent(this);
-
-//		floatListeners.add(new FloatListener(docking, panel, (Component) dockable.getHeaderUI()));
 	}
 
 	/**
@@ -222,10 +219,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 */
 	public void removePanel(DockableWrapper dockable) {
 		if (panels.contains(dockable)) {
-			int index = panels.indexOf(dockable);
-
-//			floatListeners.get(index).removeListeners();
-//			floatListeners.remove(index);
+			panels.indexOf(dockable);
 
 			tabs.remove(dockable.getDisplayPanel());
 			panels.remove(dockable);

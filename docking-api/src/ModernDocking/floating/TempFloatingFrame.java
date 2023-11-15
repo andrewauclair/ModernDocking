@@ -21,35 +21,66 @@ SOFTWARE.
  */
 package ModernDocking.floating;
 
-import ModernDocking.Dockable;
-import ModernDocking.api.DockingAPI;
-import ModernDocking.internal.DockingInternal;
-import ModernDocking.internal.DockingPanel;
+import ModernDocking.internal.DockableWrapper;
+import ModernDocking.settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * this is a frame used temporarily when floating a panel
  */
 public class TempFloatingFrame extends JFrame {
 	private static final int BORDER_SIZE = 2;
-	private final JPanel panel;
-	GridBagConstraints gbc = new GridBagConstraints();
+	private final List<DockableWrapper> dockables;
+	private final int selectedIndex;
+
+	public TempFloatingFrame(DockableWrapper dockable, JComponent dragSrc, Dimension size) {
+		dockables = Collections.emptyList();
+		selectedIndex = 0;
+
+		build(dockable.getDisplayPanel(), dragSrc, size);
+	}
+
+	public TempFloatingFrame(List<DockableWrapper> dockables, int selectedIndex, JComponent dragSrc, Dimension size) {
+		this.dockables = dockables;
+		this.selectedIndex = selectedIndex;
+
+		JTabbedPane tabs = new JTabbedPane();
+
+		// we only support tabs on top if we have FlatLaf because we can add a trailing component for our menu
+		boolean usingFlatLaf = tabs.getUI().getClass().getPackageName().startsWith("com.formdev.flatlaf");
+
+		if (Settings.alwaysDisplayTabsMode() && usingFlatLaf) {
+			tabs.setTabPlacement(JTabbedPane.TOP);
+		}
+		else {
+			tabs.setTabPlacement(JTabbedPane.BOTTOM);
+		}
+
+		for (DockableWrapper dockable : dockables) {
+			tabs.add(dockable.getDockable().getTabText(), dockable.getDisplayPanel());
+		}
+		tabs.setSelectedIndex(selectedIndex);
+
+		build(tabs, dragSrc, size);
+	}
+
 	/**
 	 * Create a new temporary floating frame to contain a dockable that has started to float
 	 *
 	 * @param dockable Dockable in the floating frame
 	 * @param dragSrc The source of the drag
 	 */
-	public TempFloatingFrame(DockingAPI docking, JPanel dockable, JComponent dragSrc) {
+	private void build(JComponent dockable, JComponent dragSrc, Dimension size) {
 		setLayout(new BorderLayout()); // keep it simple, just use border layout
 		setUndecorated(true); // hide the frame
 		setType(Type.UTILITY); // keeps the frame from appearing in the task bar frames
 		setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR)); //  this frame is only showing while moving
 
 		// size the frame to the dockable size
-		Dimension size = dockable.getSize();//DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel().getSize();
 		setSize(size);
 
 		// set the frame position to match the current dockable position
@@ -63,9 +94,9 @@ public class TempFloatingFrame extends JFrame {
 		setLocation(newPoint);
 
 		// put the dockable in a panel with a border around it to make it look better
-		panel = new JPanel(new GridBagLayout());
+		JPanel panel = new JPanel(new GridBagLayout());
 
-//		GridBagConstraints gbc = new GridBagConstraints();
+		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.gridy = 0;
 		gbc.gridx = 0;
@@ -83,10 +114,11 @@ public class TempFloatingFrame extends JFrame {
 		setVisible(true);
 	}
 
-	public void remove(DockingAPI docking, Dockable dockable) {
-		panel.remove(DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel());
+	public List<DockableWrapper> getDockables() {
+		return dockables;
 	}
-	public void readd(DockingAPI docking, Dockable dockable) {
-		panel.add(DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel(), gbc);
+
+	public int getSelectedIndex() {
+		return selectedIndex;
 	}
 }

@@ -27,7 +27,6 @@ import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.internal.*;
 import ModernDocking.layouts.WindowLayout;
-import ModernDocking.persist.RootDockState;
 import ModernDocking.ui.DockingHeaderUI;
 
 import javax.swing.*;
@@ -55,7 +54,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 	private static boolean isOverTab = false;
 
 	// current floating dockable
-//	private final JPanel floatingDockable;
 	private final JPanel source;
 	private JPanel floatingPanel;
 
@@ -160,8 +158,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 	public void removeListeners() {
 		dragSource.removeDragSourceMotionListener(this);
-
-//		floatingDockable.removedListeners();
 	}
 
 	public static void registerDockingWindow(DockingAPI docking, Window window, RootDockingPanelAPI root) {
@@ -206,7 +202,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		CustomTabbedPane tabbedPane = (CustomTabbedPane) DockingComponentUtils.findTabbedPaneAtPos(mousePosOnScreen, currentTopWindow);
 
 		if (activeUtilsFrame != null) {
-			boolean overTab = dockable == null && tabbedPane != null && source instanceof DisplayPanel;
+			boolean overTab = dockable == null && tabbedPane != null && floatingPanel instanceof DisplayPanel;
 
 			if (overTab) {
 				int targetTabIndex = tabbedPane.getTargetTabIndex(mousePosOnScreen);
@@ -328,30 +324,20 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 		RootDockingPanelAPI currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
 
-		if (source instanceof DisplayPanel) {
-			floatingFrame = new TempFloatingFrame(docking, floatingPanel, source);
+		if (floatingPanel instanceof DisplayPanel) {
+			floatingFrame = new TempFloatingFrame(((DisplayPanel) floatingPanel).getWrapper(), source, floatingPanel.getSize());
 
-			docking.undock(((DockedSimplePanel) floatingPanel).getWrapper().getDockable());
+			docking.undock(((DisplayPanel) floatingPanel).getWrapper().getDockable());
 		}
 		else {
 			DockedTabbedPanel tabs = (DockedTabbedPanel) floatingPanel;
 
-			ArrayList<DockableWrapper> wrappers = new ArrayList<>(tabs.getDockables());
+			List<DockableWrapper> wrappers = new ArrayList<>(tabs.getDockables());
 
-			floatingFrame = new TempFloatingFrame(docking, floatingPanel, source);
-
-//			docking.undock(floatingPanel);
+			floatingFrame = new TempFloatingFrame(wrappers, tabs.getSelectedTabIndex(), source, floatingPanel.getSize());
 
 			for (DockableWrapper wrapper : wrappers) {
 				docking.undock(wrapper.getDockable());
-
-				// undock does not remove the last panel
-				tabs.removePanel(wrapper);
-			}
-
-			for (DockableWrapper wrapper : wrappers) {
-				tabs.addPanel(wrapper);
-				wrapper.setParent(null); // we don't want this to count as docked
 			}
 		}
 
@@ -423,7 +409,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 					int targetTabIndex = tabbedPane.getTargetTabIndex(point);
 
 					Rectangle boundsAt;
-					boolean last = false;
+
 					if (targetTabIndex != -1) {
 						boundsAt = tabbedPane.getBoundsAt(targetTabIndex);
 
@@ -443,7 +429,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 						boundsAt.x = p.x;
 						boundsAt.y = p.y;
 						boundsAt.x += boundsAt.width;
-						last = true;
 					}
 
 					parent.dockAtIndex(floatingDockable.getDockable(), targetTabIndex);
@@ -454,8 +439,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			}
 		}
 		else {
-			DockedTabbedPanel tabs = (DockedTabbedPanel) floatingPanel;
-			List<DockableWrapper> dockables = new ArrayList<>(tabs.getDockables());
+			List<DockableWrapper> dockables = new ArrayList<>(floatingFrame.getDockables());
 
 			boolean first = true;
 			Dockable firstDockable = null;
@@ -475,6 +459,8 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 				}
 				first = false;
 			}
+
+			docking.bringToFront(dockables.get(floatingFrame.getSelectedIndex()).getDockable());
 		}
 
 		// auto persist the new layout to the file
