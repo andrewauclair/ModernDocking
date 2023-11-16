@@ -27,6 +27,7 @@ import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.internal.*;
 import ModernDocking.layouts.WindowLayout;
+import ModernDocking.settings.Settings;
 import ModernDocking.ui.DockingHeaderUI;
 
 import javax.swing.*;
@@ -35,10 +36,8 @@ import java.awt.Dialog.ModalityType;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Listener responsible for tracking dockables both when they are first dragged and while being dragged
@@ -99,6 +98,9 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			this.dragSource.addDragSourceMotionListener(FloatListener.this);
 
 			this.dragSource.createDefaultDragGestureRecognizer(dragSource, DnDConstants.ACTION_MOVE, dge -> {
+				if (isFloating) {
+					return;
+				}
 				try {
 					if (source instanceof DockedTabbedPanel) {
 						Point mousePos = new Point(dge.getDragOrigin());
@@ -345,7 +347,12 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		RootDockingPanelAPI currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
 
 		if (floatingPanel instanceof DisplayPanel) {
-			floatingFrame = new TempFloatingFrame(((DisplayPanel) floatingPanel).getWrapper(), source, floatingPanel.getSize());
+			if (Settings.alwaysDisplayTabsMode()) {
+				floatingFrame = new TempFloatingFrame(Collections.singletonList(((DisplayPanel) floatingPanel).getWrapper()), 0, source, floatingPanel.getSize());
+			}
+			else {
+				floatingFrame = new TempFloatingFrame(((DisplayPanel) floatingPanel).getWrapper(), source, floatingPanel.getSize());
+			}
 
 			docking.undock(((DisplayPanel) floatingPanel).getWrapper().getDockable());
 		}

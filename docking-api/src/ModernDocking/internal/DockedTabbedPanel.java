@@ -189,22 +189,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		tabs.setSelectedIndex(tabs.getTabCount() - 1);
 		selectedTab = tabs.getSelectedIndex();
 
-		if (Settings.alwaysDisplayTabsMode()) {
-			JLabel tabComponent = new JLabel(dockable.getDockable().getTabText());
-			tabComponent.setIcon(dockable.getDockable().getIcon());
-			tabComponent.setToolTipText(dockable.getDockable().getTabTooltip());
-
-			tabComponent.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					tabs.setSelectedIndex(tabs.indexOfTabComponent(tabComponent));
-				}
-			});
-			tabs.setTabComponentAt(tabs.getTabCount() - 1, tabComponent);
-
-			if (dockable.getDockable().isClosable()) {
-				dockable.getDisplayPanel().putClientProperty("JTabbedPane.tabClosable", true);
-			}
+		if (Settings.alwaysDisplayTabsMode() && dockable.getDockable().isClosable()) {
+			dockable.getDisplayPanel().putClientProperty("JTabbedPane.tabClosable", true);
 		}
 
 		dockable.setParent(this);
