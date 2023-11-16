@@ -72,6 +72,18 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 */
 	public void addTab(String persistentID) {
 		if (findNode(persistentID) != null) {
+			DockingSimplePanelNode node = null;
+			for (DockingSimplePanelNode tab : tabs) {
+				if (persistentID.equals(tab.getPersistentID())) {
+					node = tab;
+				}
+			}
+
+			// this is the selected tab, bump it up into the correct order
+			if (node != null) {
+				tabs.remove(node);
+				tabs.add(node);
+			}
 			return;
 		}
 		String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();
@@ -89,6 +101,18 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 */
 	public void addTab(String persistentID, Map<String, String> properties) {
 		if (findNode(persistentID) != null) {
+			DockingSimplePanelNode node = null;
+			for (DockingSimplePanelNode tab : tabs) {
+				if (persistentID.equals(tab.getPersistentID())) {
+					node = tab;
+				}
+			}
+
+			// this is the selected tab, bump it up into the correct order
+			if (node != null) {
+				tabs.remove(node);
+				tabs.add(node);
+			}
 			return;
 		}
 		String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();
