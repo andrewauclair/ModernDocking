@@ -155,10 +155,6 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 		tabs.addChangeListener(this);
 
-		if (floatListener != null) {
-			floatListener.removeListeners();
-		}
-
 		floatListener = new FloatListener(docking, this, tabs);
 	}
 

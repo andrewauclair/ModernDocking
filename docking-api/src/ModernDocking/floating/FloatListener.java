@@ -105,6 +105,13 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 						SwingUtilities.convertPointToScreen(mousePos, dragSource1);
 
 						DockedTabbedPanel tabs = (DockedTabbedPanel) source;
+
+						// if this tabbed panel is empty then remove the listeners
+						if (tabs.getDockables().isEmpty()) {
+							removeListeners();
+							return;
+						}
+
 						int targetTabIndex = tabs.getTargetTabIndex(mousePos);
 
 						if (targetTabIndex != -1) {
