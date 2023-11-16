@@ -212,10 +212,11 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			boolean overTab = dockable == null && tabbedPane != null && floatingPanel instanceof DisplayPanel;
 
 			if (overTab) {
-				int targetTabIndex = tabbedPane.getTargetTabIndex(mousePosOnScreen);
+				int targetTabIndex = tabbedPane.getTargetTabIndex(mousePosOnScreen, true);
 
 				Rectangle boundsAt;
 				boolean last = false;
+
 				if (targetTabIndex != -1) {
 					boundsAt = tabbedPane.getBoundsAt(targetTabIndex);
 
@@ -229,12 +230,24 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 				} else {
 					boundsAt = tabbedPane.getBoundsAt(tabbedPane.getTabCount() - 1);
 
-					Point p = new Point(boundsAt.x, boundsAt.y);
-					SwingUtilities.convertPointToScreen(p, tabbedPane);
-					SwingUtilities.convertPointFromScreen(p, activeUtilsFrame);
-					boundsAt.x = p.x;
-					boundsAt.y = p.y;
-					boundsAt.x += boundsAt.width;
+					Point tabPoint = new Point(tabbedPane.getX(), tabbedPane.getY());
+					SwingUtilities.convertPointToScreen(tabPoint, tabbedPane.getParent());
+
+					Point boundsPoint = new Point(boundsAt.x, boundsAt.y);
+					SwingUtilities.convertPointToScreen(boundsPoint, tabbedPane);
+
+					int widthToAdd = boundsAt.width;
+
+					if (boundsPoint.x + (boundsAt.width * 2) >= tabPoint.x + tabbedPane.getWidth()) {
+						boundsAt.width = Math.abs((tabPoint.x + tabbedPane.getWidth()) - (boundsPoint.x + boundsAt.width));
+						System.out.println("New width : " + boundsAt.width);
+					}
+
+					SwingUtilities.convertPointFromScreen(boundsPoint, activeUtilsFrame);
+
+					boundsAt.x = boundsPoint.x + widthToAdd;
+					boundsAt.y = boundsPoint.y;
+
 					last = true;
 				}
 
@@ -413,7 +426,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 				if (tabbedPane != null) {
 					DockedTabbedPanel parent = (DockedTabbedPanel) tabbedPane.getParent();
 
-					int targetTabIndex = tabbedPane.getTargetTabIndex(point);
+					int targetTabIndex = tabbedPane.getTargetTabIndex(point, true);
 
 					Rectangle boundsAt;
 

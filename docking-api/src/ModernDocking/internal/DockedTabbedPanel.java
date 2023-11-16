@@ -430,7 +430,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	}
 
 	public int getTargetTabIndex(Point point) {
-		return tabs.getTargetTabIndex(point);
+		return tabs.getTargetTabIndex(point, false);
 	}
 
 	public boolean isDraggingFromTabGutter(Point point) {
