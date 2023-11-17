@@ -37,11 +37,11 @@ import java.util.List;
  * Panel that should be added to each frame that should support docking
  */
 public class RootDockingPanelAPI extends DockingPanel {
-	private DockingAPI docking;
+	private DockingAPI docking = null;
 
-	private Window window;
+	private Window window = null;
 
-	private DockingPanel panel;
+	private DockingPanel panel = null;
 
 	private JPanel emptyPanel = new JPanel();
 
@@ -51,17 +51,17 @@ public class RootDockingPanelAPI extends DockingPanel {
 	/**
 	 * South toolbar of this panel. Only created if pinning is supported.
 	 */
-	private DockableToolbar southToolbar;
+	private DockableToolbar southToolbar = null;
 	/**
 	 * West toolbar of this panel. Only created if pinning is supported.
 	 */
-	private DockableToolbar westToolbar;
+	private DockableToolbar westToolbar = null;
 	/**
 	 * East toolbar of this panel. Only created if pinning is supported.
 	 */
-	private DockableToolbar eastToolbar;
+	private DockableToolbar eastToolbar = null;
 
-	private EnumSet<ToolbarLocation> supportedToolbars;
+	private EnumSet<ToolbarLocation> supportedToolbars = EnumSet.noneOf(ToolbarLocation.class);
 
 	/**
 	 * Create root panel with GridBagLayout as the layout
@@ -238,8 +238,12 @@ public class RootDockingPanelAPI extends DockingPanel {
 
 	@Override
 	public void removeNotify() {
-		Window rootWindow = (Window) SwingUtilities.getRoot(this);
-		docking.deregisterDockingPanel(rootWindow);
+		// this class has a default constructor which could be called and docking would be null
+		if (docking != null) {
+			Window rootWindow = (Window) SwingUtilities.getRoot(this);
+
+			docking.deregisterDockingPanel(rootWindow);
+		}
 
 		super.removeNotify();
 	}
@@ -428,9 +432,15 @@ public class RootDockingPanelAPI extends DockingPanel {
 	 * Hide all unpinned panels on the west, south and east toolbars
 	 */
 	public void hideUnpinnedPanels() {
-		westToolbar.hideAll();
-		southToolbar.hideAll();
-		eastToolbar.hideAll();
+		if (westToolbar != null) {
+			westToolbar.hideAll();
+		}
+		if (southToolbar != null) {
+			southToolbar.hideAll();
+		}
+		if (eastToolbar != null) {
+			eastToolbar.hideAll();
+		}
 	}
 
 	/**
