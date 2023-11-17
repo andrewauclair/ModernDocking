@@ -268,8 +268,27 @@ public class DockingHandles {
 			Point location = ((Component) targetDockable).getLocation();
 			Dimension size = ((Component) targetDockable).getSize();
 
+			// if this dockable is wrapped in a JScrollPane we need to set the handle to the center of the JScrollPane
+			// not to the center of the dockable (which will more than likely be at a different location)
+			if (targetDockable.isWrappableInScrollpane()) {
+				Component parent = ((Component) targetDockable).getParent();
+
+				while (parent != null && !(parent instanceof JScrollPane)) {
+					parent = parent.getParent();
+				}
+
+				if (parent != null) {
+					JScrollPane display = (JScrollPane) parent;
+
+					location = display.getLocation();
+					size = display.getSize();
+				}
+			}
+
 			location.x += size.width / 2;
 			location.y += size.height / 2;
+
+			location.y -= (int) (DockingHandle.HANDLE_ICON_SIZE * (1.75/2));
 
 			SwingUtilities.convertPointToScreen(location, ((Component) targetDockable).getParent());
 			SwingUtilities.convertPointFromScreen(location, utilFrame);
@@ -299,8 +318,8 @@ public class DockingHandles {
 
 		SwingUtilities.convertPointToScreen(point, component.getParent());
 
-		utilFrame.setLocation(point);
-		utilFrame.setSize(size);
+//		utilFrame.setLocation(point);
+//		utilFrame.setSize(size);
 
 		setRootHandleLocations();
 		setDockableHandleLocations();
