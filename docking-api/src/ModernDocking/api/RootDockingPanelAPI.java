@@ -37,7 +37,7 @@ import java.util.List;
  * Panel that should be added to each frame that should support docking
  */
 public class RootDockingPanelAPI extends DockingPanel {
-	private DockingAPI docking;
+	private DockingAPI docking = null;
 
 	private Window window;
 
@@ -239,7 +239,11 @@ public class RootDockingPanelAPI extends DockingPanel {
 	@Override
 	public void removeNotify() {
 		Window rootWindow = (Window) SwingUtilities.getRoot(this);
-		docking.deregisterDockingPanel(rootWindow);
+
+		// this class has a default constructor which could be called and docking would be null
+		if (docking != null) {
+			docking.deregisterDockingPanel(rootWindow);
+		}
 
 		super.removeNotify();
 	}
