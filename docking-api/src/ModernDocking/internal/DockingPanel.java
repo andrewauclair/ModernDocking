@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockableTabGroup;
 import ModernDocking.DockingRegion;
 
 import javax.swing.*;
@@ -45,6 +46,8 @@ public abstract class DockingPanel extends JPanel {
 	 * @param dividerProportion The proportion to use if docking as a split pane
 	 */
 	public abstract void dock(Dockable dockable, DockingRegion region, double dividerProportion);
+
+	public void dock(DockableTabGroup group, Dockable firstDockable, DockingRegion region, double dividerProportion) {}
 
 	/**
 	 * undock the given dockable, returns true if the dockable was found and removed

@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockableTabGroup;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.floating.FloatListener;
@@ -148,6 +149,42 @@ public class DockedSimplePanel extends DockingPanel {
 
 		revalidate();
 		repaint();
+	}
+
+	@Override
+	public void dock(DockableTabGroup group, Dockable firstDockable, DockingRegion region, double dividerProportion) {
+		if (region == DockingRegion.CENTER) {
+			return;
+		}
+
+		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(firstDockable);
+
+		DockedSplitPanel split = new DockedSplitPanel(docking, this.dockable.getWindow());
+		parent.replaceChild(this, split);
+
+		DockingPanel newPanel = new DockedTabbedPanel(docking, group, wrapper);
+
+		if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
+			split.setLeft(this);
+			split.setRight(newPanel);
+			dividerProportion = 1.0 - dividerProportion;
+		}
+		else {
+			split.setLeft(newPanel);
+			split.setRight(this);
+		}
+
+		if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
+			split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+		}
+		else {
+			split.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		}
+
+		split.setDividerLocation(dividerProportion);
+
+		repaint();
+		revalidate();
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package ModernDocking.api;
 
 import ModernDocking.Dockable;
 import ModernDocking.DockableStyle;
+import ModernDocking.DockableTabGroup;
 import ModernDocking.DockingRegion;
 import ModernDocking.event.DockingListener;
 import ModernDocking.event.MaximizeListener;
@@ -449,6 +450,20 @@ public class DockingAPI {
         DockingListeners.fireDockedEvent(source);
 
         appState.persist();
+    }
+
+    public void dock(DockableTabGroup group, Dockable firstDockable, Dockable target, DockingRegion region) {
+        if (!isDocked(target)) {
+            throw new NotDockedException(target);
+        }
+
+        if (isDocked(firstDockable)) {
+            undock(firstDockable);
+        }
+
+        DockableWrapper wrapper = internals.getWrapper(target);
+
+        wrapper.getParent().dock(group, firstDockable, region, 0.5);
     }
 
     /**

@@ -224,6 +224,13 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		view.add(changeText);
 		view.add(actionListenDock(themes));
 
+		JMenuItem openDockableTabGroup = new JMenuItem("DockableTabGroup");
+		openDockableTabGroup.addActionListener( e-> {
+			DockableTabGroup group = new DockableTabGroup(new JPopupMenu(), JTabbedPane.TOP);
+			Docking.dock(group, two, one, DockingRegion.EAST);
+		});
+		view.add(openDockableTabGroup);
+
 		JMenuItem storeCurrentLayout = new JMenuItem("Store Current Layout...");
 		storeCurrentLayout.addActionListener(e -> {
 			String layoutName = JOptionPane.showInputDialog("Name of Layout");

@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockableTabGroup;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.floating.FloatListener;
@@ -67,30 +68,45 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 	private static Icon settingsIcon = new ImageIcon(Objects.requireNonNull(DockedTabbedPanel.class.getResource("/icons/settings.png")));
 
+	private int tabPlacement;
+
 	/**
 	 * Create a new instance of DockedTabbedPanel
 	 *
 	 * @param dockable The first dockable in the tabbed pane
 	 */
 	public DockedTabbedPanel(DockingAPI docking, DockableWrapper dockable) {
+		this(docking, dockable, Settings.alwaysDisplayTabsMode());
+	}
+
+	public DockedTabbedPanel(DockingAPI docking, DockableWrapper dockable, boolean topTabs) {
 		this.docking = docking;
 		setLayout(new BorderLayout());
 
 		// set the initial border. Docking handles the border after this using a global AWT listener
 		setNotSelectedBorder();
 
+		// we only support tabs on top if we have FlatLaf because we can add a trailing component for our menu
+		boolean usingFlatLaf = tabs.getUI().getClass().getPackageName().startsWith("com.formdev.flatlaf");
+
 		// default to tabs on bottom. if we need to change it we will when the first dockable is added
-		tabs.setTabPlacement(JTabbedPane.BOTTOM);
+//		tabs.setTabPlacement(JTabbedPane.BOTTOM);
+		tabPlacement = topTabs && usingFlatLaf ? JTabbedPane.TOP : JTabbedPane.BOTTOM;
+		tabs.setTabPlacement(tabPlacement);
 
 		tabs.setTabLayoutPolicy(Settings.getTabLayoutPolicy());
 
-		if (Settings.alwaysDisplayTabsMode()) {
+		if (topTabs) {
 			configureTrailingComponent();
 		}
 
 		add(tabs, BorderLayout.CENTER);
 
 		addPanel(dockable);
+	}
+
+	public DockedTabbedPanel(DockingAPI docking, DockableTabGroup group, DockableWrapper firstDockable) {
+		this(docking, firstDockable, group.getTabPlacement() == JTabbedPane.TOP);
 	}
 
 	public static void setSettingsIcon(Icon icon) {
@@ -171,15 +187,14 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 * @param dockable The dockable to add
 	 */
 	public void addPanel(DockableWrapper dockable) {
-		// we only support tabs on top if we have FlatLaf because we can add a trailing component for our menu
-		boolean usingFlatLaf = tabs.getUI().getClass().getPackageName().startsWith("com.formdev.flatlaf");
 
-		if (Settings.alwaysDisplayTabsMode() && usingFlatLaf) {
-			tabs.setTabPlacement(JTabbedPane.TOP);
-		}
-		else {
-			tabs.setTabPlacement(JTabbedPane.BOTTOM);
-		}
+
+//		if (Settings.alwaysDisplayTabsMode() && usingFlatLaf) {
+//			tabs.setTabPlacement(JTabbedPane.TOP);
+//		}
+//		else {
+//			tabs.setTabPlacement(JTabbedPane.BOTTOM);
+//		}
 
 		panels.add(dockable);
 		tabs.add(dockable.getDockable().getTabText(), dockable.getDisplayPanel());

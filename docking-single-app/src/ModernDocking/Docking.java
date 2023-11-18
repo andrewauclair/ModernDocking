@@ -285,6 +285,9 @@ public class Docking {
         instance.dock(source, target, region, dividerProportion);
     }
 
+    public static void dock(DockableTabGroup group, Dockable firstDockable, Dockable target, DockingRegion region) {
+        instance.dock(group, firstDockable, target, region);
+    }
     /**
      * create a new FloatingFrame window for the given dockable, undock it from its current frame (if there is one) and dock it into the new frame
      *
