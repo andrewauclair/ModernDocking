@@ -79,14 +79,13 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 
 		setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR)); // always moving a dockable when this frame is visible. use the moving cursor to indicate such
 
-		// set location and size based on the reference docking frame
-		setLocation(referenceDockingWindow.getLocation());
-		setSize(referenceDockingWindow.getSize());
-
 		// remember the reference docking frame and create the handles and over components
 		this.referenceDockingWindow = referenceDockingWindow;
+
 		handles = new DockingHandles(this, root);
 		overlay = new DockingOverlay(docking, this, root);
+
+		SwingUtilities.invokeLater(this::setSizeAndLocation);
 	}
 
 	@Override
@@ -195,12 +194,12 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		setSize(referenceDockingWindow.getSize());
+		setSizeAndLocation();
 	}
 
 	@Override
 	public void componentMoved(ComponentEvent e) {
-		setLocation(referenceDockingWindow.getLocation());
+		setSizeAndLocation();
 	}
 
 	@Override
@@ -221,5 +220,22 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 			handles.paint(g);
 		}
 		overlay.paint(g);
+	}
+
+	private void setSizeAndLocation() {
+		int padding = (int) (DockingHandle.HANDLE_ICON_SIZE * 1.75);
+
+		Point location = new Point(referenceDockingWindow.getLocationOnScreen());
+		Dimension size = new Dimension(referenceDockingWindow.getSize());
+
+		location.x -= padding;
+		location.y -= padding;
+
+		size.width += padding * 2;
+		size.height += padding * 2;
+
+		// set location and size based on the reference docking frame
+		setLocation(location);
+		setSize(size);
 	}
 }
