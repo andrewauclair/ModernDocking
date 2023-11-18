@@ -324,25 +324,27 @@ public class DockingHandles {
 		setRootHandleLocations();
 		setDockableHandleLocations();
 
-		// check if the root handles happen to be under the dockable handles
-		if (Math.abs(dockableEast.getX() - rootEast.getX()) < dockableEast.getWidth() &&
-			Math.abs(dockableEast.getY() - rootEast.getY()) < dockableEast.getHeight()) {
-			// need to move root east, move it up 1/4 of screen
-			Point location = targetRoot.getLocation();
-			Dimension rootSize = targetRoot.getSize();
-			location.x += rootSize.width / 2;
-			location.y += (rootSize.height / 2) + (rootSize.height / 4);
-
-			SwingUtilities.convertPointToScreen(location, targetRoot.getParent());
-			SwingUtilities.convertPointFromScreen(location, utilFrame);
-
-//			setLocation(rootCenter, location.x, location.y);
-//			setLocation(rootWest, location.x - (size.width / 2) + rootHandleSpacing(rootWest), location.y);
-//			setLocation(rootNorth, location.x, location.y - (size.height / 2) + rootHandleSpacing(rootNorth));
-			setLocation(rootEast, location.x + (rootSize.width / 2) - rootHandleSpacing(rootEast), location.y);
-//			setLocation(rootSouth, location.x, location.y + (size.height / 2) - rootHandleSpacing(rootSouth));
-
-		}
+//		int minimumRootHandleDistance = (int) (HANDLE_ICON_SIZE * 1.75);
+//
+//		// check if the root handles happen to be under the dockable handles
+//		if (Math.abs(dockableEast.getX() - rootEast.getX()) < minimumRootHandleDistance &&
+//			Math.abs(dockableEast.getY() - rootEast.getY()) < minimumRootHandleDistance) {
+//			// need to move root east, move it up 1/4 of screen
+//			Point location = targetRoot.getLocation();
+//			Dimension rootSize = targetRoot.getSize();
+//			location.x += rootSize.width / 2;
+//			location.y += (rootSize.height / 2) + (rootSize.height / 4);
+//
+//			SwingUtilities.convertPointToScreen(location, targetRoot.getParent());
+//			SwingUtilities.convertPointFromScreen(location, utilFrame);
+//
+////			setLocation(rootCenter, location.x, location.y);
+////			setLocation(rootWest, location.x - (size.width / 2) + rootHandleSpacing(rootWest), location.y);
+////			setLocation(rootNorth, location.x, location.y - (size.height / 2) + rootHandleSpacing(rootNorth));
+//			setLocation(rootEast, location.x + (rootSize.width / 2) - rootHandleSpacing(rootEast), location.y);
+////			setLocation(rootSouth, location.x, location.y + (size.height / 2) - rootHandleSpacing(rootSouth));
+//
+//		}
 
 		framePoint = new Point(screenPos);
 		SwingUtilities.convertPointFromScreen(framePoint, utilFrame);
