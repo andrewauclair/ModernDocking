@@ -79,8 +79,15 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		// set the initial border. Docking handles the border after this using a global AWT listener
 		setNotSelectedBorder();
 
-		// default to tabs on bottom. if we need to change it we will when the first dockable is added
-		tabs.setTabPlacement(JTabbedPane.BOTTOM);
+		// we only support tabs on top if we have FlatLaf because we can add a trailing component for our menu
+		boolean usingFlatLaf = tabs.getUI().getClass().getPackageName().startsWith("com.formdev.flatlaf");
+
+		if (Settings.alwaysDisplayTabsMode() && usingFlatLaf) {
+			tabs.setTabPlacement(JTabbedPane.TOP);
+		}
+		else {
+			tabs.setTabPlacement(JTabbedPane.BOTTOM);
+		}
 
 		tabs.setTabLayoutPolicy(Settings.getTabLayoutPolicy());
 
@@ -98,16 +105,15 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	}
 
 	private void configureTrailingComponent() {
-		JPanel panel = new JPanel();
-		panel.setLayout(new GridBagLayout());
+		JPanel panel = new JPanel(new GridBagLayout());
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.EAST;
-		gbc.weightx = 1.0;
-		gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
+		gbc.weightx = 1.0;
+		gbc.weighty = 0.0;
 
 		JButton menu = new JButton(settingsIcon);
 
@@ -117,7 +123,6 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			DockableWrapper dockable = panels.get(tabs.getSelectedIndex());
 
 			dockable.getHeaderUI().displaySettingsMenu(menu);
-
 		});
 
 		panel.add(menu, gbc);
@@ -126,6 +131,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		tabs.putClientProperty("JTabbedPane.tabCloseCallback", (IntConsumer) tabIndex -> docking.undock(panels.get(tabIndex).getDockable()));
 	}
 
+	// sets the button up for being on a toolbar
 	private void setupButton(JButton button) {
 		Color color = DockingSettings.getHeaderBackground();
 		button.setBackground(color);
@@ -171,16 +177,6 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 * @param dockable The dockable to add
 	 */
 	public void addPanel(DockableWrapper dockable) {
-		// we only support tabs on top if we have FlatLaf because we can add a trailing component for our menu
-		boolean usingFlatLaf = tabs.getUI().getClass().getPackageName().startsWith("com.formdev.flatlaf");
-
-		if (Settings.alwaysDisplayTabsMode() && usingFlatLaf) {
-			tabs.setTabPlacement(JTabbedPane.TOP);
-		}
-		else {
-			tabs.setTabPlacement(JTabbedPane.BOTTOM);
-		}
-
 		panels.add(dockable);
 		tabs.add(dockable.getDockable().getTabText(), dockable.getDisplayPanel());
 

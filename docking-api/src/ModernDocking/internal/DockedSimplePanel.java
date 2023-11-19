@@ -46,8 +46,6 @@ public class DockedSimplePanel extends DockingPanel {
 	 */
 	private DockingPanel parent;
 
-	private FloatListener floatListener;
-
 	/**
 	 * Create a new instance of DockedSimplePanel with a wrapper
 	 *
@@ -76,8 +74,6 @@ public class DockedSimplePanel extends DockingPanel {
 		this.docking = docking;
 
 		add(displayPanel, BorderLayout.CENTER);
-
-		floatListener = new FloatListener(docking, dockable.getDisplayPanel());
 	}
 
 	/**

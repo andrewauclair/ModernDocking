@@ -34,7 +34,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.Dialog.ModalityType;
 import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
 import java.util.*;
 import java.util.List;
@@ -60,9 +59,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 	// our drag source to support dragging the dockables
 	private final DragSource dragSource = new DragSource();
-	// dummy transferable, we don't actually transfer anything
-	private final Transferable transferable = new StringSelection("");
-	private final Component dragSource1;
+	private final Component draggedObject;
 
 	private Point dragOffset = new Point(0, 0);
 	private TempFloatingFrame floatingFrame;
@@ -93,8 +90,9 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		this.source = dockable;
 		this.docking = docking;
 
-		dragSource1 = dragSource;
-		if (dragSource1 != null) {
+		draggedObject = dragSource;
+
+		if (draggedObject != null) {
 			this.dragSource.addDragSourceMotionListener(FloatListener.this);
 
 			this.dragSource.createDefaultDragGestureRecognizer(dragSource, DnDConstants.ACTION_MOVE, dge -> {
@@ -104,7 +102,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 				try {
 					if (source instanceof DockedTabbedPanel) {
 						Point mousePos = new Point(dge.getDragOrigin());
-						SwingUtilities.convertPointToScreen(mousePos, dragSource1);
+						SwingUtilities.convertPointToScreen(mousePos, draggedObject);
 
 						DockedTabbedPanel tabs = (DockedTabbedPanel) source;
 
@@ -134,7 +132,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 							}
 						}
 					}
-					this.dragSource.startDrag(dge, Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR), transferable, FloatListener.this);
+					this.dragSource.startDrag(dge, Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR), new StringSelection(""), FloatListener.this);
 				}
 				catch (InvalidDnDOperationException ignored) {
 					// someone beat us to it
@@ -229,7 +227,8 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 					boundsAt.y = p.y;
 
 					boundsAt.width /=2;
-				} else {
+				}
+				else {
 					boundsAt = tabbedPane.getBoundsAt(tabbedPane.getTabCount() - 1);
 
 					Point tabPoint = new Point(tabbedPane.getX(), tabbedPane.getY());
@@ -242,7 +241,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 					if (boundsPoint.x + (boundsAt.width * 2) >= tabPoint.x + tabbedPane.getWidth()) {
 						boundsAt.width = Math.abs((tabPoint.x + tabbedPane.getWidth()) - (boundsPoint.x + boundsAt.width));
-						System.out.println("New width : " + boundsAt.width);
 					}
 
 					SwingUtilities.convertPointFromScreen(boundsPoint, activeUtilsFrame);
@@ -289,6 +287,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 			if (currentTopWindow != null && floatingFrame != null && activeUtilsFrame != null) {
 				Point mousePos = MouseInfo.getPointerInfo().getLocation();
+
 				activeUtilsFrame.setFloating(floatingPanel);
 				activeUtilsFrame.update(mousePos);
 				activeUtilsFrame.setActive(true);
@@ -333,7 +332,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 		// make sure we are still using the mouse press point, not the current mouse position which might not be over the frame anymore
 		Point mousePos = new Point(point);
-		SwingUtilities.convertPointToScreen(mousePos, dragSource1);
+		SwingUtilities.convertPointToScreen(mousePos, draggedObject);
 
 		if (source instanceof DisplayPanel) {
 			originalWindow = ((DisplayPanel) source).getWrapper().getWindow();
@@ -403,6 +402,8 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		DockingPanel dockingPanel = DockingComponentUtils.findDockingPanelAtScreenPos(point, currentTopWindow);
 		Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(point, currentTopWindow);
 
+//		Dockable dockableAtPos = activeUtilsFrame.getTargetDockable();
+		
 		DockingRegion region = activeUtilsFrame != null ? activeUtilsFrame.getRegion(mousePos) : DockingRegion.CENTER;
 
 		if (floatingPanel instanceof DisplayPanel) {
@@ -492,6 +493,11 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 		// auto persist the new layout to the file
 		docking.getAppState().persist();
+
+		// remove the drag listener now that tab group has no dockables
+		if (source instanceof DockedTabbedPanel && ((DockedTabbedPanel) source).getDockables().isEmpty()) {
+			removeListeners();
+		}
 
 		if (originalWindow instanceof JDialog) {
 			((JDialog) originalWindow).setModalityType(modalityType);

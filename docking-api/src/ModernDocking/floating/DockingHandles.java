@@ -257,6 +257,17 @@ public class DockingHandles {
 		return floating.getPinningStyle() == DockableStyle.VERTICAL;
 	}
 
+	public boolean isMouseOverHandle() {
+		Point mousePos = MouseInfo.getPointerInfo().getLocation();
+
+		SwingUtilities.convertPointFromScreen(mousePos, dockableCenter.getParent());
+
+		Rectangle northSouth = new Rectangle(dockableNorth.getX(), dockableNorth.getY(), dockableNorth.getWidth(), dockableNorth.getHeight() * 2 + handleSpacing(dockableNorth) * 2);
+		Rectangle westEast = new Rectangle(dockableWest.getX(), dockableWest.getY(), dockableWest.getWidth() * 2 + handleSpacing(dockableWest) * 2, dockableWest.getHeight());
+
+		return northSouth.contains(mousePos) || westEast.contains(mousePos);
+	}
+
 	private void setDockableHandleLocations() {
 		dockableCenter.setVisible(targetDockable != null);
 		dockableWest.setVisible(targetDockable != null && isRegionAllowed(DockingRegion.WEST));
