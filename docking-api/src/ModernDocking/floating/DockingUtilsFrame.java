@@ -85,7 +85,6 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		handles = new DockingHandles(this, root);
 		overlay = new DockingOverlay(docking, this, root);
 
-		SwingUtilities.invokeLater(this::setSizeAndLocation);
 	}
 
 	@Override
@@ -94,6 +93,8 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 
 		// listen for the reference frame to move and resize. this frame must match it exactly
 		referenceDockingWindow.addComponentListener(this);
+
+		SwingUtilities.invokeLater(this::setSizeAndLocation);
 	}
 
 	@Override
@@ -194,16 +195,17 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		setSizeAndLocation();
+		SwingUtilities.invokeLater(this::setSizeAndLocation);
 	}
 
 	@Override
 	public void componentMoved(ComponentEvent e) {
-		setSizeAndLocation();
+		SwingUtilities.invokeLater(this::setSizeAndLocation);
 	}
 
 	@Override
 	public void componentShown(ComponentEvent e) {
+		SwingUtilities.invokeLater(this::setSizeAndLocation);
 	}
 
 	@Override
