@@ -25,7 +25,6 @@ import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
-import ModernDocking.internal.DockingPanel;
 import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
@@ -109,8 +108,11 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 	 * @param target Target dockable
 	 */
 	public void setTargetDockable(Dockable target) {
-		handles.setTarget(target);
-		overlay.setTargetDockable(target);
+		// don't change the target dockable if we're over a handle
+		if (!handles.isMouseOverHandle()) {
+			handles.setTarget(target);
+			overlay.setTargetDockable(target);
+		}
 
 		overlay.setTargetRootRegion(handles.getRootRegion());
 		overlay.setTargetDockableRegion(handles.getDockableRegion());

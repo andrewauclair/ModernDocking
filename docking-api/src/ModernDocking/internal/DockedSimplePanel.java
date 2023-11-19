@@ -24,7 +24,6 @@ package ModernDocking.internal;
 import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
-import ModernDocking.floating.FloatListener;
 import ModernDocking.settings.Settings;
 
 import javax.swing.*;
@@ -45,8 +44,6 @@ public class DockedSimplePanel extends DockingPanel {
 	 * Parent panel of this simple panel
 	 */
 	private DockingPanel parent;
-
-	private FloatListener floatListener;
 
 	/**
 	 * Create a new instance of DockedSimplePanel with a wrapper
@@ -76,8 +73,6 @@ public class DockedSimplePanel extends DockingPanel {
 		this.docking = docking;
 
 		add(displayPanel, BorderLayout.CENTER);
-
-		floatListener = new FloatListener(docking, dockable.getDisplayPanel());
 	}
 
 	/**

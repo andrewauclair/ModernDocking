@@ -21,7 +21,6 @@ SOFTWARE.
  */
 package ModernDocking;
 
-import ModernDocking.api.DockingAPI;
 import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.DockingLayouts;
 

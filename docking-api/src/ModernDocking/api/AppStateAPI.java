@@ -129,14 +129,14 @@ public class AppStateAPI {
 				public void actionPerformed(ActionEvent e) {
 					// we might have gotten to the timer and then paused persistence
 					if (!paused) {
-						System.out.println("persist full docking layout");
-
 						ApplicationLayout layout = docking.getDockingState().getApplicationLayout();
 
 						try {
 							docking.getLayoutPersistence().saveLayoutToFile(autoPersistFiles.get(docking), layout);
 
 							DockingLayouts.layoutPersisted(layout);
+
+							logger.log(Level.INFO, "ModernDocking: Persisted Layout Successfully");
 						}
 						catch (DockingLayoutException ex) {
 							logger.log(Level.INFO, ex.getMessage(), ex);
@@ -146,6 +146,7 @@ public class AppStateAPI {
 					persistTimer = null;
 				}
 			});
+
 			persistTimer.setRepeats(false);
 			persistTimer.setCoalesce(false);
 			persistTimer.start();

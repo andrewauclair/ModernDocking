@@ -25,7 +25,6 @@ import ModernDocking.Dockable;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.floating.FloatListener;
-import ModernDocking.settings.Settings;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
 import ModernDocking.ui.HeaderModel;
@@ -50,11 +49,13 @@ public class DockableWrapper {
 
 	private final DisplayPanel displayPanel;
 
+	private final FloatListener floatListener;
+
 	private boolean maximized = false;
 	private boolean unpinned = false;
 	private RootDockingPanelAPI root;
 
-	private Map<String, String> properties = new HashMap<>();
+	private final Map<String, String> properties = new HashMap<>();
 
 	/**
 	 * Create a new wrapper for the dockable
@@ -71,6 +72,8 @@ public class DockableWrapper {
 		headerController.setUI(headerUI);
 
 		displayPanel = new DisplayPanel(this);
+
+		floatListener = new FloatListener(docking, displayPanel);
 	}
 
 	/**
@@ -112,10 +115,11 @@ public class DockableWrapper {
 	}
 
 	/**
-	 * Remove any floating listeners that this wrapper has added to the dockables header controller
+	 * Remove any listeners that this wrapper has added for the dockable
 	 */
 	public void removeListeners() {
 		headerController.removeListeners();
+		floatListener.removeListeners();
 	}
 
 	/**

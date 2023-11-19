@@ -283,7 +283,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 	private void configureLookAndFeel() {
 		try {
-			FlatLaf.registerCustomDefaultsSource( "docking" );
+			FlatLaf.registerCustomDefaultsSource("docking");
 
 			System.setProperty("flatlaf.uiScale", String.valueOf(uiScale));
 

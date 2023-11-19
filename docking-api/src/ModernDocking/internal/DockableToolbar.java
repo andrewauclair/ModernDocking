@@ -24,6 +24,7 @@ package ModernDocking.internal;
 import ModernDocking.Dockable;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.ui.DockingSettings;
 import ModernDocking.ui.ToolbarLocation;
 import ModernDocking.util.CombinedIcon;
 import ModernDocking.util.RotatedIcon;
@@ -163,6 +164,11 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 
 			// set only a single panel visible
 			entry.panel.setVisible(isSelected);
+
+			if (isSelected) {
+				Color color = DockingSettings.getHighlighterSelectedBorder();
+				entry.panel.setBorder(BorderFactory.createLineBorder(color, 2));
+			}
 		}
 	}
 

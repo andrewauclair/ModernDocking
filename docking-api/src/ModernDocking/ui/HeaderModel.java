@@ -74,15 +74,6 @@ public class HeaderModel {
 		return dockable.isPinningAllowed();
 	}
 
-	// TODO can this be removed?
-	public boolean isPinned() {
-		return false;
-	}
-
-	public boolean isUnpinnedAllowed() {
-		return dockable.isPinningAllowed();
-	}
-
 	public boolean isUnpinned() {
 		return docking.isUnpinned(dockable);
 	}
