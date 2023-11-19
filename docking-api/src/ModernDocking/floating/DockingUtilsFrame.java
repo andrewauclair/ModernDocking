@@ -25,7 +25,6 @@ import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
-import ModernDocking.internal.DockingPanel;
 import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;

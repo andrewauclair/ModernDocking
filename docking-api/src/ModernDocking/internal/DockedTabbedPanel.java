@@ -39,7 +39,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.IntConsumer;
-import java.util.stream.Collectors;
 
 /**
  * DockingPanel that has a JTabbedPane inside its center

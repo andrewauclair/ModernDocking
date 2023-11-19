@@ -25,7 +25,9 @@ import ModernDocking.Dockable;
 import ModernDocking.DockableStyle;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.RootDockingPanelAPI;
-import ModernDocking.internal.*;
+import ModernDocking.internal.DisplayPanel;
+import ModernDocking.internal.DockedSimplePanel;
+import ModernDocking.internal.DockedTabbedPanel;
 import ModernDocking.ui.DockingSettings;
 import ModernDocking.ui.ToolbarLocation;
 

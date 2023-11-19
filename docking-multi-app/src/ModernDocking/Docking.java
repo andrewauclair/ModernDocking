@@ -22,13 +22,8 @@ SOFTWARE.
 package ModernDocking;
 
 import ModernDocking.api.DockingAPI;
-import ModernDocking.api.RootDockingPanelAPI;
-import ModernDocking.event.DockingListener;
 
-import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Convenience class for apps that only need a single instance of the docking framework. Working with the static functions

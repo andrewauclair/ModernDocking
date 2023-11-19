@@ -35,8 +35,8 @@ import java.awt.*;
 import java.awt.Dialog.ModalityType;
 import java.awt.datatransfer.StringSelection;
 import java.awt.dnd.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * Listener responsible for tracking dockables both when they are first dragged and while being dragged
