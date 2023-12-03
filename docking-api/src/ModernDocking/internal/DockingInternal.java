@@ -56,6 +56,10 @@ public class DockingInternal {
 		return internals.get(docking);
 	}
 
+	public static void remove(DockingAPI docking) {
+		internals.remove(docking);
+	}
+
 	/**
 	 * Get access to the registered dockables
 	 *

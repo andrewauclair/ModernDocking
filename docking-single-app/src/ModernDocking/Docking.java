@@ -49,6 +49,14 @@ public class Docking {
     }
 
     /**
+     * Uninitialize the docking framework so that it can be initialized again with a new window
+     */
+    public static void uninitialize() {
+        instance.uninitialize();
+        instance = null;
+    }
+
+    /**
      * Get a map of RootDockingPanels to their Windows
      *
      * @return map of root panels

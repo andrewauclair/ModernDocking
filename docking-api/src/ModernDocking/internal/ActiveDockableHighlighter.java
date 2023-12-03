@@ -29,7 +29,9 @@ import ModernDocking.ui.DockingSettings;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.AWTEventListener;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * This class is responsible for adding a selected border around the dockable at the current mouse position.
@@ -37,6 +39,8 @@ import java.awt.event.MouseEvent;
  * Using an AWT Event Listener we can listen for global MOUSE_ENTERED and MOUSE_EXITED to add/remove the border.
  */
 public class ActiveDockableHighlighter {
+	private final AWTEventListener awtEventListener;
+	private final PropertyChangeListener propertyChangeListener;
 	// the current active panel
 	private DockingPanel activePanel = null;
 
@@ -45,7 +49,7 @@ public class ActiveDockableHighlighter {
 	 */
 	public ActiveDockableHighlighter(DockingAPI docking) {
 		// use an AWT event listener to set a border around the dockable that the mouse is currently over
-		Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
+		awtEventListener = e -> {
 			if (e.getID() == MouseEvent.MOUSE_ENTERED || e.getID() == MouseEvent.MOUSE_EXITED) {
 				DockingPanel dockable = DockingComponentUtils.findDockingPanelAtScreenPos(docking, ((MouseEvent) e).getLocationOnScreen());
 
@@ -62,8 +66,7 @@ public class ActiveDockableHighlighter {
 					setSelectedBorder();
 				}
 
-			}
-			else if (e.getID() == MouseEvent.MOUSE_PRESSED) {
+			} else if (e.getID() == MouseEvent.MOUSE_PRESSED) {
 				Dockable dockable = DockingComponentUtils.findDockableAtScreenPos(docking, ((MouseEvent) e).getLocationOnScreen());
 
 				if (dockable != null) {
@@ -73,15 +76,15 @@ public class ActiveDockableHighlighter {
 						try {
 							RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, window);
 							root.hideUnpinnedPanels();
-						}
-						catch (DockableRegistrationFailureException ignore) {
+						} catch (DockableRegistrationFailureException ignore) {
 						}
 					}
 				}
 			}
-		}, AWTEvent.MOUSE_EVENT_MASK);
+		};
+		Toolkit.getDefaultToolkit().addAWTEventListener(awtEventListener, AWTEvent.MOUSE_EVENT_MASK);
 
-		UIManager.addPropertyChangeListener(e -> {
+		propertyChangeListener = e -> {
 			if ("lookAndFeel".equals(e.getPropertyName())) {
 				SwingUtilities.invokeLater(() -> {
 					if (activePanel != null) {
@@ -90,7 +93,13 @@ public class ActiveDockableHighlighter {
 				});
 
 			}
-		});
+		};
+		UIManager.addPropertyChangeListener(propertyChangeListener);
+	}
+
+	public void removeListeners() {
+		Toolkit.getDefaultToolkit().removeAWTEventListener(awtEventListener);
+		UIManager.removePropertyChangeListener(propertyChangeListener);
 	}
 
 	private void setSelectedBorder() {
