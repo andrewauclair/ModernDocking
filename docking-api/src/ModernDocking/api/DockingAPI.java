@@ -35,6 +35,7 @@ import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeListener;
 import java.util.*;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class DockingAPI {
     private final DockingInternal internals = new DockingInternal(this);
 
     // the applications main frame
-    private final Window mainWindow;
+    private Window mainWindow;
 
     // this may look unused, but we need to create an instance of it to make it work
     private final ActiveDockableHighlighter activeDockableHighlighter = new ActiveDockableHighlighter(this);
@@ -60,6 +61,13 @@ public class DockingAPI {
     private final DockingStateAPI dockingState = new DockingStateAPI(this);
 
     private final LayoutPersistenceAPI layoutPersistence = new LayoutPersistenceAPI(this);
+
+    // listen for L&F changes so that we can update dockable panels properly when not displayed
+    private final PropertyChangeListener propertyChangeListener = e -> {
+        if ("lookAndFeel".equals(e.getPropertyName())) {
+            SwingUtilities.invokeLater(internals::updateLAF);
+        }
+    };
 
     private boolean deregistering = false;
 
@@ -78,12 +86,25 @@ public class DockingAPI {
     protected DockingAPI(Window mainWindow) {
         this.mainWindow = mainWindow;
 
-        // listen for L&F changes so that we can update dockable panels properly when not displayed
-        UIManager.addPropertyChangeListener(e -> {
-            if ("lookAndFeel".equals(e.getPropertyName())) {
-                SwingUtilities.invokeLater(internals::updateLAF);
-            }
-        });
+        UIManager.addPropertyChangeListener(propertyChangeListener);
+    }
+
+    /**
+     * Uninitialize the docking framework so that it can be initialized again with a new window
+     */
+    public void uninitialize() {
+        // deregister all dockables and panels
+        deregisterAllDockables();
+        deregisterAllDockingPanels();
+
+        // remove reference to window so it can be cleaned up
+        mainWindow = null;
+
+        activeDockableHighlighter.removeListeners();
+
+        UIManager.removePropertyChangeListener(propertyChangeListener);
+
+        DockingInternal.remove(this);
     }
 
     /**
