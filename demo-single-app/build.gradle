@@ -19,8 +19,6 @@ sourceSets.main.java.srcDirs = ['src']
 sourceSets.test.java.srcDirs = ['test']
 sourceSets.main.resources.srcDirs = ['resources']
 
-version = "0.10.0"
-
 dependencies {
     implementation project(':docking-api')
     implementation project(':docking-ui')

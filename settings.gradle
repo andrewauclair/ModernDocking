@@ -1,4 +1,4 @@
-rootProject.name = 'root'
+rootProject.name = 'Modern Docking'
 
 include ':docking-api'
 include ':docking-ui'
