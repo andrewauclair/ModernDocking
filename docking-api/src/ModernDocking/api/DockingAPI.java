@@ -36,6 +36,7 @@ import ModernDocking.ui.ToolbarLocation;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * Single instance of the docking framework. Useful when a single JVM is to host multiple instances of an application
@@ -156,6 +157,10 @@ public class DockingAPI {
         finally {
             deregistering = false;
         }
+    }
+
+    public List<Dockable> getDockables() {
+        return internals.getDockables();
     }
 
     /**
