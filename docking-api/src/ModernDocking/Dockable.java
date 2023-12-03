@@ -175,6 +175,10 @@ public interface Dockable {
 		return false;
 	}
 
+	default int getTabPosition() {
+		return SwingConstants.BOTTOM;
+	}
+
 	/**
 	 * add the more options to the popup menu. defaults to an empty block to handle the case of hasMoreOptions() = false
 	 *

@@ -21,6 +21,8 @@ SOFTWARE.
  */
 package ModernDocking.settings;
 
+import ModernDocking.Dockable;
+
 import javax.swing.*;
 
 public class Settings {
@@ -30,6 +32,10 @@ public class Settings {
 
     public static boolean alwaysDisplayTabsMode() {
         return alwaysDisplayTabsMode;
+    }
+
+    public static boolean alwaysDisplayTabsMode(Dockable dockable) {
+        return alwaysDisplayTabsMode || dockable.getTabPosition() == SwingConstants.TOP;
     }
 
     public static void setAlwaysDisplayTabMode(boolean alwaysDisplayTabsMode) {

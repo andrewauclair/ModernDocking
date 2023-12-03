@@ -114,7 +114,7 @@ public class DockedSimplePanel extends DockingPanel {
 
 			DockingPanel newPanel;
 
-			if (Settings.alwaysDisplayTabsMode()) {
+			if (Settings.alwaysDisplayTabsMode(wrapper.getDockable())) {
 				newPanel = new DockedTabbedPanel(docking, wrapper);
 			}
 			else {

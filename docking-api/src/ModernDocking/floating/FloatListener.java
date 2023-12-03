@@ -346,7 +346,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		RootDockingPanelAPI currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
 
 		if (floatingPanel instanceof DisplayPanel) {
-			if (Settings.alwaysDisplayTabsMode()) {
+			if (Settings.alwaysDisplayTabsMode(((DisplayPanel) floatingPanel).getWrapper().getDockable())) {
 				floatingFrame = new TempFloatingFrame(Collections.singletonList(((DisplayPanel) floatingPanel).getWrapper()), 0, source, floatingPanel.getSize());
 			}
 			else {

@@ -283,7 +283,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 
 		DockingPanel newPanel;
 
-		if (Settings.alwaysDisplayTabsMode()) {
+		if (Settings.alwaysDisplayTabsMode(wrapper.getDockable())) {
 			newPanel = new DockedTabbedPanel(docking, wrapper);
 		}
 		else {

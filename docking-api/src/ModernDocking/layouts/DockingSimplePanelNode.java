@@ -23,6 +23,7 @@ package ModernDocking.layouts;
 
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
+import ModernDocking.internal.DockingInternal;
 import ModernDocking.settings.Settings;
 
 import javax.swing.*;
@@ -100,7 +101,7 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 			DockingLayoutNode left;
 			DockingLayoutNode right;
 
-			if (Settings.alwaysDisplayTabsMode()) {
+			if (Settings.alwaysDisplayTabsMode(DockingInternal.get(docking).getDockable(persistentID))) {
 				if (orientation == JSplitPane.HORIZONTAL_SPLIT) {
 					left = region == DockingRegion.EAST ? this : new DockingTabPanelNode(docking, persistentID);
 					right = region == DockingRegion.EAST ? new DockingTabPanelNode(docking, persistentID) : this;
