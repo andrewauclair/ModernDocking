@@ -28,6 +28,7 @@ import ModernDocking.event.MaximizeListener;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -88,6 +89,10 @@ public class Docking {
      */
     public static void deregisterAllDockables() {
         instance.deregisterAllDockables();
+    }
+
+    public static List<Dockable> getDockables() {
+        return instance.getDockables();
     }
 
     /**
