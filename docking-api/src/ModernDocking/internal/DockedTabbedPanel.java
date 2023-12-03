@@ -81,7 +81,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		// we only support tabs on top if we have FlatLaf because we can add a trailing component for our menu
 		boolean usingFlatLaf = tabs.getUI().getClass().getPackageName().startsWith("com.formdev.flatlaf");
 
-		if (Settings.alwaysDisplayTabsMode() && usingFlatLaf) {
+		if (Settings.alwaysDisplayTabsMode(dockable.getDockable()) && usingFlatLaf) {
 			tabs.setTabPlacement(JTabbedPane.TOP);
 		}
 		else {
@@ -90,7 +90,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 		tabs.setTabLayoutPolicy(Settings.getTabLayoutPolicy());
 
-		if (Settings.alwaysDisplayTabsMode()) {
+		if (Settings.alwaysDisplayTabsMode(dockable.getDockable())) {
 			configureTrailingComponent();
 		}
 
@@ -179,12 +179,17 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		panels.add(dockable);
 		tabs.add(dockable.getDockable().getTabText(), dockable.getDisplayPanel());
 
+		// if any of the dockables use top tab position, switch this tabbedpanel to top tabs
+		if (tabs.getTabPlacement() != SwingConstants.TOP && dockable.getDockable().getTabPosition() == SwingConstants.TOP) {
+			tabs.setTabPlacement(SwingConstants.TOP);
+		}
+
 		tabs.setToolTipTextAt(tabs.getTabCount() - 1, dockable.getDockable().getTabTooltip());
 		tabs.setIconAt(tabs.getTabCount() - 1, dockable.getDockable().getIcon());
 		tabs.setSelectedIndex(tabs.getTabCount() - 1);
 		selectedTab = tabs.getSelectedIndex();
 
-		if (Settings.alwaysDisplayTabsMode() && dockable.getDockable().isClosable()) {
+		if (Settings.alwaysDisplayTabsMode(dockable.getDockable()) && dockable.getDockable().isClosable()) {
 			dockable.getDisplayPanel().putClientProperty("JTabbedPane.tabClosable", true);
 		}
 
@@ -235,7 +240,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 			DockingPanel newPanel;
 
-			if (Settings.alwaysDisplayTabsMode()) {
+			if (Settings.alwaysDisplayTabsMode(wrapper.getDockable())) {
 				newPanel = new DockedTabbedPanel(docking, wrapper);
 			}
 			else {
@@ -290,7 +295,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	public void undock(Dockable dockable) {
 		removePanel(DockingInternal.get(docking).getWrapper(dockable));
 
-		if (!Settings.alwaysDisplayTabsMode() && tabs.getTabCount() == 1 && parent != null) {
+		if (!Settings.alwaysDisplayTabsMode(dockable) && tabs.getTabCount() == 1 && parent != null) {
 			parent.replaceChild(this, new DockedSimplePanel(docking, panels.get(0)));
 		}
 

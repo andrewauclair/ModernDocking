@@ -261,7 +261,7 @@ public class RootDockingPanelAPI extends DockingPanel {
 		if (panel != null) {
 			panel.dock(dockable, region, dividerProportion);
 		}
-		else if (Settings.alwaysDisplayTabsMode()) {
+		else if (Settings.alwaysDisplayTabsMode(dockable)) {
 			setPanel(new DockedTabbedPanel(docking, wrapper));
 			wrapper.setWindow(window);
 		}

@@ -47,7 +47,7 @@ public class DockingLayoutRootNode implements DockingLayoutNode {
         if (node != null) {
             node.dock(persistentID, region, dividerProportion);
         }
-        else if (Settings.alwaysDisplayTabsMode()) {
+        else if (Settings.alwaysDisplayTabsMode(DockingInternal.get(docking).getDockable(persistentID))) {
             node = new DockingTabPanelNode(docking, persistentID);
             node.setParent(this);
         }

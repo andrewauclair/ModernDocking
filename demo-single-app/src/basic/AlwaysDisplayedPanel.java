@@ -21,6 +21,8 @@ SOFTWARE.
  */
 package basic;
 
+import javax.swing.*;
+
 // Docking panel that is always displayed and cannot be closed
 public class AlwaysDisplayedPanel extends SimplePanel {
 	// create a new basic.AlwaysDisplayedPanel with the given title and persistentID
@@ -41,5 +43,10 @@ public class AlwaysDisplayedPanel extends SimplePanel {
 	@Override
 	public boolean isLimitedToRoot() {
 		return true;
+	}
+
+	@Override
+	public int getTabPosition() {
+		return SwingConstants.TOP;
 	}
 }
