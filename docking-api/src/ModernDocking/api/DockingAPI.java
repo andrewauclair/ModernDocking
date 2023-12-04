@@ -609,10 +609,10 @@ public class DockingAPI {
 
         wrapper.setRoot(root);
 
-        if (isUnpinned(dockable)) {
+        if (isHidden(dockable)) {
             root.undock(dockable);
             wrapper.setParent(null);
-            wrapper.setUnpinned(false);
+            wrapper.setHidden(false);
         }
         else {
             wrapper.getParent().undock(dockable);
@@ -661,8 +661,8 @@ public class DockingAPI {
      * @param persistentID The persistentID of the dockable to check
      * @return Whether the dockable is unpinned
      */
-    public boolean isUnpinned(String persistentID) {
-        return isUnpinned(internals.getDockable(persistentID));
+    public boolean isHidden(String persistentID) {
+        return isHidden(internals.getDockable(persistentID));
     }
 
     /**
@@ -671,8 +671,8 @@ public class DockingAPI {
      * @param dockable The dockable to check
      * @return Whether the dockable is unpinned
      */
-    public boolean isUnpinned(Dockable dockable) {
-        return internals.getWrapper(dockable).isUnpinned();
+    public boolean isHidden(Dockable dockable) {
+        return internals.getWrapper(dockable).isHidden();
     }
 
     /**
@@ -751,6 +751,14 @@ public class DockingAPI {
         }
     }
 
+    public void autoShowDockable(Dockable dockable) {
+        pinDockable(dockable);
+    }
+
+    public void autoHideDockable(Dockable dockable) {
+        unpinDockable(dockable);
+    }
+
     /**
      * pin a dockable. only valid if the dockable is unpinned
      *
@@ -760,12 +768,12 @@ public class DockingAPI {
         Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
         RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
 
-        if (internals.getWrapper(dockable).isUnpinned()) {
-            root.setDockablePinned(dockable);
+        if (internals.getWrapper(dockable).isHidden()) {
+            root.setDockableShown(dockable);
 
-            internals.getWrapper(dockable).setUnpinned(false);
+            internals.getWrapper(dockable).setHidden(false);
 
-            DockingListeners.firePinnedEvent(dockable);
+            DockingListeners.fireAutoShownEvent(dockable);
         }
     }
 
@@ -774,7 +782,7 @@ public class DockingAPI {
      * @param dockable Dockable to unpin
      */
     public void unpinDockable(Dockable dockable) {
-        if (isUnpinned(dockable)) {
+        if (isHidden(dockable)) {
             return;
         }
 
@@ -832,7 +840,7 @@ public class DockingAPI {
      * @param location Toolbar location to unpin the dockable to
      */
     public void unpinDockable(Dockable dockable, ToolbarLocation location, Window window, RootDockingPanelAPI root) {
-        if (isUnpinned(dockable)) {
+        if (isHidden(dockable)) {
             return;
         }
 
@@ -852,11 +860,11 @@ public class DockingAPI {
 
         // reset the window, undocking the dockable sets it to null
         internals.getWrapper(dockable).setWindow(window);
-        internals.getWrapper(dockable).setUnpinned(true);
+        internals.getWrapper(dockable).setHidden(true);
 
-        root.setDockableUnpinned(dockable, location);
+        root.setDockableHidden(dockable, location);
 
-        DockingListeners.fireUnpinnedEvent(dockable);
+        DockingListeners.fireAutoHiddenEvent(dockable);
         DockingListeners.fireHiddenEvent(dockable);
     }
 

@@ -164,25 +164,25 @@ public class DockingStateAPI {
 
         restoreProperSplitLocations(root);
 
-        for (String id : layout.getWestUnpinnedToolbarIDs()) {
+        for (String id : layout.getWestAutoHideToolbarIDs()) {
             Dockable dockable = getDockable(docking, id);
-            root.setDockableUnpinned(dockable, ToolbarLocation.WEST);
-            root.hideUnpinnedPanels();
-            getWrapper(dockable).setUnpinned(true);
+            root.setDockableHidden(dockable, ToolbarLocation.WEST);
+            root.hideHiddenPanels();
+            getWrapper(dockable).setHidden(true);
         }
 
-        for (String id : layout.getEastUnpinnedToolbarIDs()) {
+        for (String id : layout.getEastAutoHideToolbarIDs()) {
             Dockable dockable = getDockable(docking, id);
-            root.setDockableUnpinned(dockable, ToolbarLocation.EAST);
-            root.hideUnpinnedPanels();
-            getWrapper(dockable).setUnpinned(true);
+            root.setDockableHidden(dockable, ToolbarLocation.EAST);
+            root.hideHiddenPanels();
+            getWrapper(dockable).setHidden(true);
         }
 
-        for (String id : layout.getSouthUnpinnedToolbarIDs()) {
+        for (String id : layout.getSouthAutoHideToolbarIDs()) {
             Dockable dockable = getDockable(docking, id);
-            root.setDockableUnpinned(dockable, ToolbarLocation.SOUTH);
-            root.hideUnpinnedPanels();
-            getWrapper(dockable).setUnpinned(true);
+            root.setDockableHidden(dockable, ToolbarLocation.SOUTH);
+            root.hideHiddenPanels();
+            getWrapper(dockable).setHidden(true);
         }
 
         if (layout.getMaximizedDockable() != null) {

@@ -109,7 +109,7 @@ public class DockingListeners {
 	 *
 	 * @param dockable Dockable that was pinned
 	 */
-	public static void firePinnedEvent(Dockable dockable) {
+	public static void fireAutoShownEvent(Dockable dockable) {
 		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.PINNED, dockable)));
 	}
 
@@ -118,7 +118,7 @@ public class DockingListeners {
 	 *
 	 * @param dockable Dockable that was unpinned
 	 */
-	public static void fireUnpinnedEvent(Dockable dockable) {
+	public static void fireAutoHiddenEvent(Dockable dockable) {
 		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.UNPINNED, dockable)));
 	}
 

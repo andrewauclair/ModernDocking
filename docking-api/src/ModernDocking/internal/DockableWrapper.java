@@ -52,7 +52,7 @@ public class DockableWrapper {
 	private final FloatListener floatListener;
 
 	private boolean maximized = false;
-	private boolean unpinned = false;
+	private boolean hidden = false;
 	private RootDockingPanelAPI root;
 
 	private final Map<String, String> properties = new HashMap<>();
@@ -154,17 +154,17 @@ public class DockableWrapper {
 	 *
 	 * @return Whether the dockable is unpinned
 	 */
-	public boolean isUnpinned() {
-		return unpinned;
+	public boolean isHidden() {
+		return hidden;
 	}
 
 	/**
-	 * Set the dockable to unpinned
+	 * Set the dockable to hidden
 	 *
-	 * @param unpinned Unpinned flag
+	 * @param hidden Hidden flag
 	 */
-	public void setUnpinned(boolean unpinned) {
-		this.unpinned = unpinned;
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
 
 		displayPanel.parentChanged();
 	}

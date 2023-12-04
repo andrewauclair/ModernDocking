@@ -94,9 +94,9 @@ public class DockingLayouts {
 	public static WindowLayout layoutFromRoot(DockingAPI docking, RootDockingPanelAPI root) {
 		WindowLayout layout = new WindowLayout(DockingComponentUtils.windowForRoot(docking, root), panelToNode(docking, root.getPanel()));
 
-		layout.setWestUnpinnedToolbarIDs(root.getWestUnpinnedToolbarIDs());
-		layout.setEastUnpinnedToolbarIDs(root.getEastUnpinnedToolbarIDs());
-		layout.setSouthUnpinnedToolbarIDs(root.getSouthUnpinnedToolbarIDs());
+		layout.setWestAutoHideToolbarIDs(root.getWestAutoHideToolbarIDs());
+		layout.setEastAutoHideToolbarIDs(root.getEastAutoHideToolbarIDs());
+		layout.setSouthAutoHideToolbarIDs(root.getSouthAutoHideToolbarIDs());
 
 		return layout;
 	}

@@ -141,9 +141,15 @@ public interface Dockable {
 	 * pinning is supported on all Modern Docking FloatingFrames and can be enabled for other frames with configurePinning in Docking
 	 *
 	 * @return True if pinning is allowed
+	 *
+	 * @deprecated Replaced with isAutoHideAllowed. Will be removed in future release.
 	 */
 	default boolean isPinningAllowed() {
 		return false;
+	}
+
+	default boolean isAutoHideAllowed() {
+		return isPinningAllowed();
 	}
 
 	/**

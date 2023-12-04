@@ -307,7 +307,7 @@ public class RootDockingPanelAPI extends DockingPanel {
 	 *
 	 * @param dockable Dockable to pin
 	 */
-	public void setDockablePinned(Dockable dockable) {
+	public void setDockableShown(Dockable dockable) {
 		// if the dockable is currently unpinned, remove it from the toolbar, then adjust the toolbars
 		if (supportedToolbars.contains(ToolbarLocation.WEST) && westToolbar.hasDockable(dockable)) {
 			westToolbar.removeDockable(dockable);
@@ -334,7 +334,7 @@ public class RootDockingPanelAPI extends DockingPanel {
 	 * @param dockable Dockable to unpin
 	 * @param location Toolbar to unpin to
 	 */
-	public void setDockableUnpinned(Dockable dockable, ToolbarLocation location) {
+	public void setDockableHidden(Dockable dockable, ToolbarLocation location) {
 		if (!isPinningSupported()) {
 			return;
 		}
@@ -369,7 +369,7 @@ public class RootDockingPanelAPI extends DockingPanel {
 	 * @param location Toolbar location
 	 * @return List of unpinned dockables
 	 */
-	public List<String> unpinnedPersistentIDs(ToolbarLocation location) {
+	public List<String> hiddenPersistentIDs(ToolbarLocation location) {
 		switch (location) {
 			case WEST: return westToolbar.getPersistentIDs();
 			case EAST: return eastToolbar.getPersistentIDs();
@@ -431,7 +431,7 @@ public class RootDockingPanelAPI extends DockingPanel {
 	/**
 	 * Hide all unpinned panels on the west, south and east toolbars
 	 */
-	public void hideUnpinnedPanels() {
+	public void hideHiddenPanels() {
 		if (westToolbar != null) {
 			westToolbar.hideAll();
 		}
@@ -448,7 +448,7 @@ public class RootDockingPanelAPI extends DockingPanel {
 	 *
 	 * @return Persistent IDs
 	 */
-	public List<String> getWestUnpinnedToolbarIDs() {
+	public List<String> getWestAutoHideToolbarIDs() {
 		if (westToolbar == null) {
 			return Collections.emptyList();
 		}
@@ -460,7 +460,7 @@ public class RootDockingPanelAPI extends DockingPanel {
 	 *
 	 * @return Persistent IDs
 	 */
-	public List<String> getEastUnpinnedToolbarIDs() {
+	public List<String> getEastAutoHideToolbarIDs() {
 		if (eastToolbar == null) {
 			return Collections.emptyList();
 		}
@@ -472,7 +472,7 @@ public class RootDockingPanelAPI extends DockingPanel {
 	 *
 	 * @return Persistent IDs
 	 */
-	public List<String> getSouthUnpinnedToolbarIDs() {
+	public List<String> getSouthAutoHideToolbarIDs() {
 		if (southToolbar == null) {
 			return Collections.emptyList();
 		}

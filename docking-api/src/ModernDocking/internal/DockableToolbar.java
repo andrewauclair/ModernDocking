@@ -53,9 +53,9 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	private static class Entry {
 		private final Dockable dockable;
 		private final JToggleButton button;
-		private final DockedUnpinnedPanel panel;
+		private final DockedAutoHidePanel panel;
 
-		private Entry(Dockable dockable, JToggleButton button, DockedUnpinnedPanel panel) {
+		private Entry(Dockable dockable, JToggleButton button, DockedAutoHidePanel panel) {
 			this.dockable = dockable;
 			this.button = button;
 			this.panel = panel;
@@ -204,7 +204,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 				button.setText(dockable.getTabText());
 			}
 
-			DockedUnpinnedPanel panel = new DockedUnpinnedPanel(docking, dockable, root, this);
+			DockedAutoHidePanel panel = new DockedAutoHidePanel(docking, dockable, root, this);
 
 			DockingInternal.get(docking).getWrapper(dockable).setWindow(window);
 
