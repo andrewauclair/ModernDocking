@@ -22,14 +22,14 @@ sourceSets.main.resources.srcDirs = ['resources']
 
 base {
 	group = "io.github.andrewauclair"
-	archivesBaseName = "modern-docking-ui"
+	archivesName = "modern-docking-ui"
 }
 
 dependencies {
 	implementation project(':docking-api')
 
-	implementation 'com.formdev:flatlaf:3.2'
-	implementation 'com.formdev:flatlaf-extras:3.2'
+	implementation 'com.formdev:flatlaf:3.2.5'
+	implementation 'com.formdev:flatlaf-extras:3.2.5'
 }
 
 repositories {
