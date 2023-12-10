@@ -22,7 +22,7 @@ sourceSets.main.resources.srcDirs = ['resources']
 
 base {
 	group = "io.github.andrewauclair"
-	archivesBaseName = "modern-docking-single-app"
+	archivesName = "modern-docking-single-app"
 }
 
 dependencies {
