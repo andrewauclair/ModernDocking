@@ -64,7 +64,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 */
 	private int selectedTab = -1;
 
-	private static Icon settingsIcon = new ImageIcon(Objects.requireNonNull(DockedTabbedPanel.class.getResource("/icons/settings.png")));
+	private static Icon settingsIcon = new ImageIcon(Objects.requireNonNull(DockedTabbedPanel.class.getResource("/api_icons/settings.png")));
 
 	/**
 	 * Create a new instance of DockedTabbedPanel
