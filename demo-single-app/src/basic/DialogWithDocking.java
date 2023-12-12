@@ -23,6 +23,8 @@ package basic;
 
 import ModernDocking.*;
 import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.app.Docking;
+import ModernDocking.app.RootDockingPanel;
 
 import javax.swing.*;
 

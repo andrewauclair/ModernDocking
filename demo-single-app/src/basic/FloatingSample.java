@@ -22,9 +22,9 @@ SOFTWARE.
 package basic;
 
 import ModernDocking.Dockable;
-import ModernDocking.Docking;
+import ModernDocking.app.Docking;
 import ModernDocking.DockingRegion;
-import ModernDocking.RootDockingPanel;
+import ModernDocking.app.RootDockingPanel;
 
 import javax.swing.*;
 import java.awt.*;

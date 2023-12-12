@@ -1,6 +1,6 @@
 package basic;
 
-import ModernDocking.AppState;
+import ModernDocking.app.AppState;
 import ModernDocking.DockableStyle;
 import ModernDocking.DockingProperty;
 
