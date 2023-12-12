@@ -10,6 +10,7 @@ module modern_docking.api {
 	exports ModernDocking.exception;
 	exports ModernDocking.layouts;
 	exports ModernDocking.persist;
+ exports ModernDocking.settings;
 	exports ModernDocking.ui;
     exports ModernDocking.api;
 	exports ModernDocking.internal;
