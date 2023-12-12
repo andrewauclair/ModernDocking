@@ -1,7 +1,7 @@
 /**
  * Module for the Modern Docking framework
  */
-module modern.docking.api {
+module modern_docking.api {
 	requires java.desktop;
     requires java.logging;
 
