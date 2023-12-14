@@ -33,12 +33,12 @@ public class FlatLafHeaderUI extends DefaultHeaderUI implements DockingHeaderUI 
 	/**
 	 * Settings icon for the header. Uses an SVG icon for sharper icons
 	 */
-	private final FlatSVGIcon settingsIcon = new FlatSVGIcon("ui_ext_icons/settings.svg");
+	private final FlatSVGIcon settingsIcon = new FlatSVGIcon(FlatLafHeaderUI.class.getResource("/ui_ext_icons/settings.svg"));
 
 	/**
 	 * Close icon for the header. Uses an SVG icon for sharper icons
 	 */
-	private final FlatSVGIcon closeIcon = new FlatSVGIcon("ui_ext_icons/close.svg");
+	private final FlatSVGIcon closeIcon = new FlatSVGIcon(FlatLafHeaderUI.class.getResource("/ui_ext_icons/close.svg"));
 
 	/**
 	 * Construct a new FlatLafHeaderUI
@@ -48,6 +48,14 @@ public class FlatLafHeaderUI extends DefaultHeaderUI implements DockingHeaderUI 
 	 */
 	public FlatLafHeaderUI(HeaderController headerController, HeaderModel headerModel) {
 		super(headerController, headerModel);
+
+		if (!settingsIcon.hasFound()) {
+			throw new RuntimeException("settings.svg icon not found");
+		}
+
+		if (!closeIcon.hasFound()) {
+			throw new RuntimeException("close.svg icon not found");
+		}
 
 		setBackground(DockingSettings.getHeaderBackground());
 		Color foreground = DockingSettings.getHeaderForeground();

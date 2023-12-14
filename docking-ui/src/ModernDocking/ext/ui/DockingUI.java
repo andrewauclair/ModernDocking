@@ -42,7 +42,11 @@ public class DockingUI {
 
         DockingInternal.createHeaderUI = FlatLafHeaderUI::new;
 
-        FlatSVGIcon settingsIcon = new FlatSVGIcon("ui_ext_icons/settings.svg");
+        FlatSVGIcon settingsIcon = new FlatSVGIcon(DockingUI.class.getResource("/ui_ext_icons/settings.svg"));
+
+        if (!settingsIcon.hasFound()) {
+            throw new RuntimeException("settings.svg icon not found");
+        }
 
         DockedTabbedPanel.setSettingsIcon(settingsIcon);
 
