@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,45 +19,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package ModernDocking;
+package ModernDocking.app;
 
 import ModernDocking.api.DockingAPI;
-import ModernDocking.event.DockingLayoutEvent;
-import ModernDocking.event.DockingLayoutListener;
-import ModernDocking.layouts.DockingLayouts;
+import ModernDocking.api.DockingStateAPI;
 
-import javax.swing.*;
-
-/**
- * Custom JMenu that displays all the layouts in DockingLayouts as menu items
- */
-public class LayoutsMenu extends JMenu implements DockingLayoutListener {
-	private final DockingAPI docking;
-
-	/**
-	 * Create a new layouts menu. Add a listener for when layouts change.
-	 */
-	public LayoutsMenu(DockingAPI docking) {
-		super("Layouts");
-		this.docking = docking;
-
-		DockingLayouts.addLayoutsListener(this);
-
-		rebuildOptions();
-	}
-	private void rebuildOptions() {
-		removeAll();
-
-		for (String name : DockingLayouts.getLayoutNames()) {
-			JMenuItem item = new JMenuItem(name);
-			item.addActionListener(e -> docking.getDockingState().restoreApplicationLayout(DockingLayouts.getLayout(name)));
-
-			add(item);
-		}
-	}
-
-	@Override
-	public void layoutChange(DockingLayoutEvent e) {
-		rebuildOptions();
-	}
+public class DockingState extends DockingStateAPI {
+    public DockingState(DockingAPI docking) {
+        super(docking);
+    }
 }

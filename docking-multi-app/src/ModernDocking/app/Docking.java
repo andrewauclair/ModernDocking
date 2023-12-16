@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Andrew Auclair
+Copyright (c) 2022-2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,23 +19,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package ModernDocking;
+package ModernDocking.app;
 
-import ModernDocking.api.RootDockingPanelAPI;
-import ModernDocking.ui.ToolbarLocation;
+import ModernDocking.api.DockingAPI;
 
 import java.awt.*;
-import java.util.EnumSet;
 
-public class RootDockingPanel extends RootDockingPanelAPI {
-    public RootDockingPanel() {
-    }
-
-    public RootDockingPanel(Window window) {
-        super(Docking.getSingleInstance(), window);
-    }
-
-    public RootDockingPanel(Window window, EnumSet<ToolbarLocation> supportedToolbars) {
-        super(Docking.getSingleInstance(), window, supportedToolbars);
+/**
+ * Convenience class for apps that only need a single instance of the docking framework. Working with the static functions
+ * is easier than passing an instance of the Docking class all over the app codebase.
+ */
+public class Docking extends DockingAPI {
+    public Docking(Window mainWindow) {
+        super(mainWindow);
     }
 }

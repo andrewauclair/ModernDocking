@@ -19,13 +19,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package ModernDocking;
+package ModernDocking.app;
 
-import ModernDocking.api.DockingAPI;
-import ModernDocking.api.WindowLayoutBuilderAPI;
+import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.ui.ToolbarLocation;
 
-public class WindowLayoutBuilder extends WindowLayoutBuilderAPI {
-    public WindowLayoutBuilder(DockingAPI docking, String firstID) {
-        super(docking, firstID);
+import java.awt.*;
+import java.util.EnumSet;
+
+public class RootDockingPanel extends RootDockingPanelAPI {
+    public RootDockingPanel() {
+    }
+
+    public RootDockingPanel(Window window) {
+        super(Docking.getSingleInstance(), window);
+    }
+
+    public RootDockingPanel(Window window, EnumSet<ToolbarLocation> supportedToolbars) {
+        super(Docking.getSingleInstance(), window, supportedToolbars);
     }
 }

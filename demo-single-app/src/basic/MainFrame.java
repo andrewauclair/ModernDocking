@@ -22,6 +22,7 @@ SOFTWARE.
 package basic;
 
 import ModernDocking.*;
+import ModernDocking.app.*;
 import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.DockingLayouts;
@@ -31,7 +32,7 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
-import docking.ui.DockingUI;
+import ModernDocking.ext.ui.DockingUI;
 import exception.FailOnThreadViolationRepaintManager;
 import picocli.CommandLine;
 

@@ -19,13 +19,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package ModernDocking;
+package ModernDocking.app;
 
 import ModernDocking.api.DockingAPI;
-import ModernDocking.api.LayoutPersistenceAPI;
+import ModernDocking.api.WindowLayoutBuilderAPI;
 
-public class LayoutPersistence extends LayoutPersistenceAPI {
-    public LayoutPersistence(DockingAPI docking) {
-        super(docking);
+public class WindowLayoutBuilder extends WindowLayoutBuilderAPI {
+    public WindowLayoutBuilder(DockingAPI docking, String firstID) {
+        super(docking, firstID);
     }
 }

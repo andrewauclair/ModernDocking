@@ -21,10 +21,10 @@ SOFTWARE.
  */
 package packets;
 
-import ModernDocking.AppState;
-import ModernDocking.DockableMenuItem;
-import ModernDocking.Docking;
-import ModernDocking.RootDockingPanel;
+import ModernDocking.app.AppState;
+import ModernDocking.app.DockableMenuItem;
+import ModernDocking.app.Docking;
+import ModernDocking.app.RootDockingPanel;
 import ModernDocking.exception.DockingLayoutException;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;

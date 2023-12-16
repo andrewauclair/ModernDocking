@@ -23,7 +23,7 @@ package packets;
 
 import ModernDocking.Dockable;
 import ModernDocking.DockableStyle;
-import ModernDocking.Docking;
+import ModernDocking.app.Docking;
 
 import javax.swing.*;
 

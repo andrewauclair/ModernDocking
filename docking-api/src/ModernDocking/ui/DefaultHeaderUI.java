@@ -115,8 +115,8 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		initialized = true;
 
 		try {
-			settings.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/settings.png"))));
-			close.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/close.png"))));
+			settings.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/api_icons/settings.png"))));
+			close.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/api_icons/close.png"))));
 		}
 		catch (Exception ignored) {
 		}

@@ -24,11 +24,16 @@ package ModernDocking.api;
 import ModernDocking.DockingRegion;
 import ModernDocking.layouts.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Utility to help create layouts without directly applying them to the actual app
  */
 public class WindowLayoutBuilderAPI {
 	private final DockingLayoutRootNode rootNode;
+
+	private final Map<String, Map<String, String>> properties = new HashMap<>();
 
 	/**
 	 * Start building a new layout
@@ -102,6 +107,16 @@ public class WindowLayoutBuilderAPI {
 		if (node.getParent() != null && node.getParent() instanceof DockingTabPanelNode) {
 			((DockingTabPanelNode) node.getParent()).bringToFront(node);
 		}
+
+		return this;
+	}
+
+	public WindowLayoutBuilderAPI addProperty(String persistentID, String property, String value) {
+		Map<String, String> props = properties.getOrDefault(persistentID, new HashMap<>());
+
+		props.put(property, value);
+
+		properties.put(persistentID, props);
 
 		return this;
 	}

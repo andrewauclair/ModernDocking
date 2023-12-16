@@ -21,12 +21,6 @@ SOFTWARE.
  */
 package basic;
 
-import docking.ui.DockingUI;
-import picocli.CommandLine;
-
-import javax.swing.*;
-import java.io.File;
-
 public class MultipleInstances {
 
 }
