@@ -27,9 +27,12 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeListener;
 
 public class DockingUI {
     private static boolean initialized = false;
+    private static PropertyChangeListener propertyChangeListener;
+    private static FlatSVGIcon settingsIcon = new FlatSVGIcon(DockingUI.class.getResource("/ui_ext_icons/settings.svg"));
 
     /**
      * Initialize the FlatLaf UI extension. This reconfigures the docking framework to use FlatLaf SVG icons and color filters.
@@ -42,8 +45,6 @@ public class DockingUI {
 
         DockingInternal.createHeaderUI = FlatLafHeaderUI::new;
 
-        FlatSVGIcon settingsIcon = new FlatSVGIcon(DockingUI.class.getResource("/ui_ext_icons/settings.svg"));
-
         if (!settingsIcon.hasFound()) {
             throw new RuntimeException("settings.svg icon not found");
         }
@@ -54,13 +55,40 @@ public class DockingUI {
 
         settingsIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> foreground));
 
-        UIManager.addPropertyChangeListener(e -> {
+        propertyChangeListener = e -> {
             if ("lookAndFeel".equals(e.getPropertyName())) {
                 SwingUtilities.invokeLater(() -> {
                     Color newForeground = UIManager.getColor("TableHeader.foreground");
                     settingsIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> newForeground));
                 });
             }
-        });
+        };
+        UIManager.addPropertyChangeListener(propertyChangeListener);
+    }
+
+    public static void setSettingsIconColorProperty(String property) {
+        if (!initialized) {
+            return;
+        }
+
+        Color foreground = UIManager.getColor(property);
+
+        if (foreground == null) {
+            throw new RuntimeException("Color for UI property '" + property + "' not found");
+        }
+
+        settingsIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> foreground));
+
+        UIManager.removePropertyChangeListener(propertyChangeListener);
+
+        propertyChangeListener = e -> {
+            if ("lookAndFeel".equals(e.getPropertyName())) {
+                SwingUtilities.invokeLater(() -> {
+                    Color newForeground = UIManager.getColor("TableHeader.foreground");
+                    settingsIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> newForeground));
+                });
+            }
+        };
+        UIManager.addPropertyChangeListener(propertyChangeListener);
     }
 }
