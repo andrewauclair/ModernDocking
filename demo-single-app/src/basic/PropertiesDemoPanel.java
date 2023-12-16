@@ -21,10 +21,9 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.AppState;
+import ModernDocking.app.AppState;
 import ModernDocking.DockingProperty;
 import ModernDocking.DockingRegion;
-import ModernDocking.internal.DockableProperties;
 
 import javax.swing.*;
 import javax.swing.text.*;

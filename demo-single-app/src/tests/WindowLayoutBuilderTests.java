@@ -22,9 +22,12 @@ SOFTWARE.
 package tests;
 
 import ModernDocking.*;
+import ModernDocking.app.ApplicationLayoutMenuItem;
+import ModernDocking.app.Docking;
+import ModernDocking.app.RootDockingPanel;
+import ModernDocking.app.WindowLayoutBuilder;
 import ModernDocking.event.DockingLayoutEvent;
 import ModernDocking.event.DockingLayoutListener;
-import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.DockingLayouts;
 import basic.SimplePanel;
 import com.formdev.flatlaf.FlatDarkLaf;

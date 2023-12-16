@@ -22,6 +22,9 @@ SOFTWARE.
 package basic;
 
 import ModernDocking.*;
+import ModernDocking.app.AppState;
+import ModernDocking.app.Docking;
+import ModernDocking.app.RootDockingPanel;
 import ModernDocking.exception.DockingLayoutException;
 
 import javax.swing.*;

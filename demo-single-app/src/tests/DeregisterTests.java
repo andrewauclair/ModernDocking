@@ -21,11 +21,11 @@ SOFTWARE.
  */
 package tests;
 
-import ModernDocking.Docking;
+import ModernDocking.app.Docking;
 import ModernDocking.DockingRegion;
-import ModernDocking.RootDockingPanel;
+import ModernDocking.app.RootDockingPanel;
 import ModernDocking.ui.DefaultDockingPanel;
-import docking.ui.DockingUI;
+import ModernDocking.ext.ui.DockingUI;
 
 import javax.swing.*;
 import java.awt.*;
