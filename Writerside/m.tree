@@ -6,6 +6,7 @@
                  name="ModernDocking"
                  start-page="starter-topic.md">
 
+    <toc-element topic="Working-With-Layouts.md"/>
     <toc-element topic="Hello-World.md"/>
     <toc-element topic="starter-topic.md"/>
 </instance-profile>
