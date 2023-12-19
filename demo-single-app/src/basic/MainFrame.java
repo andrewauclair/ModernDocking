@@ -175,6 +175,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		ToolPanel explorer = new ToolPanel("Explorer", "explorer", DockableStyle.VERTICAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
 		ToolPanel output = new OutputPanel("Output", "output", DockableStyle.HORIZONTAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
 		AlwaysDisplayedPanel alwaysDisplayed = new AlwaysDisplayedPanel("always displayed", "always-displayed");
+		ScrollingWithToolbarPanel scrolling = new ScrollingWithToolbarPanel();
 
 		PropertiesDemoPanel propertiesDemoPanel = new PropertiesDemoPanel();
 
@@ -224,6 +225,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		view.add(new DockableMenuItem(() -> ((Dockable) alwaysDisplayed).getPersistentID(), ((Dockable) alwaysDisplayed).getTabText()));
 		view.add(changeText);
 		view.add(actionListenDock(themes));
+		view.add(actionListenDock(scrolling));
 
 		JMenuItem storeCurrentLayout = new JMenuItem("Store Current Layout...");
 		storeCurrentLayout.addActionListener(e -> {
