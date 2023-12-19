@@ -7,6 +7,9 @@
                  start-page="starter-topic.md">
 
     <toc-element topic="Working-With-Layouts.md"/>
+    <toc-element topic="Menu-Items.md"/>
+    <toc-element topic="Modern-Docking-UI.md"/>
+    <toc-element topic="Dockable-Customization.md"/>
     <toc-element topic="Hello-World.md"/>
     <toc-element topic="starter-topic.md"/>
 </instance-profile>
