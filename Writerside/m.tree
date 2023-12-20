@@ -6,6 +6,8 @@
                  name="ModernDocking"
                  start-page="starter-topic.md">
 
+    <toc-element topic="Using-Docking-Handles.md"/>
+    <toc-element topic="User-Facing-Features.md"/>
     <toc-element topic="Working-With-Layouts.md"/>
     <toc-element topic="Menu-Items.md"/>
     <toc-element topic="Modern-Docking-UI.md"/>
