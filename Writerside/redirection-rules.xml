@@ -10,4 +10,8 @@
         <description>Created after removal of "Dockable Customization" from ModernDocking</description>
         <accepts>Dockable-Customization.html</accepts>
     </rule>
+    <rule id="4fb958cf">
+        <description>Created after removal of "Using Docking Handles" from ModernDocking</description>
+        <accepts>Using-Docking-Handles.html</accepts>
+    </rule>
 </rules>
