@@ -9,3 +9,4 @@ ApplicationLayoutMenuItem
 DockableMenuItem
     Displays a single dockable. Shows a checkmark if the dockable is docked. If the dockable is not docked, docks it, if it is docked, it displays it.
 
+show images for these from the example project.
