@@ -1,5 +1,12 @@
 # User Facing Features
 
+Users of your application will interact with several UI components provided by Modern Docking.
+The framework is built around using Java Swing's `JTabbedPane` and `JSplitPane` to provide the docking layouts.
+The positioning of the applications dockable components within these `JTabbedPane`s and `JSplitPane`s is done by dragging the dockables.
+When the dockable is being dragged it will float about the window of the application and show Docking Handles and Docking Regions.
+Docking Handles allow the user to place the dockable precisely where they want it and Docking Regions provide extra visual feedback of this action.
+Docking Regions are also a quick way to "snap" dockables into place without needing to precisely drag to a Docking Handle.
+
 ## Using Docking Handles to Dock
 When dragging a dockable hovering over another dockable will display docking handles in the center of the dockable.
 These handles provide easy access to dock to the North, South, East and West regions.
