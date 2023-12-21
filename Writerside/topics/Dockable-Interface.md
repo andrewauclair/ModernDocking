@@ -18,16 +18,15 @@ Generally, if you wish to modify the return values after creating the dockable c
 
 These two methods do not provide default implementations in the interface and must be implemented by the application.
 
-### getPersistentID
+<procedure title="getPersistentID" id="getPersistentID">
+<p>`getPersistentID` provides a unique ID that the framework can use to refer to the dockable. This is the main piece of information that the application
+and the framework share in order to refer to specific dockables.</p>
+</procedure>
 
-`getPersistentID` provides a unique ID that the framework can use to refer to the dockable. This is the main piece of information that the application
-and the framework share in order to refer to specific dockables.
-
-### getTabText
-
-`getTabText` provides the text that should be displayed on a tab when this dockable is in a `JTabbedPane`.
-
+<procedure title="getTabText" id="getTabText">
+<p>`getTabText` provides the text that should be displayed on a tab when this dockable is in a `JTabbedPane`.</p>
 <note>If the text displayed on the tab ever changes, the application must call <b>Docking.updateTabText</b> with the dockables persistentID to force the framework to update the text. This should be done anytime the text is changed, just in case the dockable is displaying in a JTabbedPane</note>
+</procedure>
 
 ## Optional Methods
 
@@ -50,6 +49,7 @@ if it wishes to change the default.
 Allows the application to specify whether a dockable can be dragged out of its current window and floated on its own as a new window.
 
 <procedure title="isLimitedToRoot" id="isLimitedToRoot">
+<code-block lang="java">boolean isLimitedToRoot()</code-block>
    <p>Allows the application to limit the dockable to the window it was initially docked in.</p>
    <p>Default value is <code>false</code></p>
 </procedure>
@@ -61,13 +61,21 @@ Allows the application to specify whether a dockable can be dragged out of its c
 
 to be renamed
 
-### isClosable
+<procedure title="isClosable" id="isClosable">
+<code-block lang="java">boolean isClosable()</code-block>
+<p>Indicates to the docking framework whether the Dockable component can be closed and undocked.</p>
+<p>Default value is <code>true</code></p>
+</procedure>
 
 ### isPinningAllowed
 
 ### isMinMaxAllowed
 
-### isWrappableInScrollpane
+<procedure title="isWrappableInScrollpane" id="isWrappableInScrollpane">
+<code-block lang="java">boolean isWrappableInScrollpane()</code-block>
+<p>Allows the application to specify whether the docking framework should automatically wrap the Dockable component in a <code>JScrollPane</code>.</p>
+<p>Default value is <code>false</code></p>
+</procedure>
 
 ### getHasMoreOptions
 
