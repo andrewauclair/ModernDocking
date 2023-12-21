@@ -13,12 +13,12 @@ These handles provide easy access to dock to the North, South, East and West reg
 
 
 
-![Docking Handles](../images/docking_handles.gif)
+![Docking Handles](docking_handles.gif)
 
 The dockable can also be docked to any of these regions by hovering over the region itself and dropping the dockable.
 
 
-![Docking Regions](../images/docking_regions.gif)
+![Docking Regions](docking_regions.gif)
 
 The root also has North, South, East and West handles to dock the dockable directly to the root of the panel.
 
