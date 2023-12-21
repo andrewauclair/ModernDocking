@@ -40,22 +40,20 @@ if it wishes to change the default.
 
 ### getTabTooltip
 
-### getIcon
-
-Used by the framework to get the icon for the dockable to use in a `JTabbedPane` tab.
+<procedure title="getIcon" id="getIcon">
+<p>Used by the framework to get the icon for the dockable to use in a `JTabbedPane` tab.</p>
+<p>Default value is <code>null</code></p>
+</procedure>
 
 ### isFloatingAllowed
 
 Allows the application to specify whether a dockable can be dragged out of its current window and floated on its own as a new window.
 
-### isLimitedToRoot
 <procedure title="isLimitedToRoot" id="isLimitedToRoot">
-   <p>Before adding something, create it.</p>
-   <step>Do this.</step>
-   <step>Do that.</step>
+   <p>Allows the application to limit the dockable to the window it was initially docked in.</p>
    <p>Default value is <code>false</code></p>
 </procedure>
-Allows the application to limit the dockable to the window it was initially docked in.
+
 
 ### getStyle
 
