@@ -48,3 +48,6 @@ Modern Docking uses Gradle and can be opened directly in IntelliJ IDEA or any ot
 
 ## Examples
 See basic-demo for a simple example in Example.java and a more complicated example in MainFrame.java.
+
+## Support
+<a href="https://www.buymeacoffee.com/andrewauclair" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>

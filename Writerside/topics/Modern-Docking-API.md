@@ -1,3 +1,3 @@
 # Modern Docking API
 
-Start typing here...
+This section of topics explains the Modern Docking API that can be used by an application.

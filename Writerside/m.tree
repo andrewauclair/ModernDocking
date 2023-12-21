@@ -9,8 +9,8 @@
     <toc-element topic="starter-topic.md"/>
     <toc-element topic="User-Facing-Features.md"/>
     <toc-element topic="Modern-Docking-API.md">
-        <toc-element topic="Dockable-Properties.md"/>
         <toc-element topic="Hello-World.md"/>
+        <toc-element topic="Dockable-Properties.md"/>
         <toc-element topic="Dockable-Interface.md"/>
         <toc-element topic="Docking-Programatically.md"/>
         <toc-element topic="Menu-Items.md"/>
