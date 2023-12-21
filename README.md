@@ -2,37 +2,17 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+![Maven Central](https://img.shields.io/maven-central/v/io.github.andrewauclair/modern-docking-api?label=modern-docking-api)
+
+![Maven Central](https://img.shields.io/maven-central/v/io.github.andrewauclair/modern-docking-single-app?label=modern-docking-single-app)
+![Maven Central](https://img.shields.io/maven-central/v/io.github.andrewauclair/modern-docking-multi-app?label=modern-docking-multi-app)
+
+![Maven Central](https://img.shields.io/maven-central/v/io.github.andrewauclair/modern-docking-ui?label=modern-docking-ui)
+
+
 Modern Docking is a simple framework designed for adding docking features to Java Swing applications. 
 
 There are many existing Java Swing docking frameworks, but they are outdated and no longer maintained. The existing frameworks also suffer from complexity due to customization features.
-
-## Download
-Modern Docking binaries are available on <b>Maven Central.</b> In order to use Modern Docking you will need the `modern-docking-api` package along with either `modern-docking-single-app` or `modern-docking-multi-app`.
-`modern-docking-single-app` is used by applications that create a single instance of the application per JVM instance. `modern-docking-multi-app` is used by applications that create multiple instances of the application per JVM, for example IntelliJ IDEA works this way.
-
-If you use Maven or Gradle, add a dependency with the following coordinates to your build script:
-
-```
-    groupId:     io.github.andrewauclair
-    artifactId:  modern-docking-api
-    version:     (see button below)
-```
-```
-    groupId:     io.github.andrewauclair
-    artifactId:  modern-docking-single-app
-    version:     (see button below)
-```
-```
-    groupId:     io.github.andrewauclair
-    artifactId:  modern-docking-multi-app
-    version:     (see button below)
-```
-
-`modern-docking-api`: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-api/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-api)
-
-`modern-docking-single-app`: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-single-app/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-single-app)
-
-`modern-docking-multi-app`: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-multi-app/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-multi-app)
 
 ### Snapshots
 
@@ -59,21 +39,12 @@ docs).
 ## Modern Docking UI Extension
 - Requires FlatLaf L&F
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.formdev/flatlaf/badge.svg?style=flat-square&color=007ec6&version=3.2)](https://maven-badges.herokuapp.com/maven-central/com.formdev/flatlaf)
+<!-- todo: we should limit this to the version Modern Docking actually uses, if we can -->
+![Maven Central](https://img.shields.io/maven-central/v/com.formdev/flatlaf)
 
-### Download
-Modern Docking UI binaries are available on <b>Maven Central.</b>
+# Building
 
-If you use Maven or Gradle, add a dependency with the following coordinates to your build script:
-
-    groupId:     io.github.andrewauclair
-    artifactId:  modern-docking-ui
-    version:     (see button below)
-
-Otherwise download `ModernDockingUI-<version>.jar` here:
-
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-ui/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.andrewauclair/modern-docking-ui)
-
+Modern Docking uses Gradle and can be opened directly in IntelliJ IDEA or any other IDE that supports Gradle. It can also be built from the command line with `./gradlew build`.
 
 ## Examples
 See basic-demo for a simple example in Example.java and a more complicated example in MainFrame.java.
