@@ -37,15 +37,20 @@ if it wishes to change the default.
 
 <!-- This one is a bit weird and complicated. It's really just a hack, and we should add something better. -->
 
-### getTabTooltip
+<procedure title="getTabTooltip" id="getTabTooltip">
+<p>Used by the framework to get the text to display as a tooltip on <code>JTabbedPane</code> tabs.</p>
+<p>Default value is <code>null</code></p>
+</procedure>
 
 <procedure title="getIcon" id="getIcon">
 <p>Used by the framework to get the icon for the dockable to use in a `JTabbedPane` tab.</p>
 <p>Default value is <code>null</code></p>
 </procedure>
 
-### isFloatingAllowed
-
+<procedure title="isFloatingAllowed" id="isFloatingAllowed">
+<p>Used by the framework to decided whether the dockable component is allowed to be opened in its own window</p>
+<p>Default value is <code>true</code></p>
+</procedure>
 Allows the application to specify whether a dockable can be dragged out of its current window and floated on its own as a new window.
 
 <procedure title="isLimitedToRoot" id="isLimitedToRoot">
@@ -54,11 +59,15 @@ Allows the application to specify whether a dockable can be dragged out of its c
    <p>Default value is <code>false</code></p>
 </procedure>
 
+<procedure title="getStyle" id="getStyle">
+<p></p>
+<p>Default value is <code>DockableStyle.BOTH</code></p>
+</procedure>
 
-### getStyle
-
-### getPinningStyle
-
+<procedure title="getPinningStyle" id="getPinningStyle">
+<p></p>
+<p>Default value is <code>DockableStyle.BOTH</code></p>
+</procedure>
 to be renamed
 
 <procedure title="isClosable" id="isClosable">
@@ -77,12 +86,21 @@ to be renamed
 <p>Default value is <code>false</code></p>
 </procedure>
 
-### getHasMoreOptions
+<procedure title="getHasMoreOptions" id="getHasMoreOptions">
+<code-block lang="java">boolean getHasMoreOptions()</code-block>
+<p></p>
+</procedure>
 
-### getTabPosition
+<procedure title="getTabPosition" id="getTabPosition">
+<code-block lang="java">int getTabPosition()</code-block>
+<p></p>
+<p>Default value is <code>SwingConstants.BOTTOM</code></p>
+</procedure>
 
-### addMoreOptions
-
+<procedure title="addMoreOptions" id="addMoreOptions">
+<code-block lang="java">void addMoreOptions(JPopupMenu menu)</code-block>
+<p></p>
+</procedure>
 ### createHeaderUI
 
 ### updateProperties
