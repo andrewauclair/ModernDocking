@@ -22,11 +22,13 @@ SOFTWARE.
 package ModernDocking.api;
 
 import ModernDocking.Dockable;
+import ModernDocking.Property;
 import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.internal.DockableWrapper;
 import ModernDocking.internal.DockingInternal;
 import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.DockingLayouts;
+import ModernDocking.layouts.DockingSimplePanelNode;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -209,13 +211,13 @@ public class AppStateAPI {
 		defaultAppLayout = layout;
 	}
 
-	public String getProperty(Dockable dockable, String propertyName) {
+	public Property getProperty(Dockable dockable, String propertyName) {
 		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 
 		return wrapper.getProperty(propertyName);
 	}
 
-	public void setProperty(Dockable dockable, String propertyName, String value) {
+	public void setProperty(Dockable dockable, String propertyName, Property value) {
 		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 
 		wrapper.setProperty(propertyName, value);

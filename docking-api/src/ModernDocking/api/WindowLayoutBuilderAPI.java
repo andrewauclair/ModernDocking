@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.api;
 
 import ModernDocking.DockingRegion;
+import ModernDocking.Property;
 import ModernDocking.layouts.*;
 
 import java.util.HashMap;
@@ -33,7 +34,7 @@ import java.util.Map;
 public class WindowLayoutBuilderAPI {
 	private final DockingLayoutRootNode rootNode;
 
-	private final Map<String, Map<String, String>> properties = new HashMap<>();
+	private final Map<String, Map<String, Property>> properties = new HashMap<>();
 
 	/**
 	 * Start building a new layout
@@ -111,8 +112,99 @@ public class WindowLayoutBuilderAPI {
 		return this;
 	}
 
-	public WindowLayoutBuilderAPI addProperty(String persistentID, String property, String value) {
-		Map<String, String> props = properties.getOrDefault(persistentID, new HashMap<>());
+	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, byte value) {
+		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
+
+		props.put(property, new Property.ByteProperty(value));
+
+		properties.put(persistentID, props);
+
+		return this;
+	}
+
+	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, short value) {
+		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
+
+		props.put(property, new Property.ShortProperty(value));
+
+		properties.put(persistentID, props);
+
+		return this;
+	}
+
+	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, int value) {
+		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
+
+		props.put(property, new Property.IntProperty(value));
+
+		properties.put(persistentID, props);
+
+		return this;
+	}
+
+	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, long value) {
+		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
+
+		props.put(property, new Property.LongProperty(value));
+
+		properties.put(persistentID, props);
+
+		return this;
+	}
+
+	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, float value) {
+		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
+
+		props.put(property, new Property.FloatProperty(value));
+
+		properties.put(persistentID, props);
+
+		return this;
+	}
+
+	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, double value) {
+		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
+
+		props.put(property, new Property.DoubleProperty(value));
+
+		properties.put(persistentID, props);
+
+		return this;
+	}
+
+	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, char value) {
+		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
+
+		props.put(property, new Property.CharacterProperty(value));
+
+		properties.put(persistentID, props);
+
+		return this;
+	}
+
+	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, boolean value) {
+		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
+
+		props.put(property, new Property.BooleanProperty(value));
+
+		properties.put(persistentID, props);
+
+		return this;
+	}
+
+	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, String value) {
+		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
+
+		props.put(property, new Property.StringProperty(value));
+
+		properties.put(persistentID, props);
+
+		return this;
+	}
+
+	// support for custom user types
+	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, Property value) {
+		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
 		props.put(property, value);
 
@@ -123,6 +215,14 @@ public class WindowLayoutBuilderAPI {
 
 	// build a WindowLayout using the rootNode
 	public WindowLayout build() {
+		properties.forEach((persistentID, stringPropertyMap) -> {
+			DockingLayoutNode node = findNode(persistentID);
+
+			if (node instanceof DockingSimplePanelNode) {
+				((DockingSimplePanelNode) node).setProperties(stringPropertyMap);
+			}
+
+		});
 		return new WindowLayout(rootNode.getNode());
 	}
 
