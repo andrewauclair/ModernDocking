@@ -34,6 +34,7 @@ import ModernDocking.ui.HeaderModel;
 import javax.swing.*;
 import java.awt.*;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -94,6 +95,17 @@ public class DockingInternal {
 		List<Field> dockingPropFields = Arrays.stream(dockable.getClass().getDeclaredFields())
 				.filter(field -> field.getAnnotation(DockingProperty.class) != null)
 				.collect(Collectors.toList());
+
+		if (dockingPropFields.size() > 0) {
+			try {
+				Method updateProperties = dockable.getClass().getMethod("updateProperties");
+				if (updateProperties.getDeclaringClass() == Dockable.class) {
+					throw new RuntimeException("Dockable class " + dockable.getClass().getSimpleName() + " contains DockingProperty instances and should override updateProperties");
+				}
+			} catch (NoSuchMethodException ignored) {
+				// updateProperties has a default implementation in Dockable, so we will always find it and this exception should never happen
+			}
+		}
 
 		for (Field field : dockingPropFields) {
 			try {
