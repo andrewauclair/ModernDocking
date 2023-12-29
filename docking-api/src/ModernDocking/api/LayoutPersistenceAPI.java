@@ -421,7 +421,7 @@ public class LayoutPersistenceAPI {
         String locStr = reader.getAttributeValue(1);
         String sizeStr = reader.getAttributeValue(2);
         int state = Integer.parseInt(reader.getAttributeValue(3));
-        String maximizedDockable = reader.getAttributeValue(4);
+        String maximizedDockable = reader.getAttributeCount() >= 5 ? reader.getAttributeValue(4) : null;
 
         Point location = new Point(Integer.parseInt(locStr.substring(0, locStr.indexOf(","))), Integer.parseInt(locStr.substring(locStr.indexOf(",") + 1)));
         Dimension size = new Dimension(Integer.parseInt(sizeStr.substring(0, sizeStr.indexOf(","))), Integer.parseInt(sizeStr.substring(sizeStr.indexOf(",") + 1)));
