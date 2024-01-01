@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2022-2024 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,15 +22,27 @@ SOFTWARE.
 package ModernDocking.exception;
 
 /**
- * Special RuntimeException for failing to register a dockable
+ * This exception is thrown when the docking framework fails to register a dockable because one with the same persistentID already exists
  */
 public class DockableRegistrationFailureException extends RuntimeException {
+	private final String persistentID;
+
 	/**
-	 * Create a new instance
+	 * Create a new instance of this exception
 	 *
-	 * @param message Failure message
+	 * @param persistentID The persistentID of dockable that failed to register
 	 */
-	public DockableRegistrationFailureException(String message) {
-		super(message);
+	public DockableRegistrationFailureException(String persistentID) {
+		super("Dockable with Persistent ID " + persistentID + " has not been registered.");
+		this.persistentID = persistentID;
+	}
+
+	/**
+	 * Retrieve the persistent ID that already exists
+	 *
+	 * @return Persistent ID
+	 */
+	public String getPersistentID() {
+		return persistentID;
 	}
 }
