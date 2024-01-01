@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2022-2024 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -78,7 +78,7 @@ public class DockingInternal {
 	 */
 	public void registerDockable(Dockable dockable) {
 		if (dockables.containsKey(dockable.getPersistentID())) {
-			throw new DockableRegistrationFailureException("Registration for Dockable failed. Persistent ID " + dockable.getPersistentID() + " already exists.");
+			throw new DockableRegistrationFailureException(dockable.getPersistentID());
 		}
 		if (dockable.getTabText() == null) {
 			throw new RuntimeException("Dockable '" + dockable.getPersistentID() + "' should not return 'null' for tabText()");
@@ -101,7 +101,7 @@ public class DockingInternal {
 		if (dockables.containsKey(dockable.getPersistentID())) {
 			return dockables.get(dockable.getPersistentID());
 		}
-		throw new DockableRegistrationFailureException("Dockable with Persistent ID " + dockable.getPersistentID() + " has not been registered.");
+		throw new DockableRegistrationFailureException(dockable.getPersistentID());
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class DockingInternal {
 		if (dockables.containsKey(persistentID)) {
 			return dockables.get(persistentID).getDockable();
 		}
-		throw new DockableRegistrationFailureException("Dockable with Persistent ID " + persistentID + " has not been registered.");
+		throw new DockableRegistrationFailureException(persistentID);
 	}
 
 	public void fireDockedEventForFrame(Window window) {
