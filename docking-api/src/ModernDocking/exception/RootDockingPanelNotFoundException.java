@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022-2024 Andrew Auclair
+Copyright (c) 2024 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,31 +21,27 @@ SOFTWARE.
  */
 package ModernDocking.exception;
 
-import ModernDocking.Dockable;
+import java.awt.*;
 
-/**
- * Exception that is thrown when a dockable is not already docked
- */
-public class NotDockedException extends RuntimeException {
-	private final Dockable dockable;
+public class RootDockingPanelNotFoundException extends RuntimeException {
+    private final Window window;
 
-	/**
-	 * Create a new exception with the given dockable
-	 *
-	 * @param message Extra message information to display more detail about the problem
-	 * @param dockable Dockable that is not docked
-	 */
-	public NotDockedException(String message, Dockable dockable) {
-		super(message + " because dockable with persistent ID '" + dockable.getPersistentID() + "' is not docked.");
-		this.dockable = dockable;
-	}
+    /**
+     * Create a new instance of this exception
+     *
+     * @param window The window we didn't find a root for
+     */
+    public RootDockingPanelNotFoundException(Window window) {
+        super("No root panel for window has been registered.");
+        this.window = window;
+    }
 
-	/**
-	 * Retrieve the dockable
-	 *
-	 * @return The dockable that is not docked
-	 */
-	public Dockable getDockable() {
-		return dockable;
-	}
+    /**
+     * Retrieve the window we didn't find a root for
+     *
+     * @return A Window, either a JFrame or JDialog
+     */
+    public Window getWindow() {
+        return window;
+    }
 }

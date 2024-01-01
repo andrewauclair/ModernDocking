@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Andrew Auclair
+Copyright (c) 2023-2024 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -62,7 +62,7 @@ public class LayoutPersistenceAPI {
             file.createNewFile();
         }
         catch (IOException e) {
-            throw new DockingLayoutException(e);
+            throw new DockingLayoutException(file, DockingLayoutException.FailureType.SAVE, e);
         }
 
         // make sure all the required directories exist
@@ -106,7 +106,7 @@ public class LayoutPersistenceAPI {
             writer.close();
         }
         catch (Exception e) {
-            throw new DockingLayoutException(e);
+            throw new DockingLayoutException(file, DockingLayoutException.FailureType.SAVE, e);
         }
     }
 
@@ -144,7 +144,7 @@ public class LayoutPersistenceAPI {
             return layout;
         }
         catch (Exception e) {
-            throw new DockingLayoutException(e);
+            throw new DockingLayoutException(file, DockingLayoutException.FailureType.LOAD, e);
         }
         finally {
             try {

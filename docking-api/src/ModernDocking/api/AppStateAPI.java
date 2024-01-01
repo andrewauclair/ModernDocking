@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022-2023 Andrew Auclair
+Copyright (c) 2022-2024 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -164,7 +164,9 @@ public class AppStateAPI {
 	 */
 	public boolean restore() throws DockingLayoutException {
 		// don't restore if auto persist is disabled
-		if (!autoPersistFiles.containsKey(docking) || !autoPersistFiles.get(docking).exists()) {
+		File file = autoPersistFiles.get(docking);
+
+		if (!autoPersistFiles.containsKey(docking) || !file.exists()) {
 			// restore the default layout if we have one
 			if (defaultAppLayout != null) {
 				docking.getDockingState().restoreApplicationLayout(defaultAppLayout);
@@ -175,7 +177,7 @@ public class AppStateAPI {
 		try {
 			setPaused(true);
 
-			ApplicationLayout layout = docking.getLayoutPersistence().loadApplicationLayoutFromFile(autoPersistFiles.get(docking));
+			ApplicationLayout layout = docking.getLayoutPersistence().loadApplicationLayoutFromFile(file);
 
 			docking.getDockingState().restoreApplicationLayout(layout);
 
@@ -189,7 +191,7 @@ public class AppStateAPI {
 			if (e instanceof DockingLayoutException) {
 				throw e;
 			}
-			throw new DockingLayoutException(e);
+			throw new DockingLayoutException(file, DockingLayoutException.FailureType.LOAD, e);
 		}
 		finally {
 			// make sure that we turn persistence back on

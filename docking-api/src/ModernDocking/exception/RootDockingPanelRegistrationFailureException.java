@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023-2024 Andrew Auclair
+Copyright (c) 2024 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,48 +21,44 @@ SOFTWARE.
  */
 package ModernDocking.exception;
 
-import java.io.File;
+import ModernDocking.api.RootDockingPanelAPI;
+
+import java.awt.*;
 
 /**
- * Exception wrapper for exceptions encountered while dealing loading or saving docking layouts
+ * This exception is thrown when the docking framework fails to register a RootDockingPanel because one already exists for the window
  */
-public class DockingLayoutException extends Exception {
-    public enum FailureType {
-        LOAD,
-        SAVE
-    }
-    private final File file;
-    private final FailureType failureType;
+public class RootDockingPanelRegistrationFailureException extends RuntimeException {
+    private final RootDockingPanelAPI panel;
+    private final Window window;
 
     /**
-     * Create a new instance
+     * Create a new instance of this exception
      *
-     * @param file The layout file that was being saved or loaded
-     * @param failureType The state we failed in, loading or saving
-     * @param cause The root cause of the exception
+     * @param panel The RootDockingPanel being registered
+     * @param window The window the root is being registered for
      */
-    public DockingLayoutException(File file, FailureType failureType, Exception cause) {
-        initCause(cause);
-
-        this.file = file;
-        this.failureType = failureType;
+    public RootDockingPanelRegistrationFailureException(RootDockingPanelAPI panel, Window window) {
+        super("RootDockingPanel already registered for frame: " + window);
+        this.panel = panel;
+        this.window = window;
     }
 
     /**
-     * Retrieve the file being loaded or saved
+     * Retrieve the panel that failed to register
      *
-     * @return File the framework attempted to load or save
+     * @return The RootDockingPanel being registered
      */
-    public File getFile() {
-        return file;
+    public RootDockingPanelAPI getPanel() {
+        return panel;
     }
 
     /**
-     * Retrieve the failure type
+     * Retrieve the window the root was being registered for
      *
-     * @return Returns the failure type of this exception
+     * @return The window the root is being registered for
      */
-    public FailureType getFailureType() {
-        return failureType;
+    public Window getWindow() {
+        return window;
     }
 }
