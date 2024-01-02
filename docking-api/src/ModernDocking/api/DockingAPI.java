@@ -569,6 +569,11 @@ public class DockingAPI {
         }
 
         Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
+
+        if (window instanceof JFrame && ((JFrame) window).getState() == JFrame.ICONIFIED) {
+            ((JFrame)window).setState(JFrame.NORMAL);
+        }
+
         window.setAlwaysOnTop(true);
         window.setAlwaysOnTop(false);
 
