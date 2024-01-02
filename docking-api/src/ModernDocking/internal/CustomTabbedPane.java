@@ -41,6 +41,16 @@ public class CustomTabbedPane extends JTabbedPane {
                 "press-right"
         );
 
+        getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK | KeyEvent.ALT_GRAPH_DOWN_MASK),
+                "press-left"
+        );
+
+        getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK | KeyEvent.ALT_GRAPH_DOWN_MASK),
+                "press-right"
+        );
+
         getActionMap().put("press-left",
                 new AbstractAction() {
                     @Override
