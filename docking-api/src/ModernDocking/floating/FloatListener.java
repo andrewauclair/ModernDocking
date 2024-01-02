@@ -206,7 +206,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			activeUtilsFrame.update(mousePosOnScreen);
 		}
 
-		CustomTabbedPane tabbedPane = (CustomTabbedPane) DockingComponentUtils.findTabbedPaneAtPos(mousePosOnScreen, currentTopWindow);
+		CustomTabbedPane tabbedPane = DockingComponentUtils.findTabbedPaneAtPos(mousePosOnScreen, currentTopWindow);
 
 		if (activeUtilsFrame != null) {
 			boolean overTab = dockable == null && tabbedPane != null && floatingPanel instanceof DisplayPanel;

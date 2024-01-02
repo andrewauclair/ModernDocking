@@ -157,7 +157,7 @@ public class DockingComponentUtils {
 		return ((DisplayPanel) component).getWrapper().getDockable();
 	}
 
-	public static JTabbedPane findTabbedPaneAtPos(Point screenPos, Window window) {
+	public static CustomTabbedPane findTabbedPaneAtPos(Point screenPos, Window window) {
 		// window is null so there's no dockable to find
 		if (window == null) {
 			return null;
@@ -173,15 +173,15 @@ public class DockingComponentUtils {
 			return null;
 		}
 
-		while (!(component instanceof JTabbedPane) && component.getParent() != null) {
+		while (!(component instanceof CustomTabbedPane) && component.getParent() != null) {
 			component = component.getParent();
 		}
 
 		// didn't find a Dockable, return null
-		if (!(component instanceof JTabbedPane)) {
+		if (!(component instanceof CustomTabbedPane)) {
 			return null;
 		}
-		return (JTabbedPane) component;
+		return (CustomTabbedPane) component;
 	}
 
 	/**
