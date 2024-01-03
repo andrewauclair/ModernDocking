@@ -136,6 +136,15 @@ public class DockingAPI {
     }
 
     /**
+     * Check if a dockable has already been registered
+     *
+     * @param persistentID The persistent ID to look for
+     */
+    public boolean isDockableRegistered(String persistentID) {
+        return getDockables().stream().anyMatch(dockable -> dockable.getPersistentID().equals(persistentID));
+    }
+
+    /**
      * Dockables must be deregistered so it can be properly disposed
      *
      * @param dockable Dockable to deregister
