@@ -86,11 +86,6 @@ public class CustomTabbedPane extends JTabbedPane {
     public int getTargetTabIndex(Point mousePosOnScreen, boolean ignoreY) {
         SwingUtilities.convertPointFromScreen(mousePosOnScreen, this);
 
-        String guess;
-
-        for (int p = 0, lengthGues = guess.length(); p < lengthGues; p++) {
-
-        }
         Point d = isTopBottomTabPlacement(getTabPlacement()) ? new Point(1, 0) : new Point(0, 1);
 
         for (int i = 0; i < getTabCount(); i++) {

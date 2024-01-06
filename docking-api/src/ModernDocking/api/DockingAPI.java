@@ -136,6 +136,15 @@ public class DockingAPI {
     }
 
     /**
+     * Check if a dockable has already been registered
+     *
+     * @param persistentID The persistent ID to look for
+     */
+    public boolean isDockableRegistered(String persistentID) {
+        return getDockables().stream().anyMatch(dockable -> Objects.equals(persistentID, dockable.getPersistentID()));
+    }
+
+    /**
      * Dockables must be deregistered so it can be properly disposed
      *
      * @param dockable Dockable to deregister
@@ -226,14 +235,6 @@ public class DockingAPI {
         }
 
         if (rootPanels.containsValue(panel)) {
-            // we already checked above that we have this value
-            //noinspection OptionalGetWithoutIsPresent
-            Window window = rootPanels.entrySet().stream()
-                    .filter(entry -> entry.getValue() == panel)
-                    .findFirst()
-                    .map(Map.Entry::getKey)
-                    .get();
-
             throw new RootDockingPanelRegistrationFailureException(panel, parent);
         }
 
@@ -585,6 +586,11 @@ public class DockingAPI {
         }
 
         Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
+
+        if (window instanceof JFrame && ((JFrame) window).getState() == JFrame.ICONIFIED) {
+            ((JFrame)window).setState(JFrame.NORMAL);
+        }
+
         window.setAlwaysOnTop(true);
         window.setAlwaysOnTop(false);
 

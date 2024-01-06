@@ -86,6 +86,15 @@ public class Docking {
     }
 
     /**
+     * Check if a dockable has already been registered
+     *
+     * @param persistentID The persistent ID to look for
+     */
+    public static boolean isDockableRegistered(String persistentID) {
+        return instance.isDockableRegistered(persistentID);
+    }
+
+    /**
      * Dockables must be deregistered so it can be properly disposed
      *
      * @param dockable Dockable to deregister

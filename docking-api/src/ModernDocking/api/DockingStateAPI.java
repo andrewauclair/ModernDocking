@@ -39,8 +39,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DockingStateAPI {
+    private static final Logger logger = Logger.getLogger(DockingStateAPI.class.getPackageName());
+
     /**
      * cached layout for when a maximized dockable is minimized
      */
@@ -307,7 +311,8 @@ public class DockingStateAPI {
                 dockable = getDockable(docking, state.getPersistentID());
             }
             catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
-                   InvocationTargetException ignore) {
+                   InvocationTargetException e) {
+                logger.log(Level.INFO, e.getMessage(), e);
             }
         }
 
@@ -404,7 +409,8 @@ public class DockingStateAPI {
                 dockable = getDockable(docking, node.getPersistentID());
             }
             catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
-                     InvocationTargetException ignore) {
+                     InvocationTargetException e) {
+                logger.log(Level.INFO, e.getMessage(), e);
             }
         }
 
