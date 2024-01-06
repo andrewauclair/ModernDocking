@@ -86,7 +86,12 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 			}
 			return;
 		}
-		String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();
+		String className = "";
+		try {
+			className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();
+		}
+		catch (Exception ignored) {
+		}
 
 		DockingSimplePanelNode tab = new DockingSimplePanelNode(docking, persistentID, className);
 		tab.setParent(this);
