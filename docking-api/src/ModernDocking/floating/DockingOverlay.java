@@ -72,7 +72,7 @@ public class DockingOverlay {
 	// override for the visible flag, sometimes internally we don't want to draw but we might be active
 	private boolean visibleOverride = false;
 
-	public boolean overTab = false;
+	private boolean overTab = false;
 	public Rectangle targetTab;
 	public boolean beforeTab = true;
 
@@ -387,11 +387,22 @@ public class DockingOverlay {
 
 	// set a region from the handles if we're moused over a dockable handle
 	public void setTargetDockableRegion(DockingRegion region) {
-		if (overTab) { return;}
+		if (overTab) {
+			System.out.println(dockableRegion);
+			return;
+		}
 		dockableRegion = region;
 
 		// we should only be visible if we're docking to a root or dockable. otherwise the overlay should be hidden.
 		visibleOverride = !isDockingToRoot() && !isDockingToDockable();
+	}
+
+	public void setOverTab(boolean overTab) {
+		this.overTab = overTab;
+
+		if (overTab) {
+			dockableRegion = DockingRegion.CENTER;
+		}
 	}
 
 	public void setTargetPinRegion(ToolbarLocation region) {
