@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.layouts;
 
 import ModernDocking.DockingRegion;
+import ModernDocking.Property;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.internal.DockingInternal;
 import ModernDocking.settings.Settings;
@@ -59,7 +60,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 * @param selectedTabID Persistent ID of first dockable
 	 * @param properties Properties of the dockable
 	 */
-	public DockingTabPanelNode(DockingAPI docking, String selectedTabID, Map<String, String> properties) {
+	public DockingTabPanelNode(DockingAPI docking, String selectedTabID, Map<String, Property> properties) {
 		this.docking = docking;
 		addTab(selectedTabID, properties);
 		this.selectedTabID = selectedTabID;
@@ -104,7 +105,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 * @param persistentID Dockable persistent ID to add
 	 * @param properties Properties of the dockable
 	 */
-	public void addTab(String persistentID, Map<String, String> properties) {
+	public void addTab(String persistentID, Map<String, Property> properties) {
 		if (findNode(persistentID) != null) {
 			DockingSimplePanelNode node = null;
 			for (DockingSimplePanelNode tab : tabs) {
@@ -127,7 +128,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 		tabs.add(tab);
 	}
 
-	public void setProperties(String persistentID, Map<String, String> properties) {
+	public void setProperties(String persistentID, Map<String, Property> properties) {
 		Optional<DockingSimplePanelNode> first = tabs.stream()
 				.filter(dockingSimplePanelNode -> dockingSimplePanelNode.getPersistentID().equals(persistentID))
 				.findFirst();

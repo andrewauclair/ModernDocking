@@ -22,9 +22,11 @@ SOFTWARE.
 package ModernDocking.app;
 
 import ModernDocking.Dockable;
+import ModernDocking.Property;
 import ModernDocking.api.AppStateAPI;
 import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.layouts.ApplicationLayout;
+import ModernDocking.layouts.DockingSimplePanelNode;
 
 import java.io.File;
 
@@ -114,12 +116,12 @@ public class AppState {
         instance.setDefaultApplicationLayout(layout);
     }
 
-    public static String getProperty(Dockable dockable, String propertyName) {
+    public static Property getProperty(Dockable dockable, String propertyName) {
         return instance.getProperty(dockable, propertyName);
     }
 
     public static void setProperty(Dockable dockable, String propertyName, String value) {
-        instance.setProperty(dockable, propertyName, value);
+        instance.setProperty(dockable, propertyName, new Property.StringProperty(value));
     }
 
     public static void removeProperty(Dockable dockable, String propertyName) {

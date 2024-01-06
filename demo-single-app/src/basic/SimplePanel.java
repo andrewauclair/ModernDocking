@@ -32,6 +32,10 @@ import java.util.Objects;
 import java.util.Random;
 
 public class SimplePanel extends BasePanel {
+	public static final String STRING_TEST_PROP = "test";
+	public static final String STRING_TEST1_PROP = "test1";
+	public static final String TEST_INT_1_PROP = "test_int_1";
+
 	private String tabText = "";
 
 	public boolean limitToRoot = false;
@@ -68,8 +72,13 @@ public class SimplePanel extends BasePanel {
 	@DockingProperty(name = "test_int_1", defaultValue = "5")
 	private int test_int_1;
 
+	@DockingProperty(name = "test_int_2", defaultValue = "15")
+	private int test_int_2;
+
 //	@DockingProperty(name = "toolbar_location", defaultValue = "1")
 //	private DockableToolbar.Location toolbarLocation;
+
+	private final JLabel test_int_label = new JLabel();
 
 	private static final Random rand = new Random();
 	private DockingHeaderUI headerUI;
@@ -81,6 +90,9 @@ public class SimplePanel extends BasePanel {
 		setLayout(new GridBagLayout());
 
 		GridBagConstraints gbc = new GridBagConstraints();
+
+		add(test_int_label, gbc);
+		gbc.gridy++;
 
 		int numberOfControls = rand.nextInt(15);
 
@@ -182,5 +194,7 @@ public class SimplePanel extends BasePanel {
 		System.out.println(test10);
 		System.out.println(test11);
 		System.out.println(test_int_1);
+
+		test_int_label.setText(String.valueOf(test_int_1));
 	}
 }

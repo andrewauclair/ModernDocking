@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.api;
 
 import ModernDocking.Dockable;
+import ModernDocking.Property;
 import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.internal.DockableProperties;
@@ -296,13 +297,16 @@ public class LayoutPersistenceAPI {
 
         writer.writeStartElement("properties");
 
-        Map<String, String> properties = node.getProperties();
+        Map<String, Property> properties = node.getProperties();
 
         for (String key : properties.keySet()) {
-            String value = properties.get(key);
+            Property value = properties.get(key);
 
-            if (value != null) {
-                writer.writeAttribute(key, value);
+            if (value != null && !value.isNull()) {
+                writer.writeStartElement("property");
+                writer.writeAttribute("name", value.toString());
+                writer.writeAttribute("type", value.getType().toString());
+                writer.writeEndElement();
             }
         }
 
@@ -352,13 +356,16 @@ public class LayoutPersistenceAPI {
 
             writer.writeStartElement("properties");
 
-            Map<String, String> properties = simpleNode.getProperties();
+            Map<String, Property> properties = simpleNode.getProperties();
 
             for (String key : properties.keySet()) {
-                String value = properties.get(key);
+                Property value = properties.get(key);
 
                 if (value != null) {
-                    writer.writeAttribute(key, value);
+                    writer.writeStartElement("property");
+                    writer.writeAttribute("name", value.toString());
+                    writer.writeAttribute("type", value.getType().toString());
+                    writer.writeEndElement();
                 }
             }
 
@@ -490,17 +497,22 @@ public class LayoutPersistenceAPI {
     }
 
     // expects that we haven't already read the starting element for <properties>
-    private Map<String, String> readProperties(XMLStreamReader reader) throws XMLStreamException {
-        Map<String, String> properties = new HashMap<>();
+    private Map<String, Property> readProperties(XMLStreamReader reader) throws XMLStreamException {
+        Map<String, Property> properties = new HashMap<>();
 
         while (reader.hasNext()) {
             int next = reader.nextTag();
 
             if (next == XMLStreamConstants.START_ELEMENT) {
                 if (reader.getLocalName().equals("properties")) {
-                    for (int i = 0; i < reader.getAttributeCount(); i++) {
-                        properties.put(String.valueOf(reader.getAttributeName(i)), reader.getAttributeValue(i));
+                    while (!(next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("properties"))) {
+                        readProperty(reader);
+                        next = reader.nextTag();
                     }
+                    break;
+//                    for (int i = 0; i < reader.getAttributeCount(); i++) {
+//                        properties.put(String.valueOf(reader.getAttributeName(i)), readProperty(reader));
+//                    }
                 }
             }
             else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("properties")) {
@@ -508,6 +520,22 @@ public class LayoutPersistenceAPI {
             }
         }
         return properties;
+    }
+
+    private Property readProperty(XMLStreamReader reader) throws XMLStreamException {
+        while (reader.hasNext()) {
+            int next = reader.nextTag();
+
+            if (next == XMLStreamConstants.START_ELEMENT) {
+                if (reader.getLocalName().equals("property")) {
+                    // reader.getAttributeValue(i)
+                }
+            }
+            else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("property")) {
+                break;
+            }
+        }
+        return null;
     }
 
     private DockingSplitPanelNode readSplitNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
@@ -562,10 +590,10 @@ public class LayoutPersistenceAPI {
                 }
             }
             else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("properties")) {
-                Map<String, String> properties = new HashMap<>();
+                Map<String, Property> properties = new HashMap<>();
 
                 for (int i = 0; i < reader.getAttributeCount(); i++) {
-                    properties.put(String.valueOf(reader.getAttributeName(i)), reader.getAttributeValue(i));
+//                    properties.put(String.valueOf(reader.getAttributeName(i)), reader.getAttributeValue(i));
                 }
 
                 if (node != null) {
