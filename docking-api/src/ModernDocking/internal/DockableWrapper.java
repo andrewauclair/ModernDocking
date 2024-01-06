@@ -150,16 +150,16 @@ public class DockableWrapper {
 	}
 
 	/**
-	 * Check if the dockable is unpinned
+	 * Check if the dockable is auto hide enabled
 	 *
-	 * @return Whether the dockable is unpinned
+	 * @return Whether the dockable is auto hide enabled
 	 */
 	public boolean isHidden() {
 		return hidden;
 	}
 
 	/**
-	 * Set the dockable to hidden
+	 * Set the dockable to auto hide
 	 *
 	 * @param hidden Hidden flag
 	 */

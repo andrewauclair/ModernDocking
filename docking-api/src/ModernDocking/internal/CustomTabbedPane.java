@@ -36,8 +36,19 @@ public class CustomTabbedPane extends JTabbedPane {
                 "press-left"
         );
 
+
         getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
                 KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK),
+                "press-right"
+        );
+
+        getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK | KeyEvent.ALT_GRAPH_DOWN_MASK),
+                "press-left"
+        );
+
+        getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK | KeyEvent.ALT_GRAPH_DOWN_MASK),
                 "press-right"
         );
 
@@ -75,6 +86,11 @@ public class CustomTabbedPane extends JTabbedPane {
     public int getTargetTabIndex(Point mousePosOnScreen, boolean ignoreY) {
         SwingUtilities.convertPointFromScreen(mousePosOnScreen, this);
 
+        String guess;
+
+        for (int p = 0, lengthGues = guess.length(); p < lengthGues; p++) {
+
+        }
         Point d = isTopBottomTabPlacement(getTabPlacement()) ? new Point(1, 0) : new Point(0, 1);
 
         for (int i = 0; i < getTabCount(); i++) {

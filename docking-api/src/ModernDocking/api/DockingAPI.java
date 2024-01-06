@@ -278,20 +278,36 @@ public class DockingAPI {
     }
 
     /**
-     * allows the user to configure pinning per window. by default pinning is only enabled on the frames the docking framework creates
-     *
-     * @param window The window to configure pinning on
-     * @param layer The layout to use for pinning in the JLayeredPane
-     * @param allow Whether pinning is allowed on this Window
+     * @deprecated Replaced with configureAutoHide. Will be removed in a future release.
      */
+    @Deprecated(since = "0.12.0", forRemoval = true)
     public void configurePinning(Window window, int layer, boolean allow) {
+        configureAutoHide(window, layer, allow);
+    }
+
+    /**
+     * allows the user to configure auto hide per window. by default auto hide is only enabled on the frames the docking framework creates
+     *
+     * @param window The window to configure auto hide on
+     * @param layer The layout to use for auto hide in the JLayeredPane
+     * @param allow Whether auto hide is allowed on this Window
+     */
+    public void configureAutoHide(Window window, int layer, boolean allow) {
         if (!rootPanels.containsKey(window)) {
             throw new RootDockingPanelNotFoundException(window);
         }
 
         RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
-        root.setPinningSupported(allow);
-        root.setPinningLayer(layer);
+        root.setAutoHideSupported(allow);
+        root.setAutoHideLayer(layer);
+    }
+
+    /**
+     * @deprecated Replaced with configureAutoHide. Will be removed in a future release.
+     */
+    @Deprecated(since = "0.12.0", forRemoval = true)
+    public boolean pinningAllowed(Dockable dockable) {
+        return autoHideAllowed(dockable);
     }
 
     /**
@@ -300,10 +316,10 @@ public class DockingAPI {
      * @param dockable Dockable to check
      * @return Whether the dockable can be pinned
      */
-    public boolean pinningAllowed(Dockable dockable) {
+    public boolean autoHideAllowed(Dockable dockable) {
         RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, DockingComponentUtils.findWindowForDockable(this, dockable));
 
-        return dockable.isPinningAllowed() && root.isPinningSupported();
+        return dockable.isAutoHideAllowed() && root.isAutoHideSupported();
     }
 
     /**
@@ -799,7 +815,7 @@ public class DockingAPI {
         posInFrame.x += component.getWidth() / 2;
         posInFrame.y += component.getHeight() / 2;
 
-        boolean allowedSouth = dockable.getPinningStyle() == DockableStyle.BOTH || dockable.getPinningStyle() == DockableStyle.HORIZONTAL;
+        boolean allowedSouth = dockable.getAutoHideStyle() == DockableStyle.BOTH || dockable.getAutoHideStyle() == DockableStyle.HORIZONTAL;
 
         int westDist = posInFrame.x;
         int eastDist = window.getWidth() - posInFrame.x;
@@ -854,7 +870,7 @@ public class DockingAPI {
         posInFrame.x += component.getWidth() / 2;
         posInFrame.y += component.getHeight() / 2;
 
-        if (!root.isPinningSupported()) {
+        if (!root.isAutoHideSupported()) {
             return;
         }
         undock(dockable);

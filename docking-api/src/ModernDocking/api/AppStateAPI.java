@@ -136,10 +136,10 @@ public class AppStateAPI {
 
 							DockingLayouts.layoutPersisted(layout);
 
-							logger.log(Level.INFO, "ModernDocking: Persisted Layout Successfully");
+							logger.log(Level.FINE, "ModernDocking: Persisted Layout Successfully");
 						}
 						catch (DockingLayoutException ex) {
-							logger.log(Level.INFO, ex.getMessage(), ex);
+							logger.log(Level.WARNING, ex.getMessage(), ex);
 						}
 					}
 					// we're done with the timer for now. null it out

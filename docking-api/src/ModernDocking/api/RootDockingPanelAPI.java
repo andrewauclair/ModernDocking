@@ -45,8 +45,8 @@ public class RootDockingPanelAPI extends DockingPanel {
 
 	private JPanel emptyPanel = new JPanel();
 
-	private boolean pinningSupported = false;
-	private int pinningLayer = JLayeredPane.MODAL_LAYER;
+	private boolean autoHideSupported = false;
+	private int autoHideLayer = JLayeredPane.MODAL_LAYER;
 
 	/**
 	 * South toolbar of this panel. Only created if pinning is supported.
@@ -94,7 +94,7 @@ public class RootDockingPanelAPI extends DockingPanel {
 		eastToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.EAST);
 
 		supportedToolbars = EnumSet.allOf(ToolbarLocation.class);
-		pinningSupported = !supportedToolbars.isEmpty();
+		autoHideSupported = !supportedToolbars.isEmpty();
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class RootDockingPanelAPI extends DockingPanel {
 		this(docking, window);
 
 		this.supportedToolbars = supportedToolbars;
-		pinningSupported = !supportedToolbars.isEmpty();
+		autoHideSupported = !supportedToolbars.isEmpty();
 	}
 
 	/**
@@ -154,42 +154,78 @@ public class RootDockingPanelAPI extends DockingPanel {
 	}
 
 	/**
-	 * Check if pinning is supported on this root
-	 *
-	 * @return True if pinning is supported
+	 * @deprecated Replaced with isAutoHideSupported. Will be removed in a future release.
 	 */
+	@Deprecated(since = "0.12.0", forRemoval = true)
 	public boolean isPinningSupported() {
 		if (supportedToolbars.isEmpty()) {
 			return false;
 		}
-		return pinningSupported;
+		return autoHideSupported;
 	}
 
 	/**
-	 * Set pinning supported flag
+	 * Check if auto hide is supported on this root
 	 *
-	 * @param supported Is pinning supported?
+	 * @return True if auto hide is supported
 	 */
+	public boolean isAutoHideSupported() {
+		if (supportedToolbars.isEmpty()) {
+			// if there are no auto hide tool bars then we can't support auto hide
+			return false;
+		}
+		return autoHideSupported;
+	}
+
+	/**
+	 * @deprecated Replaced with setAutoHideSupported. Will be removed in a future release.
+	 */
+	@Deprecated(since = "0.12.0", forRemoval = true)
 	public void setPinningSupported(boolean supported) {
-		pinningSupported = supported;
+		autoHideSupported = supported;
 	}
 
 	/**
-	 * Get the layer that is being used for pinning
+	 * Set auto hide supported flag
 	 *
-	 * @return Pinning layer
+	 * @param supported Is auto hide supported?
 	 */
+	public void setAutoHideSupported(boolean supported) {
+		autoHideSupported = supported;
+	}
+
+	/**
+	 * @deprecated Replaced with getAutoHideLayer. Will be removed in a future release.
+	 */
+	@Deprecated(since = "0.12.0", forRemoval = true)
 	public int getPinningLayer() {
-		return pinningLayer;
+		return autoHideLayer;
 	}
 
 	/**
-	 * Set the pinning layer used for unpinned dockable toolbars
+	 * Get the layer that is being used for auto hide
 	 *
-	 * @param layer Pinning layer
+	 * @return Auto hide layer
 	 */
+	public int getAutoHideLayer() {
+		return autoHideLayer;
+	}
+
+	/**
+	 * @deprecated Replaced with setAutoHideLayer. Will be removed in a future release.
+	 */
+	@Deprecated(since = "0.12.0", forRemoval = true)
 	public void setPinningLayer(int layer) {
-		pinningLayer = layer;
+		autoHideLayer = layer;
+	}
+
+	/**
+	 * Set the auto hide layer used for auto hide dockable toolbars
+	 *
+	 * @param layer Auto hide layer
+	 */
+	public void setAutoHideLayer(int layer) {
+		autoHideLayer = layer;
 	}
 
 	/**

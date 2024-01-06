@@ -117,12 +117,20 @@ public interface Dockable {
 	}
 
 	/**
-	 * pinning style of the dockable. separate from getStyle, which is used for docking. this option allows the dockable to have different
-	 * preferences on pinning than it does on docking.
-	 *
-	 * @return The pinning style of this dockable
+	 * @deprecated Replaced with getAutoHideStyle. Will be removed in future release.
 	 */
+	@Deprecated(since = "0.12.0", forRemoval = true)
 	default DockableStyle getPinningStyle() {
+		return getAutoHideStyle();
+	}
+
+	/**
+	 * auto hide style of the dockable. separate from getStyle, which is used for docking. this option allows the dockable to have different
+	 * preferences on auto hide than it does on docking.
+	 *
+	 * @return The auto hide style of this dockable
+	 */
+	default DockableStyle getAutoHideStyle() {
 		return DockableStyle.BOTH;
 	}
 
@@ -136,20 +144,22 @@ public interface Dockable {
 	}
 
 	/**
-	 * helper function to determine if the header pin option should be enabled
-	 * NOTE: this is a suggestion. If the parent frame of the dockable does not support pinning then the button will be hidden regardless.
-	 * pinning is supported on all Modern Docking FloatingFrames and can be enabled for other frames with configurePinning in Docking
-	 *
-	 * @return True if pinning is allowed
-	 *
 	 * @deprecated Replaced with isAutoHideAllowed. Will be removed in future release.
 	 */
+	@Deprecated(since = "0.12.0", forRemoval = true)
 	default boolean isPinningAllowed() {
-		return false;
+		return isAutoHideAllowed();
 	}
 
+	/**
+	 * helper function to determine if the header auto hide option should be enabled
+	 * NOTE: this is a suggestion. If the parent frame of the dockable does not support auto hiding then the button will be hidden regardless.
+	 * auto hide is supported on all Modern Docking FloatingFrames and can be enabled for other frames with configureAutoHide in Docking
+	 *
+	 * @return True if auto hide is allowed
+	 */
 	default boolean isAutoHideAllowed() {
-		return isPinningAllowed();
+		return false;
 	}
 
 	/**

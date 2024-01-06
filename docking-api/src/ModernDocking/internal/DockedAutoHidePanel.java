@@ -39,11 +39,11 @@ import java.awt.event.MouseMotionListener;
  */
 public class DockedAutoHidePanel extends JPanel implements ComponentListener, MouseMotionListener {
 	/**
-	 * The root that this unpinned panel belongs to
+	 * The root that this auto hide panel belongs to
 	 */
 	private final RootDockingPanelAPI root;
 	/**
-	 * The toolbar that contains the dockable in this unpinned panel
+	 * The toolbar that contains the dockable in this auto hide panel
 	 */
 	private final DockableToolbar toolbar;
 
@@ -53,7 +53,7 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 	private boolean configured = false;
 
 	/**
-	 * Create a new DockedUnpinnedPanel to contain a dockable on a docking toolbar
+	 * Create a new DockedAutoHidePanel to contain a dockable on a docking toolbar
 	 *
 	 * @param dockable The dockable contained on this panel
 	 * @param root The root panel of the Window
@@ -179,7 +179,7 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		// component has resized, update the location and size of the unpinned panel
+		// component has resized, update the location and size of the auto hide panel
 		if (e.getComponent() == root) {
 			setLocationAndSize(0);
 		}
@@ -200,7 +200,7 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// dragging the divider, update the size and location of the unpinned panel
+		// dragging the divider, update the size and location of the auto hide panel
 		if (toolbar.getDockedLocation() == ToolbarLocation.SOUTH) {
 			setLocationAndSize(-e.getY());
 		}
