@@ -42,7 +42,7 @@ public class DefaultDockingPanel extends JPanel implements Dockable, DockingList
     private boolean limitToRoot;
     private DockableStyle style;
     private boolean canBeClosed;
-    private boolean allowPinning;
+    private boolean allowAutoHide;
     private boolean allowMinMax;
     private List<JMenu> moreOptions = new ArrayList<>();
 
@@ -169,17 +169,17 @@ public class DefaultDockingPanel extends JPanel implements Dockable, DockingList
     }
 
     @Override
-    public boolean isPinningAllowed() {
-        return allowPinning;
+    public boolean isAutoHideAllowed() {
+        return allowAutoHide;
     }
 
     /**
-     * Set the pinning support on this dockable
+     * Set the auto hide support on this dockable
      *
-     * @param allowPinning Is pinning allowed
+     * @param allowAutoHide Is auto hide allowed
      */
-    public void setPinningAllowed(boolean allowPinning) {
-        this.allowPinning = allowPinning;
+    public void setAutoHideAllowed(boolean allowAutoHide) {
+        this.allowAutoHide = allowAutoHide;
     }
 
     @Override

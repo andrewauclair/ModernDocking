@@ -236,7 +236,7 @@ public class LayoutPersistenceAPI {
         writer.writeStartElement("westToolbar");
         writer.writeCharacters(NL);
 
-        for (String id : layout.getWestUnpinnedToolbarIDs()) {
+        for (String id : layout.getWestAutoHideToolbarIDs()) {
             writer.writeStartElement("dockable");
             writer.writeAttribute("id", id);
             writer.writeEndElement();
@@ -248,7 +248,7 @@ public class LayoutPersistenceAPI {
         writer.writeStartElement("eastToolbar");
         writer.writeCharacters(NL);
 
-        for (String id : layout.getEastUnpinnedToolbarIDs()) {
+        for (String id : layout.getEastAutoHideToolbarIDs()) {
             writer.writeStartElement("dockable");
             writer.writeAttribute("id", id);
             writer.writeEndElement();
@@ -260,7 +260,7 @@ public class LayoutPersistenceAPI {
         writer.writeStartElement("southToolbar");
         writer.writeCharacters(NL);
 
-        for (String id : layout.getSouthUnpinnedToolbarIDs()) {
+        for (String id : layout.getSouthAutoHideToolbarIDs()) {
             writer.writeStartElement("dockable");
             writer.writeAttribute("id", id);
             writer.writeEndElement();
@@ -432,9 +432,9 @@ public class LayoutPersistenceAPI {
 
         WindowLayout layout = new WindowLayout(isMainFrame, location, size, state, readNodeFromFile(reader, "layout"));
 
-        layout.setWestUnpinnedToolbarIDs(westToolbar);
-        layout.setEastUnpinnedToolbarIDs(eastToolbar);
-        layout.setSouthUnpinnedToolbarIDs(southToolbar);
+        layout.setWestAutoHideToolbarIDs(westToolbar);
+        layout.setEastAutoHideToolbarIDs(eastToolbar);
+        layout.setSouthAutoHideToolbarIDs(southToolbar);
 
         layout.setMaximizedDockable(maximizedDockable);
 

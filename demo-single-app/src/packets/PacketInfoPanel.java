@@ -73,7 +73,7 @@ public class PacketInfoPanel extends JPanel implements Dockable {
 	}
 
 	@Override
-	public boolean isPinningAllowed() {
+	public boolean isAutoHideAllowed() {
 		return true;
 	}
 

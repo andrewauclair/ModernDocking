@@ -140,7 +140,7 @@ public class Example extends JFrame {
 		}
 
 		@Override
-		public boolean isPinningAllowed() {
+		public boolean isAutoHideAllowed() {
 			return false;
 		}
 
