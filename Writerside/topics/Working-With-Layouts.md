@@ -9,3 +9,5 @@ The `WindowLayout` and `ApplicationLayout` can then be saved to XML, as well as 
 The docking framework can store these layouts for you and provides special `JMenuItem`s that can restore named layouts on the application.
 
 Layouts can be restored by using the `restoreApplicationLayout` and `restoreWindowLayout` methods of the `DockingState` class. This undocks all dockables from the window (or entire application for an ApplicationLayout) and docks the dockables specified by the layout.
+
+Default layout management and restore is discussed in [Persistence](Persistence.md)
