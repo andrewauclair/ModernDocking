@@ -227,6 +227,29 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		view.add(actionListenDock(themes));
 		view.add(actionListenDock(scrolling));
 
+		JMenuItem createDynamicA = new JMenuItem("Create Dynamic-A (Constructor)");
+		JMenuItem createDynamicB = new JMenuItem("Create Dynamic-B (Method)");
+		JMenuItem createDynamicC = new JMenuItem("Create Dynamic-C (Invalid)");
+
+		createDynamicA.addActionListener(e -> {
+			DynamicConstructorPanel panel = new DynamicConstructorPanel("dynamic-a");
+			Docking.dock(panel, one, DockingRegion.CENTER);
+		});
+
+		createDynamicB.addActionListener(e -> {
+			DynamicMethodPanel panel = new DynamicMethodPanel("Dynamic-B", "dynamic-b");
+			Docking.dock(panel, one, DockingRegion.CENTER);
+		});
+
+		createDynamicC.addActionListener(e -> {
+			InvalidDynamicPanel panel = new InvalidDynamicPanel();
+			Docking.dock(panel, one, DockingRegion.CENTER);
+		});
+
+		view.add(createDynamicA);
+		view.add(createDynamicB);
+		view.add(createDynamicC);
+
 		JMenuItem storeCurrentLayout = new JMenuItem("Store Current Layout...");
 		storeCurrentLayout.addActionListener(e -> {
 			String layoutName = JOptionPane.showInputDialog("Name of Layout");

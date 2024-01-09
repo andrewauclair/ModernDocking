@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.DynamicDockable;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.exception.DockableRegistrationFailureException;
@@ -32,6 +33,8 @@ import ModernDocking.ui.HeaderModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +85,27 @@ public class DockingInternal {
 		}
 		if (dockable.getTabText() == null) {
 			throw new RuntimeException("Dockable '" + dockable.getPersistentID() + "' should not return 'null' for tabText()");
+		}
+		if (dockable instanceof DynamicDockable) {
+			Constructor<?> constructor = null;
+			Method createDynamicDockable = null;
+
+			try {
+				constructor = dockable.getClass().getConstructor(String.class);
+			} catch (NoSuchMethodException ignore) {
+			}
+
+			try {
+				createDynamicDockable = dockable.getClass().getMethod("createDynamicDockable", String.class);
+			}
+			catch (NoSuchMethodException ignore) {
+			}
+
+			if (createDynamicDockable != null || constructor != null) {
+			}
+			if (createDynamicDockable == null && constructor == null) {
+				throw new RuntimeException("Dockable '" + dockable.getPersistentID() + "' implements DynamicDockable interface but does not provide a constructor with 'String persistentID' or a public static void createDynamicDockable(String persistentID) method");
+			}
 		}
 		dockables.put(dockable.getPersistentID(), new DockableWrapper(docking, dockable));
 	}
