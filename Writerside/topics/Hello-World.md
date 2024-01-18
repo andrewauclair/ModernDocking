@@ -5,7 +5,7 @@ This page will demonstrate a hello world application with Modern Docking.
 At the end of this page you'll know how to:
 * create and register dockables
 * create and register root panels
-* dock programmatically
+* dock programmatically (covered more in depth [here](Docking-Programatically.md))
 
 First we will create `HelloWorld` and `MainFrame` classes. `HelloWorld` will contain our `main` method and `MainFrame` will extend `JFrame` to provide the main frame for our application.
 

@@ -29,6 +29,8 @@ import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -36,10 +38,12 @@ import java.util.List;
 /**
  * Panel that should be added to each frame that should support docking
  */
-public class RootDockingPanelAPI extends DockingPanel {
+public class RootDockingPanelAPI extends DockingPanel implements WindowStateListener {
 	private DockingAPI docking = null;
 
 	private Window window = null;
+	private Dimension lastKnownWindowSize = null;
+	private Point lastKnownWindowPosition = null;
 
 	private DockingPanel panel = null;
 
@@ -78,23 +82,9 @@ public class RootDockingPanelAPI extends DockingPanel {
 	 */
 	protected RootDockingPanelAPI(DockingAPI docking, Window window) {
 		setLayout(new GridBagLayout());
-
-		this.window = window;
 		this.docking = docking;
 
-		if (window instanceof JFrame) {
-			docking.registerDockingPanel(this, (JFrame) window);
-		}
-		else {
-			docking.registerDockingPanel(this, (JDialog) window);
-		}
-
-		southToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.SOUTH);
-		westToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.WEST);
-		eastToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.EAST);
-
-		supportedToolbars = EnumSet.allOf(ToolbarLocation.class);
-		pinningSupported = !supportedToolbars.isEmpty();
+		setWindow(window);
 	}
 
 	/**
@@ -118,6 +108,7 @@ public class RootDockingPanelAPI extends DockingPanel {
 	public void setWindow(Window window) {
 		if (this.window != null) {
 			docking.deregisterDockingPanel(this.window);
+			window.removeWindowStateListener(this);
 		}
 		this.window = window;
 
@@ -133,6 +124,7 @@ public class RootDockingPanelAPI extends DockingPanel {
 		eastToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.EAST);
 
 		supportedToolbars = EnumSet.allOf(ToolbarLocation.class);
+		pinningSupported = !supportedToolbars.isEmpty();
 	}
 
 	/**
@@ -493,5 +485,18 @@ public class RootDockingPanelAPI extends DockingPanel {
 		if (eastToolbar != null) {
 			SwingUtilities.updateComponentTreeUI(eastToolbar);
 		}
+	}
+
+	public Dimension getLastKnownWindowSize() {
+		return lastKnownWindowSize;
+	}
+
+	public Point getLastKnownWindowPosition() {
+		return lastKnownWindowPosition;
+	}
+
+	@Override
+	public void windowStateChanged(WindowEvent e) {
+		
 	}
 }

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022-2024 Andrew Auclair
+Copyright (c) 2024 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,33 +19,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package ModernDocking.exception;
+package basic;
 
 import ModernDocking.Dockable;
 
-/**
- * Exception that is thrown when a dockable is not already docked
- */
-public class NotDockedException extends RuntimeException {
-	private final Dockable dockable;
+import javax.swing.*;
+import java.awt.*;
 
-	/**
-	 * Create a new exception with the given dockable
-	 *
-	 * @param message Extra message information to display more detail about the problem
-	 * @param dockable Dockable that is not docked
-	 */
-	public NotDockedException(String message, Dockable dockable) {
-		super(message + " because dockable with persistent ID '" + dockable.getPersistentID() + "' is not docked.");
-		this.dockable = dockable;
-	}
+public class FixedSizePanel extends BasePanel implements Dockable {
+    public FixedSizePanel() {
+        super("Fixed Size", "fixed-size");
 
-	/**
-	 * Retrieve the dockable
-	 *
-	 * @return The dockable that is not docked
-	 */
-	public Dockable getDockable() {
-		return dockable;
-	}
+
+    }
+
+    @Override
+    public Dimension getMinimumSize() {
+        return new Dimension(300, 300);
+    }
+
+    @Override
+    public boolean isWrappableInScrollpane() {
+        return false;
+    }
 }

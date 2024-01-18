@@ -1,12 +1,11 @@
 # Menu Items
 
-LayoutsMenu
-    Displays a list of all layouts that the layout manager knows about. These are automatically added and removed. Clicked the menu item will load that layout.
-
-ApplicationLayoutMenuItem
-    Menu item specific to one layout.
-
-DockableMenuItem
-    Displays a single dockable. Shows a checkmark if the dockable is docked. If the dockable is not docked, docks it, if it is docked, it displays it.
-
-show images for these from the example project.
+<procedure title="Layouts Menu Class" id="LayoutsMenu">
+<p>Displays a list of all layouts that the layout manager knows about. These are automatically added and removed. When clicked the menu item will load that layout.</p>
+</procedure>
+<procedure title="Application Layout Menu Item Class" id="ApplicationLayoutMenuItem">
+<p>Menu item specific to one layout. Simply displays the name and when clicked loads the layout with <code>Docking.restore()</code></p>
+</procedure>
+<procedure title="Dockable Menu Item Class" id="DockableMenuItem">
+<p>Displays a single dockable. Shows a checkmark if the dockable is docked. If the dockable is not docked, docks it, if it is docked, it displays it.</p>
+</procedure>

@@ -23,8 +23,65 @@ package ModernDocking.internal;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class CustomTabbedPane extends JTabbedPane {
+    public CustomTabbedPane() {
+        setFocusable(false);
+
+        getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK),
+                "press-left"
+        );
+
+        getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK),
+                "press-right"
+        );
+
+        getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK | KeyEvent.ALT_GRAPH_DOWN_MASK),
+                "press-left"
+        );
+
+        getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK | KeyEvent.ALT_GRAPH_DOWN_MASK),
+                "press-right"
+        );
+
+        getActionMap().put("press-left",
+                new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        int newIndex = getSelectedIndex() - 1;
+
+                        if (newIndex < 0) {
+                            newIndex = getTabCount() - 1;
+                        }
+
+                        setSelectedIndex(newIndex);
+                    }
+                }
+        );
+
+        getActionMap().put("press-right",
+                new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        int newIndex = getSelectedIndex() + 1;
+
+                        if (newIndex >= getTabCount()) {
+                            newIndex = 0;
+                        }
+
+                        setSelectedIndex(newIndex);
+                    }
+                }
+        );
+    }
+
     public int getTargetTabIndex(Point mousePosOnScreen, boolean ignoreY) {
         SwingUtilities.convertPointFromScreen(mousePosOnScreen, this);
 

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2022-2024 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@ package ModernDocking.internal;
 import ModernDocking.Dockable;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
-import ModernDocking.exception.DockableRegistrationFailureException;
+import ModernDocking.exception.RootDockingPanelNotFoundException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -89,7 +89,7 @@ public class DockingComponentUtils {
 		if (docking.getRootPanels().containsKey(window)) {
 			return docking.getRootPanels().get(window);
 		}
-		throw new DockableRegistrationFailureException("No root panel for window has been registered.");
+		throw new RootDockingPanelNotFoundException(window);
 	}
 
 	/**
@@ -157,7 +157,7 @@ public class DockingComponentUtils {
 		return ((DisplayPanel) component).getWrapper().getDockable();
 	}
 
-	public static JTabbedPane findTabbedPaneAtPos(Point screenPos, Window window) {
+	public static CustomTabbedPane findTabbedPaneAtPos(Point screenPos, Window window) {
 		// window is null so there's no dockable to find
 		if (window == null) {
 			return null;
@@ -173,15 +173,15 @@ public class DockingComponentUtils {
 			return null;
 		}
 
-		while (!(component instanceof JTabbedPane) && component.getParent() != null) {
+		while (!(component instanceof CustomTabbedPane) && component.getParent() != null) {
 			component = component.getParent();
 		}
 
 		// didn't find a Dockable, return null
-		if (!(component instanceof JTabbedPane)) {
+		if (!(component instanceof CustomTabbedPane)) {
 			return null;
 		}
-		return (JTabbedPane) component;
+		return (CustomTabbedPane) component;
 	}
 
 	/**

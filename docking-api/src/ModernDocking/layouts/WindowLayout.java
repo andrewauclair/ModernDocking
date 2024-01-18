@@ -25,16 +25,18 @@ import javax.swing.*;
 import java.awt.Dialog.ModalityType;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * layout of a single frame
  */
 public class WindowLayout {
 	private boolean isMainFrame;
-	private final Point location;
+	private Point location;
 	private final boolean hasSizeAndLocationInformation;
-	private final Dimension size;
+	private  Dimension size;
 	private final int state;
 	private final ModalityType modalityType;
 	private final DockingLayoutNode rootNode;
@@ -80,6 +82,9 @@ public class WindowLayout {
 		modalityType = ModalityType.MODELESS;
 	}
 
+//	static Map<Window, Point> previousLocation = new HashMap<>();
+//	static Map<Window, Dimension> previousSize = new HashMap<>();
+
 	/**
 	 * Create a new WindowLayout for the given window and its root. Assumed to not be the main frame
 	 *
@@ -93,6 +98,15 @@ public class WindowLayout {
 
 		if (window instanceof JFrame) {
 			this.state = ((JFrame) window).getExtendedState();
+
+			if (this.state != JFrame.NORMAL && this.state != JFrame.ICONIFIED) {
+				this.size = previousSize.getOrDefault(window, this.size);
+				location = previousLocation.getOrDefault(window, location);
+			}
+			else {
+				previousSize.put(window, size);
+				previousLocation.put(window, location);
+			}
 			this.modalityType = ModalityType.MODELESS;
 		}
 		else {

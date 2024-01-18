@@ -175,6 +175,8 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		ToolPanel explorer = new ToolPanel("Explorer", "explorer", DockableStyle.VERTICAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
 		ToolPanel output = new OutputPanel("Output", "output", DockableStyle.HORIZONTAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
 		AlwaysDisplayedPanel alwaysDisplayed = new AlwaysDisplayedPanel("always displayed", "always-displayed");
+		ScrollingWithToolbarPanel scrolling = new ScrollingWithToolbarPanel();
+		FixedSizePanel fixedSize = new FixedSizePanel();
 
 		PropertiesDemoPanel propertiesDemoPanel = new PropertiesDemoPanel();
 
@@ -207,6 +209,13 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		});
 		view.add(createNewDockable);
 
+		JMenuItem createDynamicDockable = new JMenuItem("Create Dynamic Dockable");
+		createDynamicDockable.addActionListener(e -> {
+			IncorrectDynamicDockable incorrect = new IncorrectDynamicDockable();
+			Docking.dock(incorrect, one, DockingRegion.CENTER);
+		});
+		view.add(createDynamicDockable);
+
 		view.add(actionListenDock(one));
 		JMenuItem oneToCenter = new JMenuItem("one (to center of window)");
 		oneToCenter.addActionListener(e -> Docking.dock("one", this));
@@ -220,10 +229,12 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		view.add(actionListenDock(eight));
 		view.add(actionListenDock(explorer));
 		view.add(actionListenDock(output));
+		view.add(actionListenDock(fixedSize));
 		view.add(actionListenDock(propertiesDemoPanel));
 		view.add(new DockableMenuItem(() -> ((Dockable) alwaysDisplayed).getPersistentID(), ((Dockable) alwaysDisplayed).getTabText()));
 		view.add(changeText);
 		view.add(actionListenDock(themes));
+		view.add(actionListenDock(scrolling));
 
 		JMenuItem storeCurrentLayout = new JMenuItem("Store Current Layout...");
 		storeCurrentLayout.addActionListener(e -> {

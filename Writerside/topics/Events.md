@@ -1,12 +1,8 @@
 # Events
 
-Start typing here...
-
-DockingEvent
-DockingLayoutEvent
-
-# Listeners
-
-DockingLayoutListener
-DockingListener
-MaximizeListener
+<procedure title="DockingEvent" id="DockingEvent">
+<p></p>
+</procedure>
+<procedure title="DockingLayoutEvent" id="DockingLayoutEvent">
+<p></p>
+</procedure>

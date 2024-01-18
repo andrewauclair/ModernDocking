@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2022-2024 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,11 @@ SOFTWARE.
 package ModernDocking.exception;
 
 /**
- * Special RuntimeException indicating that a dockable was not found
+ * This exception is thrown when the docking framework tries to lookup a dockable and fails
  */
 public class DockableNotFoundException extends RuntimeException {
+	private final String persistentID;
+
 	/**
 	 * Create a new DockableNotFoundException
 	 *
@@ -32,5 +34,14 @@ public class DockableNotFoundException extends RuntimeException {
 	 */
 	public DockableNotFoundException(String persistentID) {
 		super("Dockable with persistent ID '" + persistentID + "' not found.");
+		this.persistentID = persistentID;
+	}
+
+	/**
+	 * Retrieve the persistentID of the dockable that was not found
+	 * @return The persistentID of the non-existent dockable
+	 */
+	public String getPersistentID() {
+		return persistentID;
 	}
 }

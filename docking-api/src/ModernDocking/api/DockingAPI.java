@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Andrew Auclair
+Copyright (c) 2023-2024 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,9 @@ import ModernDocking.DockableStyle;
 import ModernDocking.DockingRegion;
 import ModernDocking.event.DockingListener;
 import ModernDocking.event.MaximizeListener;
-import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.exception.NotDockedException;
+import ModernDocking.exception.RootDockingPanelNotFoundException;
+import ModernDocking.exception.RootDockingPanelRegistrationFailureException;
 import ModernDocking.floating.FloatListener;
 import ModernDocking.internal.*;
 import ModernDocking.layouts.WindowLayout;
@@ -36,8 +37,8 @@ import ModernDocking.ui.ToolbarLocation;
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeListener;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * Single instance of the docking framework. Useful when a single JVM is to host multiple instances of an application
@@ -135,6 +136,15 @@ public class DockingAPI {
     }
 
     /**
+     * Check if a dockable has already been registered
+     *
+     * @param persistentID The persistent ID to look for
+     */
+    public boolean isDockableRegistered(String persistentID) {
+        return getDockables().stream().anyMatch(dockable -> Objects.equals(persistentID, dockable.getPersistentID()));
+    }
+
+    /**
      * Dockables must be deregistered so it can be properly disposed
      *
      * @param dockable Dockable to deregister
@@ -192,7 +202,7 @@ public class DockingAPI {
      */
     public void registerDockingPanel(RootDockingPanelAPI panel, JFrame parent) {
         if (rootPanels.containsKey(parent)) {
-            throw new DockableRegistrationFailureException("RootDockingPanel already registered for frame: " + parent);
+            throw new RootDockingPanelRegistrationFailureException(panel, parent);
         }
 
         if (rootPanels.containsValue(panel)) {
@@ -204,7 +214,7 @@ public class DockingAPI {
                     .map(Map.Entry::getKey)
                     .get();
 
-            throw new DockableRegistrationFailureException("RootDockingPanel already registered for window: " + window);
+            throw new RootDockingPanelRegistrationFailureException(panel, window);
         }
 
         rootPanels.put(parent, panel);
@@ -221,19 +231,11 @@ public class DockingAPI {
      */
     public void registerDockingPanel(RootDockingPanelAPI panel, JDialog parent) {
         if (rootPanels.containsKey(parent)) {
-            throw new DockableRegistrationFailureException("RootDockingPanel already registered for frame: " + parent);
+            throw new RootDockingPanelRegistrationFailureException(panel, parent);
         }
 
         if (rootPanels.containsValue(panel)) {
-            // we already checked above that we have this value
-            //noinspection OptionalGetWithoutIsPresent
-            Window window = rootPanels.entrySet().stream()
-                    .filter(entry -> entry.getValue() == panel)
-                    .findFirst()
-                    .map(Map.Entry::getKey)
-                    .get();
-
-            throw new DockableRegistrationFailureException("RootDockingPanel already registered for window: " + window);
+            throw new RootDockingPanelRegistrationFailureException(panel, parent);
         }
 
         rootPanels.put(parent, panel);
@@ -285,7 +287,7 @@ public class DockingAPI {
      */
     public void configurePinning(Window window, int layer, boolean allow) {
         if (!rootPanels.containsKey(window)) {
-            throw new DockableRegistrationFailureException("No root panel for window has been registered.");
+            throw new RootDockingPanelNotFoundException(window);
         }
 
         RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
@@ -353,7 +355,7 @@ public class DockingAPI {
         RootDockingPanelAPI root = rootPanels.get(window);
 
         if (root == null) {
-            throw new DockableRegistrationFailureException("Window does not have a RootDockingPanel: " + window);
+            throw new RootDockingPanelNotFoundException(window);
         }
 
         if (!root.isEmpty() && region == DockingRegion.CENTER) {
@@ -388,7 +390,7 @@ public class DockingAPI {
         RootDockingPanelAPI root = rootPanels.get(window);
 
         if (root == null) {
-            throw new DockableRegistrationFailureException("Window does not have a RootDockingPanel: " + window);
+            throw new RootDockingPanelNotFoundException(window);
         }
 
         // if the source is already docked we need to undock it before docking it again, otherwise we might steal it from its UI parent
@@ -476,7 +478,7 @@ public class DockingAPI {
      */
     public void dock(Dockable source, Dockable target, DockingRegion region, double dividerProportion) {
         if (!isDocked(target)) {
-            throw new NotDockedException(target);
+            throw new NotDockedException("Unable to dock dockable with persistent ID '" + source.getPersistentID() + "'", target);
         }
 
         // if the source is already docked we need to undock it before docking it again, otherwise we might steal it from its UI parent
@@ -564,10 +566,15 @@ public class DockingAPI {
      */
     public void bringToFront(Dockable dockable) {
         if (!isDocked(dockable)) {
-            throw new NotDockedException(dockable);
+            throw new NotDockedException("Unable to bring dockable to the front ", dockable);
         }
 
         Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
+
+        if (window instanceof JFrame && ((JFrame) window).getState() == JFrame.ICONIFIED) {
+            ((JFrame)window).setState(JFrame.NORMAL);
+        }
+
         window.setAlwaysOnTop(true);
         window.setAlwaysOnTop(false);
 

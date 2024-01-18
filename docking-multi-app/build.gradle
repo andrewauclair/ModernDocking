@@ -25,6 +25,7 @@ base {
 	archivesName = "modern-docking-multi-app"
 }
 
+// NOTE: do not add new dependencies here, Modern Docking is a zero-dependency library
 dependencies {
 	implementation project(':docking-api')
 }
