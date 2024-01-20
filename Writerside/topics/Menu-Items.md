@@ -1,5 +1,7 @@
 # Menu Items
 
+Modern Docking provides several specialized menu classes explained below
+
 <procedure title="LayoutsMenu" id="LayoutsMenu">
 <p>Displays a list of all layouts that the layout manager knows about. These are automatically added and removed. When clicked the menu item will load that layout.</p>
 </procedure>

@@ -25,7 +25,7 @@ These two methods do not provide default implementations in the interface and mu
 
 <procedure title="getTabText" id="getTabText">
 <p><code>getTabText</code> provides the text that should be displayed on a tab when this dockable is in a <code>JTabbedPane</code>.</p>
-<note>If the text displayed on the tab ever changes, the application must call <b>Docking.updateTabText</b> with the dockables persistentID to force the framework to update the text. This should be done anytime the text is changed, just in case the dockable is displaying in a JTabbedPane</note>
+<note>If the text displayed on the tab ever changes, the application must call <b>Docking.updateTabText</b> with the dockables persistentID to force the framework to update the text. This should be done anytime the text is changed, just in case the dockable is displaying in a JTabbedPane. Undocking and docking the dockable again will also update the tab text.</note>
 </procedure>
 
 ## Optional Methods
@@ -33,9 +33,10 @@ These two methods do not provide default implementations in the interface and mu
 All the following methods are provided to the application with a default. This means the application only needs to implement the methods
 if it wishes to change the default.
 
-### getType
-
-<!-- This one is a bit weird and complicated. It's really just a hack, and we should add something better. -->
+<procedure title="getType" id="getType">
+<p><code>getType</code> provides an int to Modern Docking. This represents a unique type category for the dockable. Modern Docking will use this value when docking to determine which dockables to dock to.</p>
+<p>Default value is <code>0</code></p>
+</procedure>
 
 <procedure title="getTabTooltip" id="getTabTooltip">
 <p>Used by the framework to get the text to display as a tooltip on <code>JTabbedPane</code> tabs.</p>
@@ -51,7 +52,6 @@ if it wishes to change the default.
 <p>Used by the framework to decided whether the dockable component is allowed to be opened in its own window</p>
 <p>Default value is <code>true</code></p>
 </procedure>
-Allows the application to specify whether a dockable can be dragged out of its current window and floated on its own as a new window.
 
 <procedure title="isLimitedToRoot" id="isLimitedToRoot">
 <code-block lang="java">boolean isLimitedToRoot()</code-block>
@@ -60,15 +60,14 @@ Allows the application to specify whether a dockable can be dragged out of its c
 </procedure>
 
 <procedure title="getStyle" id="getStyle">
-<p></p>
+<p>The docking style of the dockable which can be <code>DockableStyle.VERTICAL</code>, <code>DockableStyle.HORIZONTAL</code> or <code>DockableStyle.BOTH</code>. Modern Docking will use this to determine which docking regions to allow when docking this dockable. Docking handles that do not match this style will be hidden.</p>
 <p>Default value is <code>DockableStyle.BOTH</code></p>
 </procedure>
 
 <procedure title="getPinningStyle" id="getPinningStyle">
-<p></p>
+<p>Determines which toolbars this dockable can be displayed on. Uses the same values as <code>getStyle</code></p>
 <p>Default value is <code>DockableStyle.BOTH</code></p>
 </procedure>
-to be renamed
 
 <procedure title="isClosable" id="isClosable">
 <code-block lang="java">boolean isClosable()</code-block>
@@ -76,9 +75,15 @@ to be renamed
 <p>Default value is <code>true</code></p>
 </procedure>
 
-### isPinningAllowed
+<procedure title="isPinningAllowed" id="isPinningAllowed">
+<p>Determines if the dockable can be pinned to the pinning toolbars and hidden.</p>
+<p>Default value is <code>false</code></p>
+</procedure>
 
-### isMinMaxAllowed
+<procedure title="isMinMaxAllowed" id="isMinMaxAllowed">
+<p>Determines if the dockable can be maximized so that it takes up all the space in the window.</p>
+<p>Default value is <code>false</code></p>
+</procedure>
 
 <procedure title="isWrappableInScrollpane" id="isWrappableInScrollpane">
 <code-block lang="java">boolean isWrappableInScrollpane()</code-block>
@@ -88,21 +93,25 @@ to be renamed
 
 <procedure title="getHasMoreOptions" id="getHasMoreOptions">
 <code-block lang="java">boolean getHasMoreOptions()</code-block>
-<p></p>
+<p>Flag that tells Modern Docking that this dockable has more menu items it wishes to add to the context menu. If this method returns true then Modern Docking will call <code>addMoreOptions</code></p>
+<p>Default value is <code>false</code></p>
 </procedure>
 
 <procedure title="getTabPosition" id="getTabPosition">
 <code-block lang="java">int getTabPosition()</code-block>
-<p></p>
+<p>Gives the dockables preferred tab location when in a <code>JTabbedPane</code></p>
 <p>Default value is <code>SwingConstants.BOTTOM</code></p>
 </procedure>
 
 <procedure title="addMoreOptions" id="addMoreOptions">
 <code-block lang="java">void addMoreOptions(JPopupMenu menu)</code-block>
-<p></p>
+<p>Adds this dockables menu items to the context menu</p>
 </procedure>
-### createHeaderUI
 
-### updateProperties
+<procedure title="createHeaderUI" id="createHeaderUI">
+<p>Creates the header UI for this dockable. The default implementation will create the default Modern Docking header.</p>
+</procedure>
 
-<!-- todo: should updateProperties be mandatory? it'll probably be easy to forget if you start adding properties to dockables -->
+<procedure title="updateProperties" id="updateProperties">
+<p>Modern Docking will call this method after setting the values of any fields annotated with <code>DockingProperty</code>. If there are no fields with that annotation then this method is not called</p>
+</procedure>
