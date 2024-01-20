@@ -1,6 +1,7 @@
 # Dockable Interface
 
-The `Dockable` interface is required to be implemented by the application on any component it wishes to dock.
+The `Dockable` interface is required to be implemented by any component that will be dockable.
+
 Typically, this interface is implemented by a class that extends from `JPanel`.
 
 The `Dockable` interface has a minimum subset of methods that must be implemented by the application and a set of methods that are optional.
@@ -19,12 +20,11 @@ Generally, if you wish to modify the return values after creating the dockable c
 These two methods do not provide default implementations in the interface and must be implemented by the application.
 
 <procedure title="getPersistentID" id="getPersistentID">
-<p>`getPersistentID` provides a unique ID that the framework can use to refer to the dockable. This is the main piece of information that the application
-and the framework share in order to refer to specific dockables.</p>
+<p><code>getPersistentID</code> provides a unique ID that the framework can use to refer to the dockable. This is the main piece of information that the application and the framework share in order to refer to specific dockables.</p>
 </procedure>
 
 <procedure title="getTabText" id="getTabText">
-<p>`getTabText` provides the text that should be displayed on a tab when this dockable is in a `JTabbedPane`.</p>
+<p><code>getTabText</code> provides the text that should be displayed on a tab when this dockable is in a <code>JTabbedPane</code>.</p>
 <note>If the text displayed on the tab ever changes, the application must call <b>Docking.updateTabText</b> with the dockables persistentID to force the framework to update the text. This should be done anytime the text is changed, just in case the dockable is displaying in a JTabbedPane</note>
 </procedure>
 
