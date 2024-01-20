@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="m"
+                 name="ModernDocking"
+                 start-page="starter-topic.md">
+
+    <toc-element topic="starter-topic.md"/>
+    <toc-element topic="User-Facing-Features.md"/>
+    <toc-element topic="Packaging.md"/>
+    <toc-element topic="Modern-Docking-API.md">
+        <toc-element topic="Hello-World.md"/>
+        <toc-element topic="Dockable-Properties.md"/>
+        <toc-element topic="Dockable-Interface.md"/>
+        <toc-element topic="Docking-Programatically.md"/>
+        <toc-element topic="Menu-Items.md"/>
+        <toc-element topic="Customization-Points.md"/>
+        <toc-element topic="Exceptions.md"/>
+        <toc-element topic="Events.md"/>
+        <toc-element topic="Listeners.md"/>
+        <toc-element topic="Working-With-Layouts.md"/>
+        <toc-element topic="Persistence.md"/>
+        <toc-element topic="Look-and-Feel.md"/>
+    </toc-element>
+    <toc-element topic="Modern-Docking-UI.md"/>
+    <toc-element topic="Internal-Workings.md"/>
+</instance-profile>
