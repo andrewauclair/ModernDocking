@@ -87,6 +87,7 @@ public class DockingSettings {
         if (UIManager.get(currentHandleBackground) != null) {
             return UIManager.getColor(currentHandleBackground);
         }
+        // TODO I wonder if we should attempt the theme property again here, assuming the user has changd the current property
         return defaultHandleBackground;
     }
 
