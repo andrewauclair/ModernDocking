@@ -56,6 +56,7 @@ public class DockingStateAPI {
         this.docking = docking;
     }
 
+    @Deprecated(forRemoval = true)
     public RootDockState getRootState(Window window) {
         RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, window);
 
@@ -217,6 +218,7 @@ public class DockingStateAPI {
         window.setSize(size);
     }
 
+    @Deprecated(forRemoval = true)
     public void restoreState(Window window, RootDockState state) {
         RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, window);
 
