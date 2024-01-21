@@ -24,6 +24,7 @@ package ModernDocking.api;
 import ModernDocking.Dockable;
 import ModernDocking.exception.DockableNotFoundException;
 import ModernDocking.exception.DockableRegistrationFailureException;
+import ModernDocking.exception.RootDockingPanelNotFoundException;
 import ModernDocking.internal.*;
 import ModernDocking.layouts.*;
 import ModernDocking.persist.*;
@@ -59,7 +60,7 @@ public class DockingStateAPI {
         RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, window);
 
         if (root == null) {
-            throw new RuntimeException("Root for window does not exist: " + window);
+            throw new RootDockingPanelNotFoundException(window);
         }
 
         return new RootDockState(root);
@@ -69,7 +70,7 @@ public class DockingStateAPI {
         RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, window);
 
         if (root == null) {
-            throw new RuntimeException("Root for frame does not exist: " + window);
+            throw new RootDockingPanelNotFoundException(window);
         }
 
         WindowLayout maxLayout = maximizeRestoreLayout.get(window);
@@ -147,7 +148,7 @@ public class DockingStateAPI {
         RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, window);
 
         if (root == null) {
-            throw new RuntimeException("Root for window does not exist: " + window);
+            throw new RootDockingPanelNotFoundException(window);
         }
 
         if (layout.hasSizeAndLocationInformation()) {
@@ -220,7 +221,7 @@ public class DockingStateAPI {
         RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, window);
 
         if (root == null) {
-            throw new RuntimeException("Root for window does not exist: " + window);
+            throw new RootDockingPanelNotFoundException(window);
         }
 
         DockingComponentUtils.undockComponents(docking, root);
