@@ -30,6 +30,8 @@ public class Settings {
 
     private static int tabLayoutPolicy = JTabbedPane.SCROLL_TAB_LAYOUT;
 
+    private static boolean enableActiveHighlighter = true;
+
     public static boolean alwaysDisplayTabsMode() {
         return alwaysDisplayTabsMode;
     }
@@ -51,5 +53,13 @@ public class Settings {
             throw new IllegalArgumentException("illegal tab layout policy: must be WRAP_TAB_LAYOUT or SCROLL_TAB_LAYOUT");
         }
         Settings.tabLayoutPolicy = tabLayoutPolicy;
+    }
+
+    public static boolean isActiveHighlighterEnabled() {
+        return enableActiveHighlighter;
+    }
+
+    public static void setActiveHighlighterEnabled(boolean enabled) {
+        enableActiveHighlighter = enabled;
     }
 }
