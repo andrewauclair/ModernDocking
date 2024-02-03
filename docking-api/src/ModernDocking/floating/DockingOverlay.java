@@ -37,7 +37,7 @@ import java.awt.*;
 /**
  * displays the overlay highlight of where the panel will be docked
  */
-public class DockingOverlay {
+public class DockingOverlay extends DockingOverlayInterface {
 	// determines how close to the edge the user has to drag the panel before they see an overlay other than CENTER
 	private static final double REGION_SENSITIVITY = 0.35;
 
@@ -73,8 +73,17 @@ public class DockingOverlay {
 	private boolean visibleOverride = false;
 
 	private boolean overTab = false;
-	public Rectangle targetTab;
-	public boolean beforeTab = true;
+
+	public void setTargetTab(Rectangle targetTab) {
+		this.targetTab = targetTab;
+	}
+
+	public void setBeforeTab(boolean beforeTab) {
+		this.beforeTab = beforeTab;
+	}
+
+	private Rectangle targetTab;
+	private boolean beforeTab = true;
 
 	/**
 	 * Construct a new overlay for a utility frame and root panel
@@ -110,7 +119,7 @@ public class DockingOverlay {
 	 *
 	 * @param dockable Current floating dockable
 	 */
-	public void setFloating(JPanel dockable) {
+	public void setFloatingDockable(JPanel dockable) {
 		floating = dockable;
 	}
 

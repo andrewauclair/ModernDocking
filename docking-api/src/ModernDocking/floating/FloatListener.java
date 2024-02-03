@@ -41,7 +41,7 @@ import java.util.*;
 /**
  * Listener responsible for tracking dockables both when they are first dragged and while being dragged
  */
-public class FloatListener extends DragSourceAdapter implements DragSourceListener, DragSourceMotionListener {
+class FloatListener extends DragSourceAdapter implements DragSourceListener, DragSourceMotionListener {
 	/**
 	 * Flag indicating if there is a dockable currently floating
 	 */
@@ -49,7 +49,6 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 	public static boolean isFloating() { return isFloating; }
 
-	private static boolean isOverTab = false;
 
 	// current floating dockable
 	private final JPanel source;
@@ -201,8 +200,8 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		Dockable dockable = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, currentTopWindow);
 
 		if (activeUtilsFrame != null) {
-			activeUtilsFrame.setFloating(floatingPanel);
-			activeUtilsFrame.setTargetDockable(dockable);
+			activeUtilsFrame.setFloatingDockable(floatingPanel);
+//			activeUtilsFrame.setTargetDockable(dockable);
 			activeUtilsFrame.update(mousePosOnScreen);
 		}
 
@@ -212,65 +211,24 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			boolean overTab = dockable == null && tabbedPane != null && floatingPanel instanceof DisplayPanel;
 
 			if (overTab) {
-				int targetTabIndex = tabbedPane.getTargetTabIndex(mousePosOnScreen, true);
-
-				Rectangle boundsAt;
-				boolean last = false;
-
-				if (targetTabIndex != -1) {
-					boundsAt = tabbedPane.getBoundsAt(targetTabIndex);
-
-					Point p = new Point(boundsAt.x, boundsAt.y);
-					SwingUtilities.convertPointToScreen(p, tabbedPane);
-					SwingUtilities.convertPointFromScreen(p, activeUtilsFrame);
-					boundsAt.x = p.x;
-					boundsAt.y = p.y;
-
-					boundsAt.width /=2;
+				if (activeUtilsFrame.setOverTab(tabbedPane, mousePosOnScreen)) {
+					floatingFrame.setVisible(false);
 				}
-				else {
-					boundsAt = tabbedPane.getBoundsAt(tabbedPane.getTabCount() - 1);
-
-					Point tabPoint = new Point(tabbedPane.getX(), tabbedPane.getY());
-					SwingUtilities.convertPointToScreen(tabPoint, tabbedPane.getParent());
-
-					Point boundsPoint = new Point(boundsAt.x, boundsAt.y);
-					SwingUtilities.convertPointToScreen(boundsPoint, tabbedPane);
-
-					int widthToAdd = boundsAt.width;
-
-					if (boundsPoint.x + (boundsAt.width * 2) >= tabPoint.x + tabbedPane.getWidth()) {
-						boundsAt.width = Math.abs((tabPoint.x + tabbedPane.getWidth()) - (boundsPoint.x + boundsAt.width));
-					}
-
-					SwingUtilities.convertPointFromScreen(boundsPoint, activeUtilsFrame);
-
-					boundsAt.x = boundsPoint.x + widthToAdd;
-					boundsAt.y = boundsPoint.y;
-
-					last = true;
+			}
+			else {
+				if (activeUtilsFrame.setOverDockable(dockable, mousePosOnScreen)) {
+					floatingFrame.setVisible(true);
+					reorderWindows();
 				}
-
-				activeUtilsFrame.setOverTab(true, boundsAt, last);
-				activeUtilsFrame.update(mousePosOnScreen);
-				floatingFrame.setVisible(false);
 			}
-			else if (isOverTab) {
-				activeUtilsFrame.setOverTab(false, null, false);
-				floatingFrame.setVisible(true);
-
-				reorderWindows();
-			}
-
-			isOverTab = overTab;
 		}
 
 		if (tabbedPane != null && tabbedPane.getSelectedComponent() instanceof DisplayPanel) {
 			DisplayPanel panel = (DisplayPanel) tabbedPane.getSelectedComponent();
 
 			if (activeUtilsFrame != null) {
-				activeUtilsFrame.setFloating(floatingPanel);
-				activeUtilsFrame.setTargetDockable(panel.getWrapper().getDockable());
+				activeUtilsFrame.setFloatingDockable(floatingPanel);
+//				activeUtilsFrame.setTargetDockable(panel.getWrapper().getDockable());
 				activeUtilsFrame.update(mousePosOnScreen);
 			}
 		}
@@ -288,7 +246,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 			if (currentTopWindow != null && floatingFrame != null && activeUtilsFrame != null) {
 				Point mousePos = MouseInfo.getPointerInfo().getLocation();
 
-				activeUtilsFrame.setFloating(floatingPanel);
+				activeUtilsFrame.setFloatingDockable(floatingPanel);
 				activeUtilsFrame.update(mousePos);
 				activeUtilsFrame.setActive(true);
 
@@ -381,7 +339,7 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 		}
 
 		if (activeUtilsFrame != null) {
-			activeUtilsFrame.setFloating(floatingPanel);
+			activeUtilsFrame.setFloatingDockable(floatingPanel);
 			activeUtilsFrame.update(mousePos);
 			activeUtilsFrame.setActive(true);
 			activeUtilsFrame.toFront();
@@ -518,8 +476,8 @@ public class FloatListener extends DragSourceAdapter implements DragSourceListen
 
 		// hide the overlay frame if one is active
 		if (activeUtilsFrame != null) {
-			activeUtilsFrame.setTargetDockable(null);
-			activeUtilsFrame.setFloating(null);
+//			activeUtilsFrame.setTargetDockable(null);
+			activeUtilsFrame.setFloatingDockable(null);
 			activeUtilsFrame.setActive(false);
 			activeUtilsFrame = null;
 		}

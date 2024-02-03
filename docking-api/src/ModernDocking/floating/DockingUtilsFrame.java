@@ -25,6 +25,7 @@ import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.internal.CustomTabbedPane;
 import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
@@ -40,10 +41,11 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 	 * Handles display for this utility frame
 	 */
 	private final DockingHandles handles;
+	private final DockingAPI docking;
 	/**
 	 * Overlay display for this utility frame
 	 */
-	private final DockingOverlay overlay;
+	private DockingOverlayInterface overlay;
 	/**
 	 * The window from the application that this utility frame is directly over
 	 */
@@ -58,6 +60,7 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 	 * @param root The root of the tied window
 	 */
 	public DockingUtilsFrame(DockingAPI docking, Window referenceDockingWindow, RootDockingPanelAPI root) {
+		this.docking = docking;
 		setLayout(null); // don't use a layout manager for this custom painted frame
 		setUndecorated(true); // don't want to see a frame border
 		setType(Type.UTILITY); // hide this frame from the task bar
@@ -82,7 +85,7 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		this.referenceDockingWindow = referenceDockingWindow;
 
 		handles = new DockingHandles(this, root);
-		overlay = new DockingOverlay(docking, this, root);
+		overlay = new DockingEmptyOverlay();//new DockingOverlay(docking, this, root);
 
 	}
 
@@ -108,37 +111,65 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 	 *
 	 * @param target Target dockable
 	 */
-	public void setTargetDockable(Dockable target) {
-		// don't change the target dockable if we're over a handle
-		if (!handles.isMouseOverHandle()) {
-			handles.setTarget(target);
-			overlay.setTargetDockable(target);
-		}
-
-		overlay.setTargetRootRegion(handles.getRootRegion());
-		overlay.setTargetDockableRegion(handles.getDockableRegion());
-		overlay.setTargetPinRegion(handles.getPinningRegion());
-	}
+//	public void setTargetDockable(Dockable target) {
+//		// don't change the target dockable if we're over a handle
+//		if (!handles.isMouseOverHandle()) {
+//			handles.setTarget(target);
+//			overlay.setTargetDockable(target);
+//		}
+//
+//		overlay.setTargetRootRegion(handles.getRootRegion());
+//		overlay.setTargetDockableRegion(handles.getDockableRegion());
+//		overlay.setTargetPinRegion(handles.getPinningRegion());
+//	}
 
 	/**
 	 * set the floating panel, doesn't change once the panel is first floated
 	 *
 	 * @param floating Floating dockable
 	 */
-	public void setFloating(JPanel floating) {
-		handles.setFloating(floating);
-		overlay.setFloating(floating);
+	public void setFloatingDockable(JPanel floating) {
+		handles.setFloatingDockable(floating);
+		overlay.setFloatingDockable(floating);
 	}
 
-	public void setOverTab(boolean overTab, Rectangle rect, boolean last) {
-		this.overTab = overTab;
+//	public void setOverTab(boolean overTab, Rectangle rect, boolean last) {
+//		this.overTab = overTab;
+//
+//		overlay.setTargetDockableRegion(overTab ? DockingRegion.CENTER : null);
+//		handles.overTab = overTab;
+////		overlay.overTab = overTab;
+//		overlay.setOverTab(overTab);
+//		overlay.setTargetTab(rect);
+//		overlay.setBeforeTab(!last);
+//	}
 
-		overlay.setTargetDockableRegion(overTab ? DockingRegion.CENTER : null);
-		handles.overTab = overTab;
-//		overlay.overTab = overTab;
-		overlay.setOverTab(overTab);
-		overlay.targetTab = rect;
-		overlay.beforeTab = !last;
+	// set state as over a dockable, return value of true indicates that the internal state has changed and was not over a dockable before
+	public boolean setOverDockable(Dockable target, Point mousePosOnScreen) {
+		if (overlay instanceof DockingDockableOverlay) {
+			((DockingDockableOverlay) overlay).updateOverlay(target, mousePosOnScreen);
+
+			if (!handles.isMouseOverHandle()) {
+				handles.setTarget(target);
+				overlay.setTargetDockable(target);
+			}
+		}
+		else {
+			overlay = new DockingDockableOverlay(docking, this, target, mousePosOnScreen);
+			return true;
+		}
+		return false;
+	}
+
+	public boolean setOverTab(CustomTabbedPane tabs, Point mousePosOnScreen) {
+		if (overlay instanceof DockingTabOverlay) {
+			((DockingTabOverlay) overlay).updateOverlay(mousePosOnScreen);
+		}
+		else {
+			overlay = new DockingTabOverlay(this, tabs, mousePosOnScreen);
+			return true;
+		}
+		return false;
 	}
 
 	/**

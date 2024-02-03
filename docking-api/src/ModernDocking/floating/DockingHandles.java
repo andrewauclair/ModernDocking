@@ -73,7 +73,7 @@ public class DockingHandles {
 	// the dockable that the mouse is currently over, can be null
 	private Dockable targetDockable = null;
 
-	public boolean overTab = false;
+//	public boolean overTab = false;
 
 	/**
 	 * Create a new instance of the DockingHandles
@@ -144,7 +144,7 @@ public class DockingHandles {
 	 *
 	 * @param dockable Dockable that is floating
 	 */
-	public void setFloating(JPanel dockable) {
+	public void setFloatingDockable(JPanel dockable) {
 		floating = dockable;
 	}
 

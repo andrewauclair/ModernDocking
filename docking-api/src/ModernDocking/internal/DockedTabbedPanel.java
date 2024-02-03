@@ -24,7 +24,9 @@ package ModernDocking.internal;
 import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
-import ModernDocking.floating.FloatListener;
+import ModernDocking.floating2.DockedTabbedPanelFloatListener;
+import ModernDocking.floating2.FloatListener2;
+import ModernDocking.floating2.Floating;
 import ModernDocking.settings.Settings;
 import ModernDocking.ui.DockingSettings;
 
@@ -49,7 +51,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 */
 	private final List<DockableWrapper> panels = new ArrayList<>();
 
-	private FloatListener floatListener;
+	private FloatListener2 floatListener;
 
 	private final CustomTabbedPane tabs = new CustomTabbedPane();
 	private final DockingAPI docking;
@@ -160,7 +162,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 		tabs.addChangeListener(this);
 
-		floatListener = new FloatListener(docking, this, tabs);
+		floatListener = new DockedTabbedPanelFloatListener(docking, this, tabs);
 	}
 
 	@Override
@@ -368,7 +370,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			return;
 		}
 
-		if (selectedTab != -1 && !FloatListener.isFloating()) {
+		if (selectedTab != -1 && !Floating.isFloating()) {
 			DockingListeners.fireHiddenEvent(panels.get(selectedTab).getDockable());
 		}
 		selectedTab = tabs.getSelectedIndex();
