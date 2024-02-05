@@ -11,41 +11,81 @@ import java.awt.*;
 import java.awt.dnd.DragSource;
 import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceMotionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
-public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener {
+public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener, ComponentListener {
     private final DockingAPI docking;
     private final Window referenceDockingWindow;
     private final RootDockingPanelAPI root;
+    private final RootDockingHandles rootHandles;
 
     private FloatListener2 floatListener;
     private JFrame floatingFrame;
     private DragSource dragSource;
     private Dockable currentDockable;
+    private DockableHandles dockableHandles;
 
     public FloatUtilsFrame(DockingAPI docking, Window referenceDockingWindow, RootDockingPanelAPI root) {
         this.docking = docking;
-
         this.referenceDockingWindow = referenceDockingWindow;
         this.root = root;
+        this.rootHandles = new RootDockingHandles(this, root);
+
+        this.referenceDockingWindow.addComponentListener(this);
+
+        SwingUtilities.invokeLater(() -> {
+            setLocation(referenceDockingWindow.getLocation());
+            setSize(referenceDockingWindow.getSize());
+        });
+
+        setLayout(null); // don't use a layout manager for this custom painted frame
+        setUndecorated(true); // don't want to see a frame border
+        setType(Type.UTILITY); // hide this frame from the task bar
+
+        setBackground(new Color(0, 0, 0, 0)); // don't want a background for this frame
+        getRootPane().setBackground(new Color(0, 0, 0, 0)); // don't want a background for the root pane either. Workaround for a FlatLaf macOS issue.
+        getContentPane().setBackground(new Color(0, 0, 0, 0)); // don't want a background for the content frame either.
+
+        try {
+            if (getContentPane() instanceof JComponent) {
+                ((JComponent) getContentPane()).setOpaque(false);
+            }
+        }
+        catch (IllegalComponentStateException e) {
+            // TODO we need to handle platforms that don't support translucent display
+            // this exception indicates that the platform doesn't support changing the opacity
+        }
     }
 
-    public void activate(FloatListener2 floatListener, JFrame floatingFrame, DragSource dragSource) {
+    public void activate(FloatListener2 floatListener, JFrame floatingFrame, DragSource dragSource, Point mousePosOnScreen) {
         this.floatListener = floatListener;
         this.floatingFrame = floatingFrame;
         this.dragSource = dragSource;
         dragSource.addDragSourceMotionListener(this);
+
+        setVisible(true);
+
+        mouseMoved(mousePosOnScreen);
     }
 
     public void deactivate() {
+        setVisible(false);
+
         dragSource.removeDragSourceMotionListener(this);
         floatListener = null;
         floatingFrame = null;
         dragSource = null;
         currentDockable = null;
+        dockableHandles = null;
     }
 
     @Override
     public void dragMouseMoved(DragSourceDragEvent event) {
+        mouseMoved(event.getLocation());
+    }
+
+    private void mouseMoved(Point mousePosOnScreen) {
         if (dragSource == null) {
             return;
         }
@@ -54,7 +94,11 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener 
         // TODO check if we're over a tab. if we are, and we weren't before, swap to the tab overlay
         // TODO draw handles. if the state changes then we change which handles are visible
 
-        Point mousePosOnScreen = event.getLocation();
+        rootHandles.mouseMoved(mousePosOnScreen);
+
+        if (dockableHandles != null) {
+            dockableHandles.mouseMoved(mousePosOnScreen);
+        }
 
         if (!referenceDockingWindow.getBounds().contains(mousePosOnScreen)) {
             return;
@@ -63,7 +107,14 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener 
         Dockable dockable = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, referenceDockingWindow);
 
         if (dockable != currentDockable) {
+            rootHandles.setTargetDockable(dockable);
 
+            if (dockable == null) {
+                dockableHandles = null;
+            }
+            else {
+                dockableHandles = new DockableHandles(this, dockable);
+            }
         }
         currentDockable = dockable;
 
@@ -74,5 +125,34 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener 
             // TODO if we're no longer over a tab, show the floating frame again
             // TODO possibly reorder windows. we have it in the old code
         }
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+
+        rootHandles.paint(g);
+
+        if (dockableHandles != null) {
+            dockableHandles.paint(g);
+        }
+    }
+
+    @Override
+    public void componentResized(ComponentEvent e) {
+        setSize(referenceDockingWindow.getSize());
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+        setLocation(referenceDockingWindow.getLocation());
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
     }
 }

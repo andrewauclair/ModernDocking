@@ -27,6 +27,9 @@ public abstract class FloatListener2 extends DragSourceAdapter implements DragSo
     private WindowLayout originalWindowLayout;
     private JFrame floatingFrame;
 
+    private Window currentWindow;
+    private FloatUtilsFrame currentUtilFrame;
+
     public FloatListener2(DockingAPI docking, DisplayPanel panel) {
         this(docking, panel, (JComponent) panel.getWrapper().getHeaderUI());
     }
@@ -109,11 +112,28 @@ public abstract class FloatListener2 extends DragSourceAdapter implements DragSo
         Point framePos = new Point(mousePosOnScreen.x - dragComponentDragOffset.x, mousePosOnScreen.y - dragComponentDragOffset.y);
         floatingFrame.setLocation(framePos);
 
-        checkForFrameSwitch();
+        checkForFrameSwitch(mousePosOnScreen);
     }
 
-    private void checkForFrameSwitch() {
+    private void checkForFrameSwitch(Point mousePosOnScreen) {
+        // find the frame at our current position
+        Window frame = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
 
+        if (frame != currentWindow) {
+            if (currentUtilFrame != null) {
+                currentUtilFrame.deactivate();
+            }
+
+            currentWindow = frame;
+
+            currentUtilFrame = Floating.frameForWindow(currentWindow);
+
+            if (currentUtilFrame != null) {
+                currentUtilFrame.activate(this, floatingFrame, dragSource, mousePosOnScreen);
+
+                currentUtilFrame.toFront();
+            }
+        }
     }
 
     @Override
@@ -127,7 +147,15 @@ public abstract class FloatListener2 extends DragSourceAdapter implements DragSo
     }
 
     private void dropFloatingPanel() {
+        if (!Floating.isFloating()) {
+            return;
+        }
 
+        if (currentUtilFrame != null) {
+            currentUtilFrame.deactivate();
+        }
+
+        floatingFrame.dispose();
     }
 
     protected abstract Window getOriginalWindow();

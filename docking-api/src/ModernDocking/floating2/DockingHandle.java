@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package ModernDocking.floating;
+package ModernDocking.floating2;
 
 import ModernDocking.DockingRegion;
 import ModernDocking.ui.DockingSettings;
@@ -46,6 +46,8 @@ public class DockingHandle extends JLabel {
 	private final boolean isRoot;
 	private final boolean isPin;
 
+	private boolean mouseOver = false;
+
 	/**
 	 * Create a new DockingHandle
 	 *
@@ -70,6 +72,10 @@ public class DockingHandle extends JLabel {
 		// set the bounds (we're not in a layout manager) and make sure this handle isn't visible
 		setBounds(0, 0, HANDLE_ICON_SIZE, HANDLE_ICON_SIZE);
 		setVisible(false);
+	}
+
+	public void mouseMoved(Point mousePosition) {
+		mouseOver = getBounds().contains(mousePosition);
 	}
 
 	/**
@@ -106,10 +112,7 @@ public class DockingHandle extends JLabel {
 	 * @param g2 used to draw the dashed lines on top
 	 * @param mouseOver is the mouse over this handle?
 	 */
-	public void paintHandle(Graphics g, Graphics2D g2, boolean mouseOver) {
-		if (!isVisible()) {
-			return;
-		}
+	public void paintHandle(Graphics g, Graphics2D g2) {
 		Rectangle bounds = getBounds();
 
 		Color background = DockingSettings.getHandleBackground();
