@@ -14,7 +14,7 @@ public class Floating {
     private static boolean isFloating = false;
 
     public static void registerDockingWindow(DockingAPI docking, Window window, RootDockingPanelAPI root) {
-        utilFrames.put(window, new FloatUtilsFrame(docking, window, root));
+        SwingUtilities.invokeLater(() -> utilFrames.put(window, new FloatUtilsFrame(docking, window, root)));
     }
 
     public static void deregisterDockingWindow(Window window) {

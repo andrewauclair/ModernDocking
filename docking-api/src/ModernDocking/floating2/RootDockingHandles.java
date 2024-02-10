@@ -58,6 +58,8 @@ public class RootDockingHandles {
         setupHandle(frame, pinEast);
         setupHandle(frame, pinSouth);
 
+        rootCenter.setVisible(rootPanel.isEmpty());
+
         // invoke later to wait for the root panel to have a parent
         SwingUtilities.invokeLater(this::setRootHandleLocations);
     }
@@ -98,7 +100,7 @@ public class RootDockingHandles {
     }
 
     private void setupHandle(JFrame frame, DockingHandle label) {
-        label.setVisible(false);
+        label.setVisible(true);
         frame.add(label);
     }
 

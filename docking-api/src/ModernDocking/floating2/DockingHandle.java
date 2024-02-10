@@ -113,6 +113,10 @@ public class DockingHandle extends JLabel {
 	 * @param mouseOver is the mouse over this handle?
 	 */
 	public void paintHandle(Graphics g, Graphics2D g2) {
+		if (!isVisible()) {
+			return;
+		}
+
 		Rectangle bounds = getBounds();
 
 		Color background = DockingSettings.getHandleBackground();
