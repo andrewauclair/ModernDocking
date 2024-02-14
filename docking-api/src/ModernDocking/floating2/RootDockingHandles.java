@@ -209,6 +209,9 @@ public class RootDockingHandles {
         if (rootWest.isMouseOver()) {
             return DockingRegion.WEST;
         }
+        if (rootNorth.isMouseOver()) {
+            return DockingRegion.NORTH;
+        }
         if (rootSouth.isMouseOver()) {
             return DockingRegion.SOUTH;
         }

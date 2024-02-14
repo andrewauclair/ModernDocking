@@ -227,6 +227,9 @@ public class DockableHandles {
         if (dockableWest.isMouseOver()) {
             return DockingRegion.WEST;
         }
+        if (dockableNorth.isMouseOver()) {
+            return DockingRegion.NORTH;
+        }
         if (dockableSouth.isMouseOver()) {
             return DockingRegion.SOUTH;
         }
