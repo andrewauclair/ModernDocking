@@ -19,6 +19,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
     private final Window referenceDockingWindow;
     private final RootDockingPanelAPI root;
     private final RootDockingHandles rootHandles;
+    private final FloatingOverlay overlay;
 
     private FloatListener2 floatListener;
     private JFrame floatingFrame;
@@ -31,6 +32,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         this.referenceDockingWindow = referenceDockingWindow;
         this.root = root;
         this.rootHandles = new RootDockingHandles(this, root);
+        this.overlay = new FloatingOverlay(docking, this);
 
         this.referenceDockingWindow.addComponentListener(this);
 
@@ -101,6 +103,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         }
 
         if (!referenceDockingWindow.getBounds().contains(mousePosOnScreen)) {
+            overlay.setVisible(false);
             return;
         }
 
@@ -117,6 +120,13 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
             }
         }
         currentDockable = dockable;
+
+        if (rootHandles.isOverHandle()) {
+            overlay.updateForRoot(root, rootHandles.getRegion());
+        }
+        else if (dockableHandles != null) {
+            overlay.updateForDockable(currentDockable, mousePosOnScreen, dockableHandles.getRegion());
+        }
 
         if (currentDockable == null && floatListener instanceof DisplayPanelFloatListener) {
             CustomTabbedPane tabbedPane = DockingComponentUtils.findTabbedPaneAtPos(mousePosOnScreen, referenceDockingWindow);
@@ -136,6 +146,8 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         if (dockableHandles != null) {
             dockableHandles.paint(g);
         }
+
+        overlay.paint(g);
     }
 
     @Override

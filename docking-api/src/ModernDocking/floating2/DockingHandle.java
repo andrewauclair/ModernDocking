@@ -78,6 +78,10 @@ public class DockingHandle extends JLabel {
 		mouseOver = getBounds().contains(mousePosition);
 	}
 
+	public boolean isMouseOver() {
+		return mouseOver;
+	}
+
 	/**
 	 * Get the region for this handle
 	 *

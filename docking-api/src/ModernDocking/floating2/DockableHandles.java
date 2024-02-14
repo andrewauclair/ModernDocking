@@ -216,4 +216,20 @@ public class DockableHandles {
     private int handleSpacing(JLabel handle) {
         return handle.getWidth() + 8;
     }
+
+    public DockingRegion getRegion() {
+        if (dockableCenter.isMouseOver()) {
+            return DockingRegion.CENTER;
+        }
+        if (dockableEast.isMouseOver()) {
+            return DockingRegion.EAST;
+        }
+        if (dockableWest.isMouseOver()) {
+            return DockingRegion.WEST;
+        }
+        if (dockableSouth.isMouseOver()) {
+            return DockingRegion.SOUTH;
+        }
+        return null;
+    }
 }

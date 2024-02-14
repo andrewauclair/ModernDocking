@@ -45,6 +45,9 @@ public class RootDockingHandles {
     private final JFrame frame;
     private final RootDockingPanelAPI rootPanel;
 
+    private DockingRegion mouseOverRegion = null;
+    private DockingRegion mouseOverPin = null;
+
     public RootDockingHandles(JFrame frame, RootDockingPanelAPI rootPanel) {
         this.frame = frame;
         this.rootPanel = rootPanel;
@@ -91,9 +94,21 @@ public class RootDockingHandles {
         rootEast.mouseMoved(framePoint);
         rootSouth.mouseMoved(framePoint);
 
+        mouseOverRegion = null;
+        if (rootCenter.isMouseOver()) mouseOverRegion = DockingRegion.CENTER;
+        if (rootWest.isMouseOver()) mouseOverRegion = DockingRegion.WEST;
+        if (rootNorth.isMouseOver()) mouseOverRegion = DockingRegion.NORTH;
+        if (rootEast.isMouseOver()) mouseOverRegion = DockingRegion.EAST;
+        if (rootSouth.isMouseOver()) mouseOverRegion = DockingRegion.SOUTH;
+
         pinWest.mouseMoved(framePoint);
         pinEast.mouseMoved(framePoint);
         pinSouth.mouseMoved(framePoint);
+
+        mouseOverPin = null;
+        if (pinWest.isMouseOver()) mouseOverPin = DockingRegion.WEST;
+        if (pinEast.isMouseOver()) mouseOverPin = DockingRegion.EAST;
+        if (pinSouth.isMouseOver()) mouseOverPin = DockingRegion.SOUTH;
 
         frame.revalidate();
         frame.repaint();
@@ -174,5 +189,29 @@ public class RootDockingHandles {
         pinSouth.paintHandle(g, g2);
 
         g2.dispose();
+    }
+
+    public boolean isOverHandle() {
+        return rootCenter.isMouseOver() ||
+                rootEast.isMouseOver() ||
+                rootWest.isMouseOver() ||
+                rootNorth.isMouseOver() ||
+                rootSouth.isMouseOver();
+    }
+
+    public DockingRegion getRegion() {
+        if (rootCenter.isMouseOver()) {
+            return DockingRegion.CENTER;
+        }
+        if (rootEast.isMouseOver()) {
+            return DockingRegion.EAST;
+        }
+        if (rootWest.isMouseOver()) {
+            return DockingRegion.WEST;
+        }
+        if (rootSouth.isMouseOver()) {
+            return DockingRegion.SOUTH;
+        }
+        return null;
     }
 }
