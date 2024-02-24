@@ -151,6 +151,8 @@ public class FloatingOverlay {
     }
 
     public void updateForTab(CustomTabbedPane tabbedPane, Point mousePosOnScreen) {
+        setVisible(true);
+
         Component componentAt = tabbedPane.getComponentAt(0);
 
         location = componentAt.getLocation();
@@ -196,7 +198,6 @@ public class FloatingOverlay {
     }
 
     public void setVisible(boolean visible) {
-
         this.visible = visible;
     }
 
@@ -214,18 +215,12 @@ public class FloatingOverlay {
 
     // check if the floating dockable is allowed to dock to this region
     private boolean isRegionAllowed(Dockable dockable, DockingRegion region) {
-//        if (floating instanceof DisplayPanel) {
-//            DisplayPanel panel = (DisplayPanel) this.floating;
-//            Dockable floating = panel.getWrapper().getDockable();
-
-            if (dockable.getStyle() == DockableStyle.BOTH) {
-                return true;
-            }
-            if (region == DockingRegion.NORTH || region == DockingRegion.SOUTH) {
-                return dockable.getStyle() == DockableStyle.HORIZONTAL;
-            }
-            return dockable.getStyle() == DockableStyle.VERTICAL;
-//        }
-//        return true;
+        if (dockable.getStyle() == DockableStyle.BOTH) {
+            return true;
+        }
+        if (region == DockingRegion.NORTH || region == DockingRegion.SOUTH) {
+            return dockable.getStyle() == DockableStyle.HORIZONTAL;
+        }
+        return dockable.getStyle() == DockableStyle.VERTICAL;
     }
 }

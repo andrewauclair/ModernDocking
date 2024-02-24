@@ -41,6 +41,8 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
             setSize(referenceDockingWindow.getSize());
         });
 
+        orderFrames();
+
         setLayout(null); // don't use a layout manager for this custom painted frame
         setUndecorated(true); // don't want to see a frame border
         setType(Type.UTILITY); // hide this frame from the task bar
@@ -66,9 +68,16 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         this.dragSource = dragSource;
         dragSource.addDragSourceMotionListener(this);
 
+        mouseMoved(mousePosOnScreen);
+
+        if (floatListener instanceof DisplayPanelFloatListener) {
+            Dockable floatingDockable = ((DisplayPanelFloatListener) floatListener).getDockable();
+            rootHandles.setFloatingDockable(floatingDockable);
+        }
+
         setVisible(true);
 
-        mouseMoved(mousePosOnScreen);
+        orderFrames();
     }
 
     public void deactivate() {
@@ -102,16 +111,16 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
             dockableHandles.mouseMoved(mousePosOnScreen);
         }
 
+        // hide the overlay. it will be marked visible again if we update it
+        overlay.setVisible(false);
+
         if (!referenceDockingWindow.getBounds().contains(mousePosOnScreen)) {
-            overlay.setVisible(false);
             return;
         }
 
         Dockable dockable = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, referenceDockingWindow);
 
         if (dockable != currentDockable) {
-            rootHandles.setTargetDockable(dockable);
-
             if (dockable == null) {
                 dockableHandles = null;
             }
@@ -127,22 +136,35 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         else if (dockableHandles != null) {
             overlay.updateForDockable(currentDockable, mousePosOnScreen, dockableHandles.getRegion());
         }
-
-        if (currentDockable == null && floatListener instanceof DisplayPanelFloatListener) {
+        else if (currentDockable == null && floatListener instanceof DisplayPanelFloatListener) {
             CustomTabbedPane tabbedPane = DockingComponentUtils.findTabbedPaneAtPos(mousePosOnScreen, referenceDockingWindow);
 
-            floatingFrame.setVisible(tabbedPane == null);
+            changeVisibility(floatingFrame, tabbedPane == null);
 
-            // TODO if we're over a tab, hide the floating frame
-            // TODO if we're no longer over a tab, show the floating frame again
             // TODO possibly reorder windows. we have it in the old code
             if (tabbedPane != null) {
                 overlay.updateForTab(tabbedPane, mousePosOnScreen);
             }
         }
         else if (!floatingFrame.isVisible()) {
-            floatingFrame.setVisible(true);
+            changeVisibility(floatingFrame, true);
         }
+    }
+
+    private void changeVisibility(JFrame frame, boolean visible) {
+        if (frame.isVisible() != visible) {
+            frame.setVisible(visible);
+
+            orderFrames();
+        }
+    }
+
+    private void orderFrames() {
+        SwingUtilities.invokeLater(referenceDockingWindow::toFront);
+        if (floatingFrame != null) {
+            SwingUtilities.invokeLater(floatingFrame::toFront);
+        }
+        SwingUtilities.invokeLater(this::toFront);
     }
 
     @Override

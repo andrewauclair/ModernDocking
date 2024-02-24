@@ -1,5 +1,6 @@
 package ModernDocking.floating2;
 
+import ModernDocking.Dockable;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.floating.TempFloatingFrame;
 import ModernDocking.internal.DisplayPanel;
@@ -17,6 +18,10 @@ public class DisplayPanelFloatListener extends FloatListener2 {
         super(docking, panel);
         this.docking = docking;
         this.panel = panel;
+    }
+
+    public Dockable getDockable() {
+        return panel.getWrapper().getDockable();
     }
 
     @Override

@@ -67,11 +67,7 @@ public class RootDockingHandles {
         SwingUtilities.invokeLater(this::setRootHandleLocations);
     }
 
-    public void setVisible(boolean visible) {
-//        rootEast.setVisible(true);
-    }
-
-    public void setTargetDockable(Dockable dockable) {
+    public void setFloatingDockable(Dockable dockable) {
         if (dockable == null) {
             pinWest.setVisible(false);
             pinEast.setVisible(false);

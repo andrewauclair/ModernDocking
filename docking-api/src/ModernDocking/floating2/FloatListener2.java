@@ -67,12 +67,17 @@ public abstract class FloatListener2 extends DragSourceAdapter implements DragSo
             return;
         }
         dragStarted(dragGestureEvent.getDragOrigin());
+
+        Point mouseOnScreen = new Point(dragGestureEvent.getDragOrigin());
+        SwingUtilities.convertPointToScreen(mouseOnScreen, dragGestureEvent.getComponent());
+
+        SwingUtilities.invokeLater(() -> updateFramePosition(mouseOnScreen));
     }
 
     private void dragStarted(Point dragOrigin) {
         Floating.setFloating(true);
 
-        dragComponentDragOffset = dragOrigin;
+        dragComponentDragOffset = new Point(dragOrigin);
 
         // force the drag offset to be inset from the edge slightly
         dragComponentDragOffset.y = Math.max(5, dragComponentDragOffset.y);
@@ -93,6 +98,7 @@ public abstract class FloatListener2 extends DragSourceAdapter implements DragSo
         // TODO need to dispose original window if it is empty after the drags. but only hide it for now
 
         // TODO if the original window is not hidden, set it as our top and target and get the active util frame
+
     }
 
     public void removeListeners() {
@@ -130,8 +136,6 @@ public abstract class FloatListener2 extends DragSourceAdapter implements DragSo
 
             if (currentUtilFrame != null) {
                 currentUtilFrame.activate(this, floatingFrame, dragSource, mousePosOnScreen);
-
-                currentUtilFrame.toFront();
             }
         }
     }
