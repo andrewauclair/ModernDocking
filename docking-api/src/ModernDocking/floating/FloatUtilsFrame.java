@@ -1,4 +1,25 @@
-package ModernDocking.floating2;
+/*
+Copyright (c) 2024 Andrew Auclair
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+ */
+package ModernDocking.floating;
 
 import ModernDocking.Dockable;
 import ModernDocking.api.DockingAPI;
@@ -15,20 +36,18 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
 public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener, ComponentListener {
-    private final DockingAPI docking;
     private final Window referenceDockingWindow;
     private final RootDockingPanelAPI root;
     private final RootDockingHandles rootHandles;
     private final FloatingOverlay overlay;
 
-    private FloatListener2 floatListener;
+    private FloatListener floatListener;
     private JFrame floatingFrame;
     private DragSource dragSource;
     private Dockable currentDockable;
     private DockableHandles dockableHandles;
 
     public FloatUtilsFrame(DockingAPI docking, Window referenceDockingWindow, RootDockingPanelAPI root) {
-        this.docking = docking;
         this.referenceDockingWindow = referenceDockingWindow;
         this.root = root;
         this.rootHandles = new RootDockingHandles(this, root);
@@ -62,7 +81,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         }
     }
 
-    public void activate(FloatListener2 floatListener, JFrame floatingFrame, DragSource dragSource, Point mousePosOnScreen) {
+    public void activate(FloatListener floatListener, JFrame floatingFrame, DragSource dragSource, Point mousePosOnScreen) {
         this.floatListener = floatListener;
         this.floatingFrame = floatingFrame;
         this.dragSource = dragSource;
@@ -101,10 +120,6 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
             return;
         }
 
-        // TODO check if we're over a dockable. if we are, and we weren't before, swap to the dockable overlay
-        // TODO check if we're over a tab. if we are, and we weren't before, swap to the tab overlay
-        // TODO draw handles. if the state changes then we change which handles are visible
-
         rootHandles.mouseMoved(mousePosOnScreen);
 
         if (dockableHandles != null) {
@@ -141,7 +156,6 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
             changeVisibility(floatingFrame, tabbedPane == null);
 
-            // TODO possibly reorder windows. we have it in the old code
             if (tabbedPane != null) {
                 overlay.updateForTab(tabbedPane, mousePosOnScreen);
             }

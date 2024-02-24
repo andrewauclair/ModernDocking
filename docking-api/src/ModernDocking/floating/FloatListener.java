@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2024 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,483 +21,170 @@ SOFTWARE.
  */
 package ModernDocking.floating;
 
-import ModernDocking.Dockable;
-import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
-import ModernDocking.internal.*;
+import ModernDocking.internal.DisplayPanel;
+import ModernDocking.internal.DockedTabbedPanel;
+import ModernDocking.internal.DockingComponentUtils;
 import ModernDocking.layouts.WindowLayout;
-import ModernDocking.settings.Settings;
-import ModernDocking.ui.DockingHeaderUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.Dialog.ModalityType;
 import java.awt.datatransfer.StringSelection;
 import java.awt.dnd.*;
-import java.util.List;
-import java.util.*;
-
-/**
- * Listener responsible for tracking dockables both when they are first dragged and while being dragged
- */
-class FloatListener extends DragSourceAdapter implements DragSourceListener, DragSourceMotionListener {
-	/**
-	 * Flag indicating if there is a dockable currently floating
-	 */
-	private static boolean isFloating = false;
-
-	public static boolean isFloating() { return isFloating; }
-
-
-	// current floating dockable
-	private final JPanel source;
-	private JPanel floatingPanel;
-
-	private final DockingAPI docking;
-
-	// our drag source to support dragging the dockables
-	private final DragSource dragSource = new DragSource();
-	private final Component draggedObject;
-
-	private Point dragOffset = new Point(0, 0);
-	private TempFloatingFrame floatingFrame;
-
-	private static final Map<Window, DockingUtilsFrame> utilFrames = new HashMap<>();
-
-	private DockingUtilsFrame activeUtilsFrame = null;
-
-	private static Window windowToDispose = null;
-
-	private Window currentTopWindow = null;
-	private Window currentTargetWindow = null;
-	private Window originalWindow;
-
-	private WindowLayout windowLayout;
-
-	private ModalityType modalityType = ModalityType.MODELESS;
-
-	public FloatListener(DockingAPI docking, DisplayPanel panel) {
-		this(docking, panel, (JComponent) panel.getWrapper().getHeaderUI());
-	}
-
-	public FloatListener(DockingAPI docking, DockedTabbedPanel tabs, JComponent dragSource) {
-		this(docking, (JPanel) tabs, dragSource);
-	}
-
-	private FloatListener(DockingAPI docking, JPanel dockable, JComponent dragSource) {
-		this.source = dockable;
-		this.docking = docking;
-
-		draggedObject = dragSource;
-
-		if (draggedObject != null) {
-			this.dragSource.addDragSourceMotionListener(FloatListener.this);
-
-			this.dragSource.createDefaultDragGestureRecognizer(dragSource, DnDConstants.ACTION_MOVE, dge -> {
-				if (isFloating) {
-					return;
-				}
-				try {
-					if (source instanceof DockedTabbedPanel) {
-						Point mousePos = new Point(dge.getDragOrigin());
-						SwingUtilities.convertPointToScreen(mousePos, draggedObject);
-
-						DockedTabbedPanel tabs = (DockedTabbedPanel) source;
-
-						// if this tabbed panel is empty then remove the listeners
-						if (tabs.getDockables().isEmpty()) {
-							removeListeners();
-							return;
-						}
-
-						int targetTabIndex = tabs.getTargetTabIndex(mousePos);
-
-						if (targetTabIndex != -1) {
-							floatingPanel = tabs.getDockables().get(targetTabIndex).getDisplayPanel();
-						}
-						else if (tabs.isDraggingFromTabGutter(mousePos)) {
-							floatingPanel = tabs;
-						}
-						else {
-							DockingHeaderUI headerUI = tabs.getDockables().get(tabs.getSelectedTabIndex()).getHeaderUI();
-							JPanel panel = (JPanel) headerUI;
-
-							if (panel.contains(mousePos)) {
-								floatingPanel = tabs.getDockables().get(tabs.getSelectedTabIndex()).getDisplayPanel();
-							}
-							else {
-								return;
-							}
-						}
-					}
-					this.dragSource.startDrag(dge, Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR), new StringSelection(""), FloatListener.this);
-				}
-				catch (InvalidDnDOperationException ignored) {
-					// someone beat us to it
-					return;
-				}
-				mouseDragStarted(dge.getDragOrigin());
-
-				if (originalWindow instanceof JDialog) {
-					modalityType = ((JDialog) originalWindow).getModalityType();
-
-					((JDialog) originalWindow).setModalityType(ModalityType.MODELESS);
-
-					// Set all of these as invokeLater to force the order they happen in
-					SwingUtilities.invokeLater(() -> {
-						// check that the floating frame still exists since we invoked later and time might have passed
-						if (floatingFrame != null) {
-							floatingFrame.toFront();
-						}
-					});
-					SwingUtilities.invokeLater(() -> {
-						// check that the utils frame still exists since we invoked later and time might have passed
-						if (activeUtilsFrame != null) {
-							activeUtilsFrame.toFront();
-						}
-					});
-				}
-			});
-		}
-	}
-
-	public void removeListeners() {
-		dragSource.removeDragSourceMotionListener(this);
-	}
-
-	public static void registerDockingWindow(DockingAPI docking, Window window, RootDockingPanelAPI root) {
-		utilFrames.put(window, new DockingUtilsFrame(docking, window, root));
-	}
-
-	public static void deregisterDockingWindow(Window window) {
-		utilFrames.remove(window);
-	}
-
-	private void updateFramePosition(Point mousePosOnScreen) {
-		// update the frames position to our mouse position
-		Point framePos = new Point(mousePosOnScreen.x - dragOffset.x, mousePosOnScreen.y - dragOffset.y);
-		floatingFrame.setLocation(framePos);
-
-		// find the frame at our current position
-		Window frame = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
-
-		// findRootAtScreenPos has a tendency to find the last added frame at the position. meaning it ignores Z order. override it here because we know better.
-		if (currentTopWindow != null && currentTopWindow.getBounds().contains(mousePosOnScreen)) {
-			frame = currentTopWindow;
-		}
-
-		boolean isModal = modalityType == ModalityType.TOOLKIT_MODAL || modalityType == ModalityType.APPLICATION_MODAL;
-
-		// change overlays and bring frames to front if we move over a new frame
-		if (frame != currentTargetWindow && !isModal) {
-			currentTargetWindow = frame;
-			currentTopWindow = frame;
-
-			changeFrameOverlays(frame);
-		}
-
-		Dockable dockable = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, currentTopWindow);
-
-		if (activeUtilsFrame != null) {
-			activeUtilsFrame.setFloatingDockable(floatingPanel);
-//			activeUtilsFrame.setTargetDockable(dockable);
-			activeUtilsFrame.update(mousePosOnScreen);
-		}
-
-		CustomTabbedPane tabbedPane = DockingComponentUtils.findTabbedPaneAtPos(mousePosOnScreen, currentTopWindow);
-
-		if (activeUtilsFrame != null) {
-			boolean overTab = dockable == null && tabbedPane != null && floatingPanel instanceof DisplayPanel;
-
-			if (overTab) {
-				if (activeUtilsFrame.setOverTab(tabbedPane, mousePosOnScreen)) {
-					floatingFrame.setVisible(false);
-				}
-			}
-			else {
-				if (activeUtilsFrame.setOverDockable(dockable, mousePosOnScreen)) {
-					floatingFrame.setVisible(true);
-					reorderWindows();
-				}
-			}
-		}
-
-		if (tabbedPane != null && tabbedPane.getSelectedComponent() instanceof DisplayPanel) {
-			DisplayPanel panel = (DisplayPanel) tabbedPane.getSelectedComponent();
-
-			if (activeUtilsFrame != null) {
-				activeUtilsFrame.setFloatingDockable(floatingPanel);
-//				activeUtilsFrame.setTargetDockable(panel.getWrapper().getDockable());
-				activeUtilsFrame.update(mousePosOnScreen);
-			}
-		}
-	}
-
-	private void changeFrameOverlays(Window newWindow) {
-		if (activeUtilsFrame != null) {
-			activeUtilsFrame.setActive(false);
-			activeUtilsFrame = null;
-		}
-
-		if (newWindow != null) {
-			activeUtilsFrame = utilFrames.get(newWindow);
-
-			if (currentTopWindow != null && floatingFrame != null && activeUtilsFrame != null) {
-				Point mousePos = MouseInfo.getPointerInfo().getLocation();
-
-				activeUtilsFrame.setFloatingDockable(floatingPanel);
-				activeUtilsFrame.update(mousePos);
-				activeUtilsFrame.setActive(true);
-
-				reorderWindows();
-			}
-		}
-	}
-
-	private void reorderWindows() {
-		// Set all of these as invokeLater to force the order they happen in
-		SwingUtilities.invokeLater(() -> {
-			// check that the current top frame still exists since we invoked later and time might have passed
-			if (currentTopWindow != null) {
-				currentTopWindow.toFront();
-			}
-		});
-		SwingUtilities.invokeLater(() -> {
-			// check that the floating frame still exists since we invoked later and time might have passed
-			if (floatingFrame != null) {
-				floatingFrame.toFront();
-			}
-		});
-		SwingUtilities.invokeLater(() -> {
-			// check that the utils frame still exists since we invoked later and time might have passed
-			if (activeUtilsFrame != null) {
-				activeUtilsFrame.toFront();
-			}
-		});
-	}
-
-	public void mouseDragStarted(Point point) {
-		isFloating = true;
-
-		dragOffset = point;
-
-		// force the drag offset to be inset from the edge slightly
-		dragOffset.y = Math.max(5, dragOffset.y);
-		dragOffset.x = Math.max(5, dragOffset.x);
-
-		currentTargetWindow = null;
-
-		// make sure we are still using the mouse press point, not the current mouse position which might not be over the frame anymore
-		Point mousePos = new Point(point);
-		SwingUtilities.convertPointToScreen(mousePos, draggedObject);
-
-		if (source instanceof DisplayPanel) {
-			originalWindow = ((DisplayPanel) source).getWrapper().getWindow();
-			floatingPanel = source;
-		}
-		else {
-			originalWindow = ((DockedTabbedPanel) source).getDockables().get(0).getWindow();
-		}
-		windowLayout = docking.getDockingState().getWindowLayout(originalWindow);
-
-		RootDockingPanelAPI currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
-
-		if (floatingPanel instanceof DisplayPanel) {
-			if (Settings.alwaysDisplayTabsMode(((DisplayPanel) floatingPanel).getWrapper().getDockable())) {
-				floatingFrame = new TempFloatingFrame(Collections.singletonList(((DisplayPanel) floatingPanel).getWrapper()), 0, source, floatingPanel.getSize());
-			}
-			else {
-				floatingFrame = new TempFloatingFrame(((DisplayPanel) floatingPanel).getWrapper(), source, floatingPanel.getSize());
-			}
-
-			docking.undock(((DisplayPanel) floatingPanel).getWrapper().getDockable());
-		}
-		else {
-			DockedTabbedPanel tabs = (DockedTabbedPanel) floatingPanel;
-
-			List<DockableWrapper> wrappers = new ArrayList<>(tabs.getDockables());
-
-			floatingFrame = new TempFloatingFrame(wrappers, tabs.getSelectedTabIndex(), source, floatingPanel.getSize());
-
-			for (DockableWrapper wrapper : wrappers) {
-				docking.undock(wrapper.getDockable());
-			}
-		}
-
-		DockingComponentUtils.removeIllegalFloats(docking, originalWindow);
-
-		if (originalWindow != null && currentRoot != null && currentRoot.getPanel() == null && docking.canDisposeWindow(originalWindow)) {
-			windowToDispose = originalWindow;
-			windowToDispose.setVisible(false);
-		}
-
-		if (originalWindow != windowToDispose) {
-			currentTopWindow = originalWindow;
-			currentTargetWindow = originalWindow;
-			activeUtilsFrame = utilFrames.get(originalWindow);
-		}
-
-		if (activeUtilsFrame != null) {
-			activeUtilsFrame.setFloatingDockable(floatingPanel);
-			activeUtilsFrame.update(mousePos);
-			activeUtilsFrame.setActive(true);
-			activeUtilsFrame.toFront();
-		}
-
-		docking.getAppState().setPaused(true);
-	}
-
-	private void dropFloatingPanel() {
-		docking.getAppState().setPaused(false);
-
-		Point mousePos = MouseInfo.getPointerInfo().getLocation();
-
-		Point point = MouseInfo.getPointerInfo().getLocation();
-
-		RootDockingPanelAPI root = currentTopWindow == null ? null : DockingComponentUtils.rootForWindow(docking, currentTopWindow);
-
-		DockingPanel dockingPanel = DockingComponentUtils.findDockingPanelAtScreenPos(point, currentTopWindow);
-		Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(point, currentTopWindow);
-
-//		Dockable dockableAtPos = activeUtilsFrame.getTargetDockable();
-		
-		DockingRegion region = activeUtilsFrame != null ? activeUtilsFrame.getRegion(mousePos) : DockingRegion.CENTER;
-
-		if (floatingPanel instanceof DisplayPanel) {
-			DockableWrapper floatingDockable = ((DisplayPanel) this.floatingPanel).getWrapper();
-
-			if (activeUtilsFrame != null && activeUtilsFrame.isDockingToPin()) {
-				docking.unpinDockable(floatingDockable.getDockable(), activeUtilsFrame.getToolbarLocation(), currentTopWindow, root);
-			}
-			else if (root != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToRoot()) {
-				docking.dock(floatingDockable.getDockable(), currentTopWindow, region, 0.25);
-			}
-			else if (floatingDockable.getDockable().isLimitedToRoot() && floatingDockable.getRoot() != root) {
-				docking.getDockingState().restoreWindowLayout(originalWindow, windowLayout);
-			}
-			else if (dockableAtPos != null && currentTopWindow != null && dockingPanel != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToDockable()) {
-				docking.dock(floatingDockable.getDockable(), dockableAtPos, region);
-			}
-			else if (root != null && region != DockingRegion.CENTER && activeUtilsFrame == null) {
-				docking.dock(floatingDockable.getDockable(), currentTopWindow, region);
-			}
-			else if (!floatingDockable.getDockable().isFloatingAllowed()) {
-				docking.getDockingState().restoreWindowLayout(originalWindow, windowLayout);
-			}
-			else if (dockableAtPos == null && root != null) {
-				// we're inserting at a specific position in a tabbed pane
-				CustomTabbedPane tabbedPane = (CustomTabbedPane) DockingComponentUtils.findTabbedPaneAtPos(point, currentTopWindow);
-
-				if (tabbedPane != null) {
-					DockedTabbedPanel parent = (DockedTabbedPanel) tabbedPane.getParent();
-
-					int targetTabIndex = tabbedPane.getTargetTabIndex(point, true);
-
-					Rectangle boundsAt;
-
-					if (targetTabIndex != -1) {
-						boundsAt = tabbedPane.getBoundsAt(targetTabIndex);
-
-						Point p = new Point(boundsAt.x, boundsAt.y);
-						SwingUtilities.convertPointToScreen(p, tabbedPane);
-						SwingUtilities.convertPointFromScreen(p, activeUtilsFrame);
-						boundsAt.x = p.x;
-						boundsAt.y = p.y;
-
-						boundsAt.width /= 2;
-					} else {
-						boundsAt = tabbedPane.getBoundsAt(tabbedPane.getTabCount() - 1);
-
-						Point p = new Point(boundsAt.x, boundsAt.y);
-						SwingUtilities.convertPointToScreen(p, tabbedPane);
-						SwingUtilities.convertPointFromScreen(p, activeUtilsFrame);
-						boundsAt.x = p.x;
-						boundsAt.y = p.y;
-						boundsAt.x += boundsAt.width;
-					}
-
-					parent.dockAtIndex(floatingDockable.getDockable(), targetTabIndex);
-				}
-			}
-			else {
-				new FloatingFrame(docking, floatingDockable.getDockable(), floatingFrame);
-			}
-		}
-		else {
-			List<DockableWrapper> dockables = new ArrayList<>(floatingFrame.getDockables());
-
-			boolean first = true;
-			Dockable firstDockable = null;
-
-			for (DockableWrapper dockable : dockables) {
-				if (first) {
-					if (dockableAtPos != null && currentTopWindow != null && dockingPanel != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToDockable()) {
-						docking.dock(dockable.getDockable(), dockableAtPos, region);
-					}
-					else {
-						new FloatingFrame(docking, dockable.getDockable(), floatingFrame);
-					}
-					firstDockable = dockable.getDockable();
-				}
-				else {
-					docking.dock(dockable.getDockable(), firstDockable, DockingRegion.CENTER);
-				}
-				first = false;
-			}
-
-			docking.bringToFront(dockables.get(floatingFrame.getSelectedIndex()).getDockable());
-		}
-
-		// auto persist the new layout to the file
-		docking.getAppState().persist();
-
-		// remove the drag listener now that tab group has no dockables
-		if (source instanceof DockedTabbedPanel && ((DockedTabbedPanel) source).getDockables().isEmpty()) {
-			removeListeners();
-		}
-
-		if (originalWindow instanceof JDialog) {
-			((JDialog) originalWindow).setModalityType(modalityType);
-		}
-
-		originalWindow = null;
-
-		// if we're disposing the frame we started dragging from, dispose of it now
-		if (windowToDispose != null) {
-			docking.deregisterDockingPanel(windowToDispose);
-			windowToDispose.dispose();
-			windowToDispose = null;
-		}
-
-		// dispose of the temp floating frame now that we're done with it
-		floatingFrame.dispose();
-		floatingFrame = null;
-
-		// hide the overlay frame if one is active
-		if (activeUtilsFrame != null) {
-//			activeUtilsFrame.setTargetDockable(null);
-			activeUtilsFrame.setFloatingDockable(null);
-			activeUtilsFrame.setActive(false);
-			activeUtilsFrame = null;
-		}
-	}
-
-	@Override
-	public void dragDropEnd(DragSourceDropEvent dsde) {
-		if (!isFloating) {
-			return;
-		}
-		dropFloatingPanel();
-
-		isFloating = false;
-	}
-
-	@Override
-	public void dragMouseMoved(DragSourceDragEvent dsde) {
-		if (!isFloating) {
-			return;
-		}
-		updateFramePosition(dsde.getLocation());
-	}
+
+public abstract class FloatListener extends DragSourceAdapter implements DragSourceMotionListener, DragSourceListener {
+    private final DockingAPI docking;
+    private final JPanel panel;
+    private final JComponent dragComponent;
+
+    // our drag source to support dragging the dockables
+    private final DragSource dragSource = new DragSource();
+
+    private Point dragComponentDragOffset = new Point();
+
+    private Window originalWindow;
+    private WindowLayout originalWindowLayout;
+    private JFrame floatingFrame;
+
+    private Window currentWindow;
+    private FloatUtilsFrame currentUtilFrame;
+
+    public FloatListener(DockingAPI docking, DisplayPanel panel) {
+        this(docking, panel, (JComponent) panel.getWrapper().getHeaderUI());
+    }
+
+    public FloatListener(DockingAPI docking, DockedTabbedPanel tabs, JComponent dragComponent) {
+        this(docking, (JPanel) tabs, dragComponent);
+    }
+
+    private FloatListener(DockingAPI docking, JPanel panel, JComponent dragComponent) {
+        this.docking = docking;
+        this.panel = panel;
+        this.dragComponent = dragComponent;
+
+        if (dragComponent != null) {
+            dragSource.addDragSourceMotionListener(this);
+            dragSource.createDefaultDragGestureRecognizer(dragComponent, DnDConstants.ACTION_MOVE, this::startDrag);
+        }
+    }
+
+    public JPanel getPanel() {
+        return panel;
+    }
+
+    private void startDrag(DragGestureEvent dragGestureEvent) {
+        // if there is already a floating panel, don't float this one
+        if (Floating.isFloating()) {
+            return;
+        }
+
+        try {
+            dragSource.startDrag(dragGestureEvent, Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR), new StringSelection(""), this);
+        }
+        catch (InvalidDnDOperationException ignored) {
+            // someone beat us to it
+            return;
+        }
+        dragStarted(dragGestureEvent.getDragOrigin());
+
+        Point mouseOnScreen = new Point(dragGestureEvent.getDragOrigin());
+        SwingUtilities.convertPointToScreen(mouseOnScreen, dragGestureEvent.getComponent());
+
+        SwingUtilities.invokeLater(() -> updateFramePosition(mouseOnScreen));
+    }
+
+    private void dragStarted(Point dragOrigin) {
+        Floating.setFloating(true);
+
+        dragComponentDragOffset = new Point(dragOrigin);
+
+        // force the drag offset to be inset from the edge slightly
+        dragComponentDragOffset.y = Math.max(5, dragComponentDragOffset.y);
+        dragComponentDragOffset.x = Math.max(5, dragComponentDragOffset.x);
+
+        originalWindow = getOriginalWindow();
+
+        originalWindowLayout = docking.getDockingState().getWindowLayout(originalWindow);
+
+        floatingFrame = createFloatingFrame();
+
+        undock();
+
+        DockingComponentUtils.removeIllegalFloats(docking, originalWindow);
+
+        RootDockingPanelAPI currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
+
+        // TODO need to dispose original window if it is empty after the drags. but only hide it for now
+
+        // TODO if the original window is not hidden, set it as our top and target and get the active util frame
+
+    }
+
+    public void removeListeners() {
+        dragSource.removeDragSourceMotionListener(this);
+    }
+
+    @Override
+    public void dragMouseMoved(DragSourceDragEvent event) {
+        if (!Floating.isFloating()) {
+            return;
+        }
+        updateFramePosition(event.getLocation());
+    }
+
+    private void updateFramePosition(Point mousePosOnScreen) {
+        // update the frames position to our mouse position
+        Point framePos = new Point(mousePosOnScreen.x - dragComponentDragOffset.x, mousePosOnScreen.y - dragComponentDragOffset.y);
+        floatingFrame.setLocation(framePos);
+
+        checkForFrameSwitch(mousePosOnScreen);
+    }
+
+    private void checkForFrameSwitch(Point mousePosOnScreen) {
+        // find the frame at our current position
+        Window frame = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
+
+        if (frame != currentWindow) {
+            if (currentUtilFrame != null) {
+                currentUtilFrame.deactivate();
+            }
+
+            currentWindow = frame;
+
+            currentUtilFrame = Floating.frameForWindow(currentWindow);
+
+            if (currentUtilFrame != null) {
+                currentUtilFrame.activate(this, floatingFrame, dragSource, mousePosOnScreen);
+            }
+        }
+    }
+
+    @Override
+    public void dragDropEnd(DragSourceDropEvent event) {
+        if (!Floating.isFloating()) {
+            return;
+        }
+        dropFloatingPanel();
+
+        Floating.setFloating(false);
+    }
+
+    private void dropFloatingPanel() {
+        if (!Floating.isFloating()) {
+            return;
+        }
+
+        if (currentUtilFrame != null) {
+            currentUtilFrame.deactivate();
+        }
+
+        floatingFrame.dispose();
+    }
+
+    protected abstract Window getOriginalWindow();
+
+    protected abstract void undock();
+
+    protected abstract JFrame createFloatingFrame();
 }

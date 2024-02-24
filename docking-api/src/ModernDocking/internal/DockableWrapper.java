@@ -24,8 +24,8 @@ package ModernDocking.internal;
 import ModernDocking.Dockable;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
-import ModernDocking.floating2.DisplayPanelFloatListener;
-import ModernDocking.floating2.FloatListener2;
+import ModernDocking.floating.DisplayPanelFloatListener;
+import ModernDocking.floating.FloatListener;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
 import ModernDocking.ui.HeaderModel;
@@ -50,7 +50,7 @@ public class DockableWrapper {
 
 	private final DisplayPanel displayPanel;
 
-	private final FloatListener2 floatListener;
+	private final FloatListener floatListener;
 
 	private boolean maximized = false;
 	private boolean unpinned = false;

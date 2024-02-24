@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package ModernDocking.floating2;
+package ModernDocking.floating;
 
 import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
@@ -102,7 +102,7 @@ public class DockableHandles {
             location.x += size.width / 2;
             location.y += size.height / 2;
 
-            location.y -= (int) (DockingHandle.HANDLE_ICON_SIZE * (1.75/2));
+            location.y -= (int) (HANDLE_ICON_SIZE * (1.75/2));
 
             SwingUtilities.convertPointToScreen(location, ((Component) dockable).getParent());
             SwingUtilities.convertPointFromScreen(location, frame);

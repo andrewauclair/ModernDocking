@@ -29,7 +29,7 @@ import ModernDocking.event.MaximizeListener;
 import ModernDocking.exception.NotDockedException;
 import ModernDocking.exception.RootDockingPanelNotFoundException;
 import ModernDocking.exception.RootDockingPanelRegistrationFailureException;
-import ModernDocking.floating2.Floating;
+import ModernDocking.floating.Floating;
 import ModernDocking.internal.*;
 import ModernDocking.layouts.WindowLayout;
 import ModernDocking.ui.ToolbarLocation;

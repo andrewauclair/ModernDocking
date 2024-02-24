@@ -24,9 +24,9 @@ package ModernDocking.internal;
 import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
-import ModernDocking.floating2.DockedTabbedPanelFloatListener;
-import ModernDocking.floating2.FloatListener2;
-import ModernDocking.floating2.Floating;
+import ModernDocking.floating.DockedTabbedPanelFloatListener;
+import ModernDocking.floating.FloatListener;
+import ModernDocking.floating.Floating;
 import ModernDocking.settings.Settings;
 import ModernDocking.ui.DockingSettings;
 
@@ -51,7 +51,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 */
 	private final List<DockableWrapper> panels = new ArrayList<>();
 
-	private FloatListener2 floatListener;
+	private FloatListener floatListener;
 
 	private final CustomTabbedPane tabs = new CustomTabbedPane();
 	private final DockingAPI docking;
