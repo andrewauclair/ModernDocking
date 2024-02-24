@@ -131,9 +131,17 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         if (currentDockable == null && floatListener instanceof DisplayPanelFloatListener) {
             CustomTabbedPane tabbedPane = DockingComponentUtils.findTabbedPaneAtPos(mousePosOnScreen, referenceDockingWindow);
 
+            floatingFrame.setVisible(tabbedPane == null);
+
             // TODO if we're over a tab, hide the floating frame
             // TODO if we're no longer over a tab, show the floating frame again
             // TODO possibly reorder windows. we have it in the old code
+            if (tabbedPane != null) {
+                overlay.updateForTab(tabbedPane, mousePosOnScreen);
+            }
+        }
+        else if (!floatingFrame.isVisible()) {
+            floatingFrame.setVisible(true);
         }
     }
 

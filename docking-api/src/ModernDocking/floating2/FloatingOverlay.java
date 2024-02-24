@@ -5,6 +5,7 @@ import ModernDocking.DockableStyle;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.internal.CustomTabbedPane;
 import ModernDocking.internal.DisplayPanel;
 import ModernDocking.internal.DockingInternal;
 import ModernDocking.ui.DockingSettings;
@@ -22,6 +23,7 @@ public class FloatingOverlay {
     private Point location = new Point(0, 0);
     // the total size of the overlay, used for drawing
     private Dimension size;
+    private Rectangle targetTab = null;
 
     private final DockingAPI docking;
     private final JFrame utilFrame;
@@ -33,6 +35,8 @@ public class FloatingOverlay {
 
     public void updateForRoot(RootDockingPanelAPI rootPanel, DockingRegion region) {
         setVisible(true);
+
+        targetTab = null;
 
         Point point = rootPanel.getLocation();
         Dimension size = rootPanel.getSize();
@@ -68,6 +72,8 @@ public class FloatingOverlay {
 
     public void updateForDockable(Dockable dockable, Point mousePosOnScreen, DockingRegion region) {
         setVisible(true);
+
+        targetTab = null;
 
         if (region == null) {
             JComponent component = DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel();
@@ -144,8 +150,49 @@ public class FloatingOverlay {
         this.size = size;
     }
 
-    public void updateForTab() {
+    public void updateForTab(CustomTabbedPane tabbedPane, Point mousePosOnScreen) {
+        Component componentAt = tabbedPane.getComponentAt(0);
 
+        location = componentAt.getLocation();
+        SwingUtilities.convertPointToScreen(location, tabbedPane);
+        SwingUtilities.convertPointFromScreen(location, utilFrame);
+
+        size = componentAt.getSize();
+
+        int targetTabIndex = tabbedPane.getTargetTabIndex(mousePosOnScreen, true);
+
+        if (targetTabIndex != -1) {
+            targetTab = tabbedPane.getBoundsAt(targetTabIndex);
+
+            Point p = new Point(targetTab.x, targetTab.y);
+            SwingUtilities.convertPointToScreen(p, tabbedPane);
+            SwingUtilities.convertPointFromScreen(p, utilFrame);
+
+            targetTab.x = p.x;
+            targetTab.y = p.y;
+
+            targetTab.width /= 2;
+        }
+        else {
+            targetTab = tabbedPane.getBoundsAt(tabbedPane.getTabCount() - 1);
+
+            Point tabPoint = new Point(tabbedPane.getX(), tabbedPane.getY());
+            SwingUtilities.convertPointToScreen(tabPoint, tabbedPane.getParent());
+
+            Point boundsPoint = new Point(targetTab.x, targetTab.y);
+            SwingUtilities.convertPointToScreen(boundsPoint, tabbedPane);
+
+            int widthToAdd = targetTab.width;
+
+            if (boundsPoint.x + (targetTab.width * 2) >= tabPoint.x + tabbedPane.getWidth()) {
+                targetTab.width = Math.abs((tabPoint.x + tabbedPane.getWidth()) - (boundsPoint.x + targetTab.width));
+            }
+
+            SwingUtilities.convertPointFromScreen(boundsPoint, utilFrame);
+
+            targetTab.x = boundsPoint.x + widthToAdd;
+            targetTab.y = boundsPoint.y;
+        }
     }
 
     public void setVisible(boolean visible) {
@@ -160,9 +207,9 @@ public class FloatingOverlay {
         g.setColor(DockingSettings.getOverlayBackground());
         g.fillRect(location.x, location.y, size.width, size.height);
 
-//        if (overTab) {
-//            g.fillRect(targetTab.x, targetTab.y, targetTab.width, targetTab.height);
-//        }
+        if (targetTab != null) {
+            g.fillRect(targetTab.x, targetTab.y, targetTab.width, targetTab.height);
+        }
     }
 
     // check if the floating dockable is allowed to dock to this region
