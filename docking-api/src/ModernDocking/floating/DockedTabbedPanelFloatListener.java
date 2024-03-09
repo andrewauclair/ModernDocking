@@ -61,4 +61,9 @@ public class DockedTabbedPanelFloatListener extends FloatListener {
 
         return new TempFloatingFrame(wrappers, tabs.getSelectedTabIndex(), tabs, tabs.getSize());
     }
+
+    @Override
+    protected void dropPanel(FloatUtilsFrame utilsFrame, JFrame targetFrame) {
+
+    }
 }

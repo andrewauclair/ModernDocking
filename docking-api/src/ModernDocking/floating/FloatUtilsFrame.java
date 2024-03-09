@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.floating;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.internal.CustomTabbedPane;
@@ -102,7 +103,9 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
     public void deactivate() {
         setVisible(false);
 
-        dragSource.removeDragSourceMotionListener(this);
+        if (dragSource != null) {
+            dragSource.removeDragSourceMotionListener(this);
+        }
         floatListener = null;
         floatingFrame = null;
         dragSource = null;
@@ -210,5 +213,24 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
     @Override
     public void componentHidden(ComponentEvent e) {
+    }
+
+    public boolean isOverRootHandle() {
+        return rootHandles.isOverHandle();
+    }
+
+    public DockingRegion rootHandleRegion() {
+        return rootHandles.getRegion();
+    }
+
+    public boolean isOverDockableHandle() {
+        return dockableHandles != null;
+    }
+
+    public DockingRegion dockableHandle() {
+        if (dockableHandles == null) {
+            return null;
+        }
+        return dockableHandles.getRegion();
     }
 }

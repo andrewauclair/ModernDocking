@@ -86,6 +86,9 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
             // someone beat us to it
             return;
         }
+
+        currentWindow = null;
+
         dragStarted(dragGestureEvent.getDragOrigin());
 
         Point mouseOnScreen = new Point(dragGestureEvent.getDragOrigin());
@@ -165,12 +168,12 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
         if (!Floating.isFloating()) {
             return;
         }
-        dropFloatingPanel();
+        dropFloatingPanel(event.getLocation());
 
         Floating.setFloating(false);
     }
 
-    private void dropFloatingPanel() {
+    private void dropFloatingPanel(Point mousePosOnScreen) {
         if (!Floating.isFloating()) {
             return;
         }
@@ -178,6 +181,10 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
         if (currentUtilFrame != null) {
             currentUtilFrame.deactivate();
         }
+
+        Window frame = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
+
+        dropPanel(currentUtilFrame, (JFrame) frame);
 
         floatingFrame.dispose();
     }
@@ -187,4 +194,6 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
     protected abstract void undock();
 
     protected abstract JFrame createFloatingFrame();
+
+    protected abstract void dropPanel(FloatUtilsFrame utilsFrame, JFrame targetFrame);
 }

@@ -24,6 +24,7 @@ package ModernDocking.floating;
 import ModernDocking.Dockable;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.internal.DisplayPanel;
+import ModernDocking.internal.DockableWrapper;
 import ModernDocking.settings.Settings;
 
 import javax.swing.*;
@@ -60,5 +61,14 @@ public class DisplayPanelFloatListener extends FloatListener {
             return new TempFloatingFrame(Collections.singletonList(panel.getWrapper()), 0, panel, panel.getSize());
         }
         return new TempFloatingFrame(panel.getWrapper(), panel, panel.getSize());
+    }
+
+    @Override
+    protected void dropPanel(FloatUtilsFrame utilsFrame, JFrame targetFrame) {
+        DockableWrapper floatingDockable = panel.getWrapper();
+
+        if (utilsFrame.isOverRootHandle()) {
+            docking.dock(floatingDockable.getDockable(), targetFrame, utilsFrame.rootHandleRegion());
+        }
     }
 }

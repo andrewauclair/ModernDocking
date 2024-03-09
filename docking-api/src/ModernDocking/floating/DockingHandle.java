@@ -114,7 +114,6 @@ public class DockingHandle extends JLabel {
 	 *
 	 * @param g used to do the main paint operations
 	 * @param g2 used to draw the dashed lines on top
-	 * @param mouseOver is the mouse over this handle?
 	 */
 	public void paintHandle(Graphics g, Graphics2D g2) {
 		if (!isVisible()) {
