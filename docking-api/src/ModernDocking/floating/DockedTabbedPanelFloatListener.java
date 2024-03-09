@@ -63,7 +63,7 @@ public class DockedTabbedPanelFloatListener extends FloatListener {
     }
 
     @Override
-    protected void dropPanel(FloatUtilsFrame utilsFrame, JFrame targetFrame) {
-
+    protected boolean dropPanel(FloatUtilsFrame utilsFrame, Point mousePosOnScreen) {
+        return false;
     }
 }

@@ -25,6 +25,8 @@ import ModernDocking.Dockable;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.internal.DisplayPanel;
 import ModernDocking.internal.DockableWrapper;
+import ModernDocking.internal.DockingComponentUtils;
+import ModernDocking.internal.FloatingFrame;
 import ModernDocking.settings.Settings;
 
 import javax.swing.*;
@@ -64,11 +66,30 @@ public class DisplayPanelFloatListener extends FloatListener {
     }
 
     @Override
-    protected void dropPanel(FloatUtilsFrame utilsFrame, JFrame targetFrame) {
+    protected boolean dropPanel(FloatUtilsFrame utilsFrame, Point mousePosOnScreen) {
         DockableWrapper floatingDockable = panel.getWrapper();
 
-        if (utilsFrame.isOverRootHandle()) {
-            docking.dock(floatingDockable.getDockable(), targetFrame, utilsFrame.rootHandleRegion());
+        if (utilsFrame != null) {
+            Window targetFrame = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
+
+            if (utilsFrame.isOverRootHandle()) {
+                docking.dock(floatingDockable.getDockable(), targetFrame, utilsFrame.rootHandleRegion());
+            }
+            else if (utilsFrame.isOverDockableHandle()) {
+                Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, targetFrame);
+
+                docking.dock(floatingDockable.getDockable(), dockableAtPos, utilsFrame.dockableHandle());
+            }
         }
+        else if (floatingDockable.getDockable().isFloatingAllowed()) {
+            // floating
+            FloatingFrame floatingFrame = new FloatingFrame(docking, floatingDockable.getDockable(), mousePosOnScreen, floatingDockable.getDisplayPanel().getSize(), 0);
+            docking.dock(floatingDockable.getDockable(), floatingFrame);
+        }
+        else {
+            // failed to dock, restore the previous layout
+            return false;
+        }
+        return true;
     }
 }

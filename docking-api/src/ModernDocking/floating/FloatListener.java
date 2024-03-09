@@ -182,9 +182,11 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
             currentUtilFrame.deactivate();
         }
 
-        Window frame = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
+        boolean docked = dropPanel(currentUtilFrame, mousePosOnScreen);
 
-        dropPanel(currentUtilFrame, (JFrame) frame);
+        if (!docked) {
+            docking.getDockingState().restoreWindowLayout(originalWindow, originalWindowLayout);
+        }
 
         floatingFrame.dispose();
     }
@@ -195,5 +197,5 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 
     protected abstract JFrame createFloatingFrame();
 
-    protected abstract void dropPanel(FloatUtilsFrame utilsFrame, JFrame targetFrame);
+    protected abstract boolean dropPanel(FloatUtilsFrame utilsFrame, Point mousePosOnScreen);
 }
