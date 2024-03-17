@@ -221,6 +221,10 @@ public class FloatingOverlay {
         return DockingRegion.CENTER;
     }
 
+    public boolean isOverTab() {
+        return targetTab != null;
+    }
+
     public void paint(Graphics g) {
         if (!visible) {
             return;

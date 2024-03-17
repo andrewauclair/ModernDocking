@@ -81,6 +81,11 @@ public class DisplayPanelFloatListener extends FloatListener {
 
                 docking.dock(floatingDockable.getDockable(), dockableAtPos, utilsFrame.dockableHandle());
             }
+            else if (utilsFrame.isOverTab()) {
+                // TODO get the tab index, if none then we're adding to the end
+
+                // TODO get the tab panel and add panel, dock it I think?
+            }
             else {
                 // docking to a dockable region
                 Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, targetFrame);

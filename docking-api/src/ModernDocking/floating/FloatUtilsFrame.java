@@ -149,9 +149,15 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         currentDockable = dockable;
 
         if (rootHandles.isOverHandle()) {
+            if (!floatingFrame.isVisible()) {
+                changeVisibility(floatingFrame, true);
+            }
             overlay.updateForRoot(root, rootHandles.getRegion());
         }
         else if (dockableHandles != null) {
+            if (!floatingFrame.isVisible()) {
+                changeVisibility(floatingFrame, true);
+            }
             overlay.updateForDockable(currentDockable, mousePosOnScreen, dockableHandles.getRegion());
         }
         else if (currentDockable == null && floatListener instanceof DisplayPanelFloatListener) {
@@ -227,11 +233,9 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         return dockableHandles != null;
     }
 
-//    public DockingRegion dockableRegion() {
-//        if (overlay != null) {
-//            overlay
-//        }
-//    }
+    public boolean isOverTab() {
+        return overlay.isOverTab();
+    }
 
     public DockingRegion dockableHandle() {
         if (dockableHandles == null) {

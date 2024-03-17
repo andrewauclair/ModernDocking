@@ -102,40 +102,6 @@ public class FloatingFrame extends JFrame {
 		finalizeSize(dockable, location, size);
 	}
 
-	// create a floating frame from a temporary frame as a result of docking
-//	public FloatingFrame(DockingAPI docking, Dockable dockable, TempFloatingFrame floatingFrame) {
-//		this.docking = docking;
-//		setLayout(new BorderLayout());
-//
-//		// size the frame to the dockable size + the border size of the frame
-//		Dimension size = DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel().getSize();
-//
-//		setSize(size);
-//
-//		// dispose this frame when it closes
-//		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//
-//		// set the location of this frame to the floating frame location
-//		setLocation(floatingFrame.getLocation());
-//
-//		// create and add the root
-//		RootDockingPanelAPI root = new RootDockingPanelAPI(docking, this){};
-//		add(root, BorderLayout.CENTER);
-//
-//		// allow pinning on this frame
-//		docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
-//
-//		// finally, dock the dockable and show this frame
-//		docking.dock(dockable, this);
-//
-//		setVisible(true);
-//
-//		Point onScreenPoint = floatingFrame.getLocation();
-//		Dimension onScreenSize = floatingFrame.getSize();
-//
-//		finalizeSize(dockable, onScreenPoint, onScreenSize);
-//	}
-
 	private void finalizeSize(Dockable dockable, Point onScreenPoint, Dimension onScreenSize) {
 		SwingUtilities.invokeLater(() -> {
 			// adjust the floating frame such that the dockable is in the correct location
