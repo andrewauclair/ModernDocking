@@ -118,6 +118,9 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 
         RootDockingPanelAPI currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
 
+        if (currentRoot.isEmpty()) {
+            originalWindow.setVisible(false);
+        }
         // TODO need to dispose original window if it is empty after the drags. but only hide it for now
 
         // TODO if the original window is not hidden, set it as our top and target and get the active util frame
@@ -169,6 +172,12 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
             return;
         }
         dropFloatingPanel(event.getLocation());
+
+        RootDockingPanelAPI currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
+
+        if (currentRoot.isEmpty() && docking.canDisposeWindow(originalWindow)) {
+            originalWindow.dispose();
+        }
 
         Floating.setFloating(false);
     }
