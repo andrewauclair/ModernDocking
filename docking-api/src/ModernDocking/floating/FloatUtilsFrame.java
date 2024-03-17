@@ -55,11 +55,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         this.overlay = new FloatingOverlay(docking, this);
 
         this.referenceDockingWindow.addComponentListener(this);
-
-        SwingUtilities.invokeLater(() -> {
-            setLocation(referenceDockingWindow.getLocation());
-            setSize(referenceDockingWindow.getSize());
-        });
+        SwingUtilities.invokeLater(this::setSizeAndLocation);
 
         orderFrames();
 
@@ -205,12 +201,12 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
     @Override
     public void componentResized(ComponentEvent e) {
-        setSize(referenceDockingWindow.getSize());
+        SwingUtilities.invokeLater(this::setSizeAndLocation);
     }
 
     @Override
     public void componentMoved(ComponentEvent e) {
-        setLocation(referenceDockingWindow.getLocation());
+        SwingUtilities.invokeLater(this::setSizeAndLocation);
     }
 
     @Override
@@ -246,5 +242,24 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
     public DockingRegion getDockableRegion(Dockable dockable, Point mousePosOnScreen) {
         return overlay.getRegion(dockable, mousePosOnScreen);
+    }
+
+    private void setSizeAndLocation() {
+        int padding = (int) (DockingHandle.HANDLE_ICON_SIZE * 1.75);
+
+        Point location = new Point(referenceDockingWindow.getLocationOnScreen());
+        Dimension size = new Dimension(referenceDockingWindow.getSize());
+
+        location.x -= padding;
+        location.y -= padding;
+
+        size.width += padding * 2;
+        size.height += padding * 2;
+
+        // set location and size based on the reference docking frame
+        setLocation(location);
+        setSize(size);
+
+        rootHandles.updateHandlePositions();
     }
 }

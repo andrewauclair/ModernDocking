@@ -67,6 +67,10 @@ public class RootDockingHandles {
         SwingUtilities.invokeLater(this::setRootHandleLocations);
     }
 
+    public void updateHandlePositions() {
+        setRootHandleLocations();
+    }
+
     public void setFloatingDockable(Dockable dockable) {
         if (dockable == null) {
             pinWest.setVisible(false);
@@ -137,26 +141,6 @@ public class RootDockingHandles {
 
     private int rootHandleSpacing(JLabel handle) {
         return handle.getWidth() + 16;
-    }
-
-    private boolean isPinningRegionAllowed(Dockable dockable, DockingRegion region) {
-        return false;
-//        if (floating instanceof DockedTabbedPanel) {
-//            return false;
-//        }
-//        Dockable floating = ((DisplayPanel) this.floating).getWrapper().getDockable();
-//
-//        if (!floating.isPinningAllowed()) {
-//            return false;
-//        }
-//
-//        if (floating.getPinningStyle() == DockableStyle.BOTH) {
-//            return true;
-//        }
-//        if (region == DockingRegion.NORTH || region == DockingRegion.SOUTH) {
-//            return floating.getPinningStyle() == DockableStyle.HORIZONTAL;
-//        }
-//        return floating.getPinningStyle() == DockableStyle.VERTICAL;
     }
 
     private void setLocation(Component component, int x, int y) {
