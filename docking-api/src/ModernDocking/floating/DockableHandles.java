@@ -38,11 +38,27 @@ public class DockableHandles {
     private final DockingHandle dockableEast = new DockingHandle(DockingRegion.EAST, false);
     private final DockingHandle dockableSouth = new DockingHandle(DockingRegion.SOUTH, false);
     private final JFrame frame;
-    private final Dockable dockable;
+    private final Dockable targetDockable;
+    private final Dockable floatingDockable;
 
-    public DockableHandles(JFrame frame, Dockable dockable) {
+    public DockableHandles(JFrame frame, Dockable targetDockable) {
         this.frame = frame;
-        this.dockable = dockable;
+        this.targetDockable = targetDockable;
+        this.floatingDockable = null;
+
+        setupHandle(frame, dockableCenter);
+        setupHandle(frame, dockableWest);
+        setupHandle(frame, dockableNorth);
+        setupHandle(frame, dockableEast);
+        setupHandle(frame, dockableSouth);
+
+        setDockableHandleLocations();
+    }
+
+    public DockableHandles(JFrame frame, Dockable targetDockable, Dockable floatingDockable) {
+        this.frame = frame;
+        this.targetDockable = targetDockable;
+        this.floatingDockable = floatingDockable;
 
         setupHandle(frame, dockableCenter);
         setupHandle(frame, dockableWest);
@@ -74,19 +90,34 @@ public class DockableHandles {
 
     private void setDockableHandleLocations() {
         dockableCenter.setVisible(true);
-        dockableWest.setVisible(isRegionAllowed(DockingRegion.WEST));
-        dockableNorth.setVisible(isRegionAllowed(DockingRegion.NORTH));
-        dockableEast.setVisible(isRegionAllowed(DockingRegion.EAST));
-        dockableSouth.setVisible(isRegionAllowed(DockingRegion.SOUTH));
+        dockableWest.setVisible(isRegionAllowed(targetDockable, DockingRegion.WEST));
+        dockableNorth.setVisible(isRegionAllowed(targetDockable, DockingRegion.NORTH));
+        dockableEast.setVisible(isRegionAllowed(targetDockable, DockingRegion.EAST));
+        dockableSouth.setVisible(isRegionAllowed(targetDockable, DockingRegion.SOUTH));
 
-        if (((Component) dockable).getParent() != null) {
-            Point location = ((Component) dockable).getLocation();
-            Dimension size = ((Component) dockable).getSize();
+        if (floatingDockable != null) {
+            if (!isRegionAllowed(floatingDockable, DockingRegion.WEST)) {
+                dockableWest.setVisible(false);
+            }
+            if (!isRegionAllowed(floatingDockable, DockingRegion.NORTH)) {
+                dockableNorth.setVisible(false);
+            }
+            if (!isRegionAllowed(floatingDockable, DockingRegion.EAST)) {
+                dockableEast.setVisible(false);
+            }
+            if (!isRegionAllowed(floatingDockable, DockingRegion.SOUTH)) {
+                dockableSouth.setVisible(false);
+            }
+        }
+
+        if (((Component) targetDockable).getParent() != null) {
+            Point location = ((Component) targetDockable).getLocation();
+            Dimension size = ((Component) targetDockable).getSize();
 
             // if this dockable is wrapped in a JScrollPane we need to set the handle to the center of the JScrollPane
             // not to the center of the dockable (which will more than likely be at a different location)
-            if (dockable.isWrappableInScrollpane()) {
-                Component parent = ((Component) dockable).getParent();
+            if (targetDockable.isWrappableInScrollpane()) {
+                Component parent = ((Component) targetDockable).getParent();
 
                 while (parent != null && !(parent instanceof JScrollPane)) {
                     parent = parent.getParent();
@@ -105,7 +136,7 @@ public class DockableHandles {
 
             location.y -= (int) (HANDLE_ICON_SIZE * (1.75/2));
 
-            SwingUtilities.convertPointToScreen(location, ((Component) dockable).getParent());
+            SwingUtilities.convertPointToScreen(location, ((Component) targetDockable).getParent());
             SwingUtilities.convertPointFromScreen(location, frame);
 
             setLocation(dockableCenter, location.x, location.y);
@@ -121,7 +152,7 @@ public class DockableHandles {
         component.setLocation(x - (HANDLE_ICON_SIZE / 2), y - (HANDLE_ICON_SIZE / 2));
     }
 
-    private boolean isRegionAllowed(DockingRegion region) {
+    private boolean isRegionAllowed(Dockable dockable, DockingRegion region) {
         if (dockable.getStyle() == DockableStyle.BOTH) {
             return true;
         }

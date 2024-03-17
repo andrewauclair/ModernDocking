@@ -138,6 +138,9 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
             if (dockable == null) {
                 dockableHandles = null;
             }
+            else if (floatListener instanceof DisplayPanelFloatListener) {
+                dockableHandles = new DockableHandles(this, dockable, ((DisplayPanelFloatListener) floatListener).getDockable());
+            }
             else {
                 dockableHandles = new DockableHandles(this, dockable);
             }
