@@ -97,46 +97,9 @@ public class FloatingOverlay {
         targetTab = null;
 
         if (region == null) {
-            JComponent component = DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel();
-
-            Point framePoint = new Point(mousePosOnScreen);
-            SwingUtilities.convertPointFromScreen(framePoint, utilFrame);
-
-            Point point = (component).getLocation();
-            Dimension size = component.getSize();
-
-            point = SwingUtilities.convertPoint(component.getParent(), point, utilFrame);
-
-            double horizontalPct = (framePoint.x - point.x) / (double) size.width;
-            double verticalPct = (framePoint.y - point.y) / (double) size.height;
-
-            double horizontalEdgeDist = horizontalPct > 0.5 ? 1.0 - horizontalPct : horizontalPct;
-            double verticalEdgeDist = verticalPct > 0.5 ? 1.0 - verticalPct : verticalPct;
-
-            if (horizontalEdgeDist < verticalEdgeDist) {
-                if (horizontalPct < REGION_SENSITIVITY && isRegionAllowed(dockable, DockingRegion.WEST)) {
-                    size = new Dimension(size.width / 2, size.height);
-                }
-                else if (horizontalPct > (1.0 - REGION_SENSITIVITY) && isRegionAllowed(dockable, DockingRegion.EAST)) {
-                    point.x += size.width / 2;
-                    size = new Dimension(size.width / 2, size.height);
-                }
-            }
-            else {
-                if (verticalPct < REGION_SENSITIVITY && isRegionAllowed(dockable, DockingRegion.NORTH)) {
-                    size = new Dimension(size.width, size.height / 2);
-                }
-                else if (verticalPct > (1.0 - REGION_SENSITIVITY) && isRegionAllowed(dockable, DockingRegion.SOUTH)) {
-                    point.y += size.height / 2;
-                    size = new Dimension(size.width, size.height / 2);
-                }
-            }
-
-            this.location = point;
-            this.size = size;
-
-            return;
+            region = getRegion(dockable, mousePosOnScreen);
         }
+
         JComponent component = DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel();
 
         Point point = component.getLocation();
@@ -220,6 +183,42 @@ public class FloatingOverlay {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public DockingRegion getRegion(Dockable dockable, Point mousePosOnScreen) {
+        JComponent component = DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel();
+
+        Point framePoint = new Point(mousePosOnScreen);
+        SwingUtilities.convertPointFromScreen(framePoint, utilFrame);
+
+        Point point = (component).getLocation();
+        Dimension size = component.getSize();
+
+        point = SwingUtilities.convertPoint(component.getParent(), point, utilFrame);
+
+        double horizontalPct = (framePoint.x - point.x) / (double) size.width;
+        double verticalPct = (framePoint.y - point.y) / (double) size.height;
+
+        double horizontalEdgeDist = horizontalPct > 0.5 ? 1.0 - horizontalPct : horizontalPct;
+        double verticalEdgeDist = verticalPct > 0.5 ? 1.0 - verticalPct : verticalPct;
+
+        if (horizontalEdgeDist < verticalEdgeDist) {
+            if (horizontalPct < REGION_SENSITIVITY && isRegionAllowed(dockable, DockingRegion.WEST)) {
+                return DockingRegion.WEST;
+            }
+            else if (horizontalPct > (1.0 - REGION_SENSITIVITY) && isRegionAllowed(dockable, DockingRegion.EAST)) {
+                return DockingRegion.EAST;
+            }
+        }
+        else {
+            if (verticalPct < REGION_SENSITIVITY && isRegionAllowed(dockable, DockingRegion.NORTH)) {
+                return DockingRegion.NORTH;
+            }
+            else if (verticalPct > (1.0 - REGION_SENSITIVITY) && isRegionAllowed(dockable, DockingRegion.SOUTH)) {
+                return DockingRegion.SOUTH;
+            }
+        }
+        return DockingRegion.CENTER;
     }
 
     public void paint(Graphics g) {

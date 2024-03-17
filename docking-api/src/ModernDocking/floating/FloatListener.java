@@ -121,10 +121,6 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
         if (currentRoot.isEmpty()) {
             originalWindow.setVisible(false);
         }
-        // TODO need to dispose original window if it is empty after the drags. but only hide it for now
-
-        // TODO if the original window is not hidden, set it as our top and target and get the active util frame
-
     }
 
     public void removeListeners() {

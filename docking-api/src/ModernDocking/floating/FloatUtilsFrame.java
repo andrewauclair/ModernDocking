@@ -227,10 +227,20 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         return dockableHandles != null;
     }
 
+//    public DockingRegion dockableRegion() {
+//        if (overlay != null) {
+//            overlay
+//        }
+//    }
+
     public DockingRegion dockableHandle() {
         if (dockableHandles == null) {
             return null;
         }
         return dockableHandles.getRegion();
+    }
+
+    public DockingRegion getDockableRegion(Dockable dockable, Point mousePosOnScreen) {
+        return overlay.getRegion(dockable, mousePosOnScreen);
     }
 }

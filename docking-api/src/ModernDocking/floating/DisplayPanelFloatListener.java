@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.floating;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.internal.DisplayPanel;
 import ModernDocking.internal.DockableWrapper;
@@ -79,6 +80,14 @@ public class DisplayPanelFloatListener extends FloatListener {
                 Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, targetFrame);
 
                 docking.dock(floatingDockable.getDockable(), dockableAtPos, utilsFrame.dockableHandle());
+            }
+            else {
+                // docking to a dockable region
+                Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, targetFrame);
+
+                DockingRegion region = utilsFrame.getDockableRegion(dockableAtPos, mousePosOnScreen);
+
+                docking.dock(floatingDockable.getDockable(), dockableAtPos, region);
             }
         }
         else if (floatingDockable.getDockable().isFloatingAllowed()) {
