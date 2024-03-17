@@ -126,7 +126,7 @@ public class RootDockingHandles {
         location.y += size.height / 2;
 
         SwingUtilities.convertPointToScreen(location, rootPanel.getParent());
-        SwingUtilities.convertPointFromScreen(location, rootPanel);
+        SwingUtilities.convertPointFromScreen(location, frame);
 
         setLocation(rootCenter, location.x, location.y);
         setLocation(rootWest, location.x - (size.width / 2) + rootHandleSpacing(rootWest), location.y);
