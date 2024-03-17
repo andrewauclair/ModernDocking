@@ -79,6 +79,9 @@ public class DockingHandle extends JLabel {
 	}
 
 	public boolean isMouseOver() {
+		if (!isVisible()) {
+			return false;
+		}
 		return mouseOver;
 	}
 

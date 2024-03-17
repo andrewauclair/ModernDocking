@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.floating;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockableStyle;
 import ModernDocking.DockingRegion;
 import ModernDocking.ui.DockingSettings;
 
@@ -121,19 +122,13 @@ public class DockableHandles {
     }
 
     private boolean isRegionAllowed(DockingRegion region) {
-//        if (floating instanceof DockedSimplePanel) {
-//            DockedSimplePanel panel = (DockedSimplePanel) this.floating;
-//            Dockable floating = panel.getWrapper().getDockable();
-//
-//            if (floating.getStyle() == DockableStyle.BOTH) {
-//                return true;
-//            }
-//            if (region == DockingRegion.NORTH || region == DockingRegion.SOUTH) {
-//                return floating.getStyle() == DockableStyle.HORIZONTAL;
-//            }
-//            return floating.getStyle() == DockableStyle.VERTICAL;
-//        }
-        return true;
+        if (dockable.getStyle() == DockableStyle.BOTH) {
+            return true;
+        }
+        if (region == DockingRegion.NORTH || region == DockingRegion.SOUTH) {
+            return dockable.getStyle() == DockableStyle.HORIZONTAL;
+        }
+        return dockable.getStyle() == DockableStyle.VERTICAL;
     }
 
     public void paint(Graphics g) {
