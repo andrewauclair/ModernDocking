@@ -226,7 +226,10 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
     }
 
     public boolean isOverDockableHandle() {
-        return dockableHandles != null;
+        if (dockableHandles == null) {
+            return false;
+        }
+        return dockableHandles.getRegion() != null;
     }
 
     public boolean isOverTab() {

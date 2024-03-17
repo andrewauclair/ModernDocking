@@ -183,11 +183,11 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
             return;
         }
 
+        boolean docked = dropPanel(currentUtilFrame, mousePosOnScreen);
+
         if (currentUtilFrame != null) {
             currentUtilFrame.deactivate();
         }
-
-        boolean docked = dropPanel(currentUtilFrame, mousePosOnScreen);
 
         if (!docked) {
             docking.getDockingState().restoreWindowLayout(originalWindow, originalWindowLayout);
