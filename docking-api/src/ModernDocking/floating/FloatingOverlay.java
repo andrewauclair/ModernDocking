@@ -91,16 +91,16 @@ public class FloatingOverlay {
         this.size = size;
     }
 
-    public void updateForDockable(Dockable dockable, Point mousePosOnScreen, DockingRegion region) {
+    public void updateForDockable(Dockable targetDockable, Dockable floatingDockable, Point mousePosOnScreen, DockingRegion region) {
         setVisible(true);
 
         targetTab = null;
 
         if (region == null) {
-            region = getRegion(dockable, mousePosOnScreen);
+            region = getRegion(targetDockable, floatingDockable, mousePosOnScreen);
         }
 
-        JComponent component = DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel();
+        JComponent component = DockingInternal.get(docking).getWrapper(targetDockable).getDisplayPanel();
 
         Point point = component.getLocation();
         Dimension size = component.getSize();
@@ -185,8 +185,8 @@ public class FloatingOverlay {
         this.visible = visible;
     }
 
-    public DockingRegion getRegion(Dockable dockable, Point mousePosOnScreen) {
-        JComponent component = DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel();
+    public DockingRegion getRegion(Dockable targetDockable, Dockable floatingDockable, Point mousePosOnScreen) {
+        JComponent component = DockingInternal.get(docking).getWrapper(targetDockable).getDisplayPanel();
 
         Point framePoint = new Point(mousePosOnScreen);
         SwingUtilities.convertPointFromScreen(framePoint, utilFrame);
@@ -203,18 +203,18 @@ public class FloatingOverlay {
         double verticalEdgeDist = verticalPct > 0.5 ? 1.0 - verticalPct : verticalPct;
 
         if (horizontalEdgeDist < verticalEdgeDist) {
-            if (horizontalPct < REGION_SENSITIVITY && isRegionAllowed(dockable, DockingRegion.WEST)) {
+            if (horizontalPct < REGION_SENSITIVITY && isRegionAllowed(targetDockable, DockingRegion.WEST) && isRegionAllowed(floatingDockable, DockingRegion.WEST)) {
                 return DockingRegion.WEST;
             }
-            else if (horizontalPct > (1.0 - REGION_SENSITIVITY) && isRegionAllowed(dockable, DockingRegion.EAST)) {
+            else if (horizontalPct > (1.0 - REGION_SENSITIVITY) && isRegionAllowed(targetDockable, DockingRegion.EAST) && isRegionAllowed(floatingDockable, DockingRegion.EAST)) {
                 return DockingRegion.EAST;
             }
         }
         else {
-            if (verticalPct < REGION_SENSITIVITY && isRegionAllowed(dockable, DockingRegion.NORTH)) {
+            if (verticalPct < REGION_SENSITIVITY && isRegionAllowed(targetDockable, DockingRegion.NORTH) && isRegionAllowed(floatingDockable, DockingRegion.NORTH)) {
                 return DockingRegion.NORTH;
             }
-            else if (verticalPct > (1.0 - REGION_SENSITIVITY) && isRegionAllowed(dockable, DockingRegion.SOUTH)) {
+            else if (verticalPct > (1.0 - REGION_SENSITIVITY) && isRegionAllowed(targetDockable, DockingRegion.SOUTH) && isRegionAllowed(floatingDockable, DockingRegion.SOUTH)) {
                 return DockingRegion.SOUTH;
             }
         }

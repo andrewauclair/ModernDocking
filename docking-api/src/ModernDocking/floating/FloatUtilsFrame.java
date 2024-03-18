@@ -134,12 +134,18 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
         Dockable dockable = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, referenceDockingWindow);
 
+        Dockable floatingDockable = null;
+
+        if (floatListener instanceof DisplayPanelFloatListener) {
+            floatingDockable = ((DisplayPanelFloatListener) floatListener).getDockable();
+        }
+
         if (dockable != currentDockable) {
             if (dockable == null) {
                 dockableHandles = null;
             }
             else if (floatListener instanceof DisplayPanelFloatListener) {
-                dockableHandles = new DockableHandles(this, dockable, ((DisplayPanelFloatListener) floatListener).getDockable());
+                dockableHandles = new DockableHandles(this, dockable, floatingDockable);
             }
             else {
                 dockableHandles = new DockableHandles(this, dockable);
@@ -157,7 +163,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
             if (!floatingFrame.isVisible()) {
                 changeVisibility(floatingFrame, true);
             }
-            overlay.updateForDockable(currentDockable, mousePosOnScreen, dockableHandles.getRegion());
+            overlay.updateForDockable(currentDockable, floatingDockable, mousePosOnScreen, dockableHandles.getRegion());
         }
         else if (currentDockable == null && floatListener instanceof DisplayPanelFloatListener) {
             CustomTabbedPane tabbedPane = DockingComponentUtils.findTabbedPaneAtPos(mousePosOnScreen, referenceDockingWindow);
@@ -246,8 +252,8 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         return dockableHandles.getRegion();
     }
 
-    public DockingRegion getDockableRegion(Dockable dockable, Point mousePosOnScreen) {
-        return overlay.getRegion(dockable, mousePosOnScreen);
+    public DockingRegion getDockableRegion(Dockable targetDockable, Dockable floatingDockable, Point mousePosOnScreen) {
+        return overlay.getRegion(targetDockable, floatingDockable, mousePosOnScreen);
     }
 
     private void setSizeAndLocation() {

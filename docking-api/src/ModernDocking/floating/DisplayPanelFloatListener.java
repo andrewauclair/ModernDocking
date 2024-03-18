@@ -90,7 +90,7 @@ public class DisplayPanelFloatListener extends FloatListener {
                 // docking to a dockable region
                 Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, targetFrame);
 
-                DockingRegion region = utilsFrame.getDockableRegion(dockableAtPos, mousePosOnScreen);
+                DockingRegion region = utilsFrame.getDockableRegion(dockableAtPos, panel.getWrapper().getDockable(), mousePosOnScreen);
 
                 docking.dock(floatingDockable.getDockable(), dockableAtPos, region);
             }
