@@ -32,6 +32,7 @@ import ModernDocking.settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.dnd.DragGestureEvent;
 import java.util.Collections;
 
 public class DisplayPanelFloatListener extends FloatListener {
@@ -42,6 +43,17 @@ public class DisplayPanelFloatListener extends FloatListener {
         super(docking, panel);
         this.docking = docking;
         this.panel = panel;
+    }
+
+    public DisplayPanelFloatListener(DockingAPI docking, DisplayPanel panel, JComponent dragComponent) {
+        super(docking, panel, dragComponent);
+        this.docking = docking;
+        this.panel = panel;
+    }
+
+    @Override
+    protected boolean allowDrag(DragGestureEvent dragGestureEvent) {
+        return true;
     }
 
     public Dockable getDockable() {

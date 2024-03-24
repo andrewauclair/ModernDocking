@@ -239,6 +239,9 @@ public class FloatingOverlay {
 
     // check if the floating dockable is allowed to dock to this region
     private boolean isRegionAllowed(Dockable dockable, DockingRegion region) {
+        if (dockable == null) {
+            return false;
+        }
         if (dockable.getStyle() == DockableStyle.BOTH) {
             return true;
         }

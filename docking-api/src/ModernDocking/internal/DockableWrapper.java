@@ -115,6 +115,10 @@ public class DockableWrapper {
 		return dockable;
 	}
 
+	public FloatListener getFloatListener() {
+		return floatListener;
+	}
+
 	/**
 	 * Remove any listeners that this wrapper has added for the dockable
 	 */

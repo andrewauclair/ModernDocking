@@ -27,18 +27,32 @@ import ModernDocking.internal.DockedTabbedPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.dnd.DragGestureEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DockedTabbedPanelFloatListener extends FloatListener {
     private final DockingAPI docking;
-    private final DockedTabbedPanel tabs;
+    protected final DockedTabbedPanel tabs;
+
+    private DisplayPanelFloatListener listener = null;
 
     public DockedTabbedPanelFloatListener(DockingAPI docking, DockedTabbedPanel tabs, JComponent dragComponent) {
         super(docking, tabs, dragComponent);
 
         this.docking = docking;
         this.tabs = tabs;
+    }
+
+    @Override
+    protected boolean allowDrag(DragGestureEvent dragGestureEvent) {
+        // if we're dragging from a tab then we need to use the normal drag event
+        Point dragOrigin = new Point(dragGestureEvent.getDragOrigin());
+        SwingUtilities.convertPointToScreen(dragOrigin, dragGestureEvent.getComponent());
+
+        int targetTabIndex = tabs.getTargetTabIndex(dragOrigin);
+
+        return targetTabIndex == -1;
     }
 
     @Override

@@ -49,9 +49,14 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 
     private Window currentWindow;
     private FloatUtilsFrame currentUtilFrame;
+    private DragGestureRecognizer alternateDragGesture;
 
     public FloatListener(DockingAPI docking, DisplayPanel panel) {
         this(docking, panel, (JComponent) panel.getWrapper().getHeaderUI());
+    }
+
+    public FloatListener(DockingAPI docking, DisplayPanel panel, JComponent dragComponent) {
+        this(docking, (JPanel) panel, dragComponent);
     }
 
     public FloatListener(DockingAPI docking, DockedTabbedPanel tabs, JComponent dragComponent) {
@@ -69,13 +74,28 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
         }
     }
 
+    public void addAlternateDragSource(JComponent dragComponent, DragGestureListener listener) {
+        alternateDragGesture = dragSource.createDefaultDragGestureRecognizer(dragComponent, DnDConstants.ACTION_MOVE, listener);
+    }
+
+    public void removeAlternateDragSource(DragGestureListener listener) {
+        alternateDragGesture.removeDragGestureListener(listener);
+        alternateDragGesture = null;
+    }
+
     public JPanel getPanel() {
         return panel;
     }
 
-    private void startDrag(DragGestureEvent dragGestureEvent) {
+    protected abstract boolean allowDrag(DragGestureEvent dragGestureEvent);
+
+    public void startDrag(DragGestureEvent dragGestureEvent) {
         // if there is already a floating panel, don't float this one
         if (Floating.isFloating()) {
+            return;
+        }
+
+        if (!allowDrag(dragGestureEvent)) {
             return;
         }
 
@@ -91,6 +111,8 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 
         dragStarted(dragGestureEvent.getDragOrigin());
 
+        Floating.setFloating(true);
+
         Point mouseOnScreen = new Point(dragGestureEvent.getDragOrigin());
         SwingUtilities.convertPointToScreen(mouseOnScreen, dragGestureEvent.getComponent());
 
@@ -98,8 +120,6 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
     }
 
     private void dragStarted(Point dragOrigin) {
-        Floating.setFloating(true);
-
         dragComponentDragOffset = new Point(dragOrigin);
 
         // force the drag offset to be inset from the edge slightly
@@ -194,6 +214,7 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
         }
 
         floatingFrame.dispose();
+        floatingFrame = null;
     }
 
     protected abstract Window getOriginalWindow();
