@@ -77,11 +77,6 @@ public class FloatingFrame extends JFrame {
 	public FloatingFrame(DockingAPI docking, Dockable dockable, Point location, Dimension size, int state) {
 		this.docking = docking;
 
-		DisplayPanel displayPanel = DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel();
-
-		Point point = displayPanel.getLocation();
-		SwingUtilities.convertPointToScreen(point, displayPanel.getParent());
-
 		setLocation(location);
 		setSize(size);
 		setExtendedState(state);
