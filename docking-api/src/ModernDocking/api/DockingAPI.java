@@ -535,8 +535,36 @@ public class DockingAPI {
             dock(dockable, frame);
 
             frame.pack();
-            frame.setLocationRelativeTo(getMainWindow());
+            frame.setLocationRelativeTo(mainWindow);
         }
+    }
+
+    /**
+     * Creates a new FloatingFrame window for the given dockable, undock it from its current frame (if there is one) and dock it into the new frame
+     *
+     * @param persistentID The persistent ID of the dockable to float in a new window
+     * @param size The size of the new frame
+     */
+    public void newWindow(String persistentID, Dimension size) {
+        newWindow(internals.getDockable(persistentID), size);
+    }
+
+    /**
+     * Creates a new FloatingFrame window for the given dockable, undock it from its current frame (if there is one) and dock it into the new frame
+     *
+     * @param dockable The dockable to float in a new window
+     * @param size The size of the new frame
+     */
+    public void newWindow(Dockable dockable, Dimension size) {
+        FloatingFrame frame = new FloatingFrame(this, dockable, new Point(0, 0), size, JFrame.NORMAL);
+
+        undock(dockable);
+        dock(dockable, frame);
+
+        SwingUtilities.invokeLater(() -> {
+            frame.setLocationRelativeTo(mainWindow);
+            bringToFront(dockable);
+        });
     }
 
     /**

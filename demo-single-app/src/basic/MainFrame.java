@@ -236,12 +236,30 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		view.add(actionListenDock(themes));
 		view.add(actionListenDock(scrolling));
 
+		// used to check the Docking.newWindow functionality
+		JMenuItem newWindowDockableDimension = new JMenuItem("Docking.newWindow(Dockable, Dimension");
+		newWindowDockableDimension.addActionListener(e -> {
+			Docking.newWindow(one, new Dimension(200 ,200));
+		});
+
+		JMenuItem newWindowDockablePointDimension = new JMenuItem("Docking.newWindow(Dockable, Point, Dimension)");
+		newWindowDockablePointDimension.addActionListener(e -> {
+			Docking.newWindow(one, new Point(0, 0), new Dimension(200, 200));
+		});
+
+		JMenu apiMenu = new JMenu("API");
+		menuBar.add(apiMenu);
+
+		apiMenu.add(newWindowDockableDimension);
+		apiMenu.add(newWindowDockablePointDimension);
+
 		JMenuItem storeCurrentLayout = new JMenuItem("Store Current Layout...");
 		storeCurrentLayout.addActionListener(e -> {
 			String layoutName = JOptionPane.showInputDialog("Name of Layout");
 
 			DockingLayouts.addLayout(layoutName, DockingState.getApplicationLayout());
 		});
+
 		window.add(storeCurrentLayout);
 
 		JMenuItem restoreDefaultLayout = new ApplicationLayoutMenuItem("default", "Restore Default Layout");
