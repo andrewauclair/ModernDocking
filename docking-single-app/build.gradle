@@ -40,14 +40,14 @@ publishing {
 		mavenJava(MavenPublication) {
 			artifactId = 'modern-docking-single-app'
 			from components.java
-			versionMapping {
-				usage('java-api') {
-					fromResolutionOf('runtimeClasspath')
-				}
-				usage('java-runtime') {
-					fromResolutionResult()
-				}
-			}
+//			versionMapping {
+//				usage('java-api') {
+//					fromResolutionOf('runtimeClasspath')
+//				}
+//				usage('java-runtime') {
+//					fromResolutionResult()
+//				}
+//			}
 			pom {
 				name = 'Java Modern Docking'
 				description = 'Modern docking library for Java Swing, single app instance'
