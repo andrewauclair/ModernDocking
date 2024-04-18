@@ -27,7 +27,7 @@ base {
 
 // NOTE: do not add new dependencies here, Modern Docking is a zero-dependency library
 dependencies {
-	compileOnly project(':docking-api')
+	implementation project(':docking-api')
 }
 
 java {
@@ -40,14 +40,14 @@ publishing {
 		mavenJava(MavenPublication) {
 			artifactId = 'modern-docking-single-app'
 			from components.java
-//			versionMapping {
-//				usage('java-api') {
-//					fromResolutionOf('runtimeClasspath')
-//				}
-//				usage('java-runtime') {
-//					fromResolutionResult()
-//				}
-//			}
+			versionMapping {
+				usage('java-api') {
+					fromResolutionOf('compileClasspath')
+				}
+				usage('java-runtime') {
+					fromResolutionResult()
+				}
+			}
 			pom {
 				name = 'Java Modern Docking'
 				description = 'Modern docking library for Java Swing, single app instance'
