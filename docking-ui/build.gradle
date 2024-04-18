@@ -1,5 +1,6 @@
 plugins {
 	id 'java'
+	id 'java-library'
 	id 'idea'
 	id 'maven-publish'
 	id 'signing'
@@ -26,7 +27,7 @@ base {
 }
 
 dependencies {
-	implementation project(':docking-api')
+	api project(':docking-api')
 
 	implementation 'com.formdev:flatlaf:3.2.5'
 	implementation 'com.formdev:flatlaf-extras:3.2.5'
