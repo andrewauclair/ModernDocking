@@ -24,6 +24,7 @@ package ModernDocking.floating;
 import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
+import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.internal.DisplayPanel;
 import ModernDocking.internal.DockableWrapper;
 import ModernDocking.internal.DockingComponentUtils;
@@ -84,6 +85,7 @@ public class DisplayPanelFloatListener extends FloatListener {
 
         if (utilsFrame != null) {
             Window targetFrame = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
+            RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, targetFrame);
 
             if (utilsFrame.isOverRootHandle()) {
                 docking.dock(floatingDockable.getDockable(), targetFrame, utilsFrame.rootHandleRegion());
@@ -92,6 +94,9 @@ public class DisplayPanelFloatListener extends FloatListener {
                 Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, targetFrame);
 
                 docking.dock(floatingDockable.getDockable(), dockableAtPos, utilsFrame.dockableHandle());
+            }
+            else if (utilsFrame.isOverPinHandle()) {
+                docking.unpinDockable(floatingDockable.getDockable(), utilsFrame.pinRegion(), targetFrame, root);
             }
             else if (utilsFrame.isOverTab()) {
                 // TODO get the tab index, if none then we're adding to the end

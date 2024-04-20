@@ -27,6 +27,7 @@ import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.internal.CustomTabbedPane;
 import ModernDocking.internal.DockingComponentUtils;
+import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -232,6 +233,14 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
     public DockingRegion rootHandleRegion() {
         return rootHandles.getRegion();
+    }
+
+    public boolean isOverPinHandle() {
+        return rootHandles.isOverPinHandle();
+    }
+
+    public ToolbarLocation pinRegion() {
+        return rootHandles.getPinRegion();
     }
 
     public boolean isOverDockableHandle() {

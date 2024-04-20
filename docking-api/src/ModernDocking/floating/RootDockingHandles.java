@@ -25,6 +25,7 @@ import ModernDocking.Dockable;
 import ModernDocking.DockableStyle;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -179,6 +180,12 @@ public class RootDockingHandles {
                 rootSouth.isMouseOver();
     }
 
+    public boolean isOverPinHandle() {
+        return pinEast.isMouseOver() ||
+                pinSouth.isMouseOver() ||
+                pinWest.isMouseOver();
+    }
+
     public DockingRegion getRegion() {
         if (rootCenter.isMouseOver()) {
             return DockingRegion.CENTER;
@@ -194,6 +201,19 @@ public class RootDockingHandles {
         }
         if (rootSouth.isMouseOver()) {
             return DockingRegion.SOUTH;
+        }
+        return null;
+    }
+
+    public ToolbarLocation getPinRegion() {
+        if (pinEast.isMouseOver()) {
+            return ToolbarLocation.EAST;
+        }
+        else if (pinWest.isMouseOver()) {
+            return ToolbarLocation.WEST;
+        }
+        else if (pinSouth.isMouseOver()) {
+            return ToolbarLocation.SOUTH;
         }
         return null;
     }
