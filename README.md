@@ -28,6 +28,7 @@ docs).
 
 
 ## Features
+- Supports Java 11 and newer
 - Docking Component Interface
 - Docking Frames (Floating JFrame)
 - Docking Ports (One per frame)
