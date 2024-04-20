@@ -203,7 +203,7 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
             return;
         }
 
-        boolean docked = dropPanel(currentUtilFrame, mousePosOnScreen);
+        boolean docked = dropPanel(currentUtilFrame, floatingFrame, mousePosOnScreen);
 
         if (currentUtilFrame != null) {
             currentUtilFrame.deactivate();
@@ -223,5 +223,5 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 
     protected abstract JFrame createFloatingFrame();
 
-    protected abstract boolean dropPanel(FloatUtilsFrame utilsFrame, Point mousePosOnScreen);
+    protected abstract boolean dropPanel(FloatUtilsFrame utilsFrame, JFrame floatingFrame, Point mousePosOnScreen);
 }

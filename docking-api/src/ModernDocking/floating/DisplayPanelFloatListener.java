@@ -79,7 +79,7 @@ public class DisplayPanelFloatListener extends FloatListener {
     }
 
     @Override
-    protected boolean dropPanel(FloatUtilsFrame utilsFrame, Point mousePosOnScreen) {
+    protected boolean dropPanel(FloatUtilsFrame utilsFrame, JFrame floatingFrame, Point mousePosOnScreen) {
         DockableWrapper floatingDockable = panel.getWrapper();
 
         if (utilsFrame != null) {
@@ -109,8 +109,8 @@ public class DisplayPanelFloatListener extends FloatListener {
         }
         else if (floatingDockable.getDockable().isFloatingAllowed()) {
             // floating
-            FloatingFrame floatingFrame = new FloatingFrame(docking, floatingDockable.getDockable(), mousePosOnScreen, floatingDockable.getDisplayPanel().getSize(), 0);
-            docking.dock(floatingDockable.getDockable(), floatingFrame);
+            FloatingFrame newFloatingFrame = new FloatingFrame(docking, floatingDockable.getDockable(), mousePosOnScreen, floatingDockable.getDisplayPanel().getSize(), 0);
+            docking.dock(floatingDockable.getDockable(), newFloatingFrame);
         }
         else {
             // failed to dock, restore the previous layout

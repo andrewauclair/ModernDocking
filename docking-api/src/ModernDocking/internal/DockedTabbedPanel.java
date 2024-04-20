@@ -324,11 +324,11 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	public void undock(Dockable dockable) {
 		removePanel(DockingInternal.get(docking).getWrapper(dockable));
 
-		if (!Settings.alwaysDisplayTabsMode(dockable) && tabs.getTabCount() == 1 && parent != null) {
+		if (!Settings.alwaysDisplayTabsMode(dockable) && panels.size() == 1 && parent != null && panels.get(0).getDockable().getTabPosition() != SwingConstants.TOP) {
 			parent.replaceChild(this, new DockedSimplePanel(docking, panels.get(0)));
 		}
 
-		if (tabs.getTabCount() == 0) {
+		if (panels.size() == 0) {
 			parent.removeChild(this);
 		}
 	}
