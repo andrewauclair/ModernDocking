@@ -36,11 +36,11 @@ dependencies {
 
 jar {
     manifest {
-        attributes "Main-Class": "MainFrame"
+        attributes "Main-Class": "basic.MainFrame"
     }
 
     from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
