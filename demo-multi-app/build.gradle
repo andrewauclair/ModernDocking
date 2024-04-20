@@ -20,7 +20,6 @@ sourceSets.test.java.srcDirs = ['test']
 sourceSets.main.resources.srcDirs = ['resources']
 
 dependencies {
-    implementation project(':docking-api')
     implementation project(':docking-ui')
     implementation project(':docking-multi-app')
 
@@ -35,11 +34,11 @@ dependencies {
 
 jar {
     manifest {
-        attributes "Main-Class": "MainFrame"
+        attributes "Main-Class": "basic.MainFrame"
     }
 
     from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

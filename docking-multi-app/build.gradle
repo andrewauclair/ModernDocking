@@ -1,5 +1,5 @@
 plugins {
-	id 'java'
+	id 'java-library'
 	id 'idea'
 	id 'maven-publish'
 	id 'signing'
@@ -27,7 +27,7 @@ base {
 
 // NOTE: do not add new dependencies here, Modern Docking is a zero-dependency library
 dependencies {
-	implementation project(':docking-api')
+	api project(':docking-api')
 }
 
 java {
