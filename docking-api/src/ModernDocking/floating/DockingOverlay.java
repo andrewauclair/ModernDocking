@@ -388,7 +388,6 @@ public class DockingOverlay {
 	// set a region from the handles if we're moused over a dockable handle
 	public void setTargetDockableRegion(DockingRegion region) {
 		if (overTab) {
-			System.out.println(dockableRegion);
 			return;
 		}
 		dockableRegion = region;
