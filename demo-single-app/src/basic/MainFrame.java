@@ -236,6 +236,11 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		view.add(actionListenDock(themes));
 		view.add(actionListenDock(scrolling));
 
+		JMenuItem testFrame = new JMenuItem("Test Frame");
+		testFrame.addActionListener(e ->{
+			new TestFrame();
+		});
+		view.add(testFrame);
 		JMenuItem storeCurrentLayout = new JMenuItem("Store Current Layout...");
 		storeCurrentLayout.addActionListener(e -> {
 			String layoutName = JOptionPane.showInputDialog("Name of Layout");

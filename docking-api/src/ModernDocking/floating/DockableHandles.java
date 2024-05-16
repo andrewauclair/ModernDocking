@@ -78,9 +78,6 @@ public class DockableHandles {
         dockableNorth.mouseMoved(framePoint);
         dockableEast.mouseMoved(framePoint);
         dockableSouth.mouseMoved(framePoint);
-
-        frame.revalidate();
-        frame.repaint();
     }
 
     private void setupHandle(JFrame frame, DockingHandle label) {
@@ -144,7 +141,6 @@ public class DockableHandles {
             setLocation(dockableNorth, location.x, location.y - handleSpacing(dockableNorth));
             setLocation(dockableEast, location.x + handleSpacing(dockableEast), location.y);
             setLocation(dockableSouth, location.x, location.y + handleSpacing(dockableSouth));
-
         }
     }
 
@@ -162,7 +158,7 @@ public class DockableHandles {
         return dockable.getStyle() == DockableStyle.VERTICAL;
     }
 
-    public void paint(Graphics g) {
+    public void paint(Graphics2D g2) {
         int centerX = dockableCenter.getX() + (dockableCenter.getWidth() / 2);
         int centerY = dockableCenter.getY() + (dockableCenter.getWidth() / 2);
 
@@ -212,31 +208,24 @@ public class DockableHandles {
                 },
                 17
         );
-
         Color background = DockingSettings.getHandleBackground();//DockingProperties.getHandlesBackground();
         Color border = DockingSettings.getHandleForeground();//DockingProperties.getHandlesBackgroundBorder();
 
-        Graphics2D g2 = (Graphics2D) g.create();
-        Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
-        g2.setStroke(dashed);
-
         // draw the dockable handles background over the root handles in case they overlap
         // fill the dockable handles background
-        g.setColor(background);
-        g.fillPolygon(poly.xpoints, poly.ypoints, poly.npoints);
+        g2.setColor(background);
+        g2.fillPolygon(poly.xpoints, poly.ypoints, poly.npoints);
 
         // draw the dockable handles border
-        g.setColor(border);
-        g.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);
+        g2.setColor(border);
+        g2.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);
 
         // draw the docking handles over the docking handles background
-        dockableCenter.paintHandle(g, g2);
-        dockableEast.paintHandle(g, g2);
-        dockableWest.paintHandle(g, g2);
-        dockableNorth.paintHandle(g, g2);
-        dockableSouth.paintHandle(g, g2);
-
-        g2.dispose();
+        dockableCenter.paintHandle(g2);
+        dockableEast.paintHandle(g2);
+        dockableWest.paintHandle(g2);
+        dockableNorth.paintHandle(g2);
+        dockableSouth.paintHandle(g2);
     }
 
     private int handleSpacing(JLabel handle) {

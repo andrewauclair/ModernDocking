@@ -38,20 +38,33 @@ public class FloatingOverlay {
     // determines how close to the edge the user has to drag the panel before they see an overlay other than CENTER
     private static final double REGION_SENSITIVITY = 0.35;
 
-    private boolean visible;
+    private boolean visible = false;
 
     // the top left location where the overlay starts
     private Point location = new Point(0, 0);
     // the total size of the overlay, used for drawing
-    private Dimension size;
+    private Dimension size = new Dimension(0, 0);
     private Rectangle targetTab = null;
 
     private final DockingAPI docking;
     private final JFrame utilFrame;
 
+    private Point prevLocation = location;
+    private Dimension prevSize = size;
+
     public FloatingOverlay(DockingAPI docking, JFrame utilFrame) {
         this.docking = docking;
         this.utilFrame = utilFrame;
+    }
+
+    public boolean requiresRedraw() {
+        return !location.equals(prevLocation) ||
+                !size.equals(prevSize);
+    }
+
+    public void clearRedraw() {
+        prevLocation = location;
+        prevSize = size;
     }
 
     public void updateForRoot(RootDockingPanelAPI rootPanel, DockingRegion region) {
@@ -65,6 +78,9 @@ public class FloatingOverlay {
         point = SwingUtilities.convertPoint(rootPanel.getParent(), point, utilFrame);
 
         final double DROP_SIZE = 4;
+
+        prevLocation = new Point(this.location);
+        prevSize = new Dimension(this.size);
 
         switch (region) {
             case WEST: {
@@ -93,6 +109,9 @@ public class FloatingOverlay {
 
     public void updateForDockable(Dockable targetDockable, Dockable floatingDockable, Point mousePosOnScreen, DockingRegion region) {
         setVisible(true);
+
+        prevLocation = new Point(this.location);
+        prevSize = new Dimension(this.size);
 
         targetTab = null;
 
@@ -136,6 +155,9 @@ public class FloatingOverlay {
 
     public void updateForTab(CustomTabbedPane tabbedPane, Point mousePosOnScreen) {
         setVisible(true);
+
+        prevLocation = new Point(this.location);
+        prevSize = new Dimension(this.size);
 
         Component componentAt = tabbedPane.getComponentAt(0);
 
@@ -249,5 +271,9 @@ public class FloatingOverlay {
             return dockable.getStyle() == DockableStyle.HORIZONTAL;
         }
         return dockable.getStyle() == DockableStyle.VERTICAL;
+    }
+
+    public boolean isVisible() {
+        return visible;
     }
 }

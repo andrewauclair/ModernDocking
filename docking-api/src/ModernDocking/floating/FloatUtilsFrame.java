@@ -36,6 +36,7 @@ import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceMotionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.image.BufferStrategy;
 
 public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener, ComponentListener {
     private final Window referenceDockingWindow;
@@ -48,6 +49,8 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
     private DragSource dragSource;
     private Dockable currentDockable;
     private DockableHandles dockableHandles;
+
+    BufferStrategy bs; //create an strategy for multi-buffering.
 
     public FloatUtilsFrame(DockingAPI docking, Window referenceDockingWindow, RootDockingPanelAPI root) {
         this.referenceDockingWindow = referenceDockingWindow;
@@ -77,6 +80,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
             // TODO we need to handle platforms that don't support translucent display
             // this exception indicates that the platform doesn't support changing the opacity
         }
+
     }
 
     public void activate(FloatListener floatListener, JFrame floatingFrame, DragSource dragSource, Point mousePosOnScreen) {
@@ -94,6 +98,8 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
         setVisible(true);
 
+        createBufferStrategy(2);
+        bs = this.getBufferStrategy();
         orderFrames();
     }
 
@@ -112,7 +118,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
     @Override
     public void dragMouseMoved(DragSourceDragEvent event) {
-        mouseMoved(event.getLocation());
+        SwingUtilities.invokeLater(() -> mouseMoved(event.getLocation()));
     }
 
     private void mouseMoved(Point mousePosOnScreen) {
@@ -125,6 +131,8 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         if (dockableHandles != null) {
             dockableHandles.mouseMoved(mousePosOnScreen);
         }
+
+        boolean prevVisible = overlay.isVisible();
 
         // hide the overlay. it will be marked visible again if we update it
         overlay.setVisible(false);
@@ -178,10 +186,18 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         else if (!floatingFrame.isVisible()) {
             changeVisibility(floatingFrame, true);
         }
+
+        if (overlay.requiresRedraw() || prevVisible != overlay.isVisible()) {
+//            System.out.println("Redraw");
+//            revalidate();
+            repaint();
+            overlay.clearRedraw();
+        }
     }
 
     private void changeVisibility(JFrame frame, boolean visible) {
         if (frame.isVisible() != visible) {
+            System.out.println("Change visibility");
             frame.setVisible(visible);
 
             orderFrames();
@@ -197,16 +213,19 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
     }
 
     @Override
-    public void paint(Graphics g) {
-        super.paint(g);
+    public void paint(Graphics gf) {
+        Graphics g = bs.getDrawGraphics();
+        Graphics2D g2 = (Graphics2D) bs.getDrawGraphics();
 
-        rootHandles.paint(g);
+        g2.clearRect(0, 0, getWidth(), getHeight());
 
+        rootHandles.paint(g2);
         if (dockableHandles != null) {
-            dockableHandles.paint(g);
+            dockableHandles.paint(g2);
         }
-
         overlay.paint(g);
+        g2.dispose();
+        bs.show();
     }
 
     @Override
@@ -282,5 +301,8 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         setSize(size);
 
         rootHandles.updateHandlePositions();
+
+        revalidate();
+        repaint();
     }
 }

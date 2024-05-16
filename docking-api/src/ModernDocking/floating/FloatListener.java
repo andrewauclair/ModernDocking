@@ -152,7 +152,7 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
         if (!Floating.isFloating()) {
             return;
         }
-        updateFramePosition(event.getLocation());
+        SwingUtilities.invokeLater(() -> updateFramePosition(event.getLocation()));
     }
 
     private void updateFramePosition(Point mousePosOnScreen) {

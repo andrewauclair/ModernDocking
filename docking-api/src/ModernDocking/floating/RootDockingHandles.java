@@ -110,9 +110,6 @@ public class RootDockingHandles {
         if (pinWest.isMouseOver()) mouseOverPin = DockingRegion.WEST;
         if (pinEast.isMouseOver()) mouseOverPin = DockingRegion.EAST;
         if (pinSouth.isMouseOver()) mouseOverPin = DockingRegion.SOUTH;
-
-        frame.revalidate();
-        frame.repaint();
     }
 
     private void setupHandle(JFrame frame, DockingHandle label) {
@@ -151,25 +148,19 @@ public class RootDockingHandles {
     /**
      * Paint the handles
      *
-     * @param g Graphics instance to use
+     * @param g2 Graphics2D instance to use
      */
-    public void paint(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
-        g2.setStroke(dashed);
-
+    public void paint(Graphics2D g2) {
         // draw root handles
-        rootCenter.paintHandle(g, g2);
-        rootEast.paintHandle(g, g2);
-        rootWest.paintHandle(g, g2);
-        rootNorth.paintHandle(g, g2);
-        rootSouth.paintHandle(g, g2);
+        rootCenter.paintHandle(g2);
+        rootEast.paintHandle(g2);
+        rootWest.paintHandle(g2);
+        rootNorth.paintHandle(g2);
+        rootSouth.paintHandle(g2);
 
-        pinWest.paintHandle(g, g2);
-        pinEast.paintHandle(g, g2);
-        pinSouth.paintHandle(g, g2);
-
-        g2.dispose();
+        pinWest.paintHandle(g2);
+        pinEast.paintHandle(g2);
+        pinSouth.paintHandle(g2);
     }
 
     public boolean isOverHandle() {
