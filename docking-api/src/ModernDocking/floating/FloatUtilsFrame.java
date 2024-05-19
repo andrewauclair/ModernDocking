@@ -51,6 +51,20 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
     private DockableHandles dockableHandles;
 
     BufferStrategy bs; //create an strategy for multi-buffering.
+    JPanel renderPanel = new JPanel() {
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            rootHandles.paint(g2);
+
+            if (dockableHandles != null) {
+                dockableHandles.paint(g2);
+            }
+
+            overlay.paint(g);
+            g2.dispose();
+        }
+    };
 
     public FloatUtilsFrame(DockingAPI docking, Window referenceDockingWindow, RootDockingPanelAPI root) {
         this.referenceDockingWindow = referenceDockingWindow;
@@ -71,6 +85,9 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         getRootPane().setBackground(new Color(0, 0, 0, 0)); // don't want a background for the root pane either. Workaround for a FlatLaf macOS issue.
         getContentPane().setBackground(new Color(0, 0, 0, 0)); // don't want a background for the content frame either.
 
+        add(renderPanel);
+        renderPanel.setOpaque(false);
+
         try {
             if (getContentPane() instanceof JComponent) {
                 ((JComponent) getContentPane()).setOpaque(false);
@@ -80,7 +97,6 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
             // TODO we need to handle platforms that don't support translucent display
             // this exception indicates that the platform doesn't support changing the opacity
         }
-
     }
 
     public void activate(FloatListener floatListener, JFrame floatingFrame, DragSource dragSource, Point mousePosOnScreen) {
@@ -186,7 +202,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         else if (!floatingFrame.isVisible()) {
             changeVisibility(floatingFrame, true);
         }
-
+        repaint();
         if (overlay.requiresRedraw() || prevVisible != overlay.isVisible()) {
 //            System.out.println("Redraw");
 //            revalidate();
@@ -212,21 +228,36 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         SwingUtilities.invokeLater(this::toFront);
     }
 
-    @Override
-    public void paint(Graphics gf) {
-        Graphics g = bs.getDrawGraphics();
-        Graphics2D g2 = (Graphics2D) bs.getDrawGraphics();
-
-        g2.clearRect(0, 0, getWidth(), getHeight());
-
-        rootHandles.paint(g2);
-        if (dockableHandles != null) {
-            dockableHandles.paint(g2);
-        }
-        overlay.paint(g);
-        g2.dispose();
-        bs.show();
-    }
+//    @Override
+//    public void paint(Graphics gf) {
+////        super.paint(gf);
+////Graphics2D g2 = (Graphics2D) gf.create();
+////        rootHandles.paint(g2);
+////
+////        if (dockableHandles != null) {
+////            dockableHandles.paint(g2);
+////        }
+////
+////        overlay.paint(gf);
+////        g2.dispose();
+//        if (bs == null) {
+//            return;
+//        }
+//
+//        Graphics2D g2 = (Graphics2D) bs.getDrawGraphics();
+//
+//        g2.setColor(new Color(0,0,0,0));
+//        g2.clearRect(0, 0, getWidth(), getHeight());
+//        g2.fillRect(0, 0, getWidth(), getHeight());
+//
+//        rootHandles.paint(g2);
+//        if (dockableHandles != null) {
+//            dockableHandles.paint(g2);
+//        }
+//        overlay.paint(g2);
+//        g2.dispose();
+//        bs.show();
+//    }
 
     @Override
     public void componentResized(ComponentEvent e) {
@@ -299,6 +330,8 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         // set location and size based on the reference docking frame
         setLocation(location);
         setSize(size);
+
+        renderPanel.setSize(size);
 
         rootHandles.updateHandlePositions();
 
