@@ -22,8 +22,10 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockingProperty;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.exception.DockableNotFoundException;
 import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.ui.DefaultHeaderUI;
 import ModernDocking.ui.DockingHeaderUI;
@@ -32,6 +34,9 @@ import ModernDocking.ui.HeaderModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +88,50 @@ public class DockingInternal {
 		if (dockable.getTabText() == null) {
 			throw new RuntimeException("Dockable '" + dockable.getPersistentID() + "' should not return 'null' for tabText()");
 		}
+		validateDockingProperties(dockable);
 		dockables.put(dockable.getPersistentID(), new DockableWrapper(docking, dockable));
+	}
+
+	private void validateDockingProperties(Dockable dockable) {
+		List<Field> dockingPropFields = Arrays.stream(dockable.getClass().getDeclaredFields())
+				.filter(field -> field.getAnnotation(DockingProperty.class) != null)
+				.collect(Collectors.toList());
+
+		if (dockingPropFields.size() > 0) {
+			try {
+				Method updateProperties = dockable.getClass().getMethod("updateProperties");
+				if (updateProperties.getDeclaringClass() == Dockable.class) {
+					throw new RuntimeException("Dockable class " + dockable.getClass().getSimpleName() + " contains DockingProperty instances and should override updateProperties");
+				}
+			} catch (NoSuchMethodException ignored) {
+				// updateProperties has a default implementation in Dockable, so we will always find it and this exception should never happen
+			}
+		}
+
+		for (Field field : dockingPropFields) {
+			try {
+				// make sure we can access the field if it is private/protected. only try this if we're sure we can't already access it
+				// because it may result in an IllegalAccessException for trying
+				if (!field.canAccess(dockable)) {
+					field.setAccessible(true);
+				}
+
+				// grab the property and store the value by its name
+				DockingProperty property = field.getAnnotation(DockingProperty.class);
+
+				try {
+					DockableProperties.validateProperty(field, property);
+				}
+				catch (Exception e) {
+					// TODO possibly make a new DockingPropertyException
+					throw new RuntimeException(String.format("Dockable: '%s' (%s), default value: '%s' for field '%s' (%s) is invalid", dockable.getPersistentID(), dockable.getClass().getSimpleName(), property.defaultValue(), field.getName(), field.getType().getSimpleName()), e);
+				}
+			} catch (SecurityException e) {
+				// TODO handle this better
+				e.printStackTrace();
+			}
+
+		}
 	}
 
 	/**
@@ -101,20 +149,20 @@ public class DockingInternal {
 		if (dockables.containsKey(dockable.getPersistentID())) {
 			return dockables.get(dockable.getPersistentID());
 		}
-		throw new DockableRegistrationFailureException(dockable.getPersistentID());
+		throw new DockableNotFoundException(dockable.getPersistentID());
 	}
 
 	/**
 	 * Find a dockable with the given persistent ID
 	 * @param persistentID persistent ID to search for
 	 * @return found dockable
-	 * @throws DockableRegistrationFailureException if the dockable has not been registered
+	 * @throws DockableNotFoundException if the dockable has not been found
 	 */
 	public Dockable getDockable(String persistentID) {
 		if (dockables.containsKey(persistentID)) {
 			return dockables.get(persistentID).getDockable();
 		}
-		throw new DockableRegistrationFailureException(persistentID);
+		throw new DockableNotFoundException(persistentID);
 	}
 
 	public void fireDockedEventForFrame(Window window) {

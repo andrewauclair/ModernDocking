@@ -25,6 +25,7 @@ import ModernDocking.Dockable;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.exception.DockableRegistrationFailureException;
+import ModernDocking.settings.Settings;
 import ModernDocking.ui.DockingSettings;
 
 import javax.swing.*;
@@ -48,6 +49,12 @@ public class ActiveDockableHighlighter {
 	 * Default constructor to create the highlighter
 	 */
 	public ActiveDockableHighlighter(DockingAPI docking) {
+		if (!Settings.isActiveHighlighterEnabled()) {
+			awtEventListener = e -> {};
+			propertyChangeListener = e -> {};
+			return;
+		}
+
 		// use an AWT event listener to set a border around the dockable that the mouse is currently over
 		awtEventListener = e -> {
 			if (e.getID() == MouseEvent.MOUSE_ENTERED || e.getID() == MouseEvent.MOUSE_EXITED) {

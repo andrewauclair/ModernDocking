@@ -22,6 +22,7 @@ SOFTWARE.
 package basic;
 
 import ModernDocking.*;
+import ModernDocking.api.WindowLayoutBuilderAPI;
 import ModernDocking.app.*;
 import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.layouts.ApplicationLayout;
@@ -269,7 +270,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		gbc.weighty = 0;
 		gbc.fill = GridBagConstraints.NONE;
 
-		ApplicationLayout defaultLayout = new WindowLayoutBuilder(alwaysDisplayed.getPersistentID())
+		WindowLayoutBuilderAPI layoutBuilder = new WindowLayoutBuilder(alwaysDisplayed.getPersistentID())
 				.dock(one.getPersistentID(), alwaysDisplayed.getPersistentID())
 				.dock(two.getPersistentID(), one.getPersistentID(), DockingRegion.SOUTH)
 				.dockToRoot(three.getPersistentID(), DockingRegion.WEST)
@@ -278,8 +279,12 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 				.dockToRoot(output.getPersistentID(), DockingRegion.SOUTH)
 				.dockToRoot(themes.getPersistentID(), DockingRegion.EAST)
 				.dock(explorer.getPersistentID(), themes.getPersistentID(), DockingRegion.CENTER)
-				.display(themes.getPersistentID())
-				.buildApplicationLayout();
+				.display(themes.getPersistentID());
+
+		layoutBuilder.setProperty(one.getPersistentID(), SimplePanel.STRING_TEST_PROP, "value");
+		layoutBuilder.setProperty(one.getPersistentID(), SimplePanel.TEST_INT_1_PROP, 100);
+
+		ApplicationLayout defaultLayout = layoutBuilder.buildApplicationLayout();
 
 		DockingLayouts.addLayout("default", defaultLayout);
 		AppState.setDefaultApplicationLayout(defaultLayout);

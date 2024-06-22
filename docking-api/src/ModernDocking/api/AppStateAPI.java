@@ -22,17 +22,23 @@ SOFTWARE.
 package ModernDocking.api;
 
 import ModernDocking.Dockable;
+import ModernDocking.Property;
 import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.internal.DockableWrapper;
 import ModernDocking.internal.DockingInternal;
 import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.DockingLayouts;
+import ModernDocking.layouts.DockingSimplePanelNode;
+import ModernDocking.layouts.WindowLayout;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,6 +53,7 @@ public class AppStateAPI {
 	private static final Map<DockingAPI, File> autoPersistFiles = new HashMap<>();
 
 	private static ApplicationLayout defaultAppLayout = null;
+	private static ApplicationLayout lastPersistedLayout = null;
 
 	private static boolean paused = false;
 
@@ -131,6 +138,33 @@ public class AppStateAPI {
 					if (!paused) {
 						ApplicationLayout layout = docking.getDockingState().getApplicationLayout();
 
+						if (lastPersistedLayout != null) {
+							if (layout.getMainFrameLayout().getState() != Frame.NORMAL){
+								// set position and size of all frames into the new layout
+								layout.getMainFrameLayout().setLocation(lastPersistedLayout.getMainFrameLayout().getLocation());
+								layout.getMainFrameLayout().setSize(lastPersistedLayout.getMainFrameLayout().getSize());
+							}
+
+							List<WindowLayout> oldFrames = lastPersistedLayout.getFloatingFrameLayouts();
+							List<WindowLayout> newFrames = layout.getFloatingFrameLayouts();
+
+							for (WindowLayout newFrame : newFrames) {
+								if (newFrame.getState() == Frame.NORMAL) {
+									continue;
+								}
+
+								Optional<WindowLayout> oldFrame = oldFrames.stream()
+										.filter(windowLayout -> windowLayout.getWindowHashCode() == newFrame.getWindowHashCode())
+										.findFirst();
+
+								if (oldFrame.isPresent()) {
+									newFrame.setLocation(oldFrame.get().getLocation());
+									newFrame.setSize(oldFrame.get().getSize());
+								}
+							}
+						}
+						lastPersistedLayout = layout;
+
 						try {
 							docking.getLayoutPersistence().saveLayoutToFile(autoPersistFiles.get(docking), layout);
 
@@ -209,13 +243,13 @@ public class AppStateAPI {
 		defaultAppLayout = layout;
 	}
 
-	public String getProperty(Dockable dockable, String propertyName) {
+	public Property getProperty(Dockable dockable, String propertyName) {
 		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 
 		return wrapper.getProperty(propertyName);
 	}
 
-	public void setProperty(Dockable dockable, String propertyName, String value) {
+	public void setProperty(Dockable dockable, String propertyName, Property value) {
 		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 
 		wrapper.setProperty(propertyName, value);

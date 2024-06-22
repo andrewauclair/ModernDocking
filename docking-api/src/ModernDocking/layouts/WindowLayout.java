@@ -32,18 +32,20 @@ import java.util.List;
  */
 public class WindowLayout {
 	private boolean isMainFrame;
-	private final Point location;
+	private Point location;
 	private final boolean hasSizeAndLocationInformation;
-	private final Dimension size;
+	private Dimension size;
 	private final int state;
 	private final ModalityType modalityType;
 	private final DockingLayoutNode rootNode;
 	private String maximizedDockable = null;
 
+  private final int windowHashCode;
+  
 	private final List<String> westAutoHideToolbarIDs = new ArrayList<>();
 	private final List<String> eastAutoHideToolbarIDs = new ArrayList<>();
 	private final List<String> southAutoHideToolbarIDs = new ArrayList<>();
-
+  
 	/**
 	 * Create a new WindowLayout from an existing root node
 	 *
@@ -60,6 +62,7 @@ public class WindowLayout {
 		this.state = state;
 		this.rootNode = rootNode;
 		this.modalityType = ModalityType.MODELESS;
+		this.windowHashCode = 0;
 
 		hasSizeAndLocationInformation = true;
 	}
@@ -72,6 +75,7 @@ public class WindowLayout {
 	public WindowLayout(DockingLayoutNode rootNode) {
 		this.rootNode = rootNode;
 		this.state = Frame.NORMAL;
+		this.windowHashCode = 0;
 
 		hasSizeAndLocationInformation = false;
 
@@ -90,6 +94,7 @@ public class WindowLayout {
 		this.rootNode = rootNode;
 		this.location = window.getLocation();
 		this.size = window.getSize();
+		this.windowHashCode = window.hashCode();
 
 		if (window instanceof JFrame) {
 			this.state = ((JFrame) window).getExtendedState();
@@ -121,6 +126,10 @@ public class WindowLayout {
 		return location;
 	}
 
+	public void setLocation(Point location) {
+		this.location = location;
+	}
+
 	/**
 	 * Get the size of this window
 	 *
@@ -128,6 +137,10 @@ public class WindowLayout {
 	 */
 	public Dimension getSize() {
 		return size;
+	}
+
+	public void setSize(Dimension size) {
+		this.size = size;
 	}
 
 	public int getState() {
@@ -214,5 +227,9 @@ public class WindowLayout {
 
 	public boolean hasSizeAndLocationInformation() {
 		return hasSizeAndLocationInformation;
+	}
+
+	public int getWindowHashCode() {
+		return windowHashCode;
 	}
 }

@@ -22,9 +22,11 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.Property;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.floating.FloatListener;
+import ModernDocking.layouts.DockingSimplePanelNode;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
 import ModernDocking.ui.HeaderModel;
@@ -55,7 +57,7 @@ public class DockableWrapper {
 	private boolean hidden = false;
 	private RootDockingPanelAPI root;
 
-	private final Map<String, String> properties = new HashMap<>();
+	private final Map<String, Property> properties = new HashMap<>();
 
 	/**
 	 * Create a new wrapper for the dockable
@@ -205,15 +207,15 @@ public class DockableWrapper {
 		return root;
 	}
 
-	public Map<String, String> getProperties() {
+	public Map<String, Property> getProperties() {
 		return Collections.unmodifiableMap(properties);
 	}
 
-	public String getProperty(String propertyName) {
+	public Property getProperty(String propertyName) {
 		return properties.get(propertyName);
 	}
 
-	public void setProperty(String propertyName, String value) {
+	public void setProperty(String propertyName, Property value) {
 		properties.put(propertyName, value);
 	}
 
