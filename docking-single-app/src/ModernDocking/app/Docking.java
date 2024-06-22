@@ -401,9 +401,11 @@ public class Docking {
      *
      * @param persistentID The persistentID of the dockable to check
      * @return Whether the dockable is unpinned
+     *
+     * @deprecated Replaced with auto hide
      */
     public static boolean isUnpinned(String persistentID) {
-        return instance.isUnpinned(persistentID);
+        return instance.isHidden(persistentID);
     }
 
     /**
@@ -411,9 +413,11 @@ public class Docking {
      *
      * @param dockable The dockable to check
      * @return Whether the dockable is unpinned
+     *
+     * @deprecated Replaced with auto hide
      */
     public static boolean isUnpinned(Dockable dockable) {
-        return instance.isUnpinned(dockable);
+        return instance.isHidden(dockable);
     }
 
     /**

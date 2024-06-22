@@ -246,17 +246,17 @@ public class DockingHandles {
 		}
 		Dockable floating = ((DisplayPanel) this.floating).getWrapper().getDockable();
 
-		if (!floating.isPinningAllowed()) {
+		if (!floating.isAutoHideAllowed()) {
 			return false;
 		}
 
-		if (floating.getPinningStyle() == DockableStyle.BOTH) {
+		if (floating.getAutoHideStyle() == DockableStyle.BOTH) {
 			return true;
 		}
 		if (region == DockingRegion.NORTH || region == DockingRegion.SOUTH) {
-			return floating.getPinningStyle() == DockableStyle.HORIZONTAL;
+			return floating.getAutoHideStyle() == DockableStyle.HORIZONTAL;
 		}
-		return floating.getPinningStyle() == DockableStyle.VERTICAL;
+		return floating.getAutoHideStyle() == DockableStyle.VERTICAL;
 	}
 
 	public boolean isMouseOverHandle() {

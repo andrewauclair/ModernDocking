@@ -70,12 +70,12 @@ public class HeaderModel {
 	 *
 	 * @return Is pinning allowed?
 	 */
-	public boolean isPinnedAllowed() {
-		return dockable.isPinningAllowed();
+	public boolean isAutoHideAllowed() {
+		return dockable.isAutoHideAllowed();
 	}
 
-	public boolean isUnpinned() {
-		return docking.isUnpinned(dockable);
+	public boolean isAutoHideEnabled() {
+		return docking.isHidden(dockable);
 	}
 
 	/**

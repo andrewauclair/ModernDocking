@@ -44,7 +44,7 @@ public class FloatingFrame extends JFrame {
 		add(root, BorderLayout.CENTER);
 
 		// allow pinning for this frame
-		docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
+		docking.configureAutoHide(this, JLayeredPane.MODAL_LAYER, true);
 
 		setVisible(true);
 
@@ -67,7 +67,7 @@ public class FloatingFrame extends JFrame {
 		add(root, BorderLayout.CENTER);
 
 		// allow pinning for this frame
-		docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
+		docking.configureAutoHide(this, JLayeredPane.MODAL_LAYER, true);
 
 		setVisible(true);
 
@@ -96,7 +96,7 @@ public class FloatingFrame extends JFrame {
 		add(root, BorderLayout.CENTER);
 
 		// allow pinning for this frame
-		docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
+		docking.configureAutoHide(this, JLayeredPane.MODAL_LAYER, true);
 
 		setVisible(true);
 
@@ -124,7 +124,7 @@ public class FloatingFrame extends JFrame {
 		add(root, BorderLayout.CENTER);
 
 		// allow pinning on this frame
-		docking.configurePinning(this, JLayeredPane.MODAL_LAYER, true);
+		docking.configureAutoHide(this, JLayeredPane.MODAL_LAYER, true);
 
 		// finally, dock the dockable and show this frame
 		docking.dock(dockable, this);

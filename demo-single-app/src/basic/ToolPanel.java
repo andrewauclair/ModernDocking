@@ -72,7 +72,7 @@ public class ToolPanel extends BasePanel {
 	}
 
 	@Override
-	public DockableStyle getPinningStyle() {
+	public DockableStyle getAutoHideStyle() {
 		return style;
 	}
 
@@ -82,7 +82,7 @@ public class ToolPanel extends BasePanel {
 	}
 
 	@Override
-	public boolean isPinningAllowed() {
+	public boolean isAutoHideAllowed() {
 		return true;
 	}
 
