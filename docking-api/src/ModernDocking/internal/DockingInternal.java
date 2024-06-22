@@ -25,6 +25,7 @@ import ModernDocking.Dockable;
 import ModernDocking.DockingProperty;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.exception.DockableNotFoundException;
 import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.ui.DefaultHeaderUI;
 import ModernDocking.ui.DockingHeaderUI;
@@ -148,20 +149,20 @@ public class DockingInternal {
 		if (dockables.containsKey(dockable.getPersistentID())) {
 			return dockables.get(dockable.getPersistentID());
 		}
-		throw new DockableRegistrationFailureException(dockable.getPersistentID());
+		throw new DockableNotFoundException(dockable.getPersistentID());
 	}
 
 	/**
 	 * Find a dockable with the given persistent ID
 	 * @param persistentID persistent ID to search for
 	 * @return found dockable
-	 * @throws DockableRegistrationFailureException if the dockable has not been registered
+	 * @throws DockableNotFoundException if the dockable has not been found
 	 */
 	public Dockable getDockable(String persistentID) {
 		if (dockables.containsKey(persistentID)) {
 			return dockables.get(persistentID).getDockable();
 		}
-		throw new DockableRegistrationFailureException(persistentID);
+		throw new DockableNotFoundException(persistentID);
 	}
 
 	public void fireDockedEventForFrame(Window window) {

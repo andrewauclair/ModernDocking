@@ -30,6 +30,7 @@ import ModernDocking.internal.DockedTabbedPanel;
 /**
  * Storage for the state of the root
  */
+@Deprecated(forRemoval = true)
 public class RootDockState {
 	private final DockableState state;
 

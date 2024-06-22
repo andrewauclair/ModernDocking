@@ -31,6 +31,7 @@ import java.awt.*;
 public class DockingState {
     private static final DockingStateAPI instance = new DockingStateAPI(Docking.getSingleInstance()){};
 
+    @Deprecated(forRemoval = true)
     public static RootDockState getRootState(Window window) {
         return instance.getRootState(window);
     }
@@ -71,6 +72,7 @@ public class DockingState {
         instance.restoreWindowLayout_PreserveSizeAndPos(window, layout);
     }
 
+    @Deprecated(forRemoval = true)
     public static void restoreState(Window window, RootDockState state) {
         instance.restoreState(window, state);
     }

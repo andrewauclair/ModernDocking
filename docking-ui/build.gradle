@@ -1,9 +1,10 @@
 plugins {
 	id 'java'
+	id 'java-library'
 	id 'idea'
 	id 'maven-publish'
 	id 'signing'
-	id "com.github.ben-manes.versions" version "0.46.0"
+	id "com.github.ben-manes.versions" version "0.50.0"
 }
 
 java {
@@ -26,10 +27,10 @@ base {
 }
 
 dependencies {
-	implementation project(':docking-api')
+	api project(':docking-api')
 
-	implementation 'com.formdev:flatlaf:3.2.5'
-	implementation 'com.formdev:flatlaf-extras:3.2.5'
+	implementation 'com.formdev:flatlaf:3.3'
+	implementation 'com.formdev:flatlaf-extras:3.3'
 }
 
 repositories {

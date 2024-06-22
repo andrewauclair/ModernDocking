@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rules SYSTEM "https://resources.jetbrains.com/writerside/1.0/redirection-rules.dtd">
+<rules>
+    <!-- format is as follows
+    <rule id="<unique id>">
+        <accepts>page.html</accepts>
+    </rule>
+    -->
+    <rule id="5aec4a3e">
+        <description>Created after removal of "Dockable Customization" from ModernDocking</description>
+        <accepts>Dockable-Customization.html</accepts>
+    </rule>
+    <rule id="4fb958cf">
+        <description>Created after removal of "Using Docking Handles" from ModernDocking</description>
+        <accepts>Using-Docking-Handles.html</accepts>
+    </rule>
+</rules>
