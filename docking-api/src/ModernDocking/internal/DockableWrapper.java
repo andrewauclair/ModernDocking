@@ -24,6 +24,7 @@ package ModernDocking.internal;
 import ModernDocking.Dockable;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.floating.DisplayPanelFloatListener;
 import ModernDocking.floating.FloatListener;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
@@ -73,7 +74,7 @@ public class DockableWrapper {
 
 		displayPanel = new DisplayPanel(this);
 
-		floatListener = new FloatListener(docking, displayPanel);
+		floatListener = new DisplayPanelFloatListener(docking, displayPanel);
 	}
 
 	/**
@@ -112,6 +113,10 @@ public class DockableWrapper {
 	 */
 	public Dockable getDockable() {
 		return dockable;
+	}
+
+	public FloatListener getFloatListener() {
+		return floatListener;
 	}
 
 	/**

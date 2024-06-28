@@ -83,7 +83,9 @@ public class CustomTabbedPane extends JTabbedPane {
     }
 
     public int getTargetTabIndex(Point mousePosOnScreen, boolean ignoreY) {
-        SwingUtilities.convertPointFromScreen(mousePosOnScreen, this);
+        // convert the screen mouse position to a position on the tabbed pane
+        Point newPoint = new Point(mousePosOnScreen);
+        SwingUtilities.convertPointFromScreen(newPoint, this);
 
         Point d = isTopBottomTabPlacement(getTabPlacement()) ? new Point(1, 0) : new Point(0, 1);
 
@@ -92,10 +94,10 @@ public class CustomTabbedPane extends JTabbedPane {
 
             if (ignoreY) {
                 // we only care to check the x value
-                mousePosOnScreen.y = tab.y;
+                newPoint.y = tab.y;
             }
 
-            if (tab.contains(mousePosOnScreen)) {
+            if (tab.contains(newPoint)) {
                 return i;
             }
         }

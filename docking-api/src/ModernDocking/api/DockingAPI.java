@@ -30,6 +30,7 @@ import ModernDocking.exception.NotDockedException;
 import ModernDocking.exception.RootDockingPanelNotFoundException;
 import ModernDocking.exception.RootDockingPanelRegistrationFailureException;
 import ModernDocking.floating.FloatListener;
+import ModernDocking.floating.Floating;
 import ModernDocking.internal.*;
 import ModernDocking.layouts.WindowLayout;
 import ModernDocking.ui.ToolbarLocation;
@@ -218,7 +219,7 @@ public class DockingAPI {
         }
 
         rootPanels.put(parent, panel);
-        FloatListener.registerDockingWindow(this, parent, panel);
+        Floating.registerDockingWindow(this, parent, panel);
 
         appStatePersister.addWindow(parent);
     }
@@ -239,7 +240,7 @@ public class DockingAPI {
         }
 
         rootPanels.put(parent, panel);
-        FloatListener.registerDockingWindow(this, parent, panel);
+        Floating.registerDockingWindow(this, parent, panel);
 
         appStatePersister.addWindow(parent);
     }
@@ -257,7 +258,7 @@ public class DockingAPI {
         }
 
         rootPanels.remove(parent);
-        FloatListener.deregisterDockingWindow(parent);
+        Floating.deregisterDockingWindow(parent);
 
         appStatePersister.removeWindow(parent);
     }
@@ -629,7 +630,7 @@ public class DockingAPI {
         DockingListeners.fireUndockedEvent(dockable);
 
         // make sure that can dispose this window, and we're not floating the last dockable in it
-        if (canDisposeWindow(window) && root.isEmpty() && !FloatListener.isFloating()) {
+        if (canDisposeWindow(window) && root.isEmpty() && !Floating.isFloating()) {
             deregisterDockingPanel(window);
             window.dispose();
         }
@@ -637,7 +638,7 @@ public class DockingAPI {
         appState.persist();
 
         // force this dockable to dock again if we're not floating it
-        if (!dockable.isClosable() && !FloatListener.isFloating() && !deregistering) {
+        if (!dockable.isClosable() && !Floating.isFloating() && !deregistering) {
             dock(dockable, mainWindow);
         }
     }
