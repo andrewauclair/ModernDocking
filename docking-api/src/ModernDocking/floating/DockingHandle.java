@@ -46,6 +46,8 @@ public class DockingHandle extends JLabel {
 	private final boolean isRoot;
 	private final boolean isPin;
 
+	private boolean mouseOver = false;
+
 	/**
 	 * Create a new DockingHandle
 	 *
@@ -70,6 +72,17 @@ public class DockingHandle extends JLabel {
 		// set the bounds (we're not in a layout manager) and make sure this handle isn't visible
 		setBounds(0, 0, HANDLE_ICON_SIZE, HANDLE_ICON_SIZE);
 		setVisible(false);
+	}
+
+	public void mouseMoved(Point mousePosition) {
+		mouseOver = getBounds().contains(mousePosition);
+	}
+
+	public boolean isMouseOver() {
+		if (!isVisible()) {
+			return false;
+		}
+		return mouseOver;
 	}
 
 	/**
@@ -104,9 +117,12 @@ public class DockingHandle extends JLabel {
 	 *
 	 * @param g used to do the main paint operations
 	 * @param g2 used to draw the dashed lines on top
-	 * @param mouseOver is the mouse over this handle?
 	 */
-	public void paintHandle(Graphics g, Graphics2D g2, boolean mouseOver) {
+	public void paintHandle(Graphics2D g2) {
+		if (!isVisible()) {
+			return;
+		}
+
 		Rectangle bounds = getBounds();
 
 		Color background = DockingSettings.getHandleBackground();
@@ -116,23 +132,22 @@ public class DockingHandle extends JLabel {
 		// each root handle has its own background. we have to draw them here.
 		// the dockables all share one big root that is drawn in DockingHandles
 		if (isRoot || isPin) {
-			g.setColor(background);
-			drawBackground(g);
+			g2.setColor(background);
+			drawBackground(g2);
 		}
 
 		if (mouseOver && isPin) {
 			int quarterWidth = bounds.width / 4;
 			int x1 = getX() + quarterWidth;
 
-			g.fillRect(x1, bounds.y, bounds.width / 2, bounds.height / 2);
+			g2.fillRect(x1, bounds.y, bounds.width / 2, bounds.height / 2);
 		}
 		else if (mouseOver) {
-			g.setColor(hover);
-			fillMouseOverRegion(g);
+			g2.setColor(hover);
+			fillMouseOverRegion(g2);
 		}
 
 		// draw the outline over the mouse over
-		g.setColor(outline);
 		g2.setColor(outline);
 
 		// only draw the dashed line if the region isn't center and these are not root handles
@@ -141,22 +156,22 @@ public class DockingHandle extends JLabel {
 		}
 
 		if (isRoot && region != DockingRegion.CENTER) {
-			drawRootOutline(g);
+			drawRootOutline(g2);
 		}
 		else if (isPin) {
 			int quarterWidth = bounds.width / 4;
 			int x1 = getX() + quarterWidth;
 
-			g.drawLine(x1, bounds.y, x1 + (bounds.width / 2), bounds.y);
-			g.drawLine(x1, bounds.y+ (bounds.height / 2), x1 + (bounds.width / 2), bounds.y+ (bounds.height / 2));
+			g2.drawLine(x1, bounds.y, x1 + (bounds.width / 2), bounds.y);
+			g2.drawLine(x1, bounds.y+ (bounds.height / 2), x1 + (bounds.width / 2), bounds.y+ (bounds.height / 2));
 
-			g.drawLine(x1, bounds.y, x1, bounds.y + (bounds.height / 2));
-			g.drawLine(x1 + (bounds.width / 2), bounds.y, x1 + (bounds.width / 2), bounds.y + (bounds.height / 2));
+			g2.drawLine(x1, bounds.y, x1, bounds.y + (bounds.height / 2));
+			g2.drawLine(x1 + (bounds.width / 2), bounds.y, x1 + (bounds.width / 2), bounds.y + (bounds.height / 2));
 
-			g.drawLine(x1 + quarterWidth, bounds.y + (bounds.height / 2), x1 + quarterWidth, bounds.y + (bounds.height));
+			g2.drawLine(x1 + quarterWidth, bounds.y + (bounds.height / 2), x1 + quarterWidth, bounds.y + (bounds.height));
 		}
 		else {
-			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+			g2.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 		}
 	}
 
@@ -221,6 +236,11 @@ public class DockingHandle extends JLabel {
 	}
 
 	private void drawDashedLine(Graphics2D g2) {
+		Stroke currentStroke = g2.getStroke();
+
+		Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
+		g2.setStroke(dashed);
+
 		Rectangle bounds = getBounds();
 
 		boolean north = region == DockingRegion.NORTH;
@@ -239,5 +259,7 @@ public class DockingHandle extends JLabel {
 		else {
 			g2.drawLine(x, y, x2, y2);
 		}
+
+		g2.setStroke(currentStroke);
 	}
 }

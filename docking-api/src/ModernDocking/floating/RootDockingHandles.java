@@ -1,0 +1,211 @@
+/*
+Copyright (c) 2024 Andrew Auclair
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+ */
+package ModernDocking.floating;
+
+import ModernDocking.Dockable;
+import ModernDocking.DockableStyle;
+import ModernDocking.DockingRegion;
+import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.ui.ToolbarLocation;
+
+import javax.swing.*;
+import java.awt.*;
+
+import static ModernDocking.floating.DockingHandle.HANDLE_ICON_SIZE;
+
+public class RootDockingHandles {
+    private final DockingHandle rootCenter = new DockingHandle(DockingRegion.CENTER, true);
+    private final DockingHandle rootWest = new DockingHandle(DockingRegion.WEST, true);
+    private final DockingHandle rootNorth = new DockingHandle(DockingRegion.NORTH, true);
+    private final DockingHandle rootEast = new DockingHandle(DockingRegion.EAST, true);
+    private final DockingHandle rootSouth = new DockingHandle(DockingRegion.SOUTH, true);
+
+    private final DockingHandle pinWest = new DockingHandle(DockingRegion.WEST);
+    private final DockingHandle pinEast = new DockingHandle(DockingRegion.EAST);
+    private final DockingHandle pinSouth = new DockingHandle(DockingRegion.SOUTH);
+
+    private final JFrame frame;
+    private final RootDockingPanelAPI rootPanel;
+
+    private DockingRegion mouseOverRegion = null;
+    private DockingRegion mouseOverPin = null;
+
+    public RootDockingHandles(JFrame frame, RootDockingPanelAPI rootPanel) {
+        this.frame = frame;
+        this.rootPanel = rootPanel;
+        setupHandle(frame, rootCenter);
+        setupHandle(frame, rootWest);
+        setupHandle(frame, rootNorth);
+        setupHandle(frame, rootEast);
+        setupHandle(frame, rootSouth);
+
+        setupHandle(frame, pinWest);
+        setupHandle(frame, pinEast);
+        setupHandle(frame, pinSouth);
+
+        rootCenter.setVisible(rootPanel.isEmpty());
+
+        // invoke later to wait for the root panel to have a parent
+        SwingUtilities.invokeLater(this::setRootHandleLocations);
+    }
+
+    public void updateHandlePositions() {
+        setRootHandleLocations();
+    }
+
+    public void setFloatingDockable(Dockable dockable) {
+        if (dockable == null) {
+            pinWest.setVisible(false);
+            pinEast.setVisible(false);
+            pinSouth.setVisible(false);
+            return;
+        }
+
+        pinWest.setVisible(dockable.isPinningAllowed() && (dockable.getPinningStyle() == DockableStyle.BOTH || dockable.getPinningStyle() == DockableStyle.VERTICAL));
+        pinEast.setVisible(dockable.isPinningAllowed() && (dockable.getPinningStyle() == DockableStyle.BOTH || dockable.getPinningStyle() == DockableStyle.VERTICAL));
+        pinSouth.setVisible(dockable.isPinningAllowed() && (dockable.getPinningStyle() == DockableStyle.BOTH || dockable.getPinningStyle() == DockableStyle.HORIZONTAL));
+    }
+
+    public void mouseMoved(Point mousePosOnScreen) {
+        Point framePoint = new Point(mousePosOnScreen);
+        SwingUtilities.convertPointFromScreen(framePoint, frame);
+
+        rootCenter.mouseMoved(framePoint);
+        rootWest.mouseMoved(framePoint);
+        rootNorth.mouseMoved(framePoint);
+        rootEast.mouseMoved(framePoint);
+        rootSouth.mouseMoved(framePoint);
+
+        mouseOverRegion = null;
+        if (rootCenter.isMouseOver()) mouseOverRegion = DockingRegion.CENTER;
+        if (rootWest.isMouseOver()) mouseOverRegion = DockingRegion.WEST;
+        if (rootNorth.isMouseOver()) mouseOverRegion = DockingRegion.NORTH;
+        if (rootEast.isMouseOver()) mouseOverRegion = DockingRegion.EAST;
+        if (rootSouth.isMouseOver()) mouseOverRegion = DockingRegion.SOUTH;
+
+        pinWest.mouseMoved(framePoint);
+        pinEast.mouseMoved(framePoint);
+        pinSouth.mouseMoved(framePoint);
+
+        mouseOverPin = null;
+        if (pinWest.isMouseOver()) mouseOverPin = DockingRegion.WEST;
+        if (pinEast.isMouseOver()) mouseOverPin = DockingRegion.EAST;
+        if (pinSouth.isMouseOver()) mouseOverPin = DockingRegion.SOUTH;
+    }
+
+    private void setupHandle(JFrame frame, DockingHandle label) {
+        label.setVisible(true);
+        frame.add(label);
+    }
+
+    private void setRootHandleLocations() {
+        Point location = rootPanel.getLocation();
+        Dimension size = rootPanel.getSize();
+        location.x += size.width / 2;
+        location.y += size.height / 2;
+
+        SwingUtilities.convertPointToScreen(location, rootPanel.getParent());
+        SwingUtilities.convertPointFromScreen(location, frame);
+
+        setLocation(rootCenter, location.x, location.y);
+        setLocation(rootWest, location.x - (size.width / 2) + rootHandleSpacing(rootWest), location.y);
+        setLocation(rootNorth, location.x, location.y - (size.height / 2) + rootHandleSpacing(rootNorth));
+        setLocation(rootEast, location.x + (size.width / 2) - rootHandleSpacing(rootEast), location.y);
+        setLocation(rootSouth, location.x, location.y + (size.height / 2) - rootHandleSpacing(rootSouth));
+
+        setLocation(pinWest, location.x - (size.width / 2) + rootHandleSpacing(pinWest), location.y - (size.height / 3));
+        setLocation(pinEast, location.x + (size.width / 2) - rootHandleSpacing(pinEast), location.y - (size.height / 3));
+        setLocation(pinSouth, location.x - (size.width / 3), location.y + (size.height / 2) - rootHandleSpacing(pinSouth));
+    }
+
+    private int rootHandleSpacing(JLabel handle) {
+        return handle.getWidth() + 16;
+    }
+
+    private void setLocation(Component component, int x, int y) {
+        component.setLocation(x - (HANDLE_ICON_SIZE / 2), y - (HANDLE_ICON_SIZE / 2));
+    }
+
+    /**
+     * Paint the handles
+     *
+     * @param g2 Graphics2D instance to use
+     */
+    public void paint(Graphics2D g2) {
+        // draw root handles
+        rootCenter.paintHandle(g2);
+        rootEast.paintHandle(g2);
+        rootWest.paintHandle(g2);
+        rootNorth.paintHandle(g2);
+        rootSouth.paintHandle(g2);
+
+        pinWest.paintHandle(g2);
+        pinEast.paintHandle(g2);
+        pinSouth.paintHandle(g2);
+    }
+
+    public boolean isOverHandle() {
+        return rootCenter.isMouseOver() ||
+                rootEast.isMouseOver() ||
+                rootWest.isMouseOver() ||
+                rootNorth.isMouseOver() ||
+                rootSouth.isMouseOver();
+    }
+
+    public boolean isOverPinHandle() {
+        return pinEast.isMouseOver() ||
+                pinSouth.isMouseOver() ||
+                pinWest.isMouseOver();
+    }
+
+    public DockingRegion getRegion() {
+        if (rootCenter.isMouseOver()) {
+            return DockingRegion.CENTER;
+        }
+        if (rootEast.isMouseOver()) {
+            return DockingRegion.EAST;
+        }
+        if (rootWest.isMouseOver()) {
+            return DockingRegion.WEST;
+        }
+        if (rootNorth.isMouseOver()) {
+            return DockingRegion.NORTH;
+        }
+        if (rootSouth.isMouseOver()) {
+            return DockingRegion.SOUTH;
+        }
+        return null;
+    }
+
+    public ToolbarLocation getPinRegion() {
+        if (pinEast.isMouseOver()) {
+            return ToolbarLocation.EAST;
+        }
+        else if (pinWest.isMouseOver()) {
+            return ToolbarLocation.WEST;
+        }
+        else if (pinSouth.isMouseOver()) {
+            return ToolbarLocation.SOUTH;
+        }
+        return null;
+    }
+}

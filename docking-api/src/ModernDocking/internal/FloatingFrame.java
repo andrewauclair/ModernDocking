@@ -74,13 +74,17 @@ public class FloatingFrame extends JFrame {
 	}
 
 	// create a new floating frame. this is used when calling Docking.newWindow or when restoring the layout from a file
-	public FloatingFrame(DockingAPI docking, Dockable dockable, Point location, Dimension size, int state) {
+	public FloatingFrame(DockingAPI docking, Dockable dockable, Point mousePosOnScreen, Dimension size, int state) {
 		this.docking = docking;
 
 		DisplayPanel displayPanel = DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel();
 
 		Point point = displayPanel.getLocation();
 		SwingUtilities.convertPointToScreen(point, displayPanel.getParent());
+
+		Point location = new Point(mousePosOnScreen);
+		location.x -= mousePosOnScreen.x - point.x;
+		location.y -= mousePosOnScreen.y - point.y;
 
 		setLocation(location);
 		setSize(size);

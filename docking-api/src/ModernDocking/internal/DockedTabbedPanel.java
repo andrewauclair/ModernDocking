@@ -24,7 +24,9 @@ package ModernDocking.internal;
 import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
+import ModernDocking.floating.DockedTabbedPanelFloatListener;
 import ModernDocking.floating.FloatListener;
+import ModernDocking.floating.Floating;
 import ModernDocking.settings.Settings;
 import ModernDocking.ui.DockingSettings;
 
@@ -32,6 +34,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.dnd.DragGestureListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -50,6 +53,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	private final List<DockableWrapper> panels = new ArrayList<>();
 
 	private FloatListener floatListener;
+	private List<DragGestureListener> listeners = new ArrayList<>();
 
 	private final CustomTabbedPane tabs = new CustomTabbedPane();
 	private final DockingAPI docking;
@@ -160,12 +164,14 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 		tabs.addChangeListener(this);
 
-		floatListener = new FloatListener(docking, this, tabs);
+		floatListener = new DockedTabbedPanelFloatListener(docking, this, tabs);
 	}
 
 	@Override
 	public void removeNotify() {
 		tabs.removeChangeListener(this);
+
+		floatListener = null;
 
 		super.removeNotify();
 	}
@@ -178,6 +184,24 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	public void addPanel(DockableWrapper dockable) {
 		panels.add(dockable);
 		tabs.add(dockable.getDockable().getTabText(), dockable.getDisplayPanel());
+
+		DragGestureListener draggingFromTabPanel = dge -> {
+			Point dragOrigin = new Point(dge.getDragOrigin());
+			SwingUtilities.convertPointToScreen(dragOrigin, dge.getComponent());
+
+			int targetTabIndex = tabs.getTargetTabIndex(dragOrigin, true);
+
+			if (targetTabIndex != -1) {
+				DockableWrapper dockableWrapper = panels.get(targetTabIndex);
+
+				if (dockableWrapper == dockable) {
+					dockableWrapper.getFloatListener().startDrag(dge);
+				}
+			}
+		};
+		listeners.add(draggingFromTabPanel);
+
+		dockable.getFloatListener().addAlternateDragSource(tabs, draggingFromTabPanel);
 
 		// if any of the dockables use top tab position, switch this tabbedpanel to top tabs
 		if (tabs.getTabPlacement() != SwingConstants.TOP && dockable.getDockable().getTabPosition() == SwingConstants.TOP) {
@@ -203,7 +227,10 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 */
 	public void removePanel(DockableWrapper dockable) {
 		if (panels.contains(dockable)) {
-			panels.indexOf(dockable);
+			int index = panels.indexOf(dockable);
+
+			dockable.getFloatListener().removeAlternateDragSource(listeners.get(index));
+			listeners.remove(index);
 
 			tabs.remove(dockable.getDisplayPanel());
 			panels.remove(dockable);
@@ -295,11 +322,11 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	public void undock(Dockable dockable) {
 		removePanel(DockingInternal.get(docking).getWrapper(dockable));
 
-		if (!Settings.alwaysDisplayTabsMode(dockable) && tabs.getTabCount() == 1 && parent != null) {
+		if (!Settings.alwaysDisplayTabsMode(dockable) && panels.size() == 1 && parent != null && panels.get(0).getDockable().getTabPosition() != SwingConstants.TOP) {
 			parent.replaceChild(this, new DockedSimplePanel(docking, panels.get(0)));
 		}
 
-		if (tabs.getTabCount() == 0) {
+		if (panels.size() == 0) {
 			parent.removeChild(this);
 		}
 	}
@@ -368,7 +395,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			return;
 		}
 
-		if (selectedTab != -1 && !FloatListener.isFloating()) {
+		if (selectedTab != -1 && !Floating.isFloating()) {
 			DockingListeners.fireHiddenEvent(panels.get(selectedTab).getDockable());
 		}
 		selectedTab = tabs.getSelectedIndex();
@@ -415,8 +442,17 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		}
 	}
 
-	public int getTargetTabIndex(Point point) {
-		return tabs.getTargetTabIndex(point, false);
+	public int getTargetTabIndex(Point mousePosOnScreen) {
+		return tabs.getTargetTabIndex(mousePosOnScreen, false);
+	}
+
+	public int getIndexOfPanel(DisplayPanel displayPanel) {
+		for (int i = 0; i < panels.size(); i++) {
+			if (panels.get(i).getDisplayPanel() == displayPanel) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	public boolean isDraggingFromTabGutter(Point point) {
