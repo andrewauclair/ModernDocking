@@ -84,13 +84,6 @@ public class RootDockingPanelAPI extends DockingPanel implements WindowStateList
 		setLayout(new GridBagLayout());
 		this.docking = docking;
 
-		if (window instanceof JFrame) {
-			docking.registerDockingPanel(this, (JFrame) window);
-		}
-		else {
-			docking.registerDockingPanel(this, (JDialog) window);
-		}
-
 		southToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.SOUTH);
 		westToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.WEST);
 		eastToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.EAST);
