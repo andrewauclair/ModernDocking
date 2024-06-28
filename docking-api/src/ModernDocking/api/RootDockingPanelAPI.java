@@ -138,7 +138,7 @@ public class RootDockingPanelAPI extends DockingPanel implements WindowStateList
 		eastToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.EAST);
 
 		supportedToolbars = EnumSet.allOf(ToolbarLocation.class);
-		pinningSupported = !supportedToolbars.isEmpty();
+		autoHideSupported = !supportedToolbars.isEmpty();
 	}
 
 	/**
