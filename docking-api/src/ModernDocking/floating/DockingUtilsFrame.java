@@ -31,11 +31,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 /**
  * utility frame that is used to draw handles and overlay highlighting
  */
-public class DockingUtilsFrame extends JFrame implements ComponentListener {
+public class DockingUtilsFrame extends JFrame implements ComponentListener, WindowListener {
 	/**
 	 * Handles display for this utility frame
 	 */
@@ -61,6 +63,8 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		setLayout(null); // don't use a layout manager for this custom painted frame
 		setUndecorated(true); // don't want to see a frame border
 		setType(Type.UTILITY); // hide this frame from the task bar
+
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		setBackground(new Color(0, 0, 0, 0)); // don't want a background for this frame
 		getRootPane().setBackground(new Color(0, 0, 0, 0)); // don't want a background for the root pane either. Workaround for a FlatLaf macOS issue.
@@ -92,6 +96,7 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 
 		// listen for the reference frame to move and resize. this frame must match it exactly
 		referenceDockingWindow.addComponentListener(this);
+		referenceDockingWindow.addWindowListener(this);
 
 		SwingUtilities.invokeLater(this::setSizeAndLocation);
 	}
@@ -99,6 +104,7 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 	@Override
 	public void removeNotify() {
 		referenceDockingWindow.removeComponentListener(this);
+		referenceDockingWindow.removeWindowListener(this);
 
 		super.removeNotify();
 	}
@@ -242,5 +248,34 @@ public class DockingUtilsFrame extends JFrame implements ComponentListener {
 		// set location and size based on the reference docking frame
 		setLocation(location);
 		setSize(size);
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		dispose();
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
 	}
 }
