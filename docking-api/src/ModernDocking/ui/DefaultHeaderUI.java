@@ -65,13 +65,10 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 	private final JPopupMenu settingsMenu = new JPopupMenu();
 
 	/**
-	 * Menu option to pin the dockable. Available when the dockable is unpinned
+	 * Menu option to auto hide the dockable. Available when the dockable is auto hide enabled
 	 */
-	private final JMenuItem pinned = new JMenuItem("Pinned");
-	/**
-	 * Menu option to unpin the dockable. Available when the dockable is pinned
-	 */
-	private final JMenuItem unpinned = new JMenuItem("Unpinned");
+	private final JCheckBoxMenuItem autoHide = new JCheckBoxMenuItem("Auto Hide");
+
 	/**
 	 * Option to move the dockable to its own window
 	 */
@@ -168,7 +165,7 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.weightx = 0;
 
-		if (headerModel.hasMoreOptions() || headerModel.isMaximizeAllowed() || headerModel.isPinnedAllowed() || headerModel.isFloatingAllowed()) {
+		if (headerModel.hasMoreOptions() || headerModel.isMaximizeAllowed() || headerModel.isAutoHideAllowed() || headerModel.isFloatingAllowed()) {
 			addOptions();
 
 			add(settings, gbc);
@@ -215,13 +212,12 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 
 		window.setEnabled(headerModel.isFloatingAllowed());
 
-		pinned.addActionListener(e -> headerController.pinDockable());
-		unpinned.addActionListener(e -> headerController.unpinDockable());
+		autoHide.addActionListener(e -> headerController.toggleAutoHide());
+
 		window.addActionListener(e -> headerController.newWindow());
 
 		JMenu viewMode = new JMenu("View Mode");
-		viewMode.add(pinned);
-		viewMode.add(unpinned);
+		viewMode.add(autoHide);
 		viewMode.add(window);
 
 		settingsMenu.add(viewMode);
@@ -309,8 +305,8 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		maximizeOption.setSelected(headerModel.isMaximized());
 		maximizeOption.setEnabled(headerModel.isMaximizeAllowed());
 
-		pinned.setEnabled(headerModel.isPinnedAllowed() && headerModel.isUnpinned());
-		unpinned.setEnabled(headerModel.isPinnedAllowed() && !headerModel.isUnpinned());
+		autoHide.setEnabled(headerModel.isAutoHideAllowed());
+		autoHide.setSelected(headerModel.isAutoHideEnabled());
 	}
 
 	@Override

@@ -40,12 +40,12 @@ public class WindowLayout {
 	private final DockingLayoutNode rootNode;
 	private String maximizedDockable = null;
 
-	private final int windowHashCode;
-
-	private final List<String> westUnpinnedToolbarIDs = new ArrayList<>();
-	private final List<String> eastUnpinnedToolbarIDs = new ArrayList<>();
-	private final List<String> southUnpinnedToolbarIDs = new ArrayList<>();
-
+  private final int windowHashCode;
+  
+	private final List<String> westAutoHideToolbarIDs = new ArrayList<>();
+	private final List<String> eastAutoHideToolbarIDs = new ArrayList<>();
+	private final List<String> southAutoHideToolbarIDs = new ArrayList<>();
+  
 	/**
 	 * Create a new WindowLayout from an existing root node
 	 *
@@ -173,9 +173,9 @@ public class WindowLayout {
 	 *
 	 * @param ids List of unpinned dockable IDs on the west toolbar
 	 */
-	public void setWestUnpinnedToolbarIDs(List<String> ids) {
-		westUnpinnedToolbarIDs.clear();
-		westUnpinnedToolbarIDs.addAll(ids);
+	public void setWestAutoHideToolbarIDs(List<String> ids) {
+		westAutoHideToolbarIDs.clear();
+		westAutoHideToolbarIDs.addAll(ids);
 	}
 
 	/**
@@ -183,8 +183,8 @@ public class WindowLayout {
 	 *
 	 * @return List of unpinned dockable IDs on the west toolbar
 	 */
-	public List<String> getWestUnpinnedToolbarIDs() {
-		return westUnpinnedToolbarIDs;
+	public List<String> getWestAutoHideToolbarIDs() {
+		return westAutoHideToolbarIDs;
 	}
 
 	/**
@@ -192,9 +192,9 @@ public class WindowLayout {
 	 *
 	 * @param ids List of unpinned dockable IDs on the east toolbar
 	 */
-	public void setEastUnpinnedToolbarIDs(List<String> ids) {
-		eastUnpinnedToolbarIDs.clear();
-		eastUnpinnedToolbarIDs.addAll(ids);
+	public void setEastAutoHideToolbarIDs(List<String> ids) {
+		eastAutoHideToolbarIDs.clear();
+		eastAutoHideToolbarIDs.addAll(ids);
 	}
 
 	/**
@@ -202,8 +202,8 @@ public class WindowLayout {
 	 *
 	 * @return List of unpinned dockable IDs on the east toolbar
 	 */
-	public List<String> getEastUnpinnedToolbarIDs() {
-		return eastUnpinnedToolbarIDs;
+	public List<String> getEastAutoHideToolbarIDs() {
+		return eastAutoHideToolbarIDs;
 	}
 
 	/**
@@ -211,9 +211,9 @@ public class WindowLayout {
 	 *
 	 * @param ids List of unpinned dockable IDs on the south toolbar
 	 */
-	public void setSouthUnpinnedToolbarIDs(List<String> ids) {
-		southUnpinnedToolbarIDs.clear();
-		southUnpinnedToolbarIDs.addAll(ids);
+	public void setSouthAutoHideToolbarIDs(List<String> ids) {
+		southAutoHideToolbarIDs.clear();
+		southAutoHideToolbarIDs.addAll(ids);
 	}
 
 	/**
@@ -221,8 +221,8 @@ public class WindowLayout {
 	 *
 	 * @return List of unpinned dockable IDs on the south toolbar
 	 */
-	public List<String> getSouthUnpinnedToolbarIDs() {
-		return southUnpinnedToolbarIDs;
+	public List<String> getSouthAutoHideToolbarIDs() {
+		return southAutoHideToolbarIDs;
 	}
 
 	public boolean hasSizeAndLocationInformation() {

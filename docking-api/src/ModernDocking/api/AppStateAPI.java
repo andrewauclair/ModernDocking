@@ -22,11 +22,13 @@ SOFTWARE.
 package ModernDocking.api;
 
 import ModernDocking.Dockable;
+import ModernDocking.Property;
 import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.internal.DockableWrapper;
 import ModernDocking.internal.DockingInternal;
 import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.DockingLayouts;
+import ModernDocking.layouts.DockingSimplePanelNode;
 import ModernDocking.layouts.WindowLayout;
 
 import javax.swing.*;
@@ -168,10 +170,10 @@ public class AppStateAPI {
 
 							DockingLayouts.layoutPersisted(layout);
 
-							logger.log(Level.INFO, "ModernDocking: Persisted Layout Successfully");
+							logger.log(Level.FINE, "ModernDocking: Persisted Layout Successfully");
 						}
 						catch (DockingLayoutException ex) {
-							logger.log(Level.INFO, ex.getMessage(), ex);
+							logger.log(Level.WARNING, ex.getMessage(), ex);
 						}
 					}
 					// we're done with the timer for now. null it out
@@ -241,13 +243,13 @@ public class AppStateAPI {
 		defaultAppLayout = layout;
 	}
 
-	public String getProperty(Dockable dockable, String propertyName) {
+	public Property getProperty(Dockable dockable, String propertyName) {
 		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 
 		return wrapper.getProperty(propertyName);
 	}
 
-	public void setProperty(Dockable dockable, String propertyName, String value) {
+	public void setProperty(Dockable dockable, String propertyName, Property value) {
 		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 
 		wrapper.setProperty(propertyName, value);

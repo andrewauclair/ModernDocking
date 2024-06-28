@@ -71,6 +71,15 @@ public class HeaderController implements MaximizeListener, DockingListener {
 		docking.unpinDockable(dockable);
 	}
 
+	public void toggleAutoHide() {
+		if (model.isAutoHideEnabled()) {
+			docking.autoShowDockable(dockable);
+		}
+		else {
+			docking.autoHideDockable(dockable);
+		}
+	}
+
 	/**
 	 * Launch the dockable in a new window
 	 */

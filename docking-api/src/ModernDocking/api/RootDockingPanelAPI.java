@@ -49,8 +49,8 @@ public class RootDockingPanelAPI extends DockingPanel implements WindowStateList
 
 	private JPanel emptyPanel = new JPanel();
 
-	private boolean pinningSupported = false;
-	private int pinningLayer = JLayeredPane.MODAL_LAYER;
+	private boolean autoHideSupported = false;
+	private int autoHideLayer = JLayeredPane.MODAL_LAYER;
 
 	/**
 	 * South toolbar of this panel. Only created if pinning is supported.
@@ -84,6 +84,20 @@ public class RootDockingPanelAPI extends DockingPanel implements WindowStateList
 		setLayout(new GridBagLayout());
 		this.docking = docking;
 
+		if (window instanceof JFrame) {
+			docking.registerDockingPanel(this, (JFrame) window);
+		}
+		else {
+			docking.registerDockingPanel(this, (JDialog) window);
+		}
+
+		southToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.SOUTH);
+		westToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.WEST);
+		eastToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.EAST);
+
+		supportedToolbars = EnumSet.allOf(ToolbarLocation.class);
+		autoHideSupported = !supportedToolbars.isEmpty();
+    
 		setWindow(window);
 	}
 
@@ -97,7 +111,7 @@ public class RootDockingPanelAPI extends DockingPanel implements WindowStateList
 		this(docking, window);
 
 		this.supportedToolbars = supportedToolbars;
-		pinningSupported = !supportedToolbars.isEmpty();
+		autoHideSupported = !supportedToolbars.isEmpty();
 	}
 
 	/**
@@ -124,7 +138,7 @@ public class RootDockingPanelAPI extends DockingPanel implements WindowStateList
 		eastToolbar = new DockableToolbar(docking, window, this, ToolbarLocation.EAST);
 
 		supportedToolbars = EnumSet.allOf(ToolbarLocation.class);
-		pinningSupported = !supportedToolbars.isEmpty();
+		autoHideSupported = !supportedToolbars.isEmpty();
 	}
 
 	/**
@@ -146,42 +160,78 @@ public class RootDockingPanelAPI extends DockingPanel implements WindowStateList
 	}
 
 	/**
-	 * Check if pinning is supported on this root
-	 *
-	 * @return True if pinning is supported
+	 * @deprecated Replaced with isAutoHideSupported. Will be removed in a future release.
 	 */
+	@Deprecated(since = "0.12.0", forRemoval = true)
 	public boolean isPinningSupported() {
 		if (supportedToolbars.isEmpty()) {
 			return false;
 		}
-		return pinningSupported;
+		return autoHideSupported;
 	}
 
 	/**
-	 * Set pinning supported flag
+	 * Check if auto hide is supported on this root
 	 *
-	 * @param supported Is pinning supported?
+	 * @return True if auto hide is supported
 	 */
+	public boolean isAutoHideSupported() {
+		if (supportedToolbars.isEmpty()) {
+			// if there are no auto hide tool bars then we can't support auto hide
+			return false;
+		}
+		return autoHideSupported;
+	}
+
+	/**
+	 * @deprecated Replaced with setAutoHideSupported. Will be removed in a future release.
+	 */
+	@Deprecated(since = "0.12.0", forRemoval = true)
 	public void setPinningSupported(boolean supported) {
-		pinningSupported = supported;
+		autoHideSupported = supported;
 	}
 
 	/**
-	 * Get the layer that is being used for pinning
+	 * Set auto hide supported flag
 	 *
-	 * @return Pinning layer
+	 * @param supported Is auto hide supported?
 	 */
+	public void setAutoHideSupported(boolean supported) {
+		autoHideSupported = supported;
+	}
+
+	/**
+	 * @deprecated Replaced with getAutoHideLayer. Will be removed in a future release.
+	 */
+	@Deprecated(since = "0.12.0", forRemoval = true)
 	public int getPinningLayer() {
-		return pinningLayer;
+		return autoHideLayer;
 	}
 
 	/**
-	 * Set the pinning layer used for unpinned dockable toolbars
+	 * Get the layer that is being used for auto hide
 	 *
-	 * @param layer Pinning layer
+	 * @return Auto hide layer
 	 */
+	public int getAutoHideLayer() {
+		return autoHideLayer;
+	}
+
+	/**
+	 * @deprecated Replaced with setAutoHideLayer. Will be removed in a future release.
+	 */
+	@Deprecated(since = "0.12.0", forRemoval = true)
 	public void setPinningLayer(int layer) {
-		pinningLayer = layer;
+		autoHideLayer = layer;
+	}
+
+	/**
+	 * Set the auto hide layer used for auto hide dockable toolbars
+	 *
+	 * @param layer Auto hide layer
+	 */
+	public void setAutoHideLayer(int layer) {
+		autoHideLayer = layer;
 	}
 
 	/**
@@ -299,7 +349,7 @@ public class RootDockingPanelAPI extends DockingPanel implements WindowStateList
 	 *
 	 * @param dockable Dockable to pin
 	 */
-	public void setDockablePinned(Dockable dockable) {
+	public void setDockableShown(Dockable dockable) {
 		// if the dockable is currently unpinned, remove it from the toolbar, then adjust the toolbars
 		if (supportedToolbars.contains(ToolbarLocation.WEST) && westToolbar.hasDockable(dockable)) {
 			westToolbar.removeDockable(dockable);
@@ -326,7 +376,7 @@ public class RootDockingPanelAPI extends DockingPanel implements WindowStateList
 	 * @param dockable Dockable to unpin
 	 * @param location Toolbar to unpin to
 	 */
-	public void setDockableUnpinned(Dockable dockable, ToolbarLocation location) {
+	public void setDockableHidden(Dockable dockable, ToolbarLocation location) {
 		if (!isPinningSupported()) {
 			return;
 		}
@@ -361,7 +411,7 @@ public class RootDockingPanelAPI extends DockingPanel implements WindowStateList
 	 * @param location Toolbar location
 	 * @return List of unpinned dockables
 	 */
-	public List<String> unpinnedPersistentIDs(ToolbarLocation location) {
+	public List<String> hiddenPersistentIDs(ToolbarLocation location) {
 		switch (location) {
 			case WEST: return westToolbar.getPersistentIDs();
 			case EAST: return eastToolbar.getPersistentIDs();
@@ -423,7 +473,7 @@ public class RootDockingPanelAPI extends DockingPanel implements WindowStateList
 	/**
 	 * Hide all unpinned panels on the west, south and east toolbars
 	 */
-	public void hideUnpinnedPanels() {
+	public void hideHiddenPanels() {
 		if (westToolbar != null) {
 			westToolbar.hideAll();
 		}
@@ -440,7 +490,7 @@ public class RootDockingPanelAPI extends DockingPanel implements WindowStateList
 	 *
 	 * @return Persistent IDs
 	 */
-	public List<String> getWestUnpinnedToolbarIDs() {
+	public List<String> getWestAutoHideToolbarIDs() {
 		if (westToolbar == null) {
 			return Collections.emptyList();
 		}
@@ -452,7 +502,7 @@ public class RootDockingPanelAPI extends DockingPanel implements WindowStateList
 	 *
 	 * @return Persistent IDs
 	 */
-	public List<String> getEastUnpinnedToolbarIDs() {
+	public List<String> getEastAutoHideToolbarIDs() {
 		if (eastToolbar == null) {
 			return Collections.emptyList();
 		}
@@ -464,7 +514,7 @@ public class RootDockingPanelAPI extends DockingPanel implements WindowStateList
 	 *
 	 * @return Persistent IDs
 	 */
-	public List<String> getSouthUnpinnedToolbarIDs() {
+	public List<String> getSouthAutoHideToolbarIDs() {
 		if (southToolbar == null) {
 			return Collections.emptyList();
 		}

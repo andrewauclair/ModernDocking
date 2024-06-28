@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package ModernDocking.layouts;
 
+import ModernDocking.Property;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.event.DockingLayoutEvent;
@@ -94,9 +95,9 @@ public class DockingLayouts {
 	public static WindowLayout layoutFromRoot(DockingAPI docking, RootDockingPanelAPI root) {
 		WindowLayout layout = new WindowLayout(DockingComponentUtils.windowForRoot(docking, root), panelToNode(docking, root.getPanel()));
 
-		layout.setWestUnpinnedToolbarIDs(root.getWestUnpinnedToolbarIDs());
-		layout.setEastUnpinnedToolbarIDs(root.getEastUnpinnedToolbarIDs());
-		layout.setSouthUnpinnedToolbarIDs(root.getSouthUnpinnedToolbarIDs());
+		layout.setWestAutoHideToolbarIDs(root.getWestAutoHideToolbarIDs());
+		layout.setEastAutoHideToolbarIDs(root.getEastAutoHideToolbarIDs());
+		layout.setSouthAutoHideToolbarIDs(root.getSouthAutoHideToolbarIDs());
 
 		return layout;
 	}
@@ -107,7 +108,7 @@ public class DockingLayouts {
 		if (panel instanceof DockedSimplePanel) {
 			DockableWrapper wrapper = ((DockedSimplePanel) panel).getWrapper();
 
-			Map<String, String> properties = DockableProperties.saveProperties(wrapper);
+			Map<String, Property> properties = DockableProperties.saveProperties(wrapper);
 
 			node = new DockingSimplePanelNode(docking, wrapper.getDockable().getPersistentID(), wrapper.getDockable().getClass().getCanonicalName(), properties);
 		}

@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.layouts;
 
 import ModernDocking.DockingRegion;
+import ModernDocking.Property;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.internal.DockingInternal;
 import ModernDocking.settings.Settings;
@@ -38,7 +39,7 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 	private final String persistentID;
 	private final String className;
 
-	private Map<String, String> properties = new HashMap<>();
+	private Map<String, Property> properties = new HashMap<>();
 	private DockingLayoutNode parent;
 
 	/**
@@ -58,7 +59,7 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 	 * @param persistentID The persistent ID of the contained dockable
 	 * @param properties Properties of the dockable
 	 */
-	public DockingSimplePanelNode(DockingAPI docking, String persistentID, String className, Map<String, String> properties) {
+	public DockingSimplePanelNode(DockingAPI docking, String persistentID, String className, Map<String, Property> properties) {
 		this.docking = docking;
 		this.persistentID = persistentID;
 		this.className = className;
@@ -154,11 +155,11 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 	 *
 	 * @return properties map
 	 */
-	public Map<String, String> getProperties() {
+	public Map<String, Property> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(Map<String, String> properties) {
+	public void setProperties(Map<String, Property> properties) {
 		this.properties = new HashMap<>(properties);
 	}
 }

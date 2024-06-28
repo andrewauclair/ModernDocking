@@ -41,8 +41,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * This class is a special panel used to display toolbar on the West, East or South side of a frame to display dockables
- * that are unpinned
+ * This class is a special panel used to display toolbars on the West, East or South side of a frame to display dockables
+ * that are auto hide enabled
  */
 public class DockableToolbar extends JPanel implements ComponentListener {
 	private final DockingAPI docking;
@@ -53,9 +53,9 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	private static class Entry {
 		private final Dockable dockable;
 		private final JToggleButton button;
-		private final DockedUnpinnedPanel panel;
+		private final DockedAutoHidePanel panel;
 
-		private Entry(Dockable dockable, JToggleButton button, DockedUnpinnedPanel panel) {
+		private Entry(Dockable dockable, JToggleButton button, DockedAutoHidePanel panel) {
 			this.dockable = dockable;
 			this.button = button;
 			this.panel = panel;
@@ -204,7 +204,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 				button.setText(dockable.getTabText());
 			}
 
-			DockedUnpinnedPanel panel = new DockedUnpinnedPanel(docking, dockable, root, this);
+			DockedAutoHidePanel panel = new DockedAutoHidePanel(docking, dockable, root, this);
 
 			DockingInternal.get(docking).getWrapper(dockable).setWindow(window);
 
@@ -224,7 +224,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 				layeredPane = ((JDialog) window).getLayeredPane();
 			}
 
-			layeredPane.add(panel, root.getPinningLayer());
+			layeredPane.add(panel, root.getAutoHideLayer());
 
 			createContents();
 		}

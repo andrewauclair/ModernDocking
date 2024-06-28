@@ -79,10 +79,10 @@ public class ActiveDockableHighlighter {
 				if (dockable != null) {
 					Window window = DockingComponentUtils.findWindowForDockable(docking, dockable);
 
-					if (!DockingInternal.get(docking).getWrapper(dockable).isUnpinned()) {
+					if (!DockingInternal.get(docking).getWrapper(dockable).isHidden()) {
 						try {
 							RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, window);
-							root.hideUnpinnedPanels();
+							root.hideHiddenPanels();
 						} catch (DockableRegistrationFailureException ignore) {
 						}
 					}
