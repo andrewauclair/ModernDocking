@@ -87,12 +87,12 @@ public class DisplayPanelFloatListener extends FloatListener {
             Window targetFrame = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
             RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, targetFrame);
 
+            Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, targetFrame);
+
             if (utilsFrame.isOverRootHandle()) {
                 docking.dock(floatingDockable.getDockable(), targetFrame, utilsFrame.rootHandleRegion());
             }
             else if (utilsFrame.isOverDockableHandle()) {
-                Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, targetFrame);
-
                 docking.dock(floatingDockable.getDockable(), dockableAtPos, utilsFrame.dockableHandle());
             }
             else if (utilsFrame.isOverPinHandle()) {
@@ -103,13 +103,20 @@ public class DisplayPanelFloatListener extends FloatListener {
 
                 // TODO get the tab panel and add panel, dock it I think?
             }
-            else {
+            else if (dockableAtPos != null) {
                 // docking to a dockable region
-                Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, targetFrame);
-
                 DockingRegion region = utilsFrame.getDockableRegion(dockableAtPos, panel.getWrapper().getDockable(), mousePosOnScreen);
 
                 docking.dock(floatingDockable.getDockable(), dockableAtPos, region);
+            }
+            else if (floatingDockable.getDockable().isFloatingAllowed()) {
+                // floating
+                FloatingFrame newFloatingFrame = new FloatingFrame(docking, floatingDockable.getDockable(), mousePosOnScreen, floatingDockable.getDisplayPanel().getSize(), 0);
+                docking.dock(floatingDockable.getDockable(), newFloatingFrame);
+            }
+            else {
+                // failed to dock, restore the previous layout
+                return false;
             }
         }
         else if (floatingDockable.getDockable().isFloatingAllowed()) {
