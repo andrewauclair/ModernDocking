@@ -115,7 +115,6 @@ public class DockingHandle extends JLabel {
 	/**
 	 * Paint the handle
 	 *
-	 * @param g used to do the main paint operations
 	 * @param g2 used to draw the dashed lines on top
 	 */
 	public void paintHandle(Graphics2D g2) {
