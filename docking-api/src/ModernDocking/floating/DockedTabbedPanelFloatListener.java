@@ -27,11 +27,13 @@ import ModernDocking.api.DockingAPI;
 import ModernDocking.internal.DockableWrapper;
 import ModernDocking.internal.DockedTabbedPanel;
 import ModernDocking.internal.DockingComponentUtils;
+import ModernDocking.internal.FloatingFrame;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.dnd.DragGestureEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DockedTabbedPanelFloatListener extends FloatListener {
@@ -74,6 +76,8 @@ public class DockedTabbedPanelFloatListener extends FloatListener {
 
     @Override
     protected JFrame createFloatingFrame() {
+        Floating.setFloatingTabbedPane(true);
+
         List<DockableWrapper> wrappers = new ArrayList<>(tabs.getDockables());
 
         return new TempFloatingFrame(wrappers, tabs.getSelectedTabIndex(), tabs, tabs.getSize());
@@ -85,34 +89,54 @@ public class DockedTabbedPanelFloatListener extends FloatListener {
             return false;
         }
 
+        Floating.setFloatingTabbedPane(false);
+
         TempFloatingFrame tempFloatingFrame = (TempFloatingFrame) floatingFrame;
 
         List<DockableWrapper> dockables = new ArrayList<>(tempFloatingFrame.getDockables());
+        Dockable selectedDockable = dockables.get(tempFloatingFrame.getSelectedIndex()).getDockable();
+
+        if (utilsFrame == null) {
+            boolean first = true;
+            Dockable firstDockable = null;
+
+            for (DockableWrapper dockable : dockables) {
+                if (first) {
+                    first = false;
+                    new FloatingFrame(docking, dockable.getDockable(), tempFloatingFrame);
+                    firstDockable = dockable.getDockable();
+                }
+                else {
+                    docking.dock(dockable.getDockable(), firstDockable, DockingRegion.CENTER);
+                }
+            }
+
+            if (selectedDockable != null) {
+                docking.bringToFront(selectedDockable);
+            }
+
+            return true;
+        }
+
 
         boolean first = true;
         Dockable firstDockable = null;
 
         Window targetFrame = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
         Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, targetFrame);
-        DockingRegion region = utilsFrame.getDockableRegion(dockableAtPos, null, mousePosOnScreen);
-
-        boolean overRootHandle = utilsFrame.isOverRootHandle();
+        DockingRegion region = dockableAtPos == null ? DockingRegion.CENTER : utilsFrame.getDockableRegion(dockableAtPos, null, mousePosOnScreen);
 
         if (utilsFrame.isOverDockableHandle()) {
             region = utilsFrame.dockableHandle();
         }
 
-        Dockable selectedDockable = dockables.get(tempFloatingFrame.getSelectedIndex()).getDockable();
         for (DockableWrapper dockable : dockables) {
             if (first) {
                 if (utilsFrame.isOverRootHandle()) {
                     docking.dock(dockable.getDockable(), targetFrame, utilsFrame.rootHandleRegion());
                 }
-                else if (dockableAtPos != null){// && currentTopWindow != null && dockingPanel != null && activeUtilsFrame != null && activeUtilsFrame.isDockingToDockable()) {
+                else if (dockableAtPos != null) {
                     docking.dock(dockable.getDockable(), dockableAtPos, region);
-                }
-                else {
-//                    new FloatingFrame(docking, dockable.getDockable(), tabs);
                 }
                 firstDockable = dockable.getDockable();
             }
