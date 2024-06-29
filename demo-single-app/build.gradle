@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'idea'
-    id "com.github.ben-manes.versions" version "0.50.0"
+    id "com.github.ben-manes.versions" version "0.51.0"
 }
 
 java {
@@ -23,14 +23,14 @@ dependencies {
     implementation project(':docking-ui')
     implementation project(':docking-single-app')
 
-    implementation 'com.formdev:flatlaf:3.1.1'
-    implementation 'com.formdev:flatlaf-extras:3.1.1'
-    implementation 'com.formdev:flatlaf-intellij-themes:3.1.1'
+    implementation 'com.formdev:flatlaf:3.4.1'
+    implementation 'com.formdev:flatlaf-extras:3.4.1'
+    implementation 'com.formdev:flatlaf-intellij-themes:3.4.1'
     implementation 'com.formdev:svgSalamander:1.1.4'
 
-    implementation 'com.ardikars.pcap:pcap-jdk7:1.5.0'
+    implementation 'com.ardikars.pcap:pcap-jdk7:1.5.1'
 
-    implementation 'info.picocli:picocli:4.7.4'
+    implementation 'info.picocli:picocli:4.7.6'
 
     // uncomment this line to test Modern Docking persistence with a non-default XML parser
     // implementation 'com.fasterxml:aalto-xml:1.3.1'
