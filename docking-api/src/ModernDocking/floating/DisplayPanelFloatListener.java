@@ -25,10 +25,7 @@ import ModernDocking.Dockable;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
-import ModernDocking.internal.DisplayPanel;
-import ModernDocking.internal.DockableWrapper;
-import ModernDocking.internal.DockingComponentUtils;
-import ModernDocking.internal.FloatingFrame;
+import ModernDocking.internal.*;
 import ModernDocking.settings.Settings;
 
 import javax.swing.*;
@@ -84,24 +81,38 @@ public class DisplayPanelFloatListener extends FloatListener {
         DockableWrapper floatingDockable = panel.getWrapper();
 
         if (utilsFrame != null) {
-            Window targetFrame = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
-            RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, targetFrame);
+            Window targetWindow = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
+            RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, targetWindow);
 
-            Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, targetFrame);
+            Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, targetWindow);
 
             if (utilsFrame.isOverRootHandle()) {
-                docking.dock(floatingDockable.getDockable(), targetFrame, utilsFrame.rootHandleRegion());
+                docking.dock(floatingDockable.getDockable(), targetWindow, utilsFrame.rootHandleRegion());
             }
             else if (utilsFrame.isOverDockableHandle()) {
                 docking.dock(floatingDockable.getDockable(), dockableAtPos, utilsFrame.dockableHandle());
             }
             else if (utilsFrame.isOverPinHandle()) {
-                docking.unpinDockable(floatingDockable.getDockable(), utilsFrame.pinRegion(), targetFrame, root);
+                docking.unpinDockable(floatingDockable.getDockable(), utilsFrame.pinRegion(), targetWindow, root);
             }
             else if (utilsFrame.isOverTab()) {
                 // TODO get the tab index, if none then we're adding to the end
 
                 // TODO get the tab panel and add panel, dock it I think?
+                CustomTabbedPane tabbedPane = DockingComponentUtils.findTabbedPaneAtPos(mousePosOnScreen, targetWindow);
+
+                DockedTabbedPanel dockingTabPanel = (DockedTabbedPanel) DockingComponentUtils.findDockingPanelAtScreenPos(mousePosOnScreen, targetWindow);
+
+                if (tabbedPane != null && dockingTabPanel != null) {
+                    int tabIndex = tabbedPane.getTargetTabIndex(mousePosOnScreen, true);
+
+                    if (tabIndex == -1) {
+                        dockingTabPanel.dock(floatingDockable.getDockable(), DockingRegion.CENTER, 1.0);
+                    }
+                    else {
+                        dockingTabPanel.dockAtIndex(floatingDockable.getDockable(), tabIndex);
+                    }
+                }
             }
             else if (dockableAtPos != null) {
                 // docking to a dockable region
