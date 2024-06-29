@@ -204,8 +204,6 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         }
         repaint();
         if (overlay.requiresRedraw() || prevVisible != overlay.isVisible()) {
-//            System.out.println("Redraw");
-//            revalidate();
             repaint();
             overlay.clearRedraw();
         }
@@ -213,7 +211,6 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
     private void changeVisibility(JFrame frame, boolean visible) {
         if (frame.isVisible() != visible) {
-            System.out.println("Change visibility");
             frame.setVisible(visible);
 
             orderFrames();
@@ -227,37 +224,6 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         }
         SwingUtilities.invokeLater(this::toFront);
     }
-
-//    @Override
-//    public void paint(Graphics gf) {
-////        super.paint(gf);
-////Graphics2D g2 = (Graphics2D) gf.create();
-////        rootHandles.paint(g2);
-////
-////        if (dockableHandles != null) {
-////            dockableHandles.paint(g2);
-////        }
-////
-////        overlay.paint(gf);
-////        g2.dispose();
-//        if (bs == null) {
-//            return;
-//        }
-//
-//        Graphics2D g2 = (Graphics2D) bs.getDrawGraphics();
-//
-//        g2.setColor(new Color(0,0,0,0));
-//        g2.clearRect(0, 0, getWidth(), getHeight());
-//        g2.fillRect(0, 0, getWidth(), getHeight());
-//
-//        rootHandles.paint(g2);
-//        if (dockableHandles != null) {
-//            dockableHandles.paint(g2);
-//        }
-//        overlay.paint(g2);
-//        g2.dispose();
-//        bs.show();
-//    }
 
     @Override
     public void componentResized(ComponentEvent e) {

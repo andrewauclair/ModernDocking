@@ -32,6 +32,7 @@ import java.util.Map;
 public class Floating {
     private static final Map<Window, FloatUtilsFrame> utilFrames = new HashMap<>();
     private static boolean isFloating = false;
+    private static boolean isFloatingTabbedPane = false;
 
     public static void registerDockingWindow(DockingAPI docking, Window window, RootDockingPanelAPI root) {
         SwingUtilities.invokeLater(() -> utilFrames.put(window, new FloatUtilsFrame(docking, window, root)));
@@ -49,5 +50,11 @@ public class Floating {
 
     static void setFloating(boolean floating) {
         isFloating = floating;
+    }
+
+    public static boolean isFloatingTabbedPane() { return isFloatingTabbedPane; }
+
+    static void setFloatingTabbedPane(boolean floating) {
+        isFloatingTabbedPane = floating;
     }
 }

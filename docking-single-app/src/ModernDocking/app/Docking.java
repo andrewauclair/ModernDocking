@@ -421,6 +421,26 @@ public class Docking {
     }
 
     /**
+     * check if a dockable is currently hidden
+     *
+     * @param persistentID The persistentID of the dockable to check
+     * @return Whether the dockable is hidden
+     */
+    public static boolean isHidden(String persistentID) {
+        return instance.isHidden(persistentID);
+    }
+
+    /**
+     * check if a dockable is currently hidden
+     *
+     * @param dockable The dockable to check
+     * @return Whether the dockable is hidden
+     */
+    public static boolean isHidden(Dockable dockable) {
+        return instance.isHidden(dockable);
+    }
+
+    /**
      * check if the window can be disposed. Windows can be disposed if they are not the main window and are not maximized
      *
      * @param window Window to check

@@ -38,28 +38,8 @@ public class PacketBytesPanel extends JPanel implements Dockable {
 	}
 
 	@Override
-	public int getType() {
-		return 0;
-	}
-
-	@Override
 	public String getTabText() {
 		return "Bytes";
-	}
-
-	@Override
-	public Icon getIcon() {
-		return null;
-	}
-
-	@Override
-	public boolean isFloatingAllowed() {
-		return true;
-	}
-
-	@Override
-	public boolean isLimitedToRoot() {
-		return false;
 	}
 
 	@Override
@@ -68,22 +48,8 @@ public class PacketBytesPanel extends JPanel implements Dockable {
 	}
 
 	@Override
-	public boolean isClosable() {
+	public boolean isAutoHideAllowed() {
 		return true;
 	}
 
-	@Override
-	public boolean isPinningAllowed() {
-		return true;
-	}
-
-	@Override
-	public boolean isMinMaxAllowed() {
-		return false;
-	}
-
-	@Override
-	public boolean getHasMoreOptions() {
-		return false;
-	}
 }
