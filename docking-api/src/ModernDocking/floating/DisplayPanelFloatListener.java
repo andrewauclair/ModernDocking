@@ -96,9 +96,6 @@ public class DisplayPanelFloatListener extends FloatListener {
                 docking.unpinDockable(floatingDockable.getDockable(), utilsFrame.pinRegion(), targetWindow, root);
             }
             else if (utilsFrame.isOverTab()) {
-                // TODO get the tab index, if none then we're adding to the end
-
-                // TODO get the tab panel and add panel, dock it I think?
                 CustomTabbedPane tabbedPane = DockingComponentUtils.findTabbedPaneAtPos(mousePosOnScreen, targetWindow);
 
                 DockedTabbedPanel dockingTabPanel = (DockedTabbedPanel) DockingComponentUtils.findDockingPanelAtScreenPos(mousePosOnScreen, targetWindow);
@@ -112,6 +109,10 @@ public class DisplayPanelFloatListener extends FloatListener {
                     else {
                         dockingTabPanel.dockAtIndex(floatingDockable.getDockable(), tabIndex);
                     }
+                }
+                else {
+                    // failed to dock, restore the previous layout
+                    return false;
                 }
             }
             else if (dockableAtPos != null) {
