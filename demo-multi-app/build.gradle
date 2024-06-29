@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'idea'
-    id "com.github.ben-manes.versions" version "0.50.0"
+    id "com.github.ben-manes.versions" version "0.51.0"
 }
 
 java {
@@ -23,13 +23,13 @@ dependencies {
     implementation project(':docking-ui')
     implementation project(':docking-multi-app')
 
-    implementation 'com.formdev:flatlaf:3.3'
-    implementation 'com.formdev:flatlaf-extras:3.3'
-    implementation 'com.formdev:flatlaf-intellij-themes:3.3'
+    implementation 'com.formdev:flatlaf:3.4.1'
+    implementation 'com.formdev:flatlaf-extras:3.4.1'
+    implementation 'com.formdev:flatlaf-intellij-themes:3.4.1'
 
     implementation 'com.ardikars.pcap:pcap-jdk7:1.5.1'
 
-    implementation 'info.picocli:picocli:4.7.4'
+    implementation 'info.picocli:picocli:4.7.6'
 }
 
 jar {
