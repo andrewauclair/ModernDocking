@@ -109,9 +109,9 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 
 		currentWindow = null;
 
-		dragStarted(dragGestureEvent.getDragOrigin());
-
 		Floating.setFloating(true);
+
+		dragStarted(dragGestureEvent.getDragOrigin());
 
 		Point mouseOnScreen = new Point(dragGestureEvent.getDragOrigin());
 		SwingUtilities.convertPointToScreen(mouseOnScreen, dragGestureEvent.getComponent());
