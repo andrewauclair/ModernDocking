@@ -141,5 +141,10 @@ class Main {
         renameFolders(new File("docking-single-app/src"));
         renameFolders(new File("docking-multi-app/src"));
         renameFolders(new File("docking-ui/src"));
+
+        FileUtils.copyFile(new File("package-renamer/docking-api-module-info.java"), new File("docking-api/src/module-info.java"));
+        FileUtils.copyFile(new File("package-renamer/docking-ui-module-info.java"), new File("docking-ui/src/module-info.java"));
+        FileUtils.copyFile(new File("package-renamer/docking-single-app-module-info.java"), new File("docking-single-app/src/module-info.java"));
+        FileUtils.copyFile(new File("package-renamer/docking-multi-app-module-info.java"), new File("docking-multi-app/src/module-info.java"));
     }
 }

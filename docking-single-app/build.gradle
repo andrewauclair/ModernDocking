@@ -27,7 +27,12 @@ base {
 
 // NOTE: do not add new dependencies here, Modern Docking is a zero-dependency library
 dependencies {
-	api project(':docking-api')
+	if (project.hasProperty("useMavenVersion")) {
+		implementation 'io.github.andrewauclair:modern-docking-api:' + version
+	}
+	else {
+		api project(':docking-api')
+	}
 }
 
 java {
