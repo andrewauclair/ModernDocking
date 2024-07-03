@@ -21,19 +21,19 @@ SOFTWARE.
  */
 package ModernDocking.layouts;
 
- import ModernDocking.DockingRegion;
- import ModernDocking.api.DockingAPI;
- import ModernDocking.internal.DockingInternal;
- import ModernDocking.settings.Settings;
+import ModernDocking.DockingRegion;
+import ModernDocking.api.DockingAPI;
+import ModernDocking.internal.DockingInternal;
+import ModernDocking.settings.Settings;
 
- import javax.swing.*;
+import javax.swing.*;
 
  /**
   * Layout node that represents a splitpane
   */
  public class DockingSplitPanelNode implements DockingLayoutNode {
-	 private final DockingAPI docking;
-	 private DockingLayoutNode left;
+	private final DockingAPI docking;
+	private DockingLayoutNode left;
 	private DockingLayoutNode right;
 	private final int orientation;
 	private final double dividerProportion;
