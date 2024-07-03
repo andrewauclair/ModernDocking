@@ -27,7 +27,12 @@ base {
 }
 
 dependencies {
-	api project(':docking-api')
+	if (project.hasProperty("useMavenVersion")) {
+		implementation 'io.github.andrewauclair:modern-docking-api:' + version
+	}
+	else {
+		api project(':docking-api')
+	}
 
 	implementation 'com.formdev:flatlaf:3.4.1'
 	implementation 'com.formdev:flatlaf-extras:3.4.1'
