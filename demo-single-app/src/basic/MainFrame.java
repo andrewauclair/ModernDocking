@@ -162,7 +162,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		menuBar.add(window);
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		SimplePanel one = new SimplePanel("one", "one");
 		SimplePanel two = new SimplePanel("two", "two");
