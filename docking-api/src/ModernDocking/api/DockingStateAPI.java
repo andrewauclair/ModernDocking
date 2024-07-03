@@ -58,7 +58,7 @@ public class DockingStateAPI {
 
     @Deprecated(forRemoval = true)
     public RootDockState getRootState(Window window) {
-        RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, window);
+        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(docking, window);
 
         if (root == null) {
             throw new RootDockingPanelNotFoundException(window);
@@ -68,7 +68,7 @@ public class DockingStateAPI {
     }
 
     public WindowLayout getWindowLayout(Window window) {
-        RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, window);
+        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(docking, window);
 
         if (root == null) {
             throw new RootDockingPanelNotFoundException(window);
@@ -80,7 +80,7 @@ public class DockingStateAPI {
             return maxLayout;
         }
 
-        return DockingLayouts.layoutFromRoot(docking, root);
+        return DockingLayouts.layoutFromRoot(docking, root.getRootPanel());
     }
 
     /**
@@ -146,7 +146,7 @@ public class DockingStateAPI {
      * @param layout The layout to restore
      */
     public void restoreWindowLayout(Window window, WindowLayout layout) {
-        RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, window);
+        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(docking, window);
 
         if (root == null) {
             throw new RootDockingPanelNotFoundException(window);
@@ -168,7 +168,7 @@ public class DockingStateAPI {
         // undock and destroy any failed dockables
         undockFailedComponents(docking, root);
 
-        restoreProperSplitLocations(root);
+        restoreProperSplitLocations(root.getRootPanel());
 
         for (String id : layout.getWestAutoHideToolbarIDs()) {
             Dockable dockable = getDockable(docking, id);
@@ -220,7 +220,7 @@ public class DockingStateAPI {
 
     @Deprecated(forRemoval = true)
     public void restoreState(Window window, RootDockState state) {
-        RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, window);
+        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(docking, window);
 
         if (root == null) {
             throw new RootDockingPanelNotFoundException(window);
@@ -234,7 +234,7 @@ public class DockingStateAPI {
         try {
             root.setPanel(restoreState(docking, state.getState(), window));
 
-            restoreProperSplitLocations(root);
+            restoreProperSplitLocations(root.getRootPanel());
         }
         finally {
             docking.getAppState().setPaused(paused);

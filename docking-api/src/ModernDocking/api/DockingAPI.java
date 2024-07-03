@@ -54,10 +54,8 @@ public class DockingAPI {
     // this may look unused, but we need to create an instance of it to make it work
     private final ActiveDockableHighlighter activeDockableHighlighter = new ActiveDockableHighlighter(this);
 
-    private final AppStatePersister appStatePersister = new AppStatePersister(this);
-
     // map of all the root panels in the application
-    private  final Map<Window, RootDockingPanelAPI> rootPanels = new HashMap<>();
+//    private  final Map<Window, InternalRootDockingPanel> rootPanels = new HashMap<>();
 
     private final AppStateAPI appState = new AppStateAPI(this);
     private final DockingStateAPI dockingState = new DockingStateAPI(this);
@@ -115,7 +113,9 @@ public class DockingAPI {
      * @return map of root panels
      */
     public Map<Window, RootDockingPanelAPI> getRootPanels() {
-        return rootPanels;
+        Map<Window, RootDockingPanelAPI> panels = new HashMap<>();
+        internals.getRootPanels().forEach((window, internalRootDockingPanel) -> panels.put(window, internalRootDockingPanel.getRootPanel()));
+        return panels;
     }
 
     /**
@@ -202,26 +202,7 @@ public class DockingAPI {
      * @param parent The parent frame of the panel
      */
     public void registerDockingPanel(RootDockingPanelAPI panel, JFrame parent) {
-        if (rootPanels.containsKey(parent)) {
-            throw new RootDockingPanelRegistrationFailureException(panel, parent);
-        }
-
-        if (rootPanels.containsValue(panel)) {
-            // we already checked above that we have this value
-            //noinspection OptionalGetWithoutIsPresent
-            Window window = rootPanels.entrySet().stream()
-                    .filter(entry -> entry.getValue() == panel)
-                    .findFirst()
-                    .map(Map.Entry::getKey)
-                    .get();
-
-            throw new RootDockingPanelRegistrationFailureException(panel, window);
-        }
-
-        rootPanels.put(parent, panel);
-        Floating.registerDockingWindow(this, parent, panel);
-
-        appStatePersister.addWindow(parent);
+        internals.registerDockingPanel(panel, parent);
     }
 
     /**
@@ -231,18 +212,7 @@ public class DockingAPI {
      * @param parent The parent JDialog of the panel
      */
     public void registerDockingPanel(RootDockingPanelAPI panel, JDialog parent) {
-        if (rootPanels.containsKey(parent)) {
-            throw new RootDockingPanelRegistrationFailureException(panel, parent);
-        }
-
-        if (rootPanels.containsValue(panel)) {
-            throw new RootDockingPanelRegistrationFailureException(panel, parent);
-        }
-
-        rootPanels.put(parent, panel);
-        Floating.registerDockingWindow(this, parent, panel);
-
-        appStatePersister.addWindow(parent);
+        internals.registerDockingPanel(panel, parent);
     }
 
     /**
@@ -251,16 +221,7 @@ public class DockingAPI {
      * @param parent The parent of the panel that we're deregistering
      */
     public void deregisterDockingPanel(Window parent) {
-        if (rootPanels.containsKey(parent)) {
-            RootDockingPanelAPI root = rootPanels.get(parent);
-
-            DockingComponentUtils.undockComponents(this, root);
-        }
-
-        rootPanels.remove(parent);
-        Floating.deregisterDockingWindow(parent);
-
-        appStatePersister.removeWindow(parent);
+        internals.deregisterDockingPanel(parent);
     }
 
     /**
@@ -295,13 +256,13 @@ public class DockingAPI {
      * @param allow Whether auto hide is allowed on this Window
      */
     public void configureAutoHide(Window window, int layer, boolean allow) {
-        if (!rootPanels.containsKey(window)) {
+        if (!internals.getRootPanels().containsKey(window)) {
             throw new RootDockingPanelNotFoundException(window);
         }
 
-        RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
-        root.setAutoHideSupported(allow);
-        root.setAutoHideLayer(layer);
+        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);
+        root.getRootPanel().setAutoHideSupported(allow);
+        root.getRootPanel().setAutoHideLayer(layer);
     }
 
     /**
@@ -319,9 +280,9 @@ public class DockingAPI {
      * @return Whether the dockable can be pinned
      */
     public boolean autoHideAllowed(Dockable dockable) {
-        RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, DockingComponentUtils.findWindowForDockable(this, dockable));
+        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, DockingComponentUtils.findWindowForDockable(this, dockable));
 
-        return dockable.isAutoHideAllowed() && root.isAutoHideSupported();
+        return dockable.isAutoHideAllowed() && root.getRootPanel().isAutoHideSupported();
     }
 
     /**
@@ -369,7 +330,7 @@ public class DockingAPI {
      * @param region The region to dock into
      */
     public void dock(Dockable dockable, Window window, DockingRegion region) {
-        RootDockingPanelAPI root = rootPanels.get(window);
+        InternalRootDockingPanel root = internals.getRootPanels().get(window);
 
         if (root == null) {
             throw new RootDockingPanelNotFoundException(window);
@@ -404,7 +365,7 @@ public class DockingAPI {
      * @param dividerProportion The proportion to use if docking in a split pane
      */
     public void dock(Dockable dockable, Window window, DockingRegion region, double dividerProportion) {
-        RootDockingPanelAPI root = rootPanels.get(window);
+        InternalRootDockingPanel root = internals.getRootPanels().get(window);
 
         if (root == null) {
             throw new RootDockingPanelNotFoundException(window);
@@ -625,7 +586,7 @@ public class DockingAPI {
 
         Objects.requireNonNull(window);
 
-        RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
+        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);
 
         Objects.requireNonNull(root);
 
@@ -736,7 +697,7 @@ public class DockingAPI {
      */
     public void maximize(Dockable dockable) {
         Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
-        RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
+        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);
 
         // can only maximize one panel per root
         if (!dockingState.maximizeRestoreLayout.containsKey(window) && root != null) {
@@ -790,7 +751,7 @@ public class DockingAPI {
      */
     public void pinDockable(Dockable dockable) {
         Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
-        RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
+        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);
 
         if (internals.getWrapper(dockable).isHidden()) {
             root.setDockableShown(dockable);
@@ -811,7 +772,7 @@ public class DockingAPI {
         }
 
         Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
-        RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
+        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);
 
         Component component = (Component) dockable;
 
@@ -853,9 +814,9 @@ public class DockingAPI {
      */
     public void unpinDockable(Dockable dockable, ToolbarLocation location) {
         Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
-        RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(this, window);
+        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);
 
-        unpinDockable(dockable, location, window, root);
+        unpinDockable(dockable, location, window, root.getRootPanel());
     }
 
     /**
@@ -868,11 +829,13 @@ public class DockingAPI {
             return;
         }
 
+        InternalRootDockingPanel internalRoot = internals.getRootPanels().get(window);
+
         Component component = (Component) dockable;
 
         Point posInFrame = component.getLocation();
         SwingUtilities.convertPointToScreen(posInFrame, component.getParent());
-        SwingUtilities.convertPointFromScreen(posInFrame, root);
+        SwingUtilities.convertPointFromScreen(posInFrame, internalRoot);
 
         posInFrame.x += component.getWidth() / 2;
         posInFrame.y += component.getHeight() / 2;
@@ -886,7 +849,7 @@ public class DockingAPI {
         internals.getWrapper(dockable).setWindow(window);
         internals.getWrapper(dockable).setHidden(true);
 
-        root.setDockableHidden(dockable, location);
+        internalRoot.setDockableHidden(dockable, location);
 
         DockingListeners.fireAutoHiddenEvent(dockable);
         DockingListeners.fireHiddenEvent(dockable);

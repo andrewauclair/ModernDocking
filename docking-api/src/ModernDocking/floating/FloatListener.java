@@ -26,6 +26,7 @@ import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.internal.DisplayPanel;
 import ModernDocking.internal.DockedTabbedPanel;
 import ModernDocking.internal.DockingComponentUtils;
+import ModernDocking.internal.InternalRootDockingPanel;
 import ModernDocking.layouts.WindowLayout;
 
 import javax.swing.*;
@@ -136,7 +137,7 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 
 		DockingComponentUtils.removeIllegalFloats(docking, originalWindow);
 
-		RootDockingPanelAPI currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
+		InternalRootDockingPanel currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
 
 		if (currentRoot.isEmpty()) {
 			originalWindow.setVisible(false);
@@ -189,7 +190,7 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 		}
 		dropFloatingPanel(event.getLocation());
 
-		RootDockingPanelAPI currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
+		InternalRootDockingPanel currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
 
 		if (currentRoot.isEmpty() && docking.canDisposeWindow(originalWindow)) {
 			originalWindow.dispose();

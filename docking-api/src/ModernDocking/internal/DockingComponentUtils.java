@@ -85,9 +85,9 @@ public class DockingComponentUtils {
 	 * @param window The window to find a root for
 	 * @return The root of the given window
 	 */
-	public static RootDockingPanelAPI rootForWindow(DockingAPI docking, Window window) {
+	public static InternalRootDockingPanel rootForWindow(DockingAPI docking, Window window) {
 		if (docking.getRootPanels().containsKey(window)) {
-			return docking.getRootPanels().get(window);
+			return DockingInternal.get(docking).getRootPanels().get(window);
 		}
 		throw new RootDockingPanelNotFoundException(window);
 	}
@@ -246,7 +246,7 @@ public class DockingComponentUtils {
 			return;
 		}
 
-		RootDockingPanelAPI root = rootForWindow(docking, window);
+		InternalRootDockingPanel root = rootForWindow(docking, window);
 
 		if (docking.canDisposeWindow(window) && root != null) {
 			if (shouldUndock(root)) {
@@ -301,7 +301,7 @@ public class DockingComponentUtils {
 	 * @return The first Dockable of the given type, if any exist
 	 */
 	public static Optional<Dockable> findFirstDockableOfType(DockingAPI docking, int type) {
-		RootDockingPanelAPI mainRoot = rootForWindow(docking, docking.getMainWindow());
+		InternalRootDockingPanel mainRoot = rootForWindow(docking, docking.getMainWindow());
 
 		Optional<Dockable> mainPanelDockable = findDockableOfType(type, mainRoot.getPanel());
 

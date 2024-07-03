@@ -26,6 +26,7 @@ import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.internal.DockedSimplePanel;
 import ModernDocking.internal.DockedSplitPanel;
 import ModernDocking.internal.DockedTabbedPanel;
+import ModernDocking.internal.InternalRootDockingPanel;
 
 /**
  * Storage for the state of the root
@@ -39,7 +40,7 @@ public class RootDockState {
 	 *
 	 * @param panel root panel
 	 */
-	public RootDockState(RootDockingPanelAPI panel) {
+	public RootDockState(InternalRootDockingPanel panel) {
 		if (panel.getPanel() instanceof DockedSimplePanel) {
 			Dockable dockable = ((DockedSimplePanel) panel.getPanel()).getWrapper().getDockable();
 			state = new PanelState(dockable.getPersistentID(), dockable.getClass().getCanonicalName());

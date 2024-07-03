@@ -82,7 +82,7 @@ public class DisplayPanelFloatListener extends FloatListener {
 
         if (utilsFrame != null) {
             Window targetWindow = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
-            RootDockingPanelAPI root = DockingComponentUtils.rootForWindow(docking, targetWindow);
+            InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(docking, targetWindow);
 
             Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, targetWindow);
 
@@ -93,7 +93,7 @@ public class DisplayPanelFloatListener extends FloatListener {
                 docking.dock(floatingDockable.getDockable(), dockableAtPos, utilsFrame.dockableHandle());
             }
             else if (utilsFrame.isOverPinHandle()) {
-                docking.unpinDockable(floatingDockable.getDockable(), utilsFrame.pinRegion(), targetWindow, root);
+                docking.unpinDockable(floatingDockable.getDockable(), utilsFrame.pinRegion(), targetWindow, root.getRootPanel());
             }
             else if (utilsFrame.isOverTab()) {
                 CustomTabbedPane tabbedPane = DockingComponentUtils.findTabbedPaneAtPos(mousePosOnScreen, targetWindow);

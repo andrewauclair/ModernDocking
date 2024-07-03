@@ -27,6 +27,8 @@ import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.exception.DockableNotFoundException;
 import ModernDocking.exception.DockableRegistrationFailureException;
+import ModernDocking.exception.RootDockingPanelRegistrationFailureException;
+import ModernDocking.floating.Floating;
 import ModernDocking.ui.DefaultHeaderUI;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
@@ -36,10 +38,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -50,10 +50,15 @@ public class DockingInternal {
 	private final Map<String, DockableWrapper> dockables = new HashMap<>();
 	private final DockingAPI docking;
 
+	private final Map<Window, InternalRootDockingPanel> rootPanels = new HashMap<>();
+
 	private static final Map<DockingAPI, DockingInternal> internals = new HashMap<>();
+
+	private final AppStatePersister appStatePersister;
 
 	public DockingInternal(DockingAPI docking) {
 		this.docking = docking;
+		this.appStatePersister = new AppStatePersister(docking);
 		internals.put(docking, this);
 	}
 
@@ -66,6 +71,15 @@ public class DockingInternal {
 	}
 
 	/**
+	 * Get a map of RootDockingPanels to their Windows
+	 *
+	 * @return map of root panels
+	 */
+	public Map<Window, InternalRootDockingPanel> getRootPanels() {
+		return rootPanels;
+	}
+
+	/**
 	 * Get access to the registered dockables
 	 *
 	 * @return List of registered dockables
@@ -74,6 +88,82 @@ public class DockingInternal {
 		return dockables.values().stream()
 				.map(DockableWrapper::getDockable)
 				.collect(Collectors.toList());
+	}
+
+	public AppStatePersister getAppStatePersister() {
+		return appStatePersister;
+	}
+
+	/**
+	 * registration function for DockingPanel
+	 *
+	 * @param panel Panel to register
+	 * @param parent The parent frame of the panel
+	 */
+	public void registerDockingPanel(RootDockingPanelAPI panel, JFrame parent) {
+		if (rootPanels.containsKey(parent)) {
+			throw new RootDockingPanelRegistrationFailureException(panel, parent);
+		}
+
+		Optional<Window> window = rootPanels.entrySet().stream()
+				.filter(entry -> entry.getValue().getRootPanel() == panel)
+				.findFirst()
+				.map(Map.Entry::getKey);
+
+		if (window.isPresent()) {
+			throw new RootDockingPanelRegistrationFailureException(panel, window.get());
+		}
+
+		InternalRootDockingPanel internalRoot = new InternalRootDockingPanel(docking, panel);
+		rootPanels.put(parent, internalRoot);
+		Floating.registerDockingWindow(docking, parent, internalRoot);
+
+		appStatePersister.addWindow(parent);
+	}
+
+	/**
+	 * Register a RootDockingPanel
+	 *
+	 * @param panel RootDockingPanel to register
+	 * @param parent The parent JDialog of the panel
+	 */
+	public void registerDockingPanel(RootDockingPanelAPI panel, JDialog parent) {
+		if (rootPanels.containsKey(parent)) {
+			throw new RootDockingPanelRegistrationFailureException(panel, parent);
+		}
+
+		Optional<Window> window = rootPanels.entrySet().stream()
+				.filter(entry -> entry.getValue().getRootPanel() == panel)
+				.findFirst()
+				.map(Map.Entry::getKey);
+
+		if (window.isPresent()) {
+			throw new RootDockingPanelRegistrationFailureException(panel, parent);
+		}
+
+		InternalRootDockingPanel internalRoot = new InternalRootDockingPanel(docking, panel);
+		rootPanels.put(parent, internalRoot);
+		Floating.registerDockingWindow(docking, parent, internalRoot);
+
+		appStatePersister.addWindow(parent);
+	}
+
+	/**
+	 * Deregister a docking root panel
+	 *
+	 * @param parent The parent of the panel that we're deregistering
+	 */
+	public void deregisterDockingPanel(Window parent) {
+		if (rootPanels.containsKey(parent)) {
+			InternalRootDockingPanel root = rootPanels.get(parent);
+
+			DockingComponentUtils.undockComponents(docking, root);
+		}
+
+		rootPanels.remove(parent);
+		Floating.deregisterDockingWindow(parent);
+
+		appStatePersister.removeWindow(parent);
 	}
 
 	/**
@@ -196,7 +286,7 @@ public class DockingInternal {
 			SwingUtilities.updateComponentTreeUI(wrapper.getDisplayPanel());
 		}
 
-		for (RootDockingPanelAPI root : docking.getRootPanels().values()) {
+		for (InternalRootDockingPanel root : rootPanels.values()) {
 			root.updateLAF();
 			updateLAF(root.getPanel());
 		}

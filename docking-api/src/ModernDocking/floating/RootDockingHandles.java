@@ -25,6 +25,7 @@ import ModernDocking.Dockable;
 import ModernDocking.DockableStyle;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.internal.InternalRootDockingPanel;
 import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
@@ -44,12 +45,12 @@ public class RootDockingHandles {
     private final DockingHandle pinSouth = new DockingHandle(DockingRegion.SOUTH);
 
     private final JFrame frame;
-    private final RootDockingPanelAPI rootPanel;
+    private final InternalRootDockingPanel rootPanel;
 
     private DockingRegion mouseOverRegion = null;
     private DockingRegion mouseOverPin = null;
 
-    public RootDockingHandles(JFrame frame, RootDockingPanelAPI rootPanel) {
+    public RootDockingHandles(JFrame frame, InternalRootDockingPanel rootPanel) {
         this.frame = frame;
         this.rootPanel = rootPanel;
         setupHandle(frame, rootCenter);
@@ -80,9 +81,9 @@ public class RootDockingHandles {
             return;
         }
 
-        pinWest.setVisible(dockable.isPinningAllowed() && (dockable.getPinningStyle() == DockableStyle.BOTH || dockable.getPinningStyle() == DockableStyle.VERTICAL));
-        pinEast.setVisible(dockable.isPinningAllowed() && (dockable.getPinningStyle() == DockableStyle.BOTH || dockable.getPinningStyle() == DockableStyle.VERTICAL));
-        pinSouth.setVisible(dockable.isPinningAllowed() && (dockable.getPinningStyle() == DockableStyle.BOTH || dockable.getPinningStyle() == DockableStyle.HORIZONTAL));
+        pinWest.setVisible(dockable.isAutoHideAllowed() && (dockable.getAutoHideStyle() == DockableStyle.BOTH || dockable.getAutoHideStyle() == DockableStyle.VERTICAL));
+        pinEast.setVisible(dockable.isAutoHideAllowed() && (dockable.getAutoHideStyle() == DockableStyle.BOTH || dockable.getAutoHideStyle() == DockableStyle.VERTICAL));
+        pinSouth.setVisible(dockable.isAutoHideAllowed() && (dockable.getAutoHideStyle() == DockableStyle.BOTH || dockable.getAutoHideStyle() == DockableStyle.HORIZONTAL));
     }
 
     public void mouseMoved(Point mousePosOnScreen) {
@@ -123,7 +124,7 @@ public class RootDockingHandles {
         location.x += size.width / 2;
         location.y += size.height / 2;
 
-        SwingUtilities.convertPointToScreen(location, rootPanel.getParent());
+        SwingUtilities.convertPointToScreen(location, rootPanel.getRootPanel().getParent());
         SwingUtilities.convertPointFromScreen(location, frame);
 
         setLocation(rootCenter, location.x, location.y);
