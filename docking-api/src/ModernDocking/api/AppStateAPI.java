@@ -135,7 +135,7 @@ public class AppStateAPI {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// we might have gotten to the timer and then paused persistence
-					if (!paused) {
+					if (!paused && docking.getRootPanels().containsKey(docking.getMainWindow())) {
 						ApplicationLayout layout = docking.getDockingState().getApplicationLayout();
 
 						if (lastPersistedLayout != null) {
