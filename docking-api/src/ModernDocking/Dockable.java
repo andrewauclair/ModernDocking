@@ -191,8 +191,16 @@ public interface Dockable {
 		return false;
 	}
 
+	/**
+	 * @deprecated Replaced with getTabPreference. Will be removed in future release.
+	 */
+	@Deprecated(since = "0.12.0", forRemoval = true)
 	default int getTabPosition() {
 		return SwingConstants.BOTTOM;
+	}
+
+	default DockableTabPreference getTabPreference() {
+		return DockableTabPreference.NONE;
 	}
 
 	/**

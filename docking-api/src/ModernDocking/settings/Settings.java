@@ -22,26 +22,48 @@ SOFTWARE.
 package ModernDocking.settings;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockableTabPreference;
 
 import javax.swing.*;
 
 public class Settings {
-    private static boolean alwaysDisplayTabsMode = false;
+    private static DockableTabPreference defaultTabPreference = DockableTabPreference.BOTTOM;
 
     private static int tabLayoutPolicy = JTabbedPane.SCROLL_TAB_LAYOUT;
 
     private static boolean enableActiveHighlighter = true;
 
     public static boolean alwaysDisplayTabsMode() {
-        return alwaysDisplayTabsMode;
+        return defaultTabPreference == DockableTabPreference.TOP_ALWAYS || defaultTabPreference == DockableTabPreference.BOTTOM_ALWAYS;
     }
 
+    /**
+     * @deprecated Replaced with defaultTabPreference. Will be removed in future release.
+     */
+    @Deprecated(since = "0.12.0", forRemoval = true)
     public static boolean alwaysDisplayTabsMode(Dockable dockable) {
-        return alwaysDisplayTabsMode || dockable.getTabPosition() == SwingConstants.TOP;
+        return defaultTabPreference == DockableTabPreference.TOP || dockable.getTabPosition() == SwingConstants.TOP;
     }
 
+    /**
+     * @deprecated Replaced with setDefaultTabPreference. Will be removed in future release.
+     */
+    @Deprecated(since = "0.12.0", forRemoval = true)
     public static void setAlwaysDisplayTabMode(boolean alwaysDisplayTabsMode) {
-        Settings.alwaysDisplayTabsMode = alwaysDisplayTabsMode;
+        defaultTabPreference = alwaysDisplayTabsMode ? DockableTabPreference.TOP : DockableTabPreference.BOTTOM;
+    }
+
+    public static DockableTabPreference defaultTabPreference() {
+        return defaultTabPreference;
+    }
+
+    /**
+     * Set the applications preference for default tab location when adding dockables to tab groups.
+     *
+     * @param tabPreference The new default tab location preference
+     */
+    public static void setDefaultTabPreference(DockableTabPreference tabPreference) {
+        defaultTabPreference = tabPreference;
     }
 
     public static int getTabLayoutPolicy() {

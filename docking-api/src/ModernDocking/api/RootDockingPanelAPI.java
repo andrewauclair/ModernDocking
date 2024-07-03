@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.api;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockableTabPreference;
 import ModernDocking.DockingRegion;
 import ModernDocking.internal.*;
 import ModernDocking.settings.Settings;
@@ -296,7 +297,7 @@ public class RootDockingPanelAPI extends DockingPanel implements WindowStateList
 		if (panel != null) {
 			panel.dock(dockable, region, dividerProportion);
 		}
-		else if (Settings.alwaysDisplayTabsMode(dockable)) {
+		else if (Settings.alwaysDisplayTabsMode()) {
 			setPanel(new DockedTabbedPanel(docking, wrapper));
 			wrapper.setWindow(window);
 		}
