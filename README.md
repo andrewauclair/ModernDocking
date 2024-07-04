@@ -5,7 +5,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.andrewauclair/modern-docking-api?label=modern-docking-api)](https://mvnrepository.com/artifact/io.github.andrewauclair/modern-docking-api)
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.andrewauclair/modern-docking-single-app?label=modern-docking-single-app)](https://mvnrepository.com/artifact/io.github.andrewauclair/modern-docking-single-app)
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.andrewauclair/modern-docking-multi-app?label=modern-docking-multi-app)](https://mvnrepository.com/artifact/io.github.andrewauclair/modern-multi-api)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.andrewauclair/modern-docking-multi-app?label=modern-docking-multi-app)](https://mvnrepository.com/artifact/io.github.andrewauclair/modern-docking-multi-api)
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.andrewauclair/modern-docking-ui?label=modern-docking-ui)](https://mvnrepository.com/artifact/io.github.andrewauclair/modern-docking-ui)
 
