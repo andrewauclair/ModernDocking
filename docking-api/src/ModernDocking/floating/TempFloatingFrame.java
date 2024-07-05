@@ -57,7 +57,7 @@ public class TempFloatingFrame extends JFrame {
 		// we only support tabs on top if we have FlatLaf because we can add a trailing component for our menu
 		boolean usingFlatLaf = tabs.getUI().getClass().getPackageName().startsWith("com.formdev.flatlaf");
 
-		if (Settings.alwaysDisplayTabsMode(dockables.get(0).getDockable()) && usingFlatLaf) {
+		if (Settings.alwaysDisplayTabsMode() && usingFlatLaf) {
 			tabs.setTabPlacement(JTabbedPane.TOP);
 		}
 		else {

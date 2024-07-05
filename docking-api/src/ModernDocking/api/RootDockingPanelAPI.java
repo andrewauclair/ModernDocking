@@ -22,6 +22,11 @@ SOFTWARE.
 package ModernDocking.api;
 
 import ModernDocking.internal.DockableToolbar;
+import ModernDocking.Dockable;
+import ModernDocking.DockableTabPreference;
+import ModernDocking.DockingRegion;
+import ModernDocking.internal.*;
+import ModernDocking.settings.Settings;
 import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;

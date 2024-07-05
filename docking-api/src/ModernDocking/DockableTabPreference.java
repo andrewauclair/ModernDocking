@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2024 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,36 +19,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package basic;
+package ModernDocking;
 
-import ModernDocking.DockableTabPreference;
+public enum DockableTabPreference {
+    NONE,
+    BOTTOM,
+    TOP,
 
-import javax.swing.*;
-
-// Docking panel that is always displayed and cannot be closed
-public class AlwaysDisplayedPanel extends SimplePanel {
-	// create a new basic.AlwaysDisplayedPanel with the given title and persistentID
-	public AlwaysDisplayedPanel(String title, String persistentID) {
-		super(title, persistentID);
-	}
-
-	@Override
-	public boolean isClosable() {
-		return false;
-	}
-
-	@Override
-	public boolean isFloatingAllowed() {
-		return false;
-	}
-
-	@Override
-	public boolean isLimitedToRoot() {
-		return true;
-	}
-
-	@Override
-	public DockableTabPreference getTabPreference() {
-		return DockableTabPreference.TOP;
-	}
+    // use these options with Settings.setDefaultTabPreference to force tabs to always display, even with a single dockable
+    BOTTOM_ALWAYS,
+    TOP_ALWAYS
 }

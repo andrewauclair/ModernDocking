@@ -102,7 +102,7 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 			DockingLayoutNode left;
 			DockingLayoutNode right;
 
-			if (Settings.alwaysDisplayTabsMode(DockingInternal.get(docking).getDockable(persistentID))) {
+			if (Settings.alwaysDisplayTabsMode()) {
 				if (orientation == JSplitPane.HORIZONTAL_SPLIT) {
 					left = region == DockingRegion.EAST ? this : new DockingTabPanelNode(docking, persistentID);
 					right = region == DockingRegion.EAST ? new DockingTabPanelNode(docking, persistentID) : this;

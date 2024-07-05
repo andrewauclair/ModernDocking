@@ -2,12 +2,12 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-![Maven Central](https://img.shields.io/maven-central/v/io.github.andrewauclair/modern-docking-api?label=modern-docking-api)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.andrewauclair/modern-docking-api?label=modern-docking-api)](https://mvnrepository.com/artifact/io.github.andrewauclair/modern-docking-api)
 
-![Maven Central](https://img.shields.io/maven-central/v/io.github.andrewauclair/modern-docking-single-app?label=modern-docking-single-app)
-![Maven Central](https://img.shields.io/maven-central/v/io.github.andrewauclair/modern-docking-multi-app?label=modern-docking-multi-app)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.andrewauclair/modern-docking-single-app?label=modern-docking-single-app)](https://mvnrepository.com/artifact/io.github.andrewauclair/modern-docking-single-app)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.andrewauclair/modern-docking-multi-app?label=modern-docking-multi-app)](https://mvnrepository.com/artifact/io.github.andrewauclair/modern-docking-multi-app)
 
-![Maven Central](https://img.shields.io/maven-central/v/io.github.andrewauclair/modern-docking-ui?label=modern-docking-ui)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.andrewauclair/modern-docking-ui?label=modern-docking-ui)](https://mvnrepository.com/artifact/io.github.andrewauclair/modern-docking-ui)
 
 
 Modern Docking is a simple framework designed for adding docking features to Java Swing applications. 
@@ -41,7 +41,7 @@ docs).
 - Requires FlatLaf L&F
 
 <!-- todo: we should limit this to the version Modern Docking actually uses, if we can -->
-![Maven Central](https://img.shields.io/maven-central/v/com.formdev/flatlaf)
+[![Maven Central](https://img.shields.io/maven-central/v/com.formdev/flatlaf)](https://mvnrepository.com/artifact/com.formdev/flatlaf)
 
 # Building
 

@@ -60,6 +60,9 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 	@CommandLine.Option(names = "--always-use-tabs", defaultValue = "false", description = "always use tabs, even when there is only 1 dockable in the tab group")
 	boolean alwaysUseTabs;
 
+	@CommandLine.Option(names = "--tab-location", defaultValue = "NONE", description = "Location to display tabs. values: ${COMPLETION-CANDIDATES}")
+	DockableTabPreference tabLocation;
+
 	@CommandLine.Option(names = "--create-docking-instance", defaultValue = "false", description = "create a separate instance of the framework for this MainFrame")
 	boolean createDockingInstance;
 
@@ -86,10 +89,20 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		setTitle("Modern Docking Basic Demo");
 
+		if (alwaysUseTabs) {
+			if (tabLocation == DockableTabPreference.TOP) {
+				Settings.setDefaultTabPreference(DockableTabPreference.TOP_ALWAYS);
+			}
+			else {
+				Settings.setDefaultTabPreference(DockableTabPreference.BOTTOM_ALWAYS);
+			}
+		}
+		else {
+			Settings.setDefaultTabPreference(tabLocation);
+		}
+
 		Docking.initialize(this);
 		DockingUI.initialize();
-
-		Settings.setAlwaysDisplayTabMode(alwaysUseTabs);
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);

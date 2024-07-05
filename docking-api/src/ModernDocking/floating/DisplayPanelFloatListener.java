@@ -70,7 +70,7 @@ public class DisplayPanelFloatListener extends FloatListener {
 
     @Override
     protected JFrame createFloatingFrame() {
-        if (Settings.alwaysDisplayTabsMode(panel.getWrapper().getDockable())) {
+        if (Settings.alwaysDisplayTabsMode()) {
             return new TempFloatingFrame(Collections.singletonList(panel.getWrapper()), 0, panel, panel.getSize());
         }
         return new TempFloatingFrame(panel.getWrapper(), panel, panel.getSize());
