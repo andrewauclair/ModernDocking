@@ -23,6 +23,7 @@ package ModernDocking.floating;
 
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
+import ModernDocking.internal.InternalRootDockingPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,7 +35,7 @@ public class Floating {
     private static boolean isFloating = false;
     private static boolean isFloatingTabbedPane = false;
 
-    public static void registerDockingWindow(DockingAPI docking, Window window, RootDockingPanelAPI root) {
+    public static void registerDockingWindow(DockingAPI docking, Window window, InternalRootDockingPanel root) {
         SwingUtilities.invokeLater(() -> utilFrames.put(window, new FloatUtilsFrame(docking, window, root)));
     }
 

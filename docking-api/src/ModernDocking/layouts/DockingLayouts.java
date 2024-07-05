@@ -29,10 +29,9 @@ import ModernDocking.event.DockingLayoutListener;
 import ModernDocking.internal.*;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class DockingLayouts {
 	private static final List<DockingLayoutListener> listeners = new ArrayList<>();
@@ -93,11 +92,17 @@ public class DockingLayouts {
 	}
 
 	public static WindowLayout layoutFromRoot(DockingAPI docking, RootDockingPanelAPI root) {
-		WindowLayout layout = new WindowLayout(DockingComponentUtils.windowForRoot(docking, root), panelToNode(docking, root.getPanel()));
+		InternalRootDockingPanel internalRoot = DockingInternal.get(docking).getRootPanels().entrySet().stream()
+				.filter(entry -> entry.getValue().getRootPanel() == root)
+				.findFirst()
+				.map(Map.Entry::getValue)
+				.get();
 
-		layout.setWestAutoHideToolbarIDs(root.getWestAutoHideToolbarIDs());
-		layout.setEastAutoHideToolbarIDs(root.getEastAutoHideToolbarIDs());
-		layout.setSouthAutoHideToolbarIDs(root.getSouthAutoHideToolbarIDs());
+		WindowLayout layout = new WindowLayout(DockingComponentUtils.windowForRoot(docking, root), panelToNode(docking, internalRoot.getPanel()));
+
+		layout.setWestAutoHideToolbarIDs(internalRoot.getWestAutoHideToolbarIDs());
+		layout.setEastAutoHideToolbarIDs(internalRoot.getEastAutoHideToolbarIDs());
+		layout.setSouthAutoHideToolbarIDs(internalRoot.getSouthAutoHideToolbarIDs());
 
 		return layout;
 	}

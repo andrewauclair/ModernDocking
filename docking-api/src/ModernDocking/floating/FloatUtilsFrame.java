@@ -27,6 +27,7 @@ import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.internal.CustomTabbedPane;
 import ModernDocking.internal.DockingComponentUtils;
+import ModernDocking.internal.InternalRootDockingPanel;
 import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
@@ -40,7 +41,7 @@ import java.awt.image.BufferStrategy;
 
 public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener, ComponentListener {
     private final Window referenceDockingWindow;
-    private final RootDockingPanelAPI root;
+    private final InternalRootDockingPanel root;
     private final RootDockingHandles rootHandles;
     private final FloatingOverlay overlay;
 
@@ -66,7 +67,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         }
     };
 
-    public FloatUtilsFrame(DockingAPI docking, Window referenceDockingWindow, RootDockingPanelAPI root) {
+    public FloatUtilsFrame(DockingAPI docking, Window referenceDockingWindow, InternalRootDockingPanel root) {
         this.referenceDockingWindow = referenceDockingWindow;
         this.root = root;
         this.rootHandles = new RootDockingHandles(this, root);

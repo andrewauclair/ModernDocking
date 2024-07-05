@@ -56,7 +56,7 @@ public class DockableWrapper {
 
 	private boolean maximized = false;
 	private boolean hidden = false;
-	private RootDockingPanelAPI root;
+	private InternalRootDockingPanel root;
 
 	private final Map<String, Property> properties = new HashMap<>();
 
@@ -199,7 +199,7 @@ public class DockableWrapper {
 	 *
 	 * @param root New root of dockable
 	 */
-	public void setRoot(RootDockingPanelAPI root) {
+	public void setRoot(InternalRootDockingPanel root) {
 		this.root = root;
 	}
 
@@ -208,7 +208,7 @@ public class DockableWrapper {
 	 *
 	 * @return Root panel containing dockable
 	 */
-	public RootDockingPanelAPI getRoot() {
+	public InternalRootDockingPanel getRoot() {
 		return root;
 	}
 

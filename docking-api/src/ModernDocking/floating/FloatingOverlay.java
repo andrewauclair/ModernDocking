@@ -29,6 +29,7 @@ import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.internal.CustomTabbedPane;
 import ModernDocking.internal.DisplayPanel;
 import ModernDocking.internal.DockingInternal;
+import ModernDocking.internal.InternalRootDockingPanel;
 import ModernDocking.ui.DockingSettings;
 
 import javax.swing.*;
@@ -67,7 +68,7 @@ public class FloatingOverlay {
         prevSize = size;
     }
 
-    public void updateForRoot(RootDockingPanelAPI rootPanel, DockingRegion region) {
+    public void updateForRoot(InternalRootDockingPanel rootPanel, DockingRegion region) {
         setVisible(true);
 
         targetTab = null;
