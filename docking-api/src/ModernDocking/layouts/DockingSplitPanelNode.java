@@ -97,7 +97,7 @@ import javax.swing.*;
 			DockingLayoutNode left;
 			DockingLayoutNode right;
 
-			if (Settings.alwaysDisplayTabsMode(DockingInternal.get(docking).getDockable(persistentID))) {
+			if (Settings.alwaysDisplayTabsMode()) {
 				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingTabPanelNode(docking, persistentID) : this;
 				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(docking, persistentID);
 			}

@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockableTabPreference;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.floating.DockedTabbedPanelFloatListener;
@@ -85,7 +86,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		// we only support tabs on top if we have FlatLaf because we can add a trailing component for our menu
 		boolean usingFlatLaf = tabs.getUI().getClass().getPackageName().startsWith("com.formdev.flatlaf");
 
-		if (Settings.alwaysDisplayTabsMode(dockable.getDockable()) && usingFlatLaf) {
+		if (Settings.alwaysDisplayTabsMode() && usingFlatLaf) {
 			tabs.setTabPlacement(JTabbedPane.TOP);
 		}
 		else {
@@ -94,7 +95,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 		tabs.setTabLayoutPolicy(Settings.getTabLayoutPolicy());
 
-		if (Settings.alwaysDisplayTabsMode(dockable.getDockable())) {
+		if (Settings.alwaysDisplayTabsMode()) {
 			configureTrailingComponent();
 		}
 
@@ -203,17 +204,35 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 		dockable.getFloatListener().addAlternateDragSource(tabs, draggingFromTabPanel);
 
-		// if any of the dockables use top tab position, switch this tabbedpanel to top tabs
-		if (tabs.getTabPlacement() != SwingConstants.TOP && dockable.getDockable().getTabPosition() == SwingConstants.TOP) {
+		DockableTabPreference tabPreference = Settings.defaultTabPreference();
+
+		// we only support tabs on top if we have FlatLaf because we can add a trailing component for our menu
+		boolean usingFlatLaf = tabs.getUI().getClass().getPackageName().startsWith("com.formdev.flatlaf");
+
+		if (tabPreference == DockableTabPreference.TOP_ALWAYS && usingFlatLaf) {
 			tabs.setTabPlacement(SwingConstants.TOP);
 		}
+		else if (tabPreference == DockableTabPreference.BOTTOM_ALWAYS) {
+			tabs.setTabPlacement(SwingConstants.BOTTOM);
+		}
+		else if (tabPreference == DockableTabPreference.TOP && usingFlatLaf) {
+			// in the normal top preference case, only switch if we add a dockable that prefers the top tab position
+			if (dockable.getDockable().getTabPreference() == DockableTabPreference.TOP) {
+				tabs.setTabPlacement(SwingConstants.TOP);
+			}
+		}
+
+		// if any of the dockables use top tab position, switch this tabbedpanel to top tabs
+//		if (tabs.getTabPlacement() != SwingConstants.TOP && dockable.getDockable().getTabPosition() == SwingConstants.TOP) {
+//			tabs.setTabPlacement(SwingConstants.TOP);
+//		}
 
 		tabs.setToolTipTextAt(tabs.getTabCount() - 1, dockable.getDockable().getTabTooltip());
 		tabs.setIconAt(tabs.getTabCount() - 1, dockable.getDockable().getIcon());
 		tabs.setSelectedIndex(tabs.getTabCount() - 1);
 		selectedTab = tabs.getSelectedIndex();
 
-		if (Settings.alwaysDisplayTabsMode(dockable.getDockable()) && dockable.getDockable().isClosable()) {
+		if (Settings.alwaysDisplayTabsMode() && dockable.getDockable().isClosable()) {
 			dockable.getDisplayPanel().putClientProperty("JTabbedPane.tabClosable", true);
 		}
 
@@ -267,7 +286,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 			DockingPanel newPanel;
 
-			if (Settings.alwaysDisplayTabsMode(wrapper.getDockable())) {
+			if (Settings.alwaysDisplayTabsMode()) {
 				newPanel = new DockedTabbedPanel(docking, wrapper);
 			}
 			else {
@@ -322,7 +341,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	public void undock(Dockable dockable) {
 		removePanel(DockingInternal.get(docking).getWrapper(dockable));
 
-		if (!Floating.isFloatingTabbedPane() && !Settings.alwaysDisplayTabsMode(dockable) && panels.size() == 1 && parent != null && panels.get(0).getDockable().getTabPosition() != SwingConstants.TOP) {
+		if (!Floating.isFloatingTabbedPane() && !Settings.alwaysDisplayTabsMode() && panels.size() == 1 && parent != null && panels.get(0).getDockable().getTabPosition() != SwingConstants.TOP) {
 			parent.replaceChild(this, new DockedSimplePanel(docking, panels.get(0)));
 		}
 
