@@ -3,14 +3,26 @@ package ModernDocking;
 // TODO might have to expose this to the applications
 // TODO not sure how we go about converting to the right type without forcing separate calls
 public abstract class Property {
+    private final String name;
+
+    public Property(String name) {
+
+        this.name = name;
+    }
+
     public abstract Class<?> getType();
 
     public abstract boolean isNull();
 
+    public String getName() {
+        return name;
+    }
+
     public static class ByteProperty extends Property {
         private final byte value;
 
-        public ByteProperty(byte value) {
+        public ByteProperty(String name, byte value) {
+            super(name);
             this.value = value;
         }
 
@@ -37,7 +49,8 @@ public abstract class Property {
     public static class ShortProperty extends Property {
         private final short value;
 
-        public ShortProperty(short value) {
+        public ShortProperty(String name, short value) {
+            super(name);
             this.value = value;
         }
 
@@ -64,7 +77,8 @@ public abstract class Property {
     public static class IntProperty extends Property {
         private final int value;
 
-        public IntProperty(int value) {
+        public IntProperty(String name, int value) {
+            super(name);
             this.value = value;
         }
 
@@ -91,7 +105,8 @@ public abstract class Property {
     public static class LongProperty extends Property {
         private final long value;
 
-        public LongProperty(long value) {
+        public LongProperty(String name, long value) {
+            super(name);
             this.value = value;
         }
 
@@ -118,7 +133,8 @@ public abstract class Property {
     public static class FloatProperty extends Property {
         private final float value;
 
-        public FloatProperty(float value) {
+        public FloatProperty(String name, float value) {
+            super(name);
             this.value = value;
         }
 
@@ -145,7 +161,8 @@ public abstract class Property {
     public static class DoubleProperty extends Property {
         private final double value;
 
-        public DoubleProperty(double value) {
+        public DoubleProperty(String name, double value) {
+            super(name);
             this.value = value;
         }
 
@@ -172,7 +189,8 @@ public abstract class Property {
     public static class CharacterProperty extends Property {
         private final char value;
 
-        public CharacterProperty(char value) {
+        public CharacterProperty(String name, char value) {
+            super(name);
             this.value = value;
         }
 
@@ -199,7 +217,8 @@ public abstract class Property {
     public static class BooleanProperty extends Property {
         private final boolean value;
 
-        public BooleanProperty(boolean value) {
+        public BooleanProperty(String name, boolean value) {
+            super(name);
             this.value = value;
         }
 
@@ -226,7 +245,8 @@ public abstract class Property {
     public static class StringProperty extends Property {
         private final String value;
 
-        public StringProperty(String value) {
+        public StringProperty(String name, String value) {
+            super(name);
             this.value = value;
         }
 

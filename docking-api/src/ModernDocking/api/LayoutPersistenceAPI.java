@@ -304,8 +304,9 @@ public class LayoutPersistenceAPI {
 
             if (value != null && !value.isNull()) {
                 writer.writeStartElement("property");
-                writer.writeAttribute("name", value.toString());
-                writer.writeAttribute("type", value.getType().toString());
+                writer.writeAttribute("name", value.getName());
+                writer.writeAttribute("type", value.getType().getSimpleName());
+                writer.writeAttribute("value", value.toString());
                 writer.writeEndElement();
             }
         }
@@ -363,8 +364,9 @@ public class LayoutPersistenceAPI {
 
                 if (value != null) {
                     writer.writeStartElement("property");
-                    writer.writeAttribute("name", value.toString());
-                    writer.writeAttribute("type", value.getType().toString());
+                    writer.writeAttribute("name", value.getName());
+                    writer.writeAttribute("type", value.getType().getSimpleName());
+                    writer.writeAttribute("value", value.toString());
                     writer.writeEndElement();
                 }
             }
@@ -505,37 +507,58 @@ public class LayoutPersistenceAPI {
 
             if (next == XMLStreamConstants.START_ELEMENT) {
                 if (reader.getLocalName().equals("properties")) {
-                    while (!(next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("properties"))) {
-                        readProperty(reader);
-                        next = reader.nextTag();
+                    // old style of properties from before 0.12.0
+                    if (reader.getAttributeCount() != 0) {
+                        DockableProperties.setLoadingLegacyFile(true);
+
+                        for (int i = 0; i < reader.getAttributeCount(); i++) {
+                            Property prop = DockableProperties.parseProperty(reader.getAttributeLocalName(i), "String", reader.getAttributeValue(i));
+                            properties.put(String.valueOf(reader.getAttributeName(i)), prop);
+                        }
                     }
-                    break;
-//                    for (int i = 0; i < reader.getAttributeCount(); i++) {
-//                        properties.put(String.valueOf(reader.getAttributeName(i)), readProperty(reader));
-//                    }
+                    else {
+                        DockableProperties.setLoadingLegacyFile(false);
+
+                        while (reader.hasNext()) {
+                            next = reader.nextTag();
+
+                            if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("property")) {
+                                String property = null;
+                                String type = null;
+                                String value = null;
+
+                                for (int i = 0; i < reader.getAttributeCount(); i++) {
+                                    String attributeLocalName = reader.getAttributeLocalName(i);
+
+                                    switch (attributeLocalName) {
+                                        case "name":
+                                            property = reader.getAttributeValue(i);
+                                            break;
+                                        case "type":
+                                            type = reader.getAttributeValue(i);
+                                            break;
+                                        case "value":
+                                            value = reader.getAttributeValue(i);
+                                            break;
+                                    }
+                                }
+                                if (property != null && type != null && value != null) {
+                                    Property parsedProperty = DockableProperties.parseProperty(property, type, value);
+                                    properties.put(parsedProperty.getName(), parsedProperty);
+                                }
+                            }
+                            else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("properties")) {
+                                break;
+                            }
+                        }
+                    }
                 }
             }
-            else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("properties")) {
+            if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("properties")) {
                 break;
             }
         }
         return properties;
-    }
-
-    private Property readProperty(XMLStreamReader reader) throws XMLStreamException {
-        while (reader.hasNext()) {
-            int next = reader.nextTag();
-
-            if (next == XMLStreamConstants.START_ELEMENT) {
-                if (reader.getLocalName().equals("property")) {
-                    // reader.getAttributeValue(i)
-                }
-            }
-            else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("property")) {
-                break;
-            }
-        }
-        return null;
     }
 
     private DockingSplitPanelNode readSplitNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
@@ -592,15 +615,57 @@ public class LayoutPersistenceAPI {
             else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("properties")) {
                 Map<String, Property> properties = new HashMap<>();
 
-                for (int i = 0; i < reader.getAttributeCount(); i++) {
-//                    properties.put(String.valueOf(reader.getAttributeName(i)), reader.getAttributeValue(i));
+                // old style of properties from before 0.12.0
+                if (reader.getAttributeCount() != 0) {
+                    DockableProperties.setLoadingLegacyFile(true);
+
+                    for (int i = 0; i < reader.getAttributeCount(); i++) {
+                        Property prop = DockableProperties.parseProperty(reader.getAttributeLocalName(i), "String", reader.getAttributeValue(i));
+                        properties.put(String.valueOf(reader.getAttributeName(i)), prop);
+                    }
+                }
+                else {
+                    DockableProperties.setLoadingLegacyFile(false);
+
+                    while (reader.hasNext()) {
+                        next = reader.nextTag();
+
+                        if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("property")) {
+                            String property = null;
+                            String type = null;
+                            String value = null;
+
+                            for (int i = 0; i < reader.getAttributeCount(); i++) {
+                                String attributeLocalName = reader.getAttributeLocalName(i);
+
+                                switch (attributeLocalName) {
+                                    case "name":
+                                        property = reader.getAttributeValue(i);
+                                        break;
+                                    case "type":
+                                        type = reader.getAttributeValue(i);
+                                        break;
+                                    case "value":
+                                        value = reader.getAttributeValue(i);
+                                        break;
+                                }
+                            }
+                            if (property != null && type != null && value != null) {
+                                Property parsedProperty = DockableProperties.parseProperty(property, type, value);
+                                properties.put(parsedProperty.getName(), parsedProperty);
+                            }
+                        }
+                        else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("properties")) {
+                            break;
+                        }
+                    }
                 }
 
                 if (node != null) {
                     node.setProperties(currentPersistentID, properties);
                 }
             }
-            else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("tabbed")) {
+            if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("tabbed")) {
                 break;
             }
         }

@@ -115,7 +115,7 @@ public class WindowLayoutBuilderAPI {
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, byte value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
-		props.put(property, new Property.ByteProperty(value));
+		props.put(property, new Property.ByteProperty(property, value));
 
 		properties.put(persistentID, props);
 
@@ -125,7 +125,7 @@ public class WindowLayoutBuilderAPI {
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, short value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
-		props.put(property, new Property.ShortProperty(value));
+		props.put(property, new Property.ShortProperty(property, value));
 
 		properties.put(persistentID, props);
 
@@ -135,7 +135,7 @@ public class WindowLayoutBuilderAPI {
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, int value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
-		props.put(property, new Property.IntProperty(value));
+		props.put(property, new Property.IntProperty(property, value));
 
 		properties.put(persistentID, props);
 
@@ -145,7 +145,7 @@ public class WindowLayoutBuilderAPI {
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, long value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
-		props.put(property, new Property.LongProperty(value));
+		props.put(property, new Property.LongProperty(property, value));
 
 		properties.put(persistentID, props);
 
@@ -155,7 +155,7 @@ public class WindowLayoutBuilderAPI {
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, float value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
-		props.put(property, new Property.FloatProperty(value));
+		props.put(property, new Property.FloatProperty(property, value));
 
 		properties.put(persistentID, props);
 
@@ -165,7 +165,7 @@ public class WindowLayoutBuilderAPI {
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, double value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
-		props.put(property, new Property.DoubleProperty(value));
+		props.put(property, new Property.DoubleProperty(property, value));
 
 		properties.put(persistentID, props);
 
@@ -175,7 +175,7 @@ public class WindowLayoutBuilderAPI {
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, char value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
-		props.put(property, new Property.CharacterProperty(value));
+		props.put(property, new Property.CharacterProperty(property, value));
 
 		properties.put(persistentID, props);
 
@@ -185,7 +185,7 @@ public class WindowLayoutBuilderAPI {
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, boolean value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
-		props.put(property, new Property.BooleanProperty(value));
+		props.put(property, new Property.BooleanProperty(property, value));
 
 		properties.put(persistentID, props);
 
@@ -195,7 +195,7 @@ public class WindowLayoutBuilderAPI {
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, String value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
-		props.put(property, new Property.StringProperty(value));
+		props.put(property, new Property.StringProperty(property, value));
 
 		properties.put(persistentID, props);
 
