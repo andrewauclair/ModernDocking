@@ -28,6 +28,7 @@ import ModernDocking.internal.DockingInternal;
 import ModernDocking.settings.Settings;
 
 import javax.swing.*;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -156,7 +157,7 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 	 * @return properties map
 	 */
 	public Map<String, Property> getProperties() {
-		return properties;
+		return Collections.unmodifiableMap(properties);
 	}
 
 	public void setProperties(Map<String, Property> properties) {

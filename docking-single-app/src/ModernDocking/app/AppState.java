@@ -121,7 +121,7 @@ public class AppState {
     }
 
     public static void setProperty(Dockable dockable, String propertyName, String value) {
-        instance.setProperty(dockable, propertyName, new Property.StringProperty(value));
+        instance.setProperty(dockable, propertyName, new Property.StringProperty(propertyName, value));
     }
 
     public static void removeProperty(Dockable dockable, String propertyName) {

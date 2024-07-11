@@ -31,6 +31,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class DockableProperties {
+    private static boolean loadingLegacyFile = false;
+
+    public static void setLoadingLegacyFile(boolean legacy) {
+        loadingLegacyFile = legacy;
+    }
+
     public static void configureProperties(DockableWrapper wrapper, Map<String, Property> properties) {
         Dockable dockable = wrapper.getDockable();
 
@@ -60,15 +66,21 @@ public class DockableProperties {
                 DockingProperty property = field.getAnnotation(DockingProperty.class);
 
                 if (properties.containsKey(property.name())) {
+                    Property prop = properties.get(property.name());
+
                     try {
-                        DockableProperties.validateProperty(field, properties.get(property.name()));
+                        if (loadingLegacyFile) {
+                            Property.StringProperty legacyProp = (Property.StringProperty) properties.get(property.name());
+                            prop = parseProperty(prop.getName(), field.getType().getSimpleName().toString(), legacyProp.getValue());
+                        }
+                        DockableProperties.validateProperty(field, prop);
                     }
                     catch (Exception e) {
                         // TODO possibly make a new DockingPropertyException
                         throw new RuntimeException(String.format("Dockable: '%s' (%s), default value: '%s' for field '%s' (%s) is invalid", dockable.getPersistentID(), dockable.getClass().getSimpleName(), property.defaultValue(), field.getName(), field.getType().getSimpleName()), e);
                     }
 
-                    setProperty(dockable, field, properties.get(property.name()));
+                    setProperty(dockable, field, prop);
 
                     // remove the property from the wrapper as it is more specific than the static props
                     wrapper.removeProperty(property.name());
@@ -105,7 +117,7 @@ public class DockableProperties {
                 // grab the property and store the value by its name
                 DockingProperty property = field.getAnnotation(DockingProperty.class);
 
-                properties.put(property.name(), getProperty(wrapper, field));
+                properties.put(property.name(), getProperty(wrapper, property.name(), field));
             }
             catch (IllegalAccessException ignore) {
             }
@@ -120,8 +132,44 @@ public class DockableProperties {
     }
 
     public static void validateProperty(Field field, Property property) {
-        if (createProperty(field, property.toString()).getType() != property.getType()) {
+        Objects.requireNonNull(field);
+        Objects.requireNonNull(property);
+        Property prop = createProperty(field, property.getName(), property.toString());
+        if (prop.getType() != property.getType()) {
             throw new RuntimeException("Type of property does not match type of value.");
+        }
+    }
+
+    public static Property parseProperty(String property, String type, String value) {
+        if (type.equals("byte")) {
+            return new Property.ByteProperty(property, value.isEmpty() ? (byte) 0 : Byte.parseByte(value));
+        }
+        else if (type.equals("short")) {
+            return new Property.ShortProperty(property, value.isEmpty() ? (short) 0 : Short.parseShort(value));
+        }
+        else if (type.equals("int")) {
+            return new Property.IntProperty(property, value.isEmpty() ? 0 : Integer.parseInt(value));
+        }
+        else if (type.equals("long")) {
+            return new Property.LongProperty(property, value.isEmpty() ? (long) 0 : Long.parseLong(value));
+        }
+        else if (type.equals("float")) {
+            return new Property.FloatProperty(property, value.isEmpty() ? 0.0f : Float.parseFloat(value));
+        }
+        else if (type.equals("double")) {
+            return new Property.DoubleProperty(property, value.isEmpty() ? 0.0 : Double.parseDouble(value));
+        }
+        else if (type.equals("char")) {
+            return new Property.CharacterProperty(property, value.isEmpty() ? '\0' : value.charAt(0));
+        }
+        else if (type.equals("boolean")) {
+            return new Property.BooleanProperty(property, !value.isEmpty() && Boolean.parseBoolean(value));
+        }
+        else if (type.equals("String")) {
+            return new Property.StringProperty(property, value);
+        }
+        else {
+            throw new RuntimeException("Unsupported property type");
         }
     }
 
@@ -131,38 +179,38 @@ public class DockableProperties {
         if (!Objects.equals(property.defaultValue(), "__no_default_value__")) {
             value = property.defaultValue();
         }
-        return createProperty(field, value);
+        return createProperty(field, property.name(), value);
     }
 
-    private static Property createProperty(Field field, String value) {
+    private static Property createProperty(Field field, String property, String value) {
         Class<?> type = field.getType();
 
         if (type == byte.class) {
-            return new Property.ByteProperty(value.isEmpty() ? (byte) 0 : Byte.parseByte(value));
+            return new Property.ByteProperty(property, value.isEmpty() ? (byte) 0 : Byte.parseByte(value));
         }
         else if (type == short.class) {
-            return new Property.ShortProperty(value.isEmpty() ? (short) 0 : Short.parseShort(value));
+            return new Property.ShortProperty(property, value.isEmpty() ? (short) 0 : Short.parseShort(value));
         }
         else if (type == int.class) {
-            return new Property.IntProperty(value.isEmpty() ? 0 : Integer.parseInt(value));
+            return new Property.IntProperty(property, value.isEmpty() ? 0 : Integer.parseInt(value));
         }
         else if (type == long.class) {
-            return new Property.LongProperty(value.isEmpty() ? (long) 0 : Long.parseLong(value));
+            return new Property.LongProperty(property, value.isEmpty() ? (long) 0 : Long.parseLong(value));
         }
         else if (type == float.class) {
-            return new Property.FloatProperty(value.isEmpty() ? 0.0f : Float.parseFloat(value));
+            return new Property.FloatProperty(property, value.isEmpty() ? 0.0f : Float.parseFloat(value));
         }
         else if (type == double.class) {
-            return new Property.DoubleProperty(value.isEmpty() ? 0.0 : Double.parseDouble(value));
+            return new Property.DoubleProperty(property, value.isEmpty() ? 0.0 : Double.parseDouble(value));
         }
         else if (type == char.class) {
-            return new Property.CharacterProperty(value.isEmpty() ? '\0' : value.charAt(0));
+            return new Property.CharacterProperty(property, value.isEmpty() ? '\0' : value.charAt(0));
         }
         else if (type == boolean.class) {
-            return new Property.BooleanProperty(!value.isEmpty() && Boolean.parseBoolean(value));
+            return new Property.BooleanProperty(property, !value.isEmpty() && Boolean.parseBoolean(value));
         }
         else if (type == String.class) {
-            return new Property.StringProperty(value);
+            return new Property.StringProperty(property, value);
         }
 //        else if (type.isEnum()) {
 //            return Integer.toString(((Enum<?>) field.get(dockable)).ordinal());
@@ -173,37 +221,37 @@ public class DockableProperties {
         }
     }
 
-    private static Property getProperty(DockableWrapper wrapper, Field field) throws IllegalAccessException {
+    private static Property getProperty(DockableWrapper wrapper, String property, Field field) throws IllegalAccessException {
         Dockable dockable = wrapper.getDockable();
 
         Class<?> type = field.getType();
 
         if (type == byte.class) {
-            return new Property.ByteProperty((byte) field.get(dockable));
+            return new Property.ByteProperty(property, (byte) field.get(dockable));
         }
         else if (type == short.class) {
-            return new Property.ShortProperty((short) field.get(dockable));
+            return new Property.ShortProperty(property, (short) field.get(dockable));
         }
         else if (type == int.class) {
-            return new Property.IntProperty((int) field.get(dockable));
+            return new Property.IntProperty(property, (int) field.get(dockable));
         }
         else if (type == long.class) {
-            return new Property.LongProperty((long) field.get(dockable));
+            return new Property.LongProperty(property, (long) field.get(dockable));
         }
         else if (type == float.class) {
-            return new Property.FloatProperty((float) field.get(dockable));
+            return new Property.FloatProperty(property, (float) field.get(dockable));
         }
         else if (type == double.class) {
-            return new Property.DoubleProperty((double) field.get(dockable));
+            return new Property.DoubleProperty(property, (double) field.get(dockable));
         }
         else if (type == char.class) {
-            return new Property.CharacterProperty((char) field.get(dockable));
+            return new Property.CharacterProperty(property, (char) field.get(dockable));
         }
         else if (type == boolean.class) {
-            return new Property.BooleanProperty((boolean) field.get(dockable));
+            return new Property.BooleanProperty(property, (boolean) field.get(dockable));
         }
         else if (type == String.class) {
-            return new Property.StringProperty((String) field.get(dockable));
+            return new Property.StringProperty(property, (String) field.get(dockable));
         }
 //        else if (type.isEnum()) {
 //            return Integer.toString(((Enum<?>) field.get(dockable)).ordinal());
