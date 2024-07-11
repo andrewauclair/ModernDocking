@@ -100,9 +100,22 @@ public interface Dockable {
 	 * force the dockable to remain in the root it started in.
 	 * this is useful for having a new floating frame with many dockables that are only allowed in that one frame.
 	 *
-	 * @return Should this dockable be limited to the root it starts in
+	 * @return Should this dockable be limited to the root it starts in?
+	 *
+	 * @deprecated Replaced with isLimitedToWindow. Will be removed in future release.
 	 */
+	@Deprecated(since = "0.12.0", forRemoval = true)
 	default boolean isLimitedToRoot() {
+		return false;
+	}
+
+	/**
+	 * force the dockable to remain in the window it started in.
+	 * this is useful for having a new floating window with many dockables that are only allowed in that one window.
+	 *
+	 * @return Should this dockable be limited to the window it starts in?
+	 */
+	default boolean isLimitedToWindow() {
 		return false;
 	}
 
