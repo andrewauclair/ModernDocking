@@ -52,20 +52,6 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
     private DockableHandles dockableHandles;
 
     BufferStrategy bs; //create an strategy for multi-buffering.
-    JPanel renderPanel = new JPanel() {
-        @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            rootHandles.paint(g2);
-
-            if (dockableHandles != null) {
-                dockableHandles.paint(g2);
-            }
-
-            overlay.paint(g);
-            g2.dispose();
-        }
-    };
 
     public FloatUtilsFrame(DockingAPI docking, Window referenceDockingWindow, InternalRootDockingPanel root) {
         this.referenceDockingWindow = referenceDockingWindow;
@@ -85,9 +71,6 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         setBackground(new Color(0, 0, 0, 0)); // don't want a background for this frame
         getRootPane().setBackground(new Color(0, 0, 0, 0)); // don't want a background for the root pane either. Workaround for a FlatLaf macOS issue.
         getContentPane().setBackground(new Color(0, 0, 0, 0)); // don't want a background for the content frame either.
-
-        add(renderPanel);
-        renderPanel.setOpaque(false);
 
         try {
             if (getContentPane() instanceof JComponent) {
@@ -227,6 +210,23 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
     }
 
     @Override
+    public void paint(Graphics gf) {
+        if (bs == null) return;
+        Graphics g = bs.getDrawGraphics();
+        Graphics2D g2 = (Graphics2D) bs.getDrawGraphics();
+
+        g2.clearRect(0, 0, getWidth(), getHeight());
+
+        rootHandles.paint(g2);
+        if (dockableHandles != null) {
+            dockableHandles.paint(g2);
+        }
+        overlay.paint(g);
+        g2.dispose();
+        bs.show();
+    }
+
+    @Override
     public void componentResized(ComponentEvent e) {
         SwingUtilities.invokeLater(this::setSizeAndLocation);
     }
@@ -297,8 +297,6 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         // set location and size based on the reference docking frame
         setLocation(location);
         setSize(size);
-
-        renderPanel.setSize(size);
 
         rootHandles.updateHandlePositions();
 
