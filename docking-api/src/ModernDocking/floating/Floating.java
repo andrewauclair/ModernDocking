@@ -27,6 +27,7 @@ import ModernDocking.internal.InternalRootDockingPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.dnd.DragSource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,5 +58,17 @@ public class Floating {
 
     static void setFloatingTabbedPane(boolean floating) {
         isFloatingTabbedPane = floating;
+    }
+
+    public static void startDrag(DragSource dragSource) {
+        for (FloatUtilsFrame frame : utilFrames.values()) {
+            dragSource.addDragSourceMotionListener(frame);
+        }
+    }
+
+    public static void endDrag(DragSource dragSource) {
+        for (FloatUtilsFrame frame : utilFrames.values()) {
+            dragSource.removeDragSourceMotionListener(frame);
+        }
     }
 }

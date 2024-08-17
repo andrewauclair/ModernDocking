@@ -72,6 +72,8 @@ public class DockableProperties {
                         if (loadingLegacyFile) {
                             Property.StringProperty legacyProp = (Property.StringProperty) properties.get(property.name());
                             prop = parseProperty(prop.getName(), field.getType().getSimpleName().toString(), legacyProp.getValue());
+
+                            properties.put(prop.getName(), prop);
                         }
                         DockableProperties.validateProperty(field, prop);
                     }

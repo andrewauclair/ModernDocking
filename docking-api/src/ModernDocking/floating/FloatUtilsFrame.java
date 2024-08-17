@@ -37,9 +37,11 @@ import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceMotionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.awt.image.BufferStrategy;
 
-public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener, ComponentListener {
+public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener, ComponentListener, WindowStateListener {
     private final Window referenceDockingWindow;
     private final InternalRootDockingPanel root;
     private final RootDockingHandles rootHandles;
@@ -74,6 +76,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         this.overlay = new FloatingOverlay(docking, this);
 
         this.referenceDockingWindow.addComponentListener(this);
+        this.referenceDockingWindow.addWindowStateListener(this);
         SwingUtilities.invokeLater(this::setSizeAndLocation);
 
         orderFrames();
@@ -86,8 +89,14 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         getRootPane().setBackground(new Color(0, 0, 0, 0)); // don't want a background for the root pane either. Workaround for a FlatLaf macOS issue.
         getContentPane().setBackground(new Color(0, 0, 0, 0)); // don't want a background for the content frame either.
 
-        add(renderPanel);
-        renderPanel.setOpaque(false);
+        GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+        BufferCapabilities bufferCapabilities = gc.getBufferCapabilities();
+
+        if (bufferCapabilities.isMultiBufferAvailable())
+        {
+            add(renderPanel);
+            renderPanel.setOpaque(false);
+        }
 
         try {
             if (getContentPane() instanceof JComponent) {
@@ -104,7 +113,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         this.floatListener = floatListener;
         this.floatingFrame = floatingFrame;
         this.dragSource = dragSource;
-        dragSource.addDragSourceMotionListener(this);
+//        dragSource.addDragSourceMotionListener(this);
 
         mouseMoved(mousePosOnScreen);
 
@@ -115,8 +124,14 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
         setVisible(true);
 
-        createBufferStrategy(2);
-        bs = this.getBufferStrategy();
+        GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+        BufferCapabilities bufferCapabilities = gc.getBufferCapabilities();
+
+        if (!bufferCapabilities.isMultiBufferAvailable()) {
+            createBufferStrategy(2);
+            bs = this.getBufferStrategy();
+        }
+
         orderFrames();
     }
 
@@ -124,7 +139,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         setVisible(false);
 
         if (dragSource != null) {
-            dragSource.removeDragSourceMotionListener(this);
+//            dragSource.removeDragSourceMotionListener(this);
         }
         floatListener = null;
         floatingFrame = null;
@@ -227,6 +242,31 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
     }
 
     @Override
+    public void paint(Graphics g) {
+        if (bs == null) {
+            super.paint(g);
+            return;
+        }
+
+        g = bs.getDrawGraphics();
+        Graphics2D g2 = (Graphics2D) bs.getDrawGraphics();
+
+        g2.clearRect(0, 0, getWidth(), getHeight());
+
+        rootHandles.paint(g2);
+
+        if (dockableHandles != null) {
+            dockableHandles.paint(g2);
+        }
+
+        overlay.paint(g);
+
+        g2.dispose();
+
+        bs.show();
+    }
+
+    @Override
     public void componentResized(ComponentEvent e) {
         SwingUtilities.invokeLater(this::setSizeAndLocation);
     }
@@ -238,10 +278,12 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
     @Override
     public void componentShown(ComponentEvent e) {
+        SwingUtilities.invokeLater(this::setSizeAndLocation);
     }
 
     @Override
     public void componentHidden(ComponentEvent e) {
+        SwingUtilities.invokeLater(this::setSizeAndLocation);
     }
 
     public boolean isOverRootHandle() {
@@ -283,16 +325,21 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
     }
 
     private void setSizeAndLocation() {
-        int padding = (int) (DockingHandle.HANDLE_ICON_SIZE * 1.75);
+        int padding = getExtendedState() == Frame.MAXIMIZED_BOTH ? 0 : (int) (DockingHandle.HANDLE_ICON_SIZE * 1.75);
 
         Point location = new Point(referenceDockingWindow.getLocationOnScreen());
         Dimension size = new Dimension(referenceDockingWindow.getSize());
+
+
 
         location.x -= padding;
         location.y -= padding;
 
         size.width += padding * 2;
         size.height += padding * 2;
+
+        System.out.println("location = " + location);
+        System.out.println("size = " + size);
 
         // set location and size based on the reference docking frame
         setLocation(location);
@@ -304,5 +351,19 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
         revalidate();
         repaint();
+    }
+
+    @Override
+    public void windowStateChanged(WindowEvent e) {
+        if (referenceDockingWindow instanceof JFrame) {
+            if (((JFrame) referenceDockingWindow).getExtendedState() == JFrame.MAXIMIZED_BOTH) {
+                setExtendedState(JFrame.MAXIMIZED_BOTH);
+            }
+            else {
+                setExtendedState(JFrame.NORMAL);
+            }
+        }
+
+        SwingUtilities.invokeLater(this::setSizeAndLocation);
     }
 }
