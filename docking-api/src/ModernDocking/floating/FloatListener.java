@@ -142,6 +142,8 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 		if (currentRoot.isEmpty()) {
 			originalWindow.setVisible(false);
 		}
+
+		Floating.startDrag(dragSource);
 	}
 
 	public void removeListeners() {
@@ -196,6 +198,7 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 			originalWindow.dispose();
 		}
 
+		Floating.endDrag(dragSource);
 		Floating.setFloating(false);
 	}
 

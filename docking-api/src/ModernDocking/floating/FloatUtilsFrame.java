@@ -92,7 +92,8 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
         BufferCapabilities bufferCapabilities = gc.getBufferCapabilities();
 
-        if (bufferCapabilities.isMultiBufferAvailable()) {
+        if (bufferCapabilities.isMultiBufferAvailable())
+        {
             add(renderPanel);
             renderPanel.setOpaque(false);
         }
@@ -112,7 +113,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         this.floatListener = floatListener;
         this.floatingFrame = floatingFrame;
         this.dragSource = dragSource;
-        dragSource.addDragSourceMotionListener(this);
+//        dragSource.addDragSourceMotionListener(this);
 
         mouseMoved(mousePosOnScreen);
 
@@ -138,7 +139,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         setVisible(false);
 
         if (dragSource != null) {
-            dragSource.removeDragSourceMotionListener(this);
+//            dragSource.removeDragSourceMotionListener(this);
         }
         floatListener = null;
         floatingFrame = null;
@@ -324,7 +325,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
     }
 
     private void setSizeAndLocation() {
-        int padding = (int) (DockingHandle.HANDLE_ICON_SIZE * 1.75);
+        int padding = getExtendedState() == Frame.MAXIMIZED_BOTH ? 0 : (int) (DockingHandle.HANDLE_ICON_SIZE * 1.75);
 
         Point location = new Point(referenceDockingWindow.getLocationOnScreen());
         Dimension size = new Dimension(referenceDockingWindow.getSize());
