@@ -37,9 +37,11 @@ import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceMotionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.awt.image.BufferStrategy;
 
-public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener, ComponentListener {
+public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener, ComponentListener, WindowStateListener {
     private final Window referenceDockingWindow;
     private final InternalRootDockingPanel root;
     private final RootDockingHandles rootHandles;
@@ -74,6 +76,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         this.overlay = new FloatingOverlay(docking, this);
 
         this.referenceDockingWindow.addComponentListener(this);
+        this.referenceDockingWindow.addWindowStateListener(this);
         SwingUtilities.invokeLater(this::setSizeAndLocation);
 
         orderFrames();
@@ -274,10 +277,12 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
     @Override
     public void componentShown(ComponentEvent e) {
+        SwingUtilities.invokeLater(this::setSizeAndLocation);
     }
 
     @Override
     public void componentHidden(ComponentEvent e) {
+        SwingUtilities.invokeLater(this::setSizeAndLocation);
     }
 
     public boolean isOverRootHandle() {
@@ -324,11 +329,15 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         Point location = new Point(referenceDockingWindow.getLocationOnScreen());
         Dimension size = new Dimension(referenceDockingWindow.getSize());
 
+
         location.x -= padding;
         location.y -= padding;
 
         size.width += padding * 2;
         size.height += padding * 2;
+
+        System.out.println("location = " + location);
+        System.out.println("size = " + size);
 
         // set location and size based on the reference docking frame
         setLocation(location);
@@ -340,5 +349,10 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
         revalidate();
         repaint();
+    }
+
+    @Override
+    public void windowStateChanged(WindowEvent e) {
+        SwingUtilities.invokeLater(this::setSizeAndLocation);
     }
 }
