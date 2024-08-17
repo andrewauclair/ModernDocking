@@ -148,6 +148,8 @@ public class LayoutPersistenceAPI {
             throw new DockingLayoutException(file, DockingLayoutException.FailureType.LOAD, e);
         }
         finally {
+            DockableProperties.setLoadingLegacyFile(false);
+
             try {
                 if (reader != null) {
                     reader.close();
@@ -517,8 +519,6 @@ public class LayoutPersistenceAPI {
                         }
                     }
                     else {
-                        DockableProperties.setLoadingLegacyFile(false);
-
                         while (reader.hasNext()) {
                             next = reader.nextTag();
 
@@ -625,8 +625,6 @@ public class LayoutPersistenceAPI {
                     }
                 }
                 else {
-                    DockableProperties.setLoadingLegacyFile(false);
-
                     while (reader.hasNext()) {
                         next = reader.nextTag();
 

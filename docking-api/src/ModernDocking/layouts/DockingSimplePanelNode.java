@@ -157,7 +157,7 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 	 * @return properties map
 	 */
 	public Map<String, Property> getProperties() {
-		return Collections.unmodifiableMap(properties);
+		return properties;
 	}
 
 	public void setProperties(Map<String, Property> properties) {
