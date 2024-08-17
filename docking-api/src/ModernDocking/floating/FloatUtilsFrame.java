@@ -330,6 +330,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         Dimension size = new Dimension(referenceDockingWindow.getSize());
 
 
+
         location.x -= padding;
         location.y -= padding;
 
@@ -353,6 +354,15 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
     @Override
     public void windowStateChanged(WindowEvent e) {
+        if (referenceDockingWindow instanceof JFrame) {
+            if (((JFrame) referenceDockingWindow).getExtendedState() == JFrame.MAXIMIZED_BOTH) {
+                setExtendedState(JFrame.MAXIMIZED_BOTH);
+            }
+            else {
+                setExtendedState(JFrame.NORMAL);
+            }
+        }
+
         SwingUtilities.invokeLater(this::setSizeAndLocation);
     }
 }
