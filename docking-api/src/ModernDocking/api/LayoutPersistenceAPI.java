@@ -46,6 +46,9 @@ public class LayoutPersistenceAPI {
     private static final String NL = "\n";
     private final DockingAPI docking;
 
+    private final XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+    private final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+
     protected LayoutPersistenceAPI(DockingAPI docking) {
         this.docking = docking;
     }
@@ -71,10 +74,16 @@ public class LayoutPersistenceAPI {
             file.getParentFile().mkdirs();
         }
 
-        XMLOutputFactory factory = XMLOutputFactory.newInstance();
 
         try (OutputStream out = Files.newOutputStream(file.toPath())) {
-            XMLStreamWriter writer = factory.createXMLStreamWriter(out);
+            saveLayoutToOutputStream(out, layout);
+        } catch (Exception e) {
+            throw new DockingLayoutException(file, DockingLayoutException.FailureType.SAVE, e);
+        }
+    }
+
+    public void saveLayoutToOutputStream(final OutputStream out, final  ApplicationLayout layout) throws XMLStreamException {
+        XMLStreamWriter writer = outputFactory.createXMLStreamWriter(out);
 
             writer.writeStartDocument();
             writer.writeCharacters(NL);
@@ -105,10 +114,6 @@ public class LayoutPersistenceAPI {
             writer.writeEndDocument();
 
             writer.close();
-        }
-        catch (Exception e) {
-            throw new DockingLayoutException(file, DockingLayoutException.FailureType.SAVE, e);
-        }
     }
 
     /**
@@ -119,13 +124,16 @@ public class LayoutPersistenceAPI {
      * @throws DockingLayoutException Thrown if we failed to read from the file or something went wrong with loading the layout
      */
     public ApplicationLayout loadApplicationLayoutFromFile(File file) throws DockingLayoutException {
-        XMLInputFactory factory = XMLInputFactory.newInstance();
-
-        XMLStreamReader reader = null;
-
         try (InputStream in = Files.newInputStream(file.toPath())) {
-            reader = factory.createXMLStreamReader(in);
+            return loadApplicationLayoutFromInputStream(in);
+        } catch (Exception e) {
+            throw new DockingLayoutException(file, DockingLayoutException.FailureType.LOAD, e);
+        }
+    }
 
+    public ApplicationLayout loadApplicationLayoutFromInputStream(final InputStream in) throws XMLStreamException {
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(in);
+        try {
             ApplicationLayout layout = new ApplicationLayout();
 
             while (reader.hasNext()) {
@@ -143,19 +151,8 @@ public class LayoutPersistenceAPI {
             }
 
             return layout;
-        }
-        catch (Exception e) {
-            throw new DockingLayoutException(file, DockingLayoutException.FailureType.LOAD, e);
-        }
-        finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            }
-            catch (XMLStreamException e) {
-                e.printStackTrace();
-            }
+        } finally {
+            reader.close();
         }
     }
 
