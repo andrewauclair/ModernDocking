@@ -82,6 +82,11 @@ public class ToolPanel extends BasePanel {
 	}
 
 	@Override
+	public boolean requestClose() {
+		return JOptionPane.showConfirmDialog(null, "Are you sure you want to close this panel?", "Close Panel", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+	}
+
+	@Override
 	public boolean isAutoHideAllowed() {
 		return true;
 	}
