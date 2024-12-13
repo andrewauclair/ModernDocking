@@ -132,7 +132,13 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		panel.add(menu, gbc);
 
 		tabs.putClientProperty("JTabbedPane.trailingComponent", panel);
-		tabs.putClientProperty("JTabbedPane.tabCloseCallback", (IntConsumer) tabIndex -> docking.undock(panels.get(tabIndex).getDockable()));
+		tabs.putClientProperty("JTabbedPane.tabCloseCallback", (IntConsumer) tabIndex -> {
+			Dockable dockable = panels.get(tabIndex).getDockable();
+
+			if (dockable.requestClose()) {
+				docking.undock(dockable);
+			}
+		});
 	}
 
 	// sets the button up for being on a toolbar

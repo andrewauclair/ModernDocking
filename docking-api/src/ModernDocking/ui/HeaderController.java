@@ -102,7 +102,9 @@ public class HeaderController implements MaximizeListener, DockingListener {
 	}
 
 	public void close() {
-		docking.undock(dockable);
+		if (dockable.requestClose()) {
+			docking.undock(dockable);
+		}
 	}
 
 	@Override

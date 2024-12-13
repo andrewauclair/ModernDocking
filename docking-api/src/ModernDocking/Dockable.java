@@ -157,6 +157,16 @@ public interface Dockable {
 	}
 
 	/**
+	 * callback function to all the application to override the closing of a dockable.
+	 * For example: an application might want to ask the user if they wish to continue.
+	 *
+	 * @return Should Modern Docking continue to close this dockable?
+	 */
+	default boolean requestClose() {
+		return true;
+	}
+
+	/**
 	 * @deprecated Replaced with isAutoHideAllowed. Will be removed in future release.
 	 */
 	@Deprecated(since = "0.12.0", forRemoval = true)
