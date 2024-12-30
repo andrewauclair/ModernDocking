@@ -34,8 +34,8 @@ dependencies {
 		api project(':docking-api')
 	}
 
-	implementation 'com.formdev:flatlaf:3.4.1'
-	implementation 'com.formdev:flatlaf-extras:3.4.1'
+	implementation 'com.formdev:flatlaf:' + flatLafVersion
+	implementation 'com.formdev:flatlaf-extras:' + flatLafVersion
 }
 
 repositories {

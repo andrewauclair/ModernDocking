@@ -19,6 +19,10 @@ repositories {
 
 subprojects {
 	version = "0.12.0-SNAPSHOT"
+
+	ext {
+		flatLafVersion = "3.4.1"
+	}
 }
 
 publishing {
