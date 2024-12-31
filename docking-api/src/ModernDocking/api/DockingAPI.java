@@ -267,7 +267,7 @@ public class DockingAPI {
     }
 
     /**
-     * @deprecated Replaced with configureAutoHide. Will be removed in a future release.
+     * @deprecated Replaced with autoHideAllowed. Will be removed in a future release.
      */
     @Deprecated(since = "0.12.0", forRemoval = true)
     public boolean pinningAllowed(Dockable dockable) {
