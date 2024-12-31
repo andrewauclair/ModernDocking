@@ -373,5 +373,8 @@ public class InternalRootDockingPanel extends DockingPanel {
         if (eastToolbar != null) {
             SwingUtilities.updateComponentTreeUI(eastToolbar);
         }
+        if (rootPanel.getEmptyPanel() != null) {
+            SwingUtilities.updateComponentTreeUI(rootPanel.getEmptyPanel());
+        }
     }
 }

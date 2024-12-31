@@ -68,23 +68,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 	public MainFrame(File layoutFile) {
 		this.layoutFile = layoutFile;
-	}
 
-	static Random rng = new Random();
-	public static String generateString(String characters, int length)
-	{
-
-
-		char[] text = new char[length];
-		for (int i = 0; i < length; i++)
-		{
-			text[i] = characters.charAt(rng.nextInt(characters.length()));
-		}
-		return new String(text);
-	}
-
-	@Override
-	public void setVisible(boolean visible) {
 		setSize(800, 600);
 
 		setTitle("Modern Docking Basic Demo");
@@ -301,8 +285,19 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		DockingLayouts.addLayout("default", defaultLayout);
 		AppState.setDefaultApplicationLayout(defaultLayout);
+	}
 
-		super.setVisible(visible);
+	static Random rng = new Random();
+	public static String generateString(String characters, int length)
+	{
+
+
+		char[] text = new char[length];
+		for (int i = 0; i < length; i++)
+		{
+			text[i] = characters.charAt(rng.nextInt(characters.length()));
+		}
+		return new String(text);
 	}
 
 	private JMenuItem actionListenDock(Dockable dockable) {
