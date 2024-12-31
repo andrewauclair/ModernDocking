@@ -18,7 +18,7 @@ repositories {
 }
 
 subprojects {
-	version = "0.12.0"
+	version = "1.0"
 
 	ext {
 		flatLafVersion = "3.5.4"
