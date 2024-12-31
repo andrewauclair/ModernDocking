@@ -367,6 +367,27 @@ public class DockingStateAPI {
         for (DockingSimplePanelNode simpleNode : node.getPersistentIDs()) {
             Dockable dockable = getDockable(docking, simpleNode.getPersistentID());
 
+            boolean generated = false;
+
+            if (dockable instanceof FailedDockable) {
+                try {
+                    Class<?> aClass = Class.forName(simpleNode.getClassName());
+                    Constructor<?> constructor = aClass.getConstructor(String.class, String.class);
+
+                    docking.deregisterDockable(dockable);
+
+                    constructor.newInstance(simpleNode.getPersistentID(), simpleNode.getPersistentID());
+
+                    dockable = getDockable(docking, simpleNode.getPersistentID());
+
+                    generated = true;
+                }
+                catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+                       InvocationTargetException e) {
+                    logger.log(Level.INFO, e.getMessage(), e);
+                }
+            }
+
             if (dockable == null) {
                 throw new DockableNotFoundException(simpleNode.getPersistentID());
             }
@@ -375,7 +396,9 @@ public class DockingStateAPI {
 
             DockableProperties.configureProperties(wrapper, simpleNode.getProperties());
 
-            docking.undock(dockable);
+            if (!generated) {
+                docking.undock(dockable);
+            }
 
             wrapper.setWindow(window);
 
@@ -436,7 +459,7 @@ public class DockingStateAPI {
     private Dockable getDockable(DockingAPI docking, String persistentID) {
         try {
             return DockingInternal.get(docking).getDockable(persistentID);
-        } catch (DockableRegistrationFailureException ignore) {
+        } catch (DockableNotFoundException ignore) {
         }
         return new FailedDockable(docking, persistentID);
     }
