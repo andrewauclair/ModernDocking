@@ -139,7 +139,8 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 
 		InternalRootDockingPanel currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
 
-		if (currentRoot.isEmpty()) {
+		// hide the original window if it is not the main window of the app
+		if (currentRoot.isEmpty() && docking.getMainWindow() != originalWindow) {
 			originalWindow.setVisible(false);
 		}
 	}
