@@ -22,11 +22,9 @@ jobs:
           distribution: 'temurin'
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
       - name: Package Renames
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          arguments: packageRename
+        run: ./gradlew packageRename
       - name: Build
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          arguments: build
+        run: ./gradlew build
