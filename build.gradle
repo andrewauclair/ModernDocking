@@ -21,7 +21,7 @@ subprojects {
 	version = "0.12.0"
 
 	ext {
-		flatLafVersion = "3.4.1"
+		flatLafVersion = "3.5.4"
 	}
 }
 
