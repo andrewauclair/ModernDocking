@@ -351,7 +351,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			parent.replaceChild(this, new DockedSimplePanel(docking, panels.get(0)));
 		}
 
-		if (panels.size() == 0) {
+		if (panels.isEmpty()) {
 			parent.removeChild(this);
 		}
 	}

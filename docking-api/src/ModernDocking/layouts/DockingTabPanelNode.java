@@ -48,9 +48,9 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 *
 	 * @param selectedTabID Persistent ID of first dockable
 	 */
-	public DockingTabPanelNode(DockingAPI docking, String selectedTabID) {
+	public DockingTabPanelNode(DockingAPI docking, String selectedTabID, String selectedTabClassName) {
 		this.docking = docking;
-		addTab(selectedTabID);
+		addTab(selectedTabID, selectedTabClassName);
 		this.selectedTabID = selectedTabID;
 	}
 
@@ -60,9 +60,9 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 * @param selectedTabID Persistent ID of first dockable
 	 * @param properties Properties of the dockable
 	 */
-	public DockingTabPanelNode(DockingAPI docking, String selectedTabID, Map<String, Property> properties) {
+	public DockingTabPanelNode(DockingAPI docking, String selectedTabID, String selectedTabClassName, Map<String, Property> properties) {
 		this.docking = docking;
-		addTab(selectedTabID, properties);
+		addTab(selectedTabID, selectedTabClassName, properties);
 		this.selectedTabID = selectedTabID;
 	}
 
@@ -71,7 +71,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 *
 	 * @param persistentID Dockable persistent ID to add
 	 */
-	public void addTab(String persistentID) {
+	public void addTab(String persistentID, String className) {
 		if (findNode(persistentID) != null) {
 			DockingSimplePanelNode node = null;
 			for (DockingSimplePanelNode tab : tabs) {
@@ -87,11 +87,13 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 			}
 			return;
 		}
-		String className = "";
-		try {
-			className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();
-		}
-		catch (Exception ignored) {
+
+		if (className.isEmpty()) {
+			try {
+				className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();
+			}
+			catch (Exception ignored) {
+			}
 		}
 
 		DockingSimplePanelNode tab = new DockingSimplePanelNode(docking, persistentID, className);
@@ -105,7 +107,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 * @param persistentID Dockable persistent ID to add
 	 * @param properties Properties of the dockable
 	 */
-	public void addTab(String persistentID, Map<String, Property> properties) {
+	public void addTab(String persistentID, String className, Map<String, Property> properties) {
 		if (findNode(persistentID) != null) {
 			DockingSimplePanelNode node = null;
 			for (DockingSimplePanelNode tab : tabs) {
@@ -121,7 +123,14 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 			}
 			return;
 		}
-		String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();
+
+		if (className.isEmpty()) {
+			try {
+				className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();
+			}
+			catch (Exception ignored) {
+			}
+		}
 
 		DockingSimplePanelNode tab = new DockingSimplePanelNode(docking, persistentID, className, properties);
 		tab.setParent(this);
@@ -177,7 +186,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	@Override
 	public void dock(String persistentID, DockingRegion region, double dividerProportion) {
 		if (region == DockingRegion.CENTER) {
-			addTab(persistentID);
+			addTab(persistentID, "");
 		}
 		else {
 			int orientation = region == DockingRegion.EAST || region == DockingRegion.WEST ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
@@ -186,8 +195,8 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 			DockingLayoutNode right;
 
 			if (Settings.alwaysDisplayTabsMode()) {
-				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingTabPanelNode(docking, persistentID) : this;
-				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(docking, persistentID);
+				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingTabPanelNode(docking, persistentID, "") : this;
+				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(docking, persistentID, "");
 			}
 			else {
 				String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();

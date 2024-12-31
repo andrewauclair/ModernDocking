@@ -90,10 +90,10 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 			getParent().dock(persistentID, region, dividerProportion);
 		}
 		else if (region == DockingRegion.CENTER) {
-			DockingTabPanelNode tab = new DockingTabPanelNode(docking, persistentID);
+			DockingTabPanelNode tab = new DockingTabPanelNode(docking, persistentID, "");
 
-			tab.addTab(this.persistentID);
-			tab.addTab(persistentID);
+			tab.addTab(this.persistentID, "");
+			tab.addTab(persistentID, "");
 
 			parent.replaceChild(this, tab);
 		}
@@ -105,12 +105,12 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 
 			if (Settings.alwaysDisplayTabsMode()) {
 				if (orientation == JSplitPane.HORIZONTAL_SPLIT) {
-					left = region == DockingRegion.EAST ? this : new DockingTabPanelNode(docking, persistentID);
-					right = region == DockingRegion.EAST ? new DockingTabPanelNode(docking, persistentID) : this;
+					left = region == DockingRegion.EAST ? this : new DockingTabPanelNode(docking, persistentID, "");
+					right = region == DockingRegion.EAST ? new DockingTabPanelNode(docking, persistentID, "") : this;
 				}
 				else {
-					left = region == DockingRegion.SOUTH ? this : new DockingTabPanelNode(docking, persistentID);
-					right = region == DockingRegion.SOUTH ? new DockingTabPanelNode(docking, persistentID) : this;
+					left = region == DockingRegion.SOUTH ? this : new DockingTabPanelNode(docking, persistentID, "");
+					right = region == DockingRegion.SOUTH ? new DockingTabPanelNode(docking, persistentID, "") : this;
 				}
 			}
 			else {

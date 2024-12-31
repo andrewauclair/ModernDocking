@@ -23,6 +23,7 @@ package ModernDocking.api;
 
 import ModernDocking.Dockable;
 import ModernDocking.Property;
+import ModernDocking.exception.DockableNotFoundException;
 import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.exception.DockingLayoutException;
 import ModernDocking.internal.DockableProperties;
@@ -172,7 +173,7 @@ public class LayoutPersistenceAPI {
 
                         DockableProperties.configureProperties(wrapper, node.getProperties());
                     }
-                    catch (DockableRegistrationFailureException ignored) {
+                    catch (DockableRegistrationFailureException | DockableNotFoundException ignored) {
                     }
                 }
             }
@@ -342,6 +343,7 @@ public class LayoutPersistenceAPI {
         writer.writeCharacters(NL);
 
         writer.writeStartElement("selectedTab");
+        writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(node.getSelectedTabID()).getClass().getCanonicalName());
         writer.writeAttribute("persistentID", node.getSelectedTabID());
         writer.writeCharacters(NL);
         writer.writeEndElement();
@@ -350,6 +352,7 @@ public class LayoutPersistenceAPI {
         for (DockingSimplePanelNode simpleNode : node.getPersistentIDs()) {
             writer.writeStartElement("tab");
             writer.writeAttribute("persistentID", simpleNode.getPersistentID());
+            writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(simpleNode.getPersistentID()).getClass().getCanonicalName());
             writer.writeCharacters(NL);
 
             writer.writeStartElement("properties");
@@ -363,7 +366,12 @@ public class LayoutPersistenceAPI {
                     writer.writeStartElement("property");
                     writer.writeAttribute("name", value.getName());
                     writer.writeAttribute("type", value.getType().getSimpleName());
-                    writer.writeAttribute("value", value.toString());
+                    if (value.toString() == null) {
+                        writer.writeAttribute("value", "");
+                    }
+                    else {
+                        writer.writeAttribute("value", value.toString());
+                    }
                     writer.writeEndElement();
                 }
             }
@@ -600,13 +608,15 @@ public class LayoutPersistenceAPI {
 
             if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("selectedTab")) {
                 String persistentID = reader.getAttributeValue(0);
-                node = new DockingTabPanelNode(docking, persistentID);
+                String className = reader.getAttributeCount() > 1 ? reader.getAttributeValue(1) : "";
+                node = new DockingTabPanelNode(docking, className, persistentID);
             }
             else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("tab")) {
                 currentPersistentID = reader.getAttributeValue(0);
+                String className = reader.getAttributeCount() > 1 ? reader.getAttributeValue(1) : "";
 
                 if (node != null) {
-                    node.addTab(currentPersistentID);
+                    node.addTab(currentPersistentID, className);
                 }
             }
             else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("properties")) {
