@@ -54,6 +54,7 @@ public class DockableWrapper {
 
 	private boolean maximized = false;
 	private boolean hidden = false;
+	private boolean isAnchor = false;
 	private InternalRootDockingPanel root;
 
 	private final Map<String, Property> properties = new HashMap<>();
@@ -63,16 +64,17 @@ public class DockableWrapper {
 	 *
 	 * @param dockable Dockable to contain in this wrapper
 	 */
-	public DockableWrapper(DockingAPI docking, Dockable dockable) {
+	public DockableWrapper(DockingAPI docking, Dockable dockable, boolean isAnchor) {
 		this.docking = docking;
 		this.dockable = dockable;
+		this.isAnchor = isAnchor;
 
 		HeaderModel headerModel = new HeaderModel(dockable, docking);
 		headerController = new HeaderController(dockable, docking, headerModel);
 		headerUI = dockable.createHeaderUI(headerController, headerModel);
 		headerController.setUI(headerUI);
 
-		displayPanel = new DisplayPanel(this);
+		displayPanel = new DisplayPanel(this, isAnchor);
 
 		floatListener = new DisplayPanelFloatListener(docking, displayPanel);
 	}
@@ -172,6 +174,10 @@ public class DockableWrapper {
 		this.hidden = hidden;
 
 		displayPanel.parentChanged();
+	}
+
+	public boolean isAnchor() {
+		return isAnchor;
 	}
 
 	/**

@@ -59,6 +59,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	private final CustomTabbedPane tabs = new CustomTabbedPane();
 	private final DockingAPI docking;
 
+	private final DockingAnchorPanel anchor;
+
 	/**
 	 * The parent of this DockedTabbedPanel
 	 */
@@ -76,8 +78,9 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 *
 	 * @param dockable The first dockable in the tabbed pane
 	 */
-	public DockedTabbedPanel(DockingAPI docking, DockableWrapper dockable) {
+	public DockedTabbedPanel(DockingAPI docking, DockableWrapper dockable, DockingAnchorPanel anchor) {
 		this.docking = docking;
+		this.anchor = anchor;
 		setLayout(new BorderLayout());
 
 		// set the initial border. Docking handles the border after this using a global AWT listener
@@ -274,6 +277,11 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	}
 
 	@Override
+	public DockingAnchorPanel getAnchor() {
+		return anchor;
+	}
+
+	@Override
 	public void setParent(DockingPanel parent) {
 		this.parent = parent;
 	}
@@ -287,16 +295,19 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			addPanel(wrapper);
 		}
 		else {
-			DockedSplitPanel split = new DockedSplitPanel(docking, panels.get(0).getWindow());
+			DockedSplitPanel split = new DockedSplitPanel(docking, panels.get(0).getWindow(), anchor);
 			parent.replaceChild(this, split);
 
 			DockingPanel newPanel;
 
-			if (Settings.alwaysDisplayTabsMode()) {
-				newPanel = new DockedTabbedPanel(docking, wrapper);
+			if (wrapper.isAnchor()) {
+				newPanel = new DockingAnchorPanel(docking, wrapper);
+			}
+			else if (Settings.alwaysDisplayTabsMode()) {
+				newPanel = new DockedTabbedPanel(docking, wrapper, anchor);
 			}
 			else {
-				newPanel = new DockedSimplePanel(docking, wrapper);
+				newPanel = new DockedSimplePanel(docking, wrapper, anchor);
 			}
 
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
@@ -348,7 +359,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		removePanel(DockingInternal.get(docking).getWrapper(dockable));
 
 		if (!Floating.isFloatingTabbedPane() && !Settings.alwaysDisplayTabsMode() && panels.size() == 1 && parent != null && panels.get(0).getDockable().getTabPreference() != DockableTabPreference.TOP) {
-			parent.replaceChild(this, new DockedSimplePanel(docking, panels.get(0)));
+			parent.replaceChild(this, new DockedSimplePanel(docking, panels.get(0), null));
 		}
 
 		if (panels.isEmpty()) {
@@ -364,6 +375,10 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	@Override
 	public void removeChild(DockingPanel child) {
 		// no-op, docked tab can't have panel children, wrappers only
+	}
+
+	public List<DockingPanel> getChildren() {
+		return Collections.emptyList();
 	}
 
 	private void setNotSelectedBorder() {

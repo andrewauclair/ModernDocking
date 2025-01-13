@@ -34,14 +34,16 @@ public class DisplayPanel extends JPanel {
 	 * Dockable contained in this display panel
 	 */
 	private final DockableWrapper wrapper;
+	private final boolean isAnchor;
 
 	/**
 	 * Create a new internal display panel for the dockable
 	 *
 	 * @param wrapper Wrapper for the dockable that this panel will represent
 	 */
-	public DisplayPanel(DockableWrapper wrapper) {
+	public DisplayPanel(DockableWrapper wrapper, boolean isAnchor) {
 		this.wrapper = wrapper;
+		this.isAnchor = isAnchor;
 
 		setLayout(new GridBagLayout());
 
@@ -58,10 +60,12 @@ public class DisplayPanel extends JPanel {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 
-		if (!Settings.alwaysDisplayTabsMode() || wrapper.isHidden()) {
-			if (!(wrapper.getParent() instanceof DockedTabbedPanel) || ((DockedTabbedPanel) wrapper.getParent()).isUsingBottomTabs()) {
-				add((Component) wrapper.getHeaderUI(), gbc);
-				gbc.gridy++;
+		if (!isAnchor) {
+			if (!Settings.alwaysDisplayTabsMode() || wrapper.isHidden()) {
+				if (!(wrapper.getParent() instanceof DockedTabbedPanel) || ((DockedTabbedPanel) wrapper.getParent()).isUsingBottomTabs()) {
+					add((Component) wrapper.getHeaderUI(), gbc);
+					gbc.gridy++;
+				}
 			}
 		}
 

@@ -240,6 +240,10 @@ public class DockingAPI {
         }
     }
 
+    public void registerDockingAnchor(Dockable anchor) {
+        internals.registerDockingAnchor(anchor);
+    }
+
     /**
      * allows the user to configure auto hide per window. by default auto hide is only enabled on the frames the docking framework creates
      *
