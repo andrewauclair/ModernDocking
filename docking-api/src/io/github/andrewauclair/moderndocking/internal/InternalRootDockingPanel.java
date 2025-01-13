@@ -31,6 +31,7 @@ import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -143,6 +144,11 @@ public class InternalRootDockingPanel extends DockingPanel {
     }
 
     @Override
+    public DockingAnchorPanel getAnchor() {
+        return null;
+    }
+
+    @Override
     public void setParent(DockingPanel parent) {
     }
 
@@ -156,11 +162,11 @@ public class InternalRootDockingPanel extends DockingPanel {
             panel.dock(dockable, region, dividerProportion);
         }
         else if (Settings.defaultTabPreference() == DockableTabPreference.TOP_ALWAYS) {
-            setPanel(new DockedTabbedPanel(docking, wrapper));
+            setPanel(new DockedTabbedPanel(docking, wrapper, null));
             wrapper.setWindow(rootPanel.getWindow());
         }
         else {
-            setPanel(new DockedSimplePanel(docking, wrapper));
+            setPanel(new DockedSimplePanel(docking, wrapper, null));
             wrapper.setWindow(rootPanel.getWindow());
         }
     }
@@ -194,6 +200,10 @@ public class InternalRootDockingPanel extends DockingPanel {
                 createContents();
             }
         }
+    }
+
+    public List<DockingPanel> getChildren() {
+        return Collections.singletonList(panel);
     }
 
     /**

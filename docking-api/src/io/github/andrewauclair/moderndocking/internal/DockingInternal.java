@@ -47,6 +47,7 @@ import java.util.stream.Collectors;
  * Internal utilities for the library
  */
 public class DockingInternal {
+	private final Map<String, DockableWrapper> anchors = new HashMap<>();
 	private final Map<String, DockableWrapper> dockables = new HashMap<>();
 	private final DockingAPI docking;
 
@@ -179,7 +180,19 @@ public class DockingInternal {
 			throw new RuntimeException("Dockable '" + dockable.getPersistentID() + "' should not return 'null' for tabText()");
 		}
 		validateDockingProperties(dockable);
-		dockables.put(dockable.getPersistentID(), new DockableWrapper(docking, dockable));
+		dockables.put(dockable.getPersistentID(), new DockableWrapper(docking, dockable, false));
+	}
+
+	/**
+	 * register an anchor with the framework
+	 *
+	 * @param dockable The anchor to register
+	 */
+	public void registerDockingAnchor(Dockable anchor) {
+		if (anchors.containsKey(anchor.getPersistentID())) {
+			throw new DockableRegistrationFailureException(anchor.getPersistentID());
+		}
+		anchors.put(anchor.getPersistentID(), new DockableWrapper(docking, anchor, true));
 	}
 
 	private void validateDockingProperties(Dockable dockable) {
@@ -239,6 +252,9 @@ public class DockingInternal {
 		if (dockables.containsKey(dockable.getPersistentID())) {
 			return dockables.get(dockable.getPersistentID());
 		}
+		if (anchors.containsKey(dockable.getPersistentID())) {
+			return anchors.get(dockable.getPersistentID());
+		}
 		throw new DockableNotFoundException(dockable.getPersistentID());
 	}
 
@@ -255,6 +271,10 @@ public class DockingInternal {
 	public Dockable getDockable(String persistentID) {
 		if (dockables.containsKey(persistentID)) {
 			return dockables.get(persistentID).getDockable();
+		}
+		// TODO I'm not 100% sure about this one
+		if (anchors.containsKey(persistentID)) {
+			return anchors.get(persistentID).getDockable();
 		}
 		throw new DockableNotFoundException(persistentID);
 	}

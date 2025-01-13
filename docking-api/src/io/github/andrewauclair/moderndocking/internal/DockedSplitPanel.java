@@ -33,6 +33,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * DockingPanel that has a split pane with 2 dockables, split can be vertical or horizontal
@@ -51,6 +53,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	private DockingPanel parent;
 	private final DockingAPI docking;
 	private final Window window;
+	private final DockingAnchorPanel anchor;
 
 	/**
 	 * the last divider proportion that setDividerLocation was called with
@@ -62,9 +65,11 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	 *
 	 * @param window The window this panel is in. Used to tell the child DockableWrappers what Window they are a part of
 	 */
-	public DockedSplitPanel(DockingAPI docking, Window window) {
+	public DockedSplitPanel(DockingAPI docking, Window window, DockingAnchorPanel anchor) {
 		this.docking = docking;
 		this.window = window;
+		this.anchor = anchor;
+
 		setLayout(new BorderLayout());
 
 		splitPane.setContinuousLayout(true);
@@ -262,6 +267,11 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	}
 
 	@Override
+	public DockingAnchorPanel getAnchor() {
+		return anchor;
+	}
+
+	@Override
 	public void setParent(DockingPanel parent) {
 		this.parent = parent;
 	}
@@ -278,16 +288,16 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 
 		wrapper.setWindow(window);
 
-		DockedSplitPanel split = new DockedSplitPanel(docking, window);
+		DockedSplitPanel split = new DockedSplitPanel(docking, window, null);
 		parent.replaceChild(this, split);
 
 		DockingPanel newPanel;
 
 		if (Settings.alwaysDisplayTabsMode()) {
-			newPanel = new DockedTabbedPanel(docking, wrapper);
+			newPanel = new DockedTabbedPanel(docking, wrapper, anchor);
 		}
 		else {
-			newPanel = new DockedSimplePanel(docking, wrapper);
+			newPanel = new DockedSimplePanel(docking, wrapper, anchor);
 		}
 
 		if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
@@ -337,6 +347,10 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 		else if (right == child) {
 			parent.replaceChild(this, left);
 		}
+	}
+
+	public List<DockingPanel> getChildren() {
+		return Arrays.asList(left, right);
 	}
 
 	@Override

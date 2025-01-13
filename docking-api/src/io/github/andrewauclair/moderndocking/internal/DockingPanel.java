@@ -25,11 +25,14 @@ import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 
 import javax.swing.*;
+import java.util.List;
 
 /**
  * Docking panel with docking regions of: north, south, east, west and center
  */
 public abstract class DockingPanel extends JPanel {
+	public abstract DockingAnchorPanel getAnchor();
+
 	/**
 	 * Set the parent of this DockingPanel
 	 *
@@ -67,4 +70,6 @@ public abstract class DockingPanel extends JPanel {
 	 * @param child Child to remove
 	 */
 	public abstract void removeChild(DockingPanel child);
+
+	public abstract List<DockingPanel> getChildren();
 }

@@ -28,6 +28,8 @@ import io.github.andrewauclair.moderndocking.settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * simple docking panel that only has a single Dockable in the center
@@ -40,6 +42,8 @@ public class DockedSimplePanel extends DockingPanel {
 
 	private final DockingAPI docking;
 
+	private DockingAnchorPanel anchor;
+
 	/**
 	 * Parent panel of this simple panel
 	 */
@@ -51,8 +55,8 @@ public class DockedSimplePanel extends DockingPanel {
 	 * @param docking Instance of the docking framework that this panel belongs to
 	 * @param dockable Wrapper of the dockable in this simple panel
 	 */
-	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable) {
-		this(docking, dockable, dockable.getDisplayPanel());
+	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable, DockingAnchorPanel anchor) {
+		this(docking, dockable, anchor, dockable.getDisplayPanel());
 	}
 
 	/**
@@ -62,7 +66,7 @@ public class DockedSimplePanel extends DockingPanel {
 	 * @param dockable Wrapper of the dockable in this simple panel
 	 * @param displayPanel The panel to display in the DockedSimplePanel for this dockable
 	 */
-	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable, DisplayPanel displayPanel) {
+	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable, DockingAnchorPanel anchor, DisplayPanel displayPanel) {
 		setLayout(new BorderLayout());
 
 		setNotSelectedBorder();
@@ -71,6 +75,7 @@ public class DockedSimplePanel extends DockingPanel {
 
 		this.dockable = dockable;
 		this.docking = docking;
+		this.anchor = anchor;
 
 		add(displayPanel, BorderLayout.CENTER);
 	}
@@ -82,6 +87,11 @@ public class DockedSimplePanel extends DockingPanel {
 	 */
 	public DockableWrapper getWrapper() {
 		return dockable;
+	}
+
+	@Override
+	public DockingAnchorPanel getAnchor() {
+		return anchor;
 	}
 
 	@Override
@@ -100,7 +110,7 @@ public class DockedSimplePanel extends DockingPanel {
 			((DockedTabbedPanel) parent).addPanel(wrapper);
 		}
 		else if (region == DockingRegion.CENTER) {
-			DockedTabbedPanel tabbedPanel = new DockedTabbedPanel(docking, this.dockable);
+			DockedTabbedPanel tabbedPanel = new DockedTabbedPanel(docking, this.dockable, anchor);
 
 			tabbedPanel.addPanel(wrapper);
 
@@ -109,16 +119,19 @@ public class DockedSimplePanel extends DockingPanel {
 			parent.replaceChild(this, tabbedPanel);
 		}
 		else {
-			DockedSplitPanel split = new DockedSplitPanel(docking, this.dockable.getWindow());
+			DockedSplitPanel split = new DockedSplitPanel(docking, this.dockable.getWindow(), anchor);
 			parent.replaceChild(this, split);
 
 			DockingPanel newPanel;
 
-			if (Settings.alwaysDisplayTabsMode()) {
-				newPanel = new DockedTabbedPanel(docking, wrapper);
+			if (wrapper.isAnchor()) {
+				newPanel = new DockingAnchorPanel(docking, wrapper);
+			}
+			else if (Settings.alwaysDisplayTabsMode()) {
+				newPanel = new DockedTabbedPanel(docking, wrapper, anchor);
 			}
 			else {
-				newPanel = new DockedSimplePanel(docking, wrapper);
+				newPanel = new DockedSimplePanel(docking, wrapper, anchor);
 			}
 
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
@@ -150,7 +163,19 @@ public class DockedSimplePanel extends DockingPanel {
 		if (this.dockable.getDockable() == dockable) {
 			remove(this.dockable.getDisplayPanel());
 
-			parent.removeChild(this);
+//			parent.removeChild(this);
+
+
+
+			DockingAnchorPanel anchorPanel = anchor;
+			anchor = null;
+
+			if (anchorPanel == null || !DockingComponentUtils.isAnchorEmpty(docking, anchorPanel.getWrapper().getDockable())) {
+				parent.removeChild(this);
+			}
+			else {
+				parent.replaceChild(this, anchorPanel);
+			}
 
 			this.dockable.setParent(null);
 
@@ -167,6 +192,10 @@ public class DockedSimplePanel extends DockingPanel {
 	@Override
 	public void removeChild(DockingPanel child) {
 		// no-op, simple panel has no children
+	}
+
+	public List<DockingPanel> getChildren() {
+		return Collections.emptyList();
 	}
 
 	private void setNotSelectedBorder() {

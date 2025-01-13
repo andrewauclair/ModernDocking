@@ -231,7 +231,7 @@ public class DockingStateAPI {
     }
 
     private DockedSplitPanel restoreSplit(DockingAPI docking, DockingSplitPanelNode node, Window window) {
-        DockedSplitPanel panel = new DockedSplitPanel(docking, window);
+        DockedSplitPanel panel = new DockedSplitPanel(docking, window, null);
 
         panel.setLeft(restoreLayout(docking, node.getLeft(), window));
         panel.setRight(restoreLayout(docking, node.getRight(), window));
@@ -284,7 +284,7 @@ public class DockingStateAPI {
             wrapper.setWindow(window);
 
             if (panel == null) {
-                panel = new DockedTabbedPanel(docking, wrapper);
+                panel = new DockedTabbedPanel(docking, wrapper, null);
             } else {
                 panel.addPanel(wrapper);
             }
@@ -335,9 +335,9 @@ public class DockingStateAPI {
         wrapper.setWindow(window);
 
         if (Settings.alwaysDisplayTabsMode() || dockable.getTabPreference() == DockableTabPreference.TOP) {
-            return new DockedTabbedPanel(docking, wrapper);
+            return new DockedTabbedPanel(docking, wrapper, null);
         }
-        return new DockedSimplePanel(docking, wrapper);
+        return new DockedSimplePanel(docking, wrapper, null);
     }
 
     private Dockable getDockable(DockingAPI docking, String persistentID) {

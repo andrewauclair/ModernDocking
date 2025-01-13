@@ -252,6 +252,16 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		view.add(actionListenDock(themes));
 		view.add(actionListenDock(scrolling));
 
+		JMenuItem createAnchor = new JMenuItem("Create Anchor");
+		createAnchor.addActionListener(e -> {
+			Anchor anchor = new Anchor();
+
+			Docking.registerDockingAnchor(anchor);
+
+			Docking.dock(anchor, one, DockingRegion.EAST);
+		});
+		view.add(createAnchor);
+
 		JMenuItem storeCurrentLayout = new JMenuItem("Store Current Layout...");
 		storeCurrentLayout.addActionListener(e -> {
 			String layoutName = JOptionPane.showInputDialog("Name of Layout");
