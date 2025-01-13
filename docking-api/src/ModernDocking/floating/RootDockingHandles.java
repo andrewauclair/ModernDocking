@@ -63,8 +63,6 @@ public class RootDockingHandles {
         setupHandle(frame, pinEast);
         setupHandle(frame, pinSouth);
 
-        rootCenter.setVisible(rootPanel.isEmpty());
-
         // invoke later to wait for the root panel to have a parent
         SwingUtilities.invokeLater(this::setRootHandleLocations);
     }
@@ -80,6 +78,8 @@ public class RootDockingHandles {
             pinSouth.setVisible(false);
             return;
         }
+
+        rootCenter.setVisible(rootPanel.isEmpty());
 
         pinWest.setVisible(dockable.isAutoHideAllowed() && (dockable.getAutoHideStyle() == DockableStyle.BOTH || dockable.getAutoHideStyle() == DockableStyle.VERTICAL));
         pinEast.setVisible(dockable.isAutoHideAllowed() && (dockable.getAutoHideStyle() == DockableStyle.BOTH || dockable.getAutoHideStyle() == DockableStyle.VERTICAL));
