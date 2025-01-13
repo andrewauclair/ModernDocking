@@ -261,7 +261,7 @@ public class DockingStateAPI {
     }
 
     private DockedSplitPanel restoreSplit(DockingAPI docking, SplitState state, Window window) {
-        DockedSplitPanel panel = new DockedSplitPanel(docking, window);
+        DockedSplitPanel panel = new DockedSplitPanel(docking, window, null);
 
         panel.setLeft(restoreState(docking, state.getLeft(), window));
         panel.setRight(restoreState(docking, state.getRight(), window));
@@ -287,7 +287,7 @@ public class DockingStateAPI {
             wrapper.setWindow(window);
 
             if (panel == null) {
-                panel = new DockedTabbedPanel(docking, wrapper);
+                panel = new DockedTabbedPanel(docking, wrapper, null);
             } else {
                 panel.addPanel(wrapper);
             }
@@ -328,7 +328,7 @@ public class DockingStateAPI {
         DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
         wrapper.setWindow(window);
 
-        return new DockedSimplePanel(docking, wrapper);
+        return new DockedSimplePanel(docking, wrapper, null);
     }
 
     private DockingPanel restoreState(DockingAPI docking, DockingLayoutNode node, Window window) {
@@ -351,7 +351,7 @@ public class DockingStateAPI {
     }
 
     private DockedSplitPanel restoreSplit(DockingAPI docking, DockingSplitPanelNode node, Window window) {
-        DockedSplitPanel panel = new DockedSplitPanel(docking, window);
+        DockedSplitPanel panel = new DockedSplitPanel(docking, window, null);
 
         panel.setLeft(restoreState(docking, node.getLeft(), window));
         panel.setRight(restoreState(docking, node.getRight(), window));
@@ -403,7 +403,7 @@ public class DockingStateAPI {
             wrapper.setWindow(window);
 
             if (panel == null) {
-                panel = new DockedTabbedPanel(docking, wrapper);
+                panel = new DockedTabbedPanel(docking, wrapper, null);
             } else {
                 panel.addPanel(wrapper);
             }
@@ -453,7 +453,7 @@ public class DockingStateAPI {
 
         wrapper.setWindow(window);
 
-        return new DockedSimplePanel(docking, wrapper);
+        return new DockedSimplePanel(docking, wrapper, null);
     }
 
     private Dockable getDockable(DockingAPI docking, String persistentID) {

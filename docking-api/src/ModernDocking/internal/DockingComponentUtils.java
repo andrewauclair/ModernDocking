@@ -346,4 +346,33 @@ public class DockingComponentUtils {
 		}
 		return Optional.empty();
 	}
+
+	/**
+	 * Check if an anchor is empty
+	 *
+	 * @param root The root to find a window for
+	 * @return The window for the root or null
+	 */
+	public static boolean isAnchorEmpty(DockingAPI docking, Dockable anchor) {
+		InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(docking, DockingComponentUtils.findWindowForDockable(docking, anchor));
+
+		for (DockingPanel child : root.getChildren()) {
+			if (isAnchorNotEmpty(child)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static boolean isAnchorNotEmpty(DockingPanel child) {
+		if (child.getAnchor() != null) {
+			return true;
+		}
+		for (DockingPanel childChild : child.getChildren()) {
+			if (isAnchorNotEmpty(childChild)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

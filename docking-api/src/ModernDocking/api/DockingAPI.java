@@ -241,6 +241,10 @@ public class DockingAPI {
         }
     }
 
+    public void registerDockingAnchor(Dockable anchor) {
+        internals.registerDockingAnchor(anchor);
+    }
+
     /**
      * @deprecated Replaced with configureAutoHide. Will be removed in a future release.
      */

@@ -150,6 +150,10 @@ public class Docking {
         instance.deregisterAllDockingPanels();
     }
 
+    public static void registerDockingAnchor(Dockable anchor) {
+        instance.registerDockingAnchor(anchor);
+    }
+
     /**
      * allows the user to configure pinning per window. by default pinning is only enabled on the frames the docking framework creates
      *

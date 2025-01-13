@@ -73,7 +73,7 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 		gbc.gridy = 0;
 
 
-		DockedSimplePanel panel = new DockedSimplePanel(docking, DockingInternal.get(docking).getWrapper(dockable));
+		DockedSimplePanel panel = new DockedSimplePanel(docking, DockingInternal.get(docking).getWrapper(dockable), null);
 		SlideBorder slideBorder = new SlideBorder(toolbar.getDockedLocation());
 
 		if (toolbar.getDockedLocation() == ToolbarLocation.SOUTH) {
