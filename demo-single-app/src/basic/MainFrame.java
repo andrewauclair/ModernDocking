@@ -21,10 +21,14 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.*;
+import ModernDocking.Dockable;
+import ModernDocking.DockableStyle;
+import ModernDocking.DockableTabPreference;
+import ModernDocking.DockingRegion;
 import ModernDocking.api.WindowLayoutBuilderAPI;
 import ModernDocking.app.*;
 import ModernDocking.exception.DockingLayoutException;
+import ModernDocking.ext.ui.DockingUI;
 import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.DockingLayouts;
 import ModernDocking.settings.Settings;
@@ -33,14 +37,11 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
-import ModernDocking.ext.ui.DockingUI;
 import exception.FailOnThreadViolationRepaintManager;
 import picocli.CommandLine;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Objects;
 import java.util.Random;
