@@ -27,6 +27,7 @@ import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.event.DockingListener;
 import ModernDocking.event.MaximizeListener;
+import ModernDocking.internal.DockingInternal;
 
 import javax.swing.*;
 import java.awt.*;
@@ -347,6 +348,15 @@ public class Docking {
      */
     public static void newWindow(Dockable dockable, Point location, Dimension size) {
         instance.newWindow(dockable, location, size);
+    }
+
+    /**
+     * bring the specified dockable to the front if it is in a tabbed panel
+     *
+     * @param persistentID The persistent ID of the dockable
+     */
+    public void bringToFront(String persistentID) {
+        bringToFront(DockingInternal.get(instance).getDockable(persistentID));
     }
 
     /**

@@ -541,6 +541,15 @@ public class DockingAPI {
     /**
      * bring the specified dockable to the front if it is in a tabbed panel
      *
+     * @param persistentID The persistent ID of the dockable
+     */
+    public void bringToFront(String persistentID) {
+        bringToFront(internals.getDockable(persistentID));
+    }
+
+    /**
+     * bring the specified dockable to the front if it is in a tabbed panel
+     *
      * @param dockable Dockable to bring to the front
      */
     public void bringToFront(Dockable dockable) {
