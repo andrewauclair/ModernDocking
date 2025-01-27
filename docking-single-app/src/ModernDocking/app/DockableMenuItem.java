@@ -90,7 +90,7 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 			Dockable dockable = DockingInternal.get(Docking.getSingleInstance()).getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
 			setSelected(Docking.isDocked(dockable));
 		}
-		catch (DockableRegistrationFailureException ignored) {
+		catch (Exception ignored) {
 			setVisible(false);
 		}
 	}
