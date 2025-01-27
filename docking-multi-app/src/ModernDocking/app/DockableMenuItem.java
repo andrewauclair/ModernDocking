@@ -103,8 +103,13 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 		super.addNotify();
 
 		// update the menu item, it's about to be displayed
-		Dockable dockable = DockingInternal.get(docking).getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
-		setSelected(docking.isDocked(dockable));
+		try {
+			Dockable dockable = DockingInternal.get(docking).getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
+			setSelected(docking.isDocked(dockable));
+		}
+		catch (Exception ignored) {
+			setVisible(false);
+		}
 	}
 
 	@Override
