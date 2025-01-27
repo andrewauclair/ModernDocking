@@ -230,6 +230,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		view.add(actionListenDock(explorer));
 		view.add(actionListenDock(output));
 		view.add(actionListenDock(fixedSize));
+		view.add(new DockableMenuItem("non-existent-dockable", "Does Not Exist"));
 		view.add(actionListenDock(propertiesDemoPanel));
 		view.add(new DockableMenuItem(() -> ((Dockable) alwaysDisplayed).getPersistentID(), ((Dockable) alwaysDisplayed).getTabText()));
 		view.add(changeText);

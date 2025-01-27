@@ -242,6 +242,10 @@ public class DockingInternal {
 		throw new DockableNotFoundException(dockable.getPersistentID());
 	}
 
+	public boolean hasDockable(String persistentID) {
+		return dockables.containsKey(persistentID);
+	}
+
 	/**
 	 * Find a dockable with the given persistent ID
 	 * @param persistentID persistent ID to search for
