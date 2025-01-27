@@ -29,11 +29,15 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Special JCheckBoxMenuItem that handles updating the checkbox for us based on the docking state of the dockable
  */
 public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListener {
+	private static final Logger logger = Logger.getLogger(DockableMenuItem.class.getPackageName());
+
 	/**
 	 * Persistent ID provider. Used when the persistent ID isn't known at compile time.
 	 * Used when this menu item is added to a menu (using addNotify)
@@ -103,22 +107,36 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 		super.addNotify();
 
 		// update the menu item, it's about to be displayed
-		try {
-			Dockable dockable = DockingInternal.get(docking).getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
+		DockingInternal internal = DockingInternal.get(docking);
+
+		String id = persistentIDProvider != null ? persistentIDProvider.get() : persistentID;
+
+		if (internal.hasDockable(id)) {
+			Dockable dockable = internal.getDockable(id);
 			setSelected(docking.isDocked(dockable));
 		}
-		catch (Exception ignored) {
+		else {
 			setVisible(false);
+			logger.log(Level.INFO, "Hiding DockableMenuItem for \"" + getText() + ".\" No dockable with persistentID '" + id + "' registered.");
 		}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Dockable dockable = DockingInternal.get(docking).getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
+		DockingInternal internal = DockingInternal.get(docking);
 
-		docking.display(dockable);
+		String id = persistentIDProvider != null ? persistentIDProvider.get() : persistentID;
 
-		// set this menu item to the state of the dockable, should be docked at this point
-		setSelected(docking.isDocked(dockable));
+		if (internal.hasDockable(id)) {
+			Dockable dockable = internal.getDockable(id);
+
+			docking.display(dockable);
+
+			// set this menu item to the state of the dockable, should be docked at this point
+			setSelected(docking.isDocked(dockable));
+		}
+		else {
+			logger.log(Level.SEVERE, "DockableMenuItem for \"" + getText() + "\" action failed. No dockable with persistentID '" + id + "' registered.");
+		}
 	}
 }
