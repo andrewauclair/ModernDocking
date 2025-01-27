@@ -384,7 +384,8 @@ public class DockingStateAPI {
                 }
                 catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
                        InvocationTargetException e) {
-                    logger.log(Level.INFO, e.getMessage(), e);
+                    logger.log(Level.SEVERE, e.getMessage(), e);
+                    dockable = null;
                 }
             }
 

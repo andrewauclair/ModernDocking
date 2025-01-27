@@ -497,8 +497,8 @@ public class LayoutPersistenceAPI {
     }
 
     private DockingSimplePanelNode readSimpleNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
-        String persistentID = reader.getAttributeValue(0);
-        String className = reader.getAttributeValue(1);
+        String persistentID = reader.getAttributeValue(null, "persistentID");
+        String className = reader.getAttributeValue(null, "class-name");
 
         return new DockingSimplePanelNode(docking, persistentID, className, readProperties(reader));
     }
@@ -607,13 +607,13 @@ public class LayoutPersistenceAPI {
             int next = reader.nextTag();
 
             if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("selectedTab")) {
-                String persistentID = reader.getAttributeValue(0);
-                String className = reader.getAttributeCount() > 1 ? reader.getAttributeValue(1) : "";
-                node = new DockingTabPanelNode(docking, className, persistentID);
+                String persistentID = reader.getAttributeValue(null, "persistentID");
+                String className = reader.getAttributeCount() > 1 ? reader.getAttributeValue(null, "class-name") : "";
+                node = new DockingTabPanelNode(docking, persistentID, className);
             }
             else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("tab")) {
-                currentPersistentID = reader.getAttributeValue(0);
-                String className = reader.getAttributeCount() > 1 ? reader.getAttributeValue(1) : "";
+                currentPersistentID = reader.getAttributeValue(null, "persistentID");
+                String className = reader.getAttributeCount() > 1 ? reader.getAttributeValue(null, "class-name") : "";
 
                 if (node != null) {
                     node.addTab(currentPersistentID, className);
