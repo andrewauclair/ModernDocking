@@ -119,10 +119,6 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 			setVisible(false);
 			logger.log(Level.INFO, "Hiding DockableMenuItem for \"" + getText() + ".\" No dockable with persistentID '" + id + "' registered.");
 		}
-
-		// update the menu item, it's about to be displayed
-		Dockable dockable = DockingInternal.get(docking).getDockable(persistentIDProvider != null ? persistentIDProvider.get() : persistentID);
-		setSelected(docking.isDocked(dockable));
 	}
 
 	@Override
