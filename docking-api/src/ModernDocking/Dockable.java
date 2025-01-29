@@ -117,14 +117,6 @@ public interface Dockable {
 	}
 
 	/**
-	 * @deprecated Replaced with getAutoHideStyle. Will be removed in future release.
-	 */
-	@Deprecated(since = "0.12.0", forRemoval = true)
-	default DockableStyle getPinningStyle() {
-		return getAutoHideStyle();
-	}
-
-	/**
 	 * auto hide style of the dockable. separate from getStyle, which is used for docking. this option allows the dockable to have different
 	 * preferences on auto hide than it does on docking.
 	 *
@@ -151,14 +143,6 @@ public interface Dockable {
 	 */
 	default boolean requestClose() {
 		return true;
-	}
-
-	/**
-	 * @deprecated Replaced with isAutoHideAllowed. Will be removed in future release.
-	 */
-	@Deprecated(since = "0.12.0", forRemoval = true)
-	default boolean isPinningAllowed() {
-		return isAutoHideAllowed();
 	}
 
 	/**
