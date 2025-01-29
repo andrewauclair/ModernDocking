@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022 Andrew Auclair
+Copyright (c) 2022-2025 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -52,25 +52,19 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 	/**
 	 * Create a new DockableMenuItem
 	 *
+	 * @param docking The docking API instance to use for this menu item
 	 * @param dockable The dockable to dock when this menu item is selected
 	 */
-//	public DockableMenuItem(Dockable dockable) {
-//		this(Docking.getSingleInstance(), dockable);
-//	}
-
 	public DockableMenuItem(DockingAPI docking, Dockable dockable) {
 		this(docking, dockable.getPersistentID(), dockable.getTabText());
 	}
 
 	/**
 	 *
+	 * @param docking The docking API instance to use for this menu item
 	 * @param persistentID The dockable this menu item refers to
 	 * @param text The display text for this menu item
 	 */
-//	public DockableMenuItem(String persistentID, String text) {
-//		this(Docking.getSingleInstance(), persistentID, text);
-//	}
-
 	public DockableMenuItem(DockingAPI docking, String persistentID, String text) {
 		super(text);
 
@@ -84,13 +78,10 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 
 	/**
 	 *
+	 * @param docking The docking API instance to use for this menu item
 	 * @param persistentIDProvider Provides the persistentID that will be displayed
 	 * @param text The display text for this menu item
 	 */
-//	public DockableMenuItem(Supplier<String> persistentIDProvider, String text) {
-//		this(Docking.getSingleInstance(), persistentIDProvider, text);
-//	}
-
 	public DockableMenuItem(DockingAPI docking, Supplier<String> persistentIDProvider, String text) {
 		super(text);
 
