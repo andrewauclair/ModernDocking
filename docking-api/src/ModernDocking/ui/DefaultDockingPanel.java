@@ -39,7 +39,7 @@ public class DefaultDockingPanel extends JPanel implements Dockable, DockingList
     private String tabText = "";
     private Icon icon;
     private boolean floatingAllowed;
-    private boolean limitToRoot;
+    private boolean limitedToWindow;
     private DockableStyle style;
     private boolean canBeClosed;
     private boolean allowAutoHide;
@@ -127,17 +127,17 @@ public class DefaultDockingPanel extends JPanel implements Dockable, DockingList
     }
 
     @Override
-    public boolean isLimitedToRoot() {
-        return limitToRoot;
+    public boolean isLimitedToWindow() {
+        return limitedToWindow;
     }
 
     /**
      * Set limit to root flag
      *
-     * @param limitToRoot New flag value
+     * @param limitedToWindow New flag value
      */
-    public void setLimitedToRoot(boolean limitToRoot) {
-        this.limitToRoot = limitToRoot;
+    public void setLimitedToWindow(boolean limitedToWindow) {
+        this.limitedToWindow = limitedToWindow;
     }
 
     @Override

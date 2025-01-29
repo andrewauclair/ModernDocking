@@ -49,7 +49,7 @@ public class PacketListPanel extends JPanel implements Dockable {
 	}
 
 	@Override
-	public boolean isLimitedToRoot() {
+	public boolean isLimitedToWindow() {
 		return true;
 	}
 
