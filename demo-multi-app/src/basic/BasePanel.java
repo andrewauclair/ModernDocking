@@ -21,8 +21,8 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.Dockable;
-import ModernDocking.api.DockingAPI;
+import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.api.DockingAPI;
 
 import javax.swing.*;
 import java.awt.*;

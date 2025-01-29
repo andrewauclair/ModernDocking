@@ -21,9 +21,8 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.Dockable;
+import io.github.andrewauclair.moderndocking.Dockable;
 
-import javax.swing.*;
 import java.awt.*;
 
 public class FixedSizePanel extends BasePanel implements Dockable {
