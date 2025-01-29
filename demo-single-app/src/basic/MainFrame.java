@@ -170,7 +170,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		SimplePanel four = new SimplePanel("four", "four");
 		SimplePanel five = new SimplePanel("five", "five");
 		SimplePanel six = new SimplePanel("six", "six");
-		SimplePanel seven = new SimplePanel("seven", "seven");
+		SimplePanel seven = new SimplePanel("seven", "seven", DockableStyle.CENTER_ONLY);
 		SimplePanel eight = new SimplePanel("eight", "eight");
 		ToolPanel explorer = new ToolPanel("Explorer", "explorer", DockableStyle.VERTICAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
 		ToolPanel output = new OutputPanel("Output", "output", DockableStyle.HORIZONTAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
