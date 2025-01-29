@@ -56,17 +56,6 @@ public class DockingStateAPI {
         this.docking = docking;
     }
 
-    @Deprecated(forRemoval = true)
-    public RootDockState getRootState(Window window) {
-        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(docking, window);
-
-        if (root == null) {
-            throw new RootDockingPanelNotFoundException(window);
-        }
-
-        return new RootDockState(root);
-    }
-
     public WindowLayout getWindowLayout(Window window) {
         InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(docking, window);
 
@@ -216,33 +205,6 @@ public class DockingStateAPI {
 
         window.setLocation(location);
         window.setSize(size);
-    }
-
-    @Deprecated(forRemoval = true)
-    public void restoreState(Window window, RootDockState state) {
-        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(docking, window);
-
-        if (root == null) {
-            throw new RootDockingPanelNotFoundException(window);
-        }
-
-        DockingComponentUtils.undockComponents(docking, root);
-
-        boolean paused = docking.getAppState().isPaused();
-        docking.getAppState().setPaused(true);
-
-        try {
-            root.setPanel(restoreState(docking, state.getState(), window));
-
-            restoreProperSplitLocations(root.getRootPanel());
-        }
-        finally {
-            docking.getAppState().setPaused(paused);
-        }
-
-        if (!paused) {
-            docking.getAppState().persist();
-        }
     }
 
     private DockingPanel restoreState(DockingAPI docking, DockableState state, Window window) {
