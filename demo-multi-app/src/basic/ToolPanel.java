@@ -77,7 +77,7 @@ public class ToolPanel extends BasePanel {
 	}
 
 	@Override
-	public boolean isPinningAllowed() {
+	public boolean isAutoHideAllowed() {
 		return true;
 	}
 
