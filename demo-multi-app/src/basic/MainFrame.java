@@ -86,7 +86,9 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		docking = new Docking(this);
 
-		Settings.setAlwaysDisplayTabMode(alwaysUseTabs);
+		if (alwaysUseTabs) {
+			Settings.setDefaultTabPreference(DockableTabPreference.TOP_ALWAYS);
+		}
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);

@@ -37,22 +37,6 @@ public class Settings {
         return defaultTabPreference == DockableTabPreference.TOP_ALWAYS || defaultTabPreference == DockableTabPreference.BOTTOM_ALWAYS;
     }
 
-    /**
-     * @deprecated Replaced with defaultTabPreference. Will be removed in future release.
-     */
-    @Deprecated(since = "0.12.0", forRemoval = true)
-    public static boolean alwaysDisplayTabsMode(Dockable dockable) {
-        return defaultTabPreference == DockableTabPreference.TOP_ALWAYS || dockable.getTabPosition() == SwingConstants.TOP;
-    }
-
-    /**
-     * @deprecated Replaced with setDefaultTabPreference. Will be removed in future release.
-     */
-    @Deprecated(since = "0.12.0", forRemoval = true)
-    public static void setAlwaysDisplayTabMode(boolean alwaysDisplayTabsMode) {
-        defaultTabPreference = alwaysDisplayTabsMode ? DockableTabPreference.TOP_ALWAYS : DockableTabPreference.BOTTOM;
-    }
-
     public static DockableTabPreference defaultTabPreference() {
         return defaultTabPreference;
     }
