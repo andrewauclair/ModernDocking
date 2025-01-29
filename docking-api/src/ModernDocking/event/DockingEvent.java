@@ -31,23 +31,6 @@ public class DockingEvent {
         SHOWN,
         HIDDEN,
 
-        /**
-         * PINNED will be removed in a future release. PINNED and AUTO_HIDE_ENABLED will both be fired when an event happens
-         * applications should only handle one or the other.
-         *
-         * @deprecated Replaced with AUTO_HIDE_ENABLED
-         */
-        @Deprecated(since = "0.12.0", forRemoval = true)
-        PINNED,
-        /**
-         * UNPINNED will be removed in a future release. UNPINNED and AUTO_HIDE_DISABLED will both be fired when an event happens
-         * applications should only handle one or the other.
-         *
-         * @deprecated Replaced with AUTO_HIDE_DISABLED
-         */
-        @Deprecated(since = "0.12.0", forRemoval = true)
-        UNPINNED,
-
         AUTO_HIDE_ENABLED,
         AUTO_HIDE_DISABLED
     }
