@@ -21,7 +21,7 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.DockableStyle;
 
 import javax.swing.*;
 

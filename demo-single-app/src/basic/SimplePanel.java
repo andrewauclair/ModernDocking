@@ -21,11 +21,11 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.DockableStyle;
-import ModernDocking.DockingProperty;
-import ModernDocking.ui.DockingHeaderUI;
-import ModernDocking.ui.HeaderController;
-import ModernDocking.ui.HeaderModel;
+import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.DockingProperty;
+import io.github.andrewauclair.moderndocking.ui.DockingHeaderUI;
+import io.github.andrewauclair.moderndocking.ui.HeaderController;
+import io.github.andrewauclair.moderndocking.ui.HeaderModel;
 
 import javax.swing.*;
 import java.awt.*;

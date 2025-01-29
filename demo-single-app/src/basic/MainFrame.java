@@ -21,26 +21,27 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.*;
-import ModernDocking.api.WindowLayoutBuilderAPI;
-import ModernDocking.app.*;
-import ModernDocking.exception.DockingLayoutException;
-import ModernDocking.layouts.ApplicationLayout;
-import ModernDocking.layouts.DockingLayouts;
-import ModernDocking.settings.Settings;
+import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.DockableTabPreference;
+import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.api.WindowLayoutBuilderAPI;
+import io.github.andrewauclair.moderndocking.app.*;
+import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
+import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
+import io.github.andrewauclair.moderndocking.layouts.DockingLayouts;
+import io.github.andrewauclair.moderndocking.settings.Settings;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
-import ModernDocking.ext.ui.DockingUI;
+import io.github.andrewauclair.moderndocking.ext.ui.DockingUI;
 import exception.FailOnThreadViolationRepaintManager;
 import picocli.CommandLine;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Objects;
 import java.util.Random;

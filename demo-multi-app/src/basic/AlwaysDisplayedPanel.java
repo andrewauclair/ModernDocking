@@ -21,7 +21,7 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.api.DockingAPI;
+import io.github.andrewauclair.moderndocking.api.DockingAPI;
 
 // Docking panel that is always displayed and cannot be closed
 public class AlwaysDisplayedPanel extends SimplePanel {

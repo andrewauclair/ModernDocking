@@ -21,8 +21,8 @@ SOFTWARE.
  */
 package packets;
 
-import ModernDocking.Dockable;
-import ModernDocking.app.Docking;
+import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.app.Docking;
 
 import javax.swing.*;
 

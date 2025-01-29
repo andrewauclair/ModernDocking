@@ -21,11 +21,11 @@ SOFTWARE.
  */
 package packets;
 
-import ModernDocking.app.AppState;
-import ModernDocking.app.DockableMenuItem;
-import ModernDocking.app.Docking;
-import ModernDocking.app.RootDockingPanel;
-import ModernDocking.exception.DockingLayoutException;
+import io.github.andrewauclair.moderndocking.app.AppState;
+import io.github.andrewauclair.moderndocking.app.DockableMenuItem;
+import io.github.andrewauclair.moderndocking.app.Docking;
+import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
+import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;

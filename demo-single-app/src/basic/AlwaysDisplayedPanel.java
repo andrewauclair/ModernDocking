@@ -21,9 +21,7 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.DockableTabPreference;
-
-import javax.swing.*;
+import io.github.andrewauclair.moderndocking.DockableTabPreference;
 
 // Docking panel that is always displayed and cannot be closed
 public class AlwaysDisplayedPanel extends SimplePanel {

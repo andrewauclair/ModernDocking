@@ -21,9 +21,9 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.app.AppState;
-import ModernDocking.DockingProperty;
-import ModernDocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.app.AppState;
+import io.github.andrewauclair.moderndocking.DockingProperty;
+import io.github.andrewauclair.moderndocking.DockingRegion;
 
 import javax.swing.*;
 import javax.swing.text.*;

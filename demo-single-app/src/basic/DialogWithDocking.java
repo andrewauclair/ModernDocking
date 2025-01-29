@@ -21,10 +21,11 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.*;
-import ModernDocking.api.RootDockingPanelAPI;
-import ModernDocking.app.Docking;
-import ModernDocking.app.RootDockingPanel;
+import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
+import io.github.andrewauclair.moderndocking.app.Docking;
+import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
 
 import javax.swing.*;
 
