@@ -407,30 +407,6 @@ public class Docking {
     }
 
     /**
-     * check if a dockable is currently in the unpinned state
-     *
-     * @param persistentID The persistentID of the dockable to check
-     * @return Whether the dockable is unpinned
-     *
-     * @deprecated Replaced with auto hide
-     */
-    public static boolean isUnpinned(String persistentID) {
-        return instance.isHidden(persistentID);
-    }
-
-    /**
-     * check if a dockable is currently in the unpinned state
-     *
-     * @param dockable The dockable to check
-     * @return Whether the dockable is unpinned
-     *
-     * @deprecated Replaced with auto hide
-     */
-    public static boolean isUnpinned(Dockable dockable) {
-        return instance.isHidden(dockable);
-    }
-
-    /**
      * check if a dockable is currently hidden
      *
      * @param persistentID The persistentID of the dockable to check
