@@ -24,7 +24,6 @@ package ModernDocking.app;
 import ModernDocking.api.DockingStateAPI;
 import ModernDocking.layouts.ApplicationLayout;
 import ModernDocking.layouts.WindowLayout;
-import ModernDocking.persist.RootDockState;
 
 import java.awt.*;
 
