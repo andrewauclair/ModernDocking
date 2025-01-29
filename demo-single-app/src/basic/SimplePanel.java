@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package basic;
 
+import ModernDocking.DockableStyle;
 import ModernDocking.DockingProperty;
 import ModernDocking.ui.DockingHeaderUI;
 import ModernDocking.ui.HeaderController;
@@ -83,9 +84,17 @@ public class SimplePanel extends BasePanel {
 	private static final Random rand = new Random();
 	private DockingHeaderUI headerUI;
 
+	private DockableStyle style;
+
+	public SimplePanel(String title, String persistentID, DockableStyle style) {
+		this(title, persistentID);
+		this.style = style;
+	}
+
 	public SimplePanel(String title, String persistentID) {
 		super(title, persistentID);
 		tabText = title;
+		style = DockableStyle.BOTH;
 
 		setLayout(new GridBagLayout());
 
@@ -158,6 +167,11 @@ public class SimplePanel extends BasePanel {
 	@Override
 	public boolean isLimitedToRoot() {
 		return limitToRoot;
+	}
+
+	@Override
+	public DockableStyle getStyle() {
+		return style;
 	}
 
 	@Override

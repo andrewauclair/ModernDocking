@@ -36,5 +36,9 @@ public enum DockableStyle {
 	/**
 	 * Dockable is allowed to be docked horizontally or vertically
 	 */
-	BOTH
+	BOTH,
+	/**
+	 * Dockable is only allowed to be docked to the center of other dockables
+	 */
+	CENTER_ONLY
 }
