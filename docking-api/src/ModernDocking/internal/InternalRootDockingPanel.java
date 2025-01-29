@@ -22,6 +22,7 @@ SOFTWARE.
 package ModernDocking.internal;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockableTabPreference;
 import ModernDocking.DockingRegion;
 import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
@@ -145,7 +146,7 @@ public class InternalRootDockingPanel extends DockingPanel {
         if (panel != null) {
             panel.dock(dockable, region, dividerProportion);
         }
-        else if (Settings.alwaysDisplayTabsMode(dockable)) {
+        else if (Settings.defaultTabPreference() == DockableTabPreference.TOP_ALWAYS) {
             setPanel(new DockedTabbedPanel(docking, wrapper));
             wrapper.setWindow(rootPanel.getWindow());
         }
