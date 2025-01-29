@@ -47,9 +47,9 @@ public class DialogWithDocking extends JDialog {
 
 		one = new SimplePanel("one", "one-dialog");
 
-		output.limitToRoot = true;
-		explorer.limitToRoot = true;
-		one.limitToRoot = true;
+		output.limitToWindow = true;
+		explorer.limitToWindow = true;
+		one.limitToWindow = true;
 
 		Docking.dock(one, this);
 		Docking.dock(explorer, one, DockingRegion.EAST);

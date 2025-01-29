@@ -39,7 +39,7 @@ public class SimplePanel extends BasePanel {
 
 	private String tabText = "";
 
-	public boolean limitToRoot = false;
+	public boolean limitToWindow = false;
 
 	private Color backgroundColor = null;
 	private Color foregroundColor = null;
@@ -165,8 +165,8 @@ public class SimplePanel extends BasePanel {
 	}
 
 	@Override
-	public boolean isLimitedToRoot() {
-		return limitToRoot;
+	public boolean isLimitedToWindow() {
+		return limitToWindow;
 	}
 
 	@Override

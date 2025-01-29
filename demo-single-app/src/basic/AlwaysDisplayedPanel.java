@@ -43,7 +43,7 @@ public class AlwaysDisplayedPanel extends SimplePanel {
 	}
 
 	@Override
-	public boolean isLimitedToRoot() {
+	public boolean isLimitedToWindow() {
 		return true;
 	}
 

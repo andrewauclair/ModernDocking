@@ -125,7 +125,7 @@ public class Example extends JFrame {
 		}
 
 		@Override
-		public boolean isLimitedToRoot() {
+		public boolean isLimitedToWindow() {
 			return false;
 		}
 
