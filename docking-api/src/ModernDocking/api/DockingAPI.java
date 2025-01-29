@@ -275,12 +275,27 @@ public class DockingAPI {
     }
 
     /**
-     * Check if pinning is allowed for a dockable
+     * Check if auto hide is allowed for a dockable
      *
      * @param dockable Dockable to check
-     * @return Whether the dockable can be pinned
+     * @return Whether the dockable can be hidden
+     *
+     * @deprecated Replaced with the properly named isAutoHideAllowed
      */
+    @Deprecated(forRemoval = true, since = "0.12.1")
     public boolean autoHideAllowed(Dockable dockable) {
+        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, DockingComponentUtils.findWindowForDockable(this, dockable));
+
+        return dockable.isAutoHideAllowed() && root.getRootPanel().isAutoHideSupported();
+    }
+
+    /**
+     * Check if auto hide is allowed for a dockable
+     *
+     * @param dockable Dockable to check
+     * @return Whether the dockable can be hidden
+     */
+    public boolean isAutoHideAllowed(Dockable dockable) {
         InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, DockingComponentUtils.findWindowForDockable(this, dockable));
 
         return dockable.isAutoHideAllowed() && root.getRootPanel().isAutoHideSupported();
