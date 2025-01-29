@@ -242,14 +242,6 @@ public class DockingAPI {
     }
 
     /**
-     * @deprecated Replaced with configureAutoHide. Will be removed in a future release.
-     */
-    @Deprecated(since = "0.12.0", forRemoval = true)
-    public void configurePinning(Window window, int layer, boolean allow) {
-        configureAutoHide(window, layer, allow);
-    }
-
-    /**
      * allows the user to configure auto hide per window. by default auto hide is only enabled on the frames the docking framework creates
      *
      * @param window The window to configure auto hide on
@@ -267,18 +259,10 @@ public class DockingAPI {
     }
 
     /**
-     * @deprecated Replaced with autoHideAllowed. Will be removed in a future release.
-     */
-    @Deprecated(since = "0.12.0", forRemoval = true)
-    public boolean pinningAllowed(Dockable dockable) {
-        return autoHideAllowed(dockable);
-    }
-
-    /**
-     * Check if pinning is allowed for a dockable
+     * Check if auto hide is allowed for a dockable
      *
      * @param dockable Dockable to check
-     * @return Whether the dockable can be pinned
+     * @return Whether the dockable can be auto hide
      */
     public boolean autoHideAllowed(Dockable dockable) {
         InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, DockingComponentUtils.findWindowForDockable(this, dockable));

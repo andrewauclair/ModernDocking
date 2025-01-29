@@ -128,17 +128,6 @@ public class RootDockingPanelAPI extends JPanel {
 	}
 
 	/**
-	 * @deprecated Replaced with isAutoHideSupported. Will be removed in a future release.
-	 */
-	@Deprecated(since = "0.12.0", forRemoval = true)
-	public boolean isPinningSupported() {
-		if (supportedToolbars.isEmpty()) {
-			return false;
-		}
-		return autoHideSupported;
-	}
-
-	/**
 	 * Check if auto hide is supported on this root
 	 *
 	 * @return True if auto hide is supported
@@ -152,14 +141,6 @@ public class RootDockingPanelAPI extends JPanel {
 	}
 
 	/**
-	 * @deprecated Replaced with setAutoHideSupported. Will be removed in a future release.
-	 */
-	@Deprecated(since = "0.12.0", forRemoval = true)
-	public void setPinningSupported(boolean supported) {
-		autoHideSupported = supported;
-	}
-
-	/**
 	 * Set auto hide supported flag
 	 *
 	 * @param supported Is auto hide supported?
@@ -169,28 +150,12 @@ public class RootDockingPanelAPI extends JPanel {
 	}
 
 	/**
-	 * @deprecated Replaced with getAutoHideLayer. Will be removed in a future release.
-	 */
-	@Deprecated(since = "0.12.0", forRemoval = true)
-	public int getPinningLayer() {
-		return autoHideLayer;
-	}
-
-	/**
 	 * Get the layer that is being used for auto hide
 	 *
 	 * @return Auto hide layer
 	 */
 	public int getAutoHideLayer() {
 		return autoHideLayer;
-	}
-
-	/**
-	 * @deprecated Replaced with setAutoHideLayer. Will be removed in a future release.
-	 */
-	@Deprecated(since = "0.12.0", forRemoval = true)
-	public void setPinningLayer(int layer) {
-		autoHideLayer = layer;
 	}
 
 	/**

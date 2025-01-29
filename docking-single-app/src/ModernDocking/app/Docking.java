@@ -152,24 +152,24 @@ public class Docking {
     }
 
     /**
-     * allows the user to configure pinning per window. by default pinning is only enabled on the frames the docking framework creates
+     * allows the user to configure auto hide per window. by default auto hide is only enabled on the frames the docking framework creates
      *
-     * @param window The window to configure pinning on
-     * @param layer The layout to use for pinning in the JLayeredPane
-     * @param allow Whether pinning is allowed on this Window
+     * @param window The window to configure auto hide on
+     * @param layer The layout to use for auto hide in the JLayeredPane
+     * @param allow Whether auto hide is allowed on this Window
      */
-    public static void configurePinning(Window window, int layer, boolean allow) {
-        instance.configurePinning(window, layer, allow);
+    public void configureAutoHide(Window window, int layer, boolean allow) {
+        instance.configureAutoHide(window, layer, allow);
     }
 
     /**
-     * Check if pinning is allowed for a dockable
+     * Check if auto hide is allowed for a dockable
      *
      * @param dockable Dockable to check
-     * @return Whether the dockable can be pinned
+     * @return Whether the dockable can be auto hide
      */
-    public static boolean pinningAllowed(Dockable dockable) {
-        return instance.pinningAllowed(dockable);
+    public static boolean autoHideAllowed(Dockable dockable) {
+        return instance.autoHideAllowed(dockable);
     }
 
     /**
