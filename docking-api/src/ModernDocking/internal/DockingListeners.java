@@ -110,9 +110,6 @@ public class DockingListeners {
 	 * @param dockable Dockable that was auto hide enabled
 	 */
 	public static void fireAutoShownEvent(Dockable dockable) {
-		// TODO remove this when we remove all the auto hide stuff
-		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.PINNED, dockable)));
-
 		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.AUTO_HIDE_ENABLED, dockable)));
 	}
 
@@ -122,9 +119,6 @@ public class DockingListeners {
 	 * @param dockable Dockable that was auto hide disabled
 	 */
 	public static void fireAutoHiddenEvent(Dockable dockable) {
-		// TODO remove this when we remove all the auto hide stuff
-		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.UNPINNED, dockable)));
-
 		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.AUTO_HIDE_DISABLED, dockable)));
 	}
 
