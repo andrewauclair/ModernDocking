@@ -21,26 +21,27 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.*;
-import ModernDocking.api.WindowLayoutBuilderAPI;
-import ModernDocking.app.*;
-import ModernDocking.exception.DockingLayoutException;
-import ModernDocking.layouts.ApplicationLayout;
-import ModernDocking.layouts.DockingLayouts;
-import ModernDocking.settings.Settings;
+import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.DockableTabPreference;
+import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.api.WindowLayoutBuilderAPI;
+import io.github.andrewauclair.moderndocking.app.*;
+import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
+import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
+import io.github.andrewauclair.moderndocking.layouts.DockingLayouts;
+import io.github.andrewauclair.moderndocking.settings.Settings;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
-import ModernDocking.ext.ui.DockingUI;
+import io.github.andrewauclair.moderndocking.ext.ui.DockingUI;
 import exception.FailOnThreadViolationRepaintManager;
 import picocli.CommandLine;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Objects;
 import java.util.Random;
@@ -170,7 +171,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		SimplePanel four = new SimplePanel("four", "four");
 		SimplePanel five = new SimplePanel("five", "five");
 		SimplePanel six = new SimplePanel("six", "six");
-		SimplePanel seven = new SimplePanel("seven", "seven");
+		SimplePanel seven = new SimplePanel("seven", "seven", DockableStyle.CENTER_ONLY);
 		SimplePanel eight = new SimplePanel("eight", "eight");
 		ToolPanel explorer = new ToolPanel("Explorer", "explorer", DockableStyle.VERTICAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
 		ToolPanel output = new OutputPanel("Output", "output", DockableStyle.HORIZONTAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
@@ -230,6 +231,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		view.add(actionListenDock(explorer));
 		view.add(actionListenDock(output));
 		view.add(actionListenDock(fixedSize));
+		view.add(new DockableMenuItem("non-existent-dockable", "Does Not Exist"));
 		view.add(actionListenDock(propertiesDemoPanel));
 		view.add(new DockableMenuItem(() -> ((Dockable) alwaysDisplayed).getPersistentID(), ((Dockable) alwaysDisplayed).getTabText()));
 		view.add(changeText);

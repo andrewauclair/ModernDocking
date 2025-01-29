@@ -6,5 +6,5 @@ module modern_docking.ui_ext {
 	requires java.desktop;
 	requires com.formdev.flatlaf.extras;
 
-	exports ModernDocking.ext.ui;
+	exports io.github.andrewauclair.moderndocking.ext.ui;
 }

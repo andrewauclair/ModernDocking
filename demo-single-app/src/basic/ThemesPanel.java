@@ -21,7 +21,7 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.Dockable;
+import io.github.andrewauclair.moderndocking.Dockable;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;

@@ -1,8 +1,8 @@
 package basic;
 
-import ModernDocking.app.AppState;
-import ModernDocking.DockableStyle;
-import ModernDocking.DockingProperty;
+import io.github.andrewauclair.moderndocking.app.AppState;
+import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.DockingProperty;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

@@ -21,20 +21,23 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.*;
-import ModernDocking.api.DockingAPI;
-import ModernDocking.api.RootDockingPanelAPI;
-import ModernDocking.app.*;
-import ModernDocking.exception.DockingLayoutException;
-import ModernDocking.layouts.ApplicationLayout;
-import ModernDocking.layouts.DockingLayouts;
-import ModernDocking.settings.Settings;
+import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.DockableTabPreference;
+import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.api.DockingAPI;
+import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
+import io.github.andrewauclair.moderndocking.app.*;
+import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
+import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
+import io.github.andrewauclair.moderndocking.layouts.DockingLayouts;
+import io.github.andrewauclair.moderndocking.settings.Settings;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
-import ModernDocking.ext.ui.DockingUI;
+import io.github.andrewauclair.moderndocking.ext.ui.DockingUI;
 import exception.FailOnThreadViolationRepaintManager;
 import picocli.CommandLine;
 
@@ -86,7 +89,9 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		docking = new Docking(this);
 
-		Settings.setAlwaysDisplayTabMode(alwaysUseTabs);
+		if (alwaysUseTabs) {
+			Settings.setDefaultTabPreference(DockableTabPreference.TOP_ALWAYS);
+		}
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
