@@ -355,7 +355,7 @@ public class Docking {
      *
      * @param persistentID The persistent ID of the dockable
      */
-    public void bringToFront(String persistentID) {
+    public static void bringToFront(String persistentID) {
         bringToFront(DockingInternal.get(instance).getDockable(persistentID));
     }
 
