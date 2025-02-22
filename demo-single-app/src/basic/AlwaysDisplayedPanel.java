@@ -27,7 +27,7 @@ import io.github.andrewauclair.moderndocking.DockableTabPreference;
 public class AlwaysDisplayedPanel extends SimplePanel {
 	// create a new basic.AlwaysDisplayedPanel with the given title and persistentID
 	public AlwaysDisplayedPanel(String title, String persistentID) {
-		super(title, persistentID);
+		super(title, title, persistentID);
 	}
 
 	@Override

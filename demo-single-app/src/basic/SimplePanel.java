@@ -86,13 +86,13 @@ public class SimplePanel extends BasePanel {
 
 	private DockableStyle style;
 
-	public SimplePanel(String title, String persistentID, DockableStyle style) {
-		this(title, persistentID);
+	public SimplePanel(String tabText, String title, String persistentID, DockableStyle style) {
+		this(tabText, title, persistentID);
 		this.style = style;
 	}
 
-	public SimplePanel(String title, String persistentID) {
-		super(title, persistentID);
+	public SimplePanel(String tabText, String title, String persistentID) {
+		super(tabText, title, persistentID);
 		tabText = title;
 		style = DockableStyle.BOTH;
 

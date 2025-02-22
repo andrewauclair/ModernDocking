@@ -46,7 +46,7 @@ public class DialogWithDocking extends JDialog {
 		output = new ToolPanel("output", "output-dialog", DockableStyle.HORIZONTAL);
 		explorer = new ToolPanel("explorer", "explorer-dialog", DockableStyle.VERTICAL);
 
-		one = new SimplePanel("one", "one-dialog");
+		one = new SimplePanel("The First Panel", "one", "one-dialog");
 
 		output.limitToWindow = true;
 		explorer.limitToWindow = true;

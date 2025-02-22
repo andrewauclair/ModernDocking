@@ -32,13 +32,13 @@ public class ToolPanel extends BasePanel {
 	public boolean limitToWindow = false;
 
 	public ToolPanel(String title, String persistentID, DockableStyle style) {
-		super(title, persistentID);
+		super(title, title, persistentID);
 		this.style = style;
 		this.icon = null;
 	}
 
 	public ToolPanel(String title, String persistentID, DockableStyle style, Icon icon) {
-		super(title, persistentID);
+		super(title, title, persistentID);
 		this.style = style;
 		this.icon = icon;
 
