@@ -27,7 +27,7 @@ import java.awt.*;
 
 public class FixedSizePanel extends BasePanel implements Dockable {
     public FixedSizePanel() {
-        super("Fixed Size", "fixed-size");
+        super("Fixed Size", "Fixed Size", "fixed-size");
 
 
     }

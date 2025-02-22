@@ -65,6 +65,19 @@ public interface Dockable {
 	String getTabText();
 
 	/**
+	 * provide the title text to the docking frame
+	 * the title text to be displayed when Dockable displays a header with a title bar
+	 * by default, this will be the same as the tab text
+	 * <p>
+	 * NOTE: If this text changes, you will need to call Dockable.updateTabInfo()
+	 *
+	 * @return Title text of the dockable
+	 */
+	default String getTitleText() {
+		return getTabText();
+	}
+
+	/**
 	 * provide the tab tooltip to the docking framework
 	 * <p>
 	 * NOTE: If this text changes, you will need to call Dockable.updateTabInfo()

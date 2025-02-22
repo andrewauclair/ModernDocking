@@ -34,7 +34,7 @@ import java.awt.*;
 
 public class ThemesPanel extends BasePanel implements Dockable {
     public ThemesPanel() {
-        super("Themes", "themes");
+        super("Themes", "Themes", "themes");
 
         JTable table = new JTable() {
             @Override

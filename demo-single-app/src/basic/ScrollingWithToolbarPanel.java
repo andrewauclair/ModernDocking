@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class ScrollingWithToolbarPanel extends BasePanel {
     public ScrollingWithToolbarPanel() {
-        super("Scrolling With Toolbar", "scroll-with-toolbar");
+        super("scrolling", "Scrolling With Toolbar", "scroll-with-toolbar");
 
         setLayout(new GridBagLayout());
 

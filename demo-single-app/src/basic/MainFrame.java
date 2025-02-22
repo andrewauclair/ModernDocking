@@ -132,7 +132,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		createPanel.addActionListener(e -> {
 			String panelName = JOptionPane.showInputDialog("Panel name");
 
-			SimplePanel panel = new SimplePanel(panelName, panelName);
+			SimplePanel panel = new SimplePanel(panelName, panelName, panelName);
 			Docking.dock(panel, MainFrame.this, DockingRegion.EAST);
 		});
 		file.add(createPanel);
@@ -165,14 +165,14 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-		SimplePanel one = new SimplePanel("one", "one");
-		SimplePanel two = new SimplePanel("two", "two");
-		SimplePanel three = new SimplePanel("three", "three");
-		SimplePanel four = new SimplePanel("four", "four");
-		SimplePanel five = new SimplePanel("five", "five");
-		SimplePanel six = new SimplePanel("six", "six");
-		SimplePanel seven = new SimplePanel("seven", "seven", DockableStyle.CENTER_ONLY);
-		SimplePanel eight = new SimplePanel("eight", "eight");
+		SimplePanel one = new SimplePanel("one", "Panel One", "one");
+		SimplePanel two = new SimplePanel("two", "Panel Two", "two");
+		SimplePanel three = new SimplePanel("three", "Panel Three", "three");
+		SimplePanel four = new SimplePanel("four", "Panel Four", "four");
+		SimplePanel five = new SimplePanel("five", "Panel Five", "five");
+		SimplePanel six = new SimplePanel("six", "Panel Six", "six");
+		SimplePanel seven = new SimplePanel("seven", "Panel Seven", "seven", DockableStyle.CENTER_ONLY);
+		SimplePanel eight = new SimplePanel("eight", "Panel Eight", "eight");
 		ToolPanel explorer = new ToolPanel("Explorer", "explorer", DockableStyle.VERTICAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
 		ToolPanel output = new OutputPanel("Output", "output", DockableStyle.HORIZONTAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
 		AlwaysDisplayedPanel alwaysDisplayed = new AlwaysDisplayedPanel("always displayed", "always-displayed");
@@ -205,7 +205,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		JMenuItem createNewDockable = new JMenuItem("Generate Random Dockable");
 		createNewDockable.addActionListener(e -> {
-			SimplePanel rand = new SimplePanel(generateString("alpha", 6), generateString("abcdefg", 10));
+			SimplePanel rand = new SimplePanel("rand", generateString("alpha", 6), generateString("abcdefg", 10));
 			Docking.dock(rand, one, DockingRegion.WEST);
 		});
 		view.add(createNewDockable);

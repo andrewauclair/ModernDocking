@@ -53,7 +53,7 @@ public class HeaderModel {
 	 * @return Title text
 	 */
 	public String titleText() {
-		return dockable.getTabText();
+		return dockable.getTitleText();
 	}
 
 	/**
