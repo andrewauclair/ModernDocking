@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 /**
  * State of a tab panel
  */
+@Deprecated(since = "0.12.1", forRemoval = true)
 public class TabState implements DockableState {
 	private final List<String> persistentIDs = new ArrayList<>();
 

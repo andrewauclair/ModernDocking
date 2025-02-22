@@ -31,6 +31,7 @@ import javax.swing.*;
 /**
  * State of a split pane
  */
+@Deprecated(since = "0.12.1", forRemoval = true)
 public class SplitState implements DockableState {
 	private final DockableState left;
 	private final DockableState right;
