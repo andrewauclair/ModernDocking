@@ -224,6 +224,7 @@ public class DockingStateAPI {
         }
     }
 
+    @Deprecated(since = "0.12.1", forRemoval = true)
     private DockedSplitPanel restoreSplit(DockingAPI docking, SplitState state, Window window) {
         DockedSplitPanel panel = new DockedSplitPanel(docking, window);
 
@@ -235,6 +236,7 @@ public class DockingStateAPI {
         return panel;
     }
 
+    @Deprecated(since = "0.12.1", forRemoval = true)
     private DockedTabbedPanel restoreTabbed(DockingAPI docking, TabState state, Window window) {
         DockedTabbedPanel panel = null;
 
@@ -263,7 +265,8 @@ public class DockingStateAPI {
         return panel;
     }
 
-    private DockingPanel restoreSimple(DockingAPI docking, PanelState state, Window window) {
+    @Deprecated(since = "0.12.1", forRemoval = true)
+    private DockedSimplePanel restoreSimple(DockingAPI docking, PanelState state, Window window) {
         Dockable dockable = getDockable(docking, state.getPersistentID());
 
         if (dockable instanceof FailedDockable) {
@@ -292,9 +295,6 @@ public class DockingStateAPI {
         DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
         wrapper.setWindow(window);
 
-        if (Settings.alwaysDisplayTabsMode() || dockable.getTabPreference() == DockableTabPreference.TOP) {
-            return new DockedTabbedPanel(docking, wrapper);
-        }
         return new DockedSimplePanel(docking, wrapper);
     }
 

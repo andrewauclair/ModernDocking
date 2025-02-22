@@ -24,5 +24,6 @@ package io.github.andrewauclair.moderndocking.persist;
 /**
  * Base interface for the Panel, Tab and Split state classes
  */
+@Deprecated(since = "0.12.1", forRemoval = true)
 public interface DockableState {
 }
