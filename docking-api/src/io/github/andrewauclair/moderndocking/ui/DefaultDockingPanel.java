@@ -126,13 +126,16 @@ public class DefaultDockingPanel extends JPanel implements Dockable, DockingList
         this.floatingAllowed = isFloatingAllowed;
     }
 
+    /**
+     * Get limit to window flag
+     */
     @Override
     public boolean isLimitedToWindow() {
         return limitedToWindow;
     }
 
     /**
-     * Set limit to root flag
+     * Set limit to window flag
      *
      * @param limitedToWindow New flag value
      */
