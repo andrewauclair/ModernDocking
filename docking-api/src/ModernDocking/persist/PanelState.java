@@ -24,6 +24,7 @@ package ModernDocking.persist;
 /**
  * DockableState that stores a single simple panel
  */
+@Deprecated(since = "0.12.1", forRemoval = true)
 public class PanelState implements DockableState {
 	private final String persistentID;
 	private final String className;
