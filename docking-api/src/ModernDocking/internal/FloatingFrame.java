@@ -35,6 +35,7 @@ public class FloatingFrame extends JFrame {
 	public FloatingFrame(DockingAPI docking) {
 		this.docking = docking;
 		setLayout(new BorderLayout());
+		setIconImages(docking.getMainWindow().getIconImages());
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -56,6 +57,7 @@ public class FloatingFrame extends JFrame {
 		setLocation(location);
 		setSize(size);
 		setExtendedState(state);
+		setIconImages(docking.getMainWindow().getIconImages());
 
 		setLayout(new BorderLayout());
 
@@ -89,6 +91,7 @@ public class FloatingFrame extends JFrame {
 		setLocation(location);
 		setSize(size);
 		setExtendedState(state);
+		setIconImages(docking.getMainWindow().getIconImages());
 
 		setLayout(new BorderLayout());
 
@@ -111,6 +114,7 @@ public class FloatingFrame extends JFrame {
 	public FloatingFrame(DockingAPI docking, Dockable dockable, TempFloatingFrame floatingFrame) {
 		this.docking = docking;
 		setLayout(new BorderLayout());
+		setIconImages(docking.getMainWindow().getIconImages());
 
 		// size the frame to the dockable size + the border size of the frame
 		Dimension size = DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel().getSize();
