@@ -22,12 +22,14 @@ SOFTWARE.
 package ModernDocking.api;
 
 import ModernDocking.Dockable;
+import ModernDocking.DockableTabPreference;
 import ModernDocking.exception.DockableNotFoundException;
 import ModernDocking.exception.DockableRegistrationFailureException;
 import ModernDocking.exception.RootDockingPanelNotFoundException;
 import ModernDocking.internal.*;
 import ModernDocking.layouts.*;
 import ModernDocking.persist.*;
+import ModernDocking.settings.Settings;
 import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
@@ -299,7 +301,7 @@ public class DockingStateAPI {
         return panel;
     }
 
-    private DockedSimplePanel restoreSimple(DockingAPI docking, PanelState state, Window window) {
+    private DockingPanel restoreSimple(DockingAPI docking, PanelState state, Window window) {
         Dockable dockable = getDockable(docking, state.getPersistentID());
 
         if (dockable instanceof FailedDockable) {
@@ -328,6 +330,9 @@ public class DockingStateAPI {
         DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
         wrapper.setWindow(window);
 
+        if (Settings.alwaysDisplayTabsMode() || dockable.getTabPreference() == DockableTabPreference.TOP) {
+            return new DockedTabbedPanel(docking, wrapper);
+        }
         return new DockedSimplePanel(docking, wrapper);
     }
 
@@ -361,7 +366,7 @@ public class DockingStateAPI {
         return panel;
     }
 
-    private DockedTabbedPanel restoreTabbed(DockingAPI docking, DockingTabPanelNode node, Window window) {
+    private DockingPanel restoreTabbed(DockingAPI docking, DockingTabPanelNode node, Window window) {
         DockedTabbedPanel panel = null;
 
         for (DockingSimplePanelNode simpleNode : node.getPersistentIDs()) {
@@ -421,7 +426,7 @@ public class DockingStateAPI {
         return panel;
     }
 
-    private DockedSimplePanel restoreSimple(DockingAPI docking, DockingSimplePanelNode node, Window window) {
+    private DockingPanel restoreSimple(DockingAPI docking, DockingSimplePanelNode node, Window window) {
         Dockable dockable = getDockable(docking, node.getPersistentID());
 
         if (dockable instanceof FailedDockable) {
@@ -454,6 +459,9 @@ public class DockingStateAPI {
 
         wrapper.setWindow(window);
 
+        if (Settings.alwaysDisplayTabsMode() || dockable.getTabPreference() == DockableTabPreference.TOP) {
+            return new DockedTabbedPanel(docking, wrapper);
+        }
         return new DockedSimplePanel(docking, wrapper);
     }
 
