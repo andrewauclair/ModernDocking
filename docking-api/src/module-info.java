@@ -9,7 +9,6 @@ module modern_docking.api {
 	exports io.github.andrewauclair.moderndocking.event;
 	exports io.github.andrewauclair.moderndocking.exception;
 	exports io.github.andrewauclair.moderndocking.layouts;
-	exports io.github.andrewauclair.moderndocking.persist;
     exports io.github.andrewauclair.moderndocking.settings;
 	exports io.github.andrewauclair.moderndocking.ui;
     exports io.github.andrewauclair.moderndocking.api;
