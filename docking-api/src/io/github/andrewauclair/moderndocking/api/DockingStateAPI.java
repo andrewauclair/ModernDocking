@@ -27,10 +27,6 @@ import io.github.andrewauclair.moderndocking.exception.DockableNotFoundException
 import io.github.andrewauclair.moderndocking.exception.RootDockingPanelNotFoundException;
 import io.github.andrewauclair.moderndocking.internal.*;
 import io.github.andrewauclair.moderndocking.layouts.*;
-import io.github.andrewauclair.moderndocking.persist.DockableState;
-import io.github.andrewauclair.moderndocking.persist.PanelState;
-import io.github.andrewauclair.moderndocking.persist.SplitState;
-import io.github.andrewauclair.moderndocking.persist.TabState;
 import io.github.andrewauclair.moderndocking.settings.Settings;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
 
@@ -156,7 +152,7 @@ public class DockingStateAPI {
 
         DockingComponentUtils.undockComponents(docking, root);
 
-        root.setPanel(restoreState(docking, layout.getRootNode(), window));
+        root.setPanel(restoreLayout(docking, layout.getRootNode(), window));
 
         // undock and destroy any failed dockables
         undockFailedComponents(docking, root);
@@ -211,96 +207,7 @@ public class DockingStateAPI {
         window.setSize(size);
     }
 
-    private DockingPanel restoreState(DockingAPI docking, DockableState state, Window window) {
-        if (state instanceof PanelState) {
-            return restoreSimple(docking, (PanelState) state, window);
-        }
-        else if (state instanceof SplitState) {
-            return restoreSplit(docking, (SplitState) state, window);
-        }
-        else if (state instanceof TabState) {
-            return restoreTabbed(docking, (TabState) state, window);
-        }
-        else {
-            throw new RuntimeException("Unknown state type");
-        }
-    }
-
-    @Deprecated(since = "0.12.1", forRemoval = true)
-    private DockedSplitPanel restoreSplit(DockingAPI docking, SplitState state, Window window) {
-        DockedSplitPanel panel = new DockedSplitPanel(docking, window);
-
-        panel.setLeft(restoreState(docking, state.getLeft(), window));
-        panel.setRight(restoreState(docking, state.getRight(), window));
-        panel.setOrientation(state.getOrientation());
-        panel.setDividerLocation(state.getDividerProprtion());
-
-        return panel;
-    }
-
-    @Deprecated(since = "0.12.1", forRemoval = true)
-    private DockedTabbedPanel restoreTabbed(DockingAPI docking, TabState state, Window window) {
-        DockedTabbedPanel panel = null;
-
-        for (String persistentID : state.getPersistentIDs()) {
-            Dockable dockable = getDockable(docking, persistentID);
-
-            if (dockable == null) {
-                throw new DockableNotFoundException(persistentID);
-            }
-
-            docking.undock(dockable);
-
-            DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
-            wrapper.setWindow(window);
-
-            if (panel == null) {
-                panel = new DockedTabbedPanel(docking, wrapper);
-            } else {
-                panel.addPanel(wrapper);
-            }
-        }
-
-        if (panel == null) {
-            throw new RuntimeException("DockedTabbedPanel has no tabs");
-        }
-        return panel;
-    }
-
-    @Deprecated(since = "0.12.1", forRemoval = true)
-    private DockedSimplePanel restoreSimple(DockingAPI docking, PanelState state, Window window) {
-        Dockable dockable = getDockable(docking, state.getPersistentID());
-
-        if (dockable instanceof FailedDockable) {
-            try {
-                Class<?> aClass = Class.forName(state.getClassName());
-                Constructor<?> constructor = aClass.getConstructor(String.class, String.class);
-
-                docking.deregisterDockable(dockable);
-
-                constructor.newInstance(state.getPersistentID(), state.getPersistentID());
-
-                dockable = getDockable(docking, state.getPersistentID());
-            }
-            catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
-                   InvocationTargetException e) {
-                logger.log(Level.INFO, e.getMessage(), e);
-            }
-        }
-
-        if (dockable == null) {
-            throw new DockableNotFoundException(state.getPersistentID());
-        }
-
-        docking.undock(dockable);
-
-        DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
-        wrapper.setWindow(window);
-
-        return new DockedSimplePanel(docking, wrapper);
-    }
-
-    private DockingPanel restoreState(DockingAPI docking, DockingLayoutNode node, Window window) {
+    private DockingPanel restoreLayout(DockingAPI docking, DockingLayoutNode node, Window window) {
         if (node instanceof DockingSimplePanelNode) {
             return restoreSimple(docking, (DockingSimplePanelNode) node, window);
         }
@@ -322,8 +229,8 @@ public class DockingStateAPI {
     private DockedSplitPanel restoreSplit(DockingAPI docking, DockingSplitPanelNode node, Window window) {
         DockedSplitPanel panel = new DockedSplitPanel(docking, window);
 
-        panel.setLeft(restoreState(docking, node.getLeft(), window));
-        panel.setRight(restoreState(docking, node.getRight(), window));
+        panel.setLeft(restoreLayout(docking, node.getLeft(), window));
+        panel.setRight(restoreLayout(docking, node.getRight(), window));
         panel.setOrientation(node.getOrientation());
         panel.setDividerLocation(node.getDividerProportion());
 
