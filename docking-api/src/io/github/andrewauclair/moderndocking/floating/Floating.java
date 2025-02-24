@@ -48,13 +48,13 @@ public class Floating {
 
     public static boolean isFloating() { return isFloating; }
 
-    static void setFloating(boolean floating) {
+    public static void setFloating(boolean floating) {
         isFloating = floating;
     }
 
     public static boolean isFloatingTabbedPane() { return isFloatingTabbedPane; }
 
-    static void setFloatingTabbedPane(boolean floating) {
+    public static void setFloatingTabbedPane(boolean floating) {
         isFloatingTabbedPane = floating;
     }
 }

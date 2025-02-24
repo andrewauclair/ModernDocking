@@ -835,7 +835,16 @@ public class DockingAPI {
         if (!root.isAutoHideSupported()) {
             return;
         }
-        undock(dockable);
+
+        boolean floating = Floating.isFloating();
+        try {
+            // pretend we're floating this dockable to prevent the frame from closing
+            Floating.setFloating(true);
+            undock(dockable);
+        }
+        finally {
+            Floating.setFloating(floating);
+        }
 
         // reset the window, undocking the dockable sets it to null
         internals.getWrapper(dockable).setWindow(window);
