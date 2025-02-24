@@ -25,8 +25,10 @@ import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableStyle;
 import io.github.andrewauclair.moderndocking.DockableTabPreference;
 import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.api.WindowLayoutBuilderAPI;
 import io.github.andrewauclair.moderndocking.app.*;
+import io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener;
 import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
 import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
 import io.github.andrewauclair.moderndocking.layouts.DockingLayouts;
@@ -88,6 +90,18 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		Docking.initialize(this);
 		DockingUI.initialize();
+
+		Docking.addNewFloatingFrameListener(new NewFloatingFrameListener() {
+			@Override
+			public void newFrameCreated(JFrame frame, RootDockingPanelAPI root) {
+				frame.setTitle("Testing New Floating Frame Listener");
+			}
+
+			@Override
+			public void newFrameCreated(JFrame frame, RootDockingPanelAPI root, Dockable dockable) {
+				frame.setTitle("Testing New Floating Frame Listener");
+			}
+		});
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);

@@ -26,6 +26,7 @@ import io.github.andrewauclair.moderndocking.DockableStyle;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.event.DockingListener;
 import io.github.andrewauclair.moderndocking.event.MaximizeListener;
+import io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener;
 import io.github.andrewauclair.moderndocking.exception.NotDockedException;
 import io.github.andrewauclair.moderndocking.exception.RootDockingPanelNotFoundException;
 import io.github.andrewauclair.moderndocking.floating.Floating;
@@ -490,6 +491,12 @@ public class DockingAPI {
 
             frame.pack();
             frame.setLocationRelativeTo(getMainWindow());
+
+            SwingUtilities.invokeLater(() -> {
+                bringToFront(dockable);
+
+                DockingListeners.fireNewFloatingFrameEvent(frame, frame.getRoot(), dockable);
+            });
         }
     }
 
@@ -517,7 +524,11 @@ public class DockingAPI {
         undock(dockable);
         dock(dockable, frame);
 
-        SwingUtilities.invokeLater(() -> bringToFront(dockable));
+        SwingUtilities.invokeLater(() -> {
+            bringToFront(dockable);
+
+            DockingListeners.fireNewFloatingFrameEvent(frame, frame.getRoot(), dockable);
+        });
     }
 
     /**
@@ -947,5 +958,13 @@ public class DockingAPI {
 
     public void removeDockingListener(DockingListener listener) {
         DockingListeners.removeDockingListener(listener);
+    }
+
+    public void addNewFloatingFrameListener(NewFloatingFrameListener listener) {
+        DockingListeners.addNewFloatingFrameListener(listener);
+    }
+
+    public void removeNewFloatingFrameListener(NewFloatingFrameListener listener) {
+        DockingListeners.removeNewFloatingFrameListener(listener);
     }
 }

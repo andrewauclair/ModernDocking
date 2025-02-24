@@ -24,10 +24,7 @@ package io.github.andrewauclair.moderndocking.floating;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
-import io.github.andrewauclair.moderndocking.internal.DockableWrapper;
-import io.github.andrewauclair.moderndocking.internal.DockedTabbedPanel;
-import io.github.andrewauclair.moderndocking.internal.DockingComponentUtils;
-import io.github.andrewauclair.moderndocking.internal.FloatingFrame;
+import io.github.andrewauclair.moderndocking.internal.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -98,11 +95,12 @@ public class DockedTabbedPanelFloatListener extends FloatListener {
         if (utilsFrame == null) {
             boolean first = true;
             Dockable firstDockable = null;
+            FloatingFrame newFrame = null;
 
             for (DockableWrapper dockable : dockables) {
                 if (first) {
                     first = false;
-                    new FloatingFrame(docking, dockable.getDockable(), tempFloatingFrame);
+                    newFrame = new FloatingFrame(docking, dockable.getDockable(), tempFloatingFrame);
                     firstDockable = dockable.getDockable();
                 }
                 else {
@@ -112,6 +110,14 @@ public class DockedTabbedPanelFloatListener extends FloatListener {
 
             if (selectedDockable != null) {
                 docking.bringToFront(selectedDockable);
+            }
+
+            if (newFrame != null) {
+                final FloatingFrame frame = newFrame;
+
+                SwingUtilities.invokeLater(() -> {
+                    DockingListeners.fireNewFloatingFrameEvent(frame, frame.getRoot());
+                });
             }
 
             return true;

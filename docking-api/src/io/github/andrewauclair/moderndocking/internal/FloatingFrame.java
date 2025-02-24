@@ -31,6 +31,7 @@ import java.awt.*;
 
 public class FloatingFrame extends JFrame {
 	private final DockingAPI docking;
+	private RootDockingPanelAPI root;
 
 	public FloatingFrame(DockingAPI docking) {
 		this.docking = docking;
@@ -40,7 +41,7 @@ public class FloatingFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		// create and add the root
-		RootDockingPanelAPI root = new RootDockingPanelAPI(docking, this){};
+		root = new RootDockingPanelAPI(docking, this){};
 		root.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
 		add(root, BorderLayout.CENTER);
 
@@ -167,6 +168,10 @@ public class FloatingFrame extends JFrame {
 			Dimension newSize = new Dimension(currentFrameSize.width - currentPanelSize.width + onScreenSize.width, currentFrameSize.height - currentPanelSize.height + onScreenSize.height);
 			setSize(newSize);
 		});
+	}
+
+	public RootDockingPanelAPI getRoot() {
+		return root;
 	}
 
 	@Override

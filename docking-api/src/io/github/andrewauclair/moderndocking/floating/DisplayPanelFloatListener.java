@@ -124,6 +124,12 @@ public class DisplayPanelFloatListener extends FloatListener {
                 // floating
                 FloatingFrame newFloatingFrame = new FloatingFrame(docking, floatingDockable.getDockable(), mousePosOnScreen, floatingDockable.getDisplayPanel().getSize(), 0);
                 docking.dock(floatingDockable.getDockable(), newFloatingFrame);
+
+                SwingUtilities.invokeLater(() -> {
+                    docking.bringToFront(floatingDockable.getDockable());
+
+                    DockingListeners.fireNewFloatingFrameEvent(newFloatingFrame, newFloatingFrame.getRoot(), floatingDockable.getDockable());
+                });
             }
             else {
                 // failed to dock, restore the previous layout
@@ -134,6 +140,12 @@ public class DisplayPanelFloatListener extends FloatListener {
             // floating
             FloatingFrame newFloatingFrame = new FloatingFrame(docking, floatingDockable.getDockable(), mousePosOnScreen, floatingDockable.getDisplayPanel().getSize(), 0);
             docking.dock(floatingDockable.getDockable(), newFloatingFrame);
+
+            SwingUtilities.invokeLater(() -> {
+                docking.bringToFront(floatingDockable.getDockable());
+
+                DockingListeners.fireNewFloatingFrameEvent(newFloatingFrame, newFloatingFrame.getRoot(), floatingDockable.getDockable());
+            });
         }
         else {
             // failed to dock, restore the previous layout
