@@ -27,7 +27,9 @@ import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.event.DockingListener;
 import io.github.andrewauclair.moderndocking.event.MaximizeListener;
+import io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener;
 import io.github.andrewauclair.moderndocking.internal.DockingInternal;
+import io.github.andrewauclair.moderndocking.internal.DockingListeners;
 
 import javax.swing.*;
 import java.awt.*;
@@ -580,6 +582,14 @@ public class Docking {
 
     public static void removeDockingListener(DockingListener listener) {
         instance.removeDockingListener(listener);
+    }
+
+    public static void addNewFloatingFrameListener(NewFloatingFrameListener listener) {
+        DockingListeners.addNewFloatingFrameListener(listener);
+    }
+
+    public static void removeNewFloatingFrameListener(NewFloatingFrameListener listener) {
+        DockingListeners.removeNewFloatingFrameListener(listener);
     }
 
     public static DockingAPI getSingleInstance() {

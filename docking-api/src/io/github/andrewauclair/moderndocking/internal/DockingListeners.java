@@ -22,10 +22,13 @@ SOFTWARE.
 package io.github.andrewauclair.moderndocking.internal;
 
 import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.event.DockingEvent;
 import io.github.andrewauclair.moderndocking.event.DockingListener;
 import io.github.andrewauclair.moderndocking.event.MaximizeListener;
+import io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +38,7 @@ import java.util.List;
 public class DockingListeners {
 	private static final List<MaximizeListener> maximizeListeners = new ArrayList<>();
 	private static final List<DockingListener> dockingListeners = new ArrayList<>();
+	private static final List<NewFloatingFrameListener> newFloatingFrameListeners = new ArrayList<>();
 
 	/**
 	 * Add a new maximize listener. Will be called when a dockable is maximized
@@ -84,6 +88,22 @@ public class DockingListeners {
 	 */
 	public static void removeDockingListener(DockingListener listener) {
 		dockingListeners.remove(listener);
+	}
+
+	public static void addNewFloatingFrameListener(NewFloatingFrameListener listener) {
+		newFloatingFrameListeners.add(listener);
+	}
+
+	public static void removeNewFloatingFrameListener(NewFloatingFrameListener listener) {
+		newFloatingFrameListeners.remove(listener);
+	}
+
+	public static void fireNewFloatingFrameEvent(JFrame frame, RootDockingPanelAPI root) {
+		newFloatingFrameListeners.forEach(listener -> listener.newFrameCreated(frame, root));
+	}
+
+	public static void fireNewFloatingFrameEvent(JFrame frame, RootDockingPanelAPI root, Dockable dockable) {
+		newFloatingFrameListeners.forEach(listener -> listener.newFrameCreated(frame, root, dockable));
 	}
 
 	/**

@@ -120,6 +120,10 @@ public class DockingStateAPI {
             FloatingFrame frame = new FloatingFrame(docking, frameLayout.getLocation(), frameLayout.getSize(), frameLayout.getState());
 
             restoreWindowLayout(frame, frameLayout);
+
+            SwingUtilities.invokeLater(() -> {
+                DockingListeners.fireNewFloatingFrameEvent(frame, frame.getRoot());
+            });
         }
 
         docking.getAppState().setPaused(false);
