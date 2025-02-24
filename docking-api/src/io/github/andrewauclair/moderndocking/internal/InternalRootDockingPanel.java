@@ -143,7 +143,7 @@ public class InternalRootDockingPanel extends DockingPanel {
     }
 
     @Override
-    public DockedAnchorPanel getAnchor() {
+    public String getAnchor() {
         return null;
     }
 

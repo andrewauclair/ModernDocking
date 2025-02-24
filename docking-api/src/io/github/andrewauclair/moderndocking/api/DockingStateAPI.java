@@ -221,6 +221,9 @@ public class DockingStateAPI {
         else if (node instanceof DockingTabPanelNode) {
             return restoreTabbed(docking, (DockingTabPanelNode) node, window);
         }
+        else if (node instanceof DockingAnchorPanelNode) {
+            return restoreAnchor(docking, (DockingAnchorPanelNode) node, window);
+        }
         else if (node == null) {
             // the main window root can contain a null panel if nothing is docked
             return null;
@@ -301,6 +304,40 @@ public class DockingStateAPI {
         return panel;
     }
 
+    private DockingPanel restoreAnchor(DockingAPI docking, DockingAnchorPanelNode node, Window window) {
+        Dockable dockable = getDockable(docking, node.getPersistentID());
+
+        if (dockable instanceof FailedDockable) {
+            try {
+                Class<?> aClass = Class.forName(node.getClassName());
+                Constructor<?> constructor = aClass.getConstructor(String.class, String.class);
+
+                docking.deregisterDockable(dockable);
+
+                constructor.newInstance(node.getPersistentID(), node.getPersistentID());
+
+                dockable = getDockable(docking, node.getPersistentID());
+            }
+            catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+                   InvocationTargetException e) {
+                logger.log(Level.INFO, e.getMessage(), e);
+            }
+        }
+
+        if (dockable == null) {
+            throw new DockableNotFoundException(node.getPersistentID());
+        }
+
+        DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
+        // undock the dockable in case it is currently docked somewhere else
+        docking.undock(dockable);
+
+        wrapper.setWindow(window);
+
+        return new DockedAnchorPanel(docking, wrapper);
+    }
+
     private DockingPanel restoreSimple(DockingAPI docking, DockingSimplePanelNode node, Window window) {
         Dockable dockable = getDockable(docking, node.getPersistentID());
 
@@ -335,9 +372,9 @@ public class DockingStateAPI {
         wrapper.setWindow(window);
 
         if (Settings.alwaysDisplayTabsMode() || dockable.getTabPreference() == DockableTabPreference.TOP) {
-            return new DockedTabbedPanel(docking, wrapper, null);
+            return new DockedTabbedPanel(docking, wrapper, node.getAnchor());
         }
-        return new DockedSimplePanel(docking, wrapper, null);
+        return new DockedSimplePanel(docking, wrapper, node.getAnchor());
     }
 
     private Dockable getDockable(DockingAPI docking, String persistentID) {

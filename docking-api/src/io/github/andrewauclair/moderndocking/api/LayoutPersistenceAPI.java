@@ -92,35 +92,35 @@ public class LayoutPersistenceAPI {
     public void saveLayoutToOutputStream(final OutputStream out, final  ApplicationLayout layout) throws XMLStreamException {
         XMLStreamWriter writer = outputFactory.createXMLStreamWriter(out);
 
-            writer.writeStartDocument();
-            writer.writeCharacters(NL);
-            writer.writeStartElement("app-layout");
+        writer.writeStartDocument();
+        writer.writeCharacters(NL);
+        writer.writeStartElement("app-layout");
 
-            saveLayoutToFile(writer, layout.getMainFrameLayout(), true);
+        saveLayoutToFile(writer, layout.getMainFrameLayout(), true);
 
-            for (WindowLayout frameLayout : layout.getFloatingFrameLayouts()) {
-                saveLayoutToFile(writer, frameLayout, false);
+        for (WindowLayout frameLayout : layout.getFloatingFrameLayouts()) {
+            saveLayoutToFile(writer, frameLayout, false);
+        }
+
+        writer.writeStartElement("undocked");
+        writer.writeCharacters(NL);
+
+        for (Dockable dockable : DockingInternal.get(docking).getDockables()) {
+            if (!docking.isDocked(dockable)) {
+                DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
+                writeSimpleNodeToFile(writer, new DockingSimplePanelNode(docking, dockable.getPersistentID(), dockable.getClass().getCanonicalName(), "", DockableProperties.saveProperties(wrapper)));
             }
+        }
 
-            writer.writeStartElement("undocked");
-            writer.writeCharacters(NL);
+        writer.writeEndElement();
+        writer.writeCharacters(NL);
 
-            for (Dockable dockable : DockingInternal.get(docking).getDockables()) {
-                if (!docking.isDocked(dockable)) {
-                    DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+        writer.writeEndElement();
 
-                    writeSimpleNodeToFile(writer, new DockingSimplePanelNode(docking, dockable.getPersistentID(), dockable.getClass().getCanonicalName(), DockableProperties.saveProperties(wrapper)));
-                }
-            }
+        writer.writeEndDocument();
 
-            writer.writeEndElement();
-            writer.writeCharacters(NL);
-
-            writer.writeEndElement();
-
-            writer.writeEndDocument();
-
-            writer.close();
+        writer.close();
     }
 
     /**
@@ -301,6 +301,9 @@ public class LayoutPersistenceAPI {
         writer.writeStartElement("simple");
         writer.writeAttribute("persistentID", node.getPersistentID());
         writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(node.getPersistentID()).getClass().getCanonicalName());
+        if (node.getAnchor() != null) {
+            writer.writeAttribute("anchor", node.getAnchor());
+        }
         writer.writeCharacters(NL);
 
         writer.writeStartElement("properties");
@@ -508,6 +511,9 @@ public class LayoutPersistenceAPI {
                 else if (reader.getLocalName().equals("tabbed")) {
                     node = readTabNodeFromFile(reader);
                 }
+                else if (reader.getLocalName().equals("anchor")) {
+                    node = readAnchorNodeFromFile(reader);
+                }
             }
             else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals(name)) {
                 break;
@@ -519,8 +525,9 @@ public class LayoutPersistenceAPI {
     private DockingSimplePanelNode readSimpleNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
         String persistentID = reader.getAttributeValue(null, "persistentID");
         String className = reader.getAttributeValue(null, "class-name");
+        String anchor = reader.getAttributeValue(null, "anchor");
 
-        return new DockingSimplePanelNode(docking, persistentID, className, readProperties(reader));
+        return new DockingSimplePanelNode(docking, persistentID, className, anchor, readProperties(reader));
     }
 
     // expects that we haven't already read the starting element for <properties>
@@ -592,6 +599,7 @@ public class LayoutPersistenceAPI {
 
         int orientation = Integer.parseInt(reader.getAttributeValue(null, "orientation"));
         double dividerProportion = Double.parseDouble(reader.getAttributeValue(null, "divider-proportion"));
+        String anchor = reader.getAttributeValue(null, "anchor");
 
         if (dividerProportion < 0.0) {
             dividerProportion = 0.0;
@@ -615,7 +623,7 @@ public class LayoutPersistenceAPI {
                 break;
             }
         }
-        return new DockingSplitPanelNode(docking, left, right, orientation, dividerProportion);
+        return new DockingSplitPanelNode(docking, left, right, orientation, dividerProportion, anchor);
     }
 
     private DockingTabPanelNode readTabNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
@@ -628,8 +636,9 @@ public class LayoutPersistenceAPI {
 
             if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("selectedTab")) {
                 String persistentID = reader.getAttributeValue(null, "persistentID");
-                String className = reader.getAttributeCount() > 1 ? reader.getAttributeValue(null, "class-name") : "";
-                node = new DockingTabPanelNode(docking, persistentID, className);
+                String className = reader.getAttributeValue(null, "class-name");
+                String anchor = reader.getAttributeValue(null, "anchor");
+                node = new DockingTabPanelNode(docking, persistentID, className, anchor);
             }
             else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("tab")) {
                 currentPersistentID = reader.getAttributeValue(null, "persistentID");
@@ -697,5 +706,12 @@ public class LayoutPersistenceAPI {
             }
         }
         return node;
+    }
+
+    private DockingAnchorPanelNode readAnchorNodeFromFile(XMLStreamReader reader) {
+        String persistentID = reader.getAttributeValue(null, "persistentID");
+        String className = reader.getAttributeValue(null, "class-name");
+
+        return new DockingAnchorPanelNode(docking, persistentID, className);
     }
 }

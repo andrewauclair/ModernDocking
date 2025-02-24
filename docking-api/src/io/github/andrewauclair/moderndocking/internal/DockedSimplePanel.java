@@ -42,7 +42,7 @@ public class DockedSimplePanel extends DockingPanel {
 
 	private final DockingAPI docking;
 
-	private DockedAnchorPanel anchor;
+	private String anchor;
 
 	/**
 	 * Parent panel of this simple panel
@@ -55,7 +55,7 @@ public class DockedSimplePanel extends DockingPanel {
 	 * @param docking Instance of the docking framework that this panel belongs to
 	 * @param dockable Wrapper of the dockable in this simple panel
 	 */
-	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable, DockedAnchorPanel anchor) {
+	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable, String anchor) {
 		this(docking, dockable, anchor, dockable.getDisplayPanel());
 	}
 
@@ -66,7 +66,7 @@ public class DockedSimplePanel extends DockingPanel {
 	 * @param dockable Wrapper of the dockable in this simple panel
 	 * @param displayPanel The panel to display in the DockedSimplePanel for this dockable
 	 */
-	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable, DockedAnchorPanel anchor, DisplayPanel displayPanel) {
+	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable, String anchor, DisplayPanel displayPanel) {
 		setLayout(new BorderLayout());
 
 		setNotSelectedBorder();
@@ -90,7 +90,7 @@ public class DockedSimplePanel extends DockingPanel {
 	}
 
 	@Override
-	public DockedAnchorPanel getAnchor() {
+	public String getAnchor() {
 		return anchor;
 	}
 
@@ -163,18 +163,14 @@ public class DockedSimplePanel extends DockingPanel {
 		if (this.dockable.getDockable() == dockable) {
 			remove(this.dockable.getDisplayPanel());
 
-//			parent.removeChild(this);
+			DockableWrapper anchorWrapper = DockingInternal.get(docking).getAnchor(anchor);
 
-
-
-			DockedAnchorPanel anchorPanel = anchor;
-			anchor = null;
-
-			if (anchorPanel == null || !DockingComponentUtils.isAnchorEmpty(docking, anchorPanel.getWrapper().getDockable())) {
+			if (anchor == null || !DockingComponentUtils.isAnchorEmpty(docking, anchorWrapper.getDockable())) {
 				parent.removeChild(this);
 			}
 			else {
-				parent.replaceChild(this, anchorPanel);
+				anchor = null;
+				parent.replaceChild(this, new DockedAnchorPanel(docking, anchorWrapper));
 			}
 
 			this.dockable.setParent(null);

@@ -59,7 +59,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	private final CustomTabbedPane tabs = new CustomTabbedPane();
 	private final DockingAPI docking;
 
-	private final DockedAnchorPanel anchor;
+	private final String anchor;
 
 	/**
 	 * The parent of this DockedTabbedPanel
@@ -78,7 +78,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 *
 	 * @param dockable The first dockable in the tabbed pane
 	 */
-	public DockedTabbedPanel(DockingAPI docking, DockableWrapper dockable, DockedAnchorPanel anchor) {
+	public DockedTabbedPanel(DockingAPI docking, DockableWrapper dockable, String anchor) {
 		this.docking = docking;
 		this.anchor = anchor;
 		setLayout(new BorderLayout());
@@ -277,7 +277,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	}
 
 	@Override
-	public DockedAnchorPanel getAnchor() {
+	public String getAnchor() {
 		return anchor;
 	}
 
