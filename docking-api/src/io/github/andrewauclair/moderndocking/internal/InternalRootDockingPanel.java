@@ -92,6 +92,15 @@ public class InternalRootDockingPanel extends DockingPanel {
      * @return True if empty
      */
     public boolean isEmpty() {
+        if (southToolbar != null && southToolbar.shouldDisplay()) {
+            return false;
+        }
+        if (westToolbar != null && westToolbar.shouldDisplay()) {
+            return false;
+        }
+        if (eastToolbar != null && eastToolbar.shouldDisplay()) {
+            return false;
+        }
         return panel == null;
     }
 
