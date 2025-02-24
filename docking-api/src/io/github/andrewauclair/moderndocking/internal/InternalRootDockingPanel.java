@@ -31,7 +31,6 @@ import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -144,7 +143,7 @@ public class InternalRootDockingPanel extends DockingPanel {
     }
 
     @Override
-    public DockingAnchorPanel getAnchor() {
+    public DockedAnchorPanel getAnchor() {
         return null;
     }
 

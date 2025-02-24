@@ -31,7 +31,7 @@ import java.util.List;
  * Docking panel with docking regions of: north, south, east, west and center
  */
 public abstract class DockingPanel extends JPanel {
-	public abstract DockingAnchorPanel getAnchor();
+	public abstract DockedAnchorPanel getAnchor();
 
 	/**
 	 * Set the parent of this DockingPanel

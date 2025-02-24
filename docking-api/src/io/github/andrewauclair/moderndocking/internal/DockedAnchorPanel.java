@@ -30,7 +30,7 @@ import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 
-public class DockingAnchorPanel extends DockingPanel {
+public class DockedAnchorPanel extends DockingPanel {
     private final DockingAPI docking;
 
     private final DockableWrapper anchor;
@@ -40,7 +40,7 @@ public class DockingAnchorPanel extends DockingPanel {
      */
     private DockingPanel parent;
 
-    public DockingAnchorPanel(DockingAPI docking, DockableWrapper anchor) {
+    public DockedAnchorPanel(DockingAPI docking, DockableWrapper anchor) {
         setLayout(new BorderLayout());
 
         anchor.setParent(this);
@@ -52,7 +52,7 @@ public class DockingAnchorPanel extends DockingPanel {
     }
 
     @Override
-    public DockingAnchorPanel getAnchor() {
+    public DockedAnchorPanel getAnchor() {
         return null;
     }
 

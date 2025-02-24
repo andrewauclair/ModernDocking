@@ -53,7 +53,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	private DockingPanel parent;
 	private final DockingAPI docking;
 	private final Window window;
-	private final DockingAnchorPanel anchor;
+	private final DockedAnchorPanel anchor;
 
 	/**
 	 * the last divider proportion that setDividerLocation was called with
@@ -65,7 +65,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	 *
 	 * @param window The window this panel is in. Used to tell the child DockableWrappers what Window they are a part of
 	 */
-	public DockedSplitPanel(DockingAPI docking, Window window, DockingAnchorPanel anchor) {
+	public DockedSplitPanel(DockingAPI docking, Window window, DockedAnchorPanel anchor) {
 		this.docking = docking;
 		this.window = window;
 		this.anchor = anchor;
@@ -267,7 +267,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	}
 
 	@Override
-	public DockingAnchorPanel getAnchor() {
+	public DockedAnchorPanel getAnchor() {
 		return anchor;
 	}
 
