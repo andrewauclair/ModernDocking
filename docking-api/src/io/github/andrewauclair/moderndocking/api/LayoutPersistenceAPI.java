@@ -292,6 +292,9 @@ public class LayoutPersistenceAPI {
         else if (node instanceof DockingTabPanelNode) {
             writeTabbedNodeToFile(writer, (DockingTabPanelNode) node);
         }
+        else if (node instanceof DockingAnchorPanelNode) {
+            writeAnchorNodeToFile(writer, (DockingAnchorPanelNode) node);
+        }
     }
 
     private void writeSimpleNodeToFile(XMLStreamWriter writer, DockingSimplePanelNode node) throws XMLStreamException {
@@ -389,6 +392,16 @@ public class LayoutPersistenceAPI {
             writer.writeEndElement();
             writer.writeCharacters(NL);
         }
+
+        writer.writeEndElement();
+        writer.writeCharacters(NL);
+    }
+
+    private void writeAnchorNodeToFile(XMLStreamWriter writer, DockingAnchorPanelNode node) throws XMLStreamException {
+        writer.writeStartElement("anchor");
+        writer.writeAttribute("persistentID", node.getPersistentID());
+        writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(node.getPersistentID()).getClass().getCanonicalName());
+        writer.writeCharacters(NL);
 
         writer.writeEndElement();
         writer.writeCharacters(NL);

@@ -252,11 +252,13 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		view.add(actionListenDock(themes));
 		view.add(actionListenDock(scrolling));
 
+		Anchor anchor = new Anchor();
+
+		Docking.registerDockingAnchor(anchor);
+
 		JMenuItem createAnchor = new JMenuItem("Create Anchor");
 		createAnchor.addActionListener(e -> {
-			Anchor anchor = new Anchor();
 
-			Docking.registerDockingAnchor(anchor);
 
 			Docking.dock(anchor, one, DockingRegion.EAST);
 		});

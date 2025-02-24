@@ -195,6 +195,10 @@ public class DockingInternal {
 		anchors.put(anchor.getPersistentID(), new DockableWrapper(docking, anchor, true));
 	}
 
+	public void deregisterDockingAnchor(Dockable anchor) {
+		anchors.remove(anchor.getPersistentID());
+	}
+
 	private void validateDockingProperties(Dockable dockable) {
 		List<Field> dockingPropFields = Arrays.stream(dockable.getClass().getDeclaredFields())
 				.filter(field -> field.getAnnotation(DockingProperty.class) != null)
@@ -340,7 +344,9 @@ public class DockingInternal {
 			updateLAF(splitPanel.getLeft());
 			updateLAF(splitPanel.getRight());
 		}
+		SwingUtilities.updateComponentTreeUI(panel);
 	}
+
 	public static BiFunction<HeaderController, HeaderModel, DockingHeaderUI> createHeaderUI = DefaultHeaderUI::new;
 
 	public static DockingHeaderUI createDefaultHeaderUI(HeaderController headerController, HeaderModel headerModel) {

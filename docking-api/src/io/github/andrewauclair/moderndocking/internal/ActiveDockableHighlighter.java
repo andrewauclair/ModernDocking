@@ -64,7 +64,7 @@ public class ActiveDockableHighlighter {
 					activePanel = null;
 				}
 
-				if (activePanel != dockable && (dockable instanceof DockedSimplePanel || dockable instanceof DockedTabbedPanel)) {
+				if (activePanel != dockable && (dockable instanceof DockedSimplePanel || dockable instanceof DockedTabbedPanel || dockable instanceof DockedAnchorPanel)) {
 					if (activePanel != null) {
 						setNotSelectedBorder(activePanel);
 					}

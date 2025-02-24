@@ -42,7 +42,7 @@ public class DockedSimplePanel extends DockingPanel {
 
 	private final DockingAPI docking;
 
-	private DockingAnchorPanel anchor;
+	private DockedAnchorPanel anchor;
 
 	/**
 	 * Parent panel of this simple panel
@@ -55,7 +55,7 @@ public class DockedSimplePanel extends DockingPanel {
 	 * @param docking Instance of the docking framework that this panel belongs to
 	 * @param dockable Wrapper of the dockable in this simple panel
 	 */
-	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable, DockingAnchorPanel anchor) {
+	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable, DockedAnchorPanel anchor) {
 		this(docking, dockable, anchor, dockable.getDisplayPanel());
 	}
 
@@ -66,7 +66,7 @@ public class DockedSimplePanel extends DockingPanel {
 	 * @param dockable Wrapper of the dockable in this simple panel
 	 * @param displayPanel The panel to display in the DockedSimplePanel for this dockable
 	 */
-	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable, DockingAnchorPanel anchor, DisplayPanel displayPanel) {
+	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable, DockedAnchorPanel anchor, DisplayPanel displayPanel) {
 		setLayout(new BorderLayout());
 
 		setNotSelectedBorder();
@@ -90,7 +90,7 @@ public class DockedSimplePanel extends DockingPanel {
 	}
 
 	@Override
-	public DockingAnchorPanel getAnchor() {
+	public DockedAnchorPanel getAnchor() {
 		return anchor;
 	}
 
@@ -125,7 +125,7 @@ public class DockedSimplePanel extends DockingPanel {
 			DockingPanel newPanel;
 
 			if (wrapper.isAnchor()) {
-				newPanel = new DockingAnchorPanel(docking, wrapper);
+				newPanel = new DockedAnchorPanel(docking, wrapper);
 			}
 			else if (Settings.alwaysDisplayTabsMode()) {
 				newPanel = new DockedTabbedPanel(docking, wrapper, anchor);
@@ -167,7 +167,7 @@ public class DockedSimplePanel extends DockingPanel {
 
 
 
-			DockingAnchorPanel anchorPanel = anchor;
+			DockedAnchorPanel anchorPanel = anchor;
 			anchor = null;
 
 			if (anchorPanel == null || !DockingComponentUtils.isAnchorEmpty(docking, anchorPanel.getWrapper().getDockable())) {

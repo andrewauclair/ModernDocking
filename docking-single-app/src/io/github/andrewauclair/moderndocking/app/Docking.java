@@ -157,6 +157,10 @@ public class Docking {
         instance.registerDockingAnchor(anchor);
     }
 
+    public static void deregisterDockingAnchor(Dockable anchor) {
+        instance.deregisterDockingAnchor(anchor);
+    }
+
     /**
      * allows the user to configure auto hide per window. by default auto hide is only enabled on the frames the docking framework creates
      *

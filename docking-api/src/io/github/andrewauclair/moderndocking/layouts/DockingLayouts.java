@@ -122,9 +122,10 @@ public class DockingLayouts {
 		else if (panel instanceof DockedTabbedPanel) {
 			node = tabbedPanelToNode(docking, (DockedTabbedPanel) panel);
 		}
-		else if (panel instanceof DockingAnchorPanel) {
-			// TODO something real here
-			node = new EmptyPanelNode();
+		else if (panel instanceof DockedAnchorPanel) {
+			DockableWrapper wrapper = ((DockedAnchorPanel) panel).getWrapper();
+
+			node = new DockingAnchorPanelNode(docking, wrapper.getDockable().getPersistentID(), wrapper.getClass().getCanonicalName());
 		}
 		else if (panel == null) {
 			// the main frame root node contains a null panel if there is nothing docked
