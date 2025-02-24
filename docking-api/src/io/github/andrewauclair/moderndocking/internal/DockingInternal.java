@@ -352,4 +352,8 @@ public class DockingInternal {
 	public static DockingHeaderUI createDefaultHeaderUI(HeaderController headerController, HeaderModel headerModel) {
 		return createHeaderUI.apply(headerController, headerModel);
 	}
+
+	public DockableWrapper getAnchor(String anchor) {
+		return anchors.get(anchor);
+	}
 }

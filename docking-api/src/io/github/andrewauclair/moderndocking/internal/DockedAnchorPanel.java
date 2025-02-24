@@ -52,7 +52,7 @@ public class DockedAnchorPanel extends DockingPanel {
     }
 
     @Override
-    public DockedAnchorPanel getAnchor() {
+    public String getAnchor() {
         return null;
     }
 
@@ -69,10 +69,10 @@ public class DockedAnchorPanel extends DockingPanel {
         DockingPanel newPanel;
 
         if (Settings.alwaysDisplayTabsMode()) {
-            newPanel = new DockedTabbedPanel(docking, wrapper, this);
+            newPanel = new DockedTabbedPanel(docking, wrapper, anchor.getDockable().getPersistentID());
         }
         else {
-            newPanel = new DockedSimplePanel(docking, wrapper, this);
+            newPanel = new DockedSimplePanel(docking, wrapper, anchor.getDockable().getPersistentID());
         }
 
         parent.replaceChild(this, newPanel);

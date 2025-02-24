@@ -37,6 +37,7 @@ import javax.swing.*;
 	private DockingLayoutNode right;
 	private final int orientation;
 	private final double dividerProportion;
+	 private String anchor;
 
 	private DockingLayoutNode parent;
 
@@ -48,14 +49,15 @@ import javax.swing.*;
 	  * @param orientation The orientation of the split
 	  * @param dividerProportion The divider proportion of the split
 	  */
-	public DockingSplitPanelNode(DockingAPI docking, DockingLayoutNode left, DockingLayoutNode right, int orientation, double dividerProportion) {
+	public DockingSplitPanelNode(DockingAPI docking, DockingLayoutNode left, DockingLayoutNode right, int orientation, double dividerProportion, String anchor) {
 		this.docking = docking;
 		this.left = left;
 		this.right = right;
 		this.orientation = orientation;
 		this.dividerProportion = dividerProportion;
+        this.anchor = anchor;
 
-		if (this.left != null) {
+        if (this.left != null) {
 			this.left.setParent(this);
 		}
 		if (this.right != null) {
@@ -98,14 +100,14 @@ import javax.swing.*;
 			DockingLayoutNode right;
 
 			if (Settings.alwaysDisplayTabsMode()) {
-				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingTabPanelNode(docking, persistentID, "") : this;
-				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(docking, persistentID, "");
+				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingTabPanelNode(docking, persistentID, "", anchor) : this;
+				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(docking, persistentID, "", anchor);
 			}
 			else {
 				String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();
 
-				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(docking, persistentID, className) : this;
-				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(docking, persistentID, className);
+				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(docking, persistentID, className, anchor) : this;
+				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(docking, persistentID, className, anchor);
 			}
 
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
@@ -113,7 +115,7 @@ import javax.swing.*;
 			}
 
 			DockingLayoutNode oldParent = parent;
-			DockingSplitPanelNode split = new DockingSplitPanelNode(docking, left, right, orientation, dividerProportion);
+			DockingSplitPanelNode split = new DockingSplitPanelNode(docking, left, right, orientation, dividerProportion, anchor);
 			oldParent.replaceChild(this, split);
 		}
 	}

@@ -114,7 +114,7 @@ public class DockingLayouts {
 
 			Map<String, Property> properties = DockableProperties.saveProperties(wrapper);
 
-			node = new DockingSimplePanelNode(docking, wrapper.getDockable().getPersistentID(), wrapper.getDockable().getClass().getCanonicalName(), properties);
+			node = new DockingSimplePanelNode(docking, wrapper.getDockable().getPersistentID(), wrapper.getDockable().getClass().getCanonicalName(), panel.getAnchor(), properties);
 		}
 		else if (panel instanceof DockedSplitPanel) {
 			node = splitPanelToNode(docking, (DockedSplitPanel) panel);
@@ -147,13 +147,14 @@ public class DockingLayouts {
 		int width = splitPane.getWidth();
 		double dividerProportion = orientation == JSplitPane.VERTICAL_SPLIT ? dividerLocation / (float) (height - dividerSize) :
 				dividerLocation / (float) (width - dividerSize);
-		return new DockingSplitPanelNode(docking, panelToNode(docking, panel.getLeft()), panelToNode(docking, panel.getRight()), splitPane.getOrientation(), dividerProportion);
+
+		return new DockingSplitPanelNode(docking, panelToNode(docking, panel.getLeft()), panelToNode(docking, panel.getRight()), splitPane.getOrientation(), dividerProportion, panel.getAnchor());
 	}
 
 	private static DockingLayoutNode tabbedPanelToNode(DockingAPI docking, DockedTabbedPanel panel) {
 		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(DockingInternal.get(docking).getDockable(panel.getSelectedTabID()));
 
-		DockingTabPanelNode node = new DockingTabPanelNode(docking, panel.getSelectedTabID(), "", DockableProperties.saveProperties(wrapper));
+		DockingTabPanelNode node = new DockingTabPanelNode(docking, panel.getSelectedTabID(), "", panel.getAnchor(), DockableProperties.saveProperties(wrapper));
 
 		for (DockableWrapper dockable : panel.getDockables()) {
 			node.addTab(dockable.getDockable().getPersistentID(), "", DockableProperties.saveProperties(dockable));
