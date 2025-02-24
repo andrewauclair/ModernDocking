@@ -42,8 +42,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LayoutPersistenceAPI {
+    private static final Logger logger = Logger.getLogger(LayoutPersistenceAPI.class.getPackageName());
+
     private static final String NL = "\n";
     private final DockingAPI docking;
 
@@ -64,6 +68,7 @@ public class LayoutPersistenceAPI {
     public void saveLayoutToFile(File file, ApplicationLayout layout) throws DockingLayoutException {
         // create the file if it doens't exist
         try {
+            //noinspection ResultOfMethodCallIgnored
             file.createNewFile();
         }
         catch (IOException e) {
@@ -72,6 +77,7 @@ public class LayoutPersistenceAPI {
 
         // make sure all the required directories exist
         if (file.getParentFile() != null) {
+            //noinspection ResultOfMethodCallIgnored
             file.getParentFile().mkdirs();
         }
 
@@ -184,6 +190,7 @@ public class LayoutPersistenceAPI {
     }
 
     public boolean saveWindowLayoutToFile(File file, WindowLayout layout) {
+        //noinspection ResultOfMethodCallIgnored
         file.getParentFile().mkdirs();
 
         XMLOutputFactory factory = XMLOutputFactory.newInstance();
@@ -192,7 +199,7 @@ public class LayoutPersistenceAPI {
             writer = factory.createXMLStreamWriter(Files.newOutputStream(file.toPath()));
         }
         catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.INFO, e.getMessage(), e);
             return false;
         }
 
@@ -204,7 +211,7 @@ public class LayoutPersistenceAPI {
             writer.writeEndDocument();
         }
         catch (XMLStreamException e) {
-            e.printStackTrace();
+            logger.log(Level.INFO, e.getMessage(), e);
             return false;
         }
         finally {
@@ -212,7 +219,7 @@ public class LayoutPersistenceAPI {
                 writer.close();
             }
             catch (XMLStreamException e) {
-                e.printStackTrace();
+                logger.log(Level.INFO, e.getMessage(), e);
             }
         }
 
@@ -400,7 +407,7 @@ public class LayoutPersistenceAPI {
             reader = factory.createXMLStreamReader(Files.newInputStream(file.toPath()));
         }
         catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.INFO, e.getMessage(), e);
             return null;
         }
 
@@ -417,25 +424,25 @@ public class LayoutPersistenceAPI {
             }
         }
         catch (XMLStreamException e) {
-            e.printStackTrace();
+            logger.log(Level.INFO, e.getMessage(), e);
         }
         finally {
             try {
                 reader.close();
             }
             catch (XMLStreamException e) {
-                e.printStackTrace();
+                logger.log(Level.INFO, e.getMessage(), e);
             }
         }
         return layout;
     }
 
     private WindowLayout readLayoutFromReader(XMLStreamReader reader) throws XMLStreamException {
-        boolean isMainFrame = Boolean.parseBoolean(reader.getAttributeValue(0));
-        String locStr = reader.getAttributeValue(1);
-        String sizeStr = reader.getAttributeValue(2);
-        int state = Integer.parseInt(reader.getAttributeValue(3));
-        String maximizedDockable = reader.getAttributeCount() >= 5 ? reader.getAttributeValue(4) : null;
+        boolean isMainFrame = Boolean.parseBoolean(reader.getAttributeValue(null, "main-frame"));
+        String locStr = reader.getAttributeValue(null, "location");
+        String sizeStr = reader.getAttributeValue(null, "size");
+        int state = Integer.parseInt(reader.getAttributeValue(null, "state"));
+        String maximizedDockable = reader.getAttributeValue(null, "max-dockable");
 
         Point location = new Point(Integer.parseInt(locStr.substring(0, locStr.indexOf(","))), Integer.parseInt(locStr.substring(locStr.indexOf(",") + 1)));
         Dimension size = new Dimension(Integer.parseInt(sizeStr.substring(0, sizeStr.indexOf(","))), Integer.parseInt(sizeStr.substring(sizeStr.indexOf(",") + 1)));
@@ -463,7 +470,7 @@ public class LayoutPersistenceAPI {
 
             if (next == XMLStreamConstants.START_ELEMENT) {
                 if (reader.getLocalName().equals("dockable")) {
-                    ids.add(reader.getAttributeValue(0));
+                    ids.add(reader.getAttributeValue(null, "id"));
                 }
             }
             else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals(name)) {
@@ -570,8 +577,8 @@ public class LayoutPersistenceAPI {
         DockingLayoutNode left = null;
         DockingLayoutNode right = null;
 
-        int orientation = Integer.parseInt(reader.getAttributeValue(0));
-        double dividerProportion = Double.parseDouble(reader.getAttributeValue(1));
+        int orientation = Integer.parseInt(reader.getAttributeValue(null, "orientation"));
+        double dividerProportion = Double.parseDouble(reader.getAttributeValue(null, "divider-proportion"));
 
         if (dividerProportion < 0.0) {
             dividerProportion = 0.0;
