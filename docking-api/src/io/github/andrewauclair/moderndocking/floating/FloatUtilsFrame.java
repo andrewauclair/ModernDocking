@@ -282,6 +282,12 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
     }
 
     private void setSizeAndLocation() {
+        // skip for now if the reference window is not showing
+        // we can't get its location on screen if it's not on screen
+        if (!referenceDockingWindow.isShowing()) {
+            return;
+        }
+
         int padding = (int) (DockingHandle.HANDLE_ICON_SIZE * 1.75);
 
         Point location = new Point(referenceDockingWindow.getLocationOnScreen());
