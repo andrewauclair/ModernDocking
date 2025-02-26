@@ -370,7 +370,6 @@ public class DockingComponentUtils {
 	/**
 	 * Check if an anchor is empty
 	 *
-	 * @param root The root to find a window for
 	 * @return The window for the root or null
 	 */
 	public static boolean isAnchorEmpty(DockingAPI docking, Dockable anchor) {

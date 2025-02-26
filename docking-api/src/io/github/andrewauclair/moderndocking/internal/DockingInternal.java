@@ -186,7 +186,7 @@ public class DockingInternal {
 	/**
 	 * register an anchor with the framework
 	 *
-	 * @param dockable The anchor to register
+	 * @param anchor The anchor to register
 	 */
 	public void registerDockingAnchor(Dockable anchor) {
 		if (anchors.containsKey(anchor.getPersistentID())) {
