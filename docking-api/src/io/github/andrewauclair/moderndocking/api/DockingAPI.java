@@ -608,6 +608,9 @@ public class DockingAPI {
 
         Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
 
+        if (window == null) {
+            System.out.println(dockable.getPersistentID());
+        }
         Objects.requireNonNull(window);
 
         InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);

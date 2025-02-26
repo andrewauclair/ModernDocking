@@ -33,6 +33,9 @@ import java.util.List;
 public abstract class DockingPanel extends JPanel {
 	public abstract String getAnchor();
 
+	public void setAnchor(String anchor) {
+	}
+
 	/**
 	 * Set the parent of this DockingPanel
 	 *

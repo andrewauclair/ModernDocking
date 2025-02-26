@@ -36,7 +36,27 @@ import java.util.Optional;
 public class DockingComponentUtils {
 	//
 	//
-
+	/**
+	 * used to clear all anchors before we undock components. This is done to prevent the anchor from being readded
+	 *
+	 * @param container Container to undock all components from
+	 */
+	public static void clearAnchors(Container container) {
+		for (Component component : container.getComponents()) {
+			if (component instanceof DockedSimplePanel) {
+				((DockedSimplePanel) component).setAnchor(null);
+			}
+			else if (component instanceof DockedSplitPanel) {
+				((DockedSplitPanel) component).setAnchor(null);
+			}
+			else if (component instanceof DockedTabbedPanel) {
+				((DockedTabbedPanel) component).setAnchor(null);
+			}
+			else if (component instanceof Container) {
+				clearAnchors((Container) component);
+			}
+		}
+	}
 	/**
 	 * used to undock all dockables in a container. called when a frame is to be disposed
 	 *
