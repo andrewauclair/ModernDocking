@@ -80,6 +80,7 @@ public class DockedAnchorPanel extends DockingPanel {
 
     @Override
     public void undock(Dockable dockable) {
+        parent.removeChild(this);
     }
 
     @Override

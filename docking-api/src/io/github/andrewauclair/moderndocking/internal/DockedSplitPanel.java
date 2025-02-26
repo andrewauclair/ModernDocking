@@ -53,7 +53,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	private DockingPanel parent;
 	private final DockingAPI docking;
 	private final Window window;
-	private final String anchor;
+	private String anchor;
 
 	/**
 	 * the last divider proportion that setDividerLocation was called with
@@ -269,6 +269,11 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	@Override
 	public String getAnchor() {
 		return anchor;
+	}
+
+	@Override
+	public void setAnchor(String anchor) {
+		this.anchor = anchor;
 	}
 
 	@Override

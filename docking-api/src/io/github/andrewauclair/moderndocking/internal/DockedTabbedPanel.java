@@ -59,7 +59,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	private final CustomTabbedPane tabs = new CustomTabbedPane();
 	private final DockingAPI docking;
 
-	private final String anchor;
+	private String anchor;
 
 	/**
 	 * The parent of this DockedTabbedPanel
@@ -279,6 +279,11 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	@Override
 	public String getAnchor() {
 		return anchor;
+	}
+
+	@Override
+	public void setAnchor(String anchor) {
+		this.anchor = anchor;
 	}
 
 	@Override

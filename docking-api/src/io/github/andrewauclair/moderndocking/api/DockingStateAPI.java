@@ -100,6 +100,8 @@ public class DockingStateAPI {
         // get rid of all existing windows and undock all dockables
         Set<Window> windows = new HashSet<>(docking.getRootPanels().keySet());
         for (Window window : windows) {
+            DockingComponentUtils.clearAnchors(window);
+
             DockingComponentUtils.undockComponents(docking, window);
 
             // only dispose this window if we created it
@@ -153,6 +155,8 @@ public class DockingStateAPI {
                 ((JFrame) window).setExtendedState(layout.getState());
             }
         }
+
+        DockingComponentUtils.clearAnchors(root);
 
         DockingComponentUtils.undockComponents(docking, root);
 

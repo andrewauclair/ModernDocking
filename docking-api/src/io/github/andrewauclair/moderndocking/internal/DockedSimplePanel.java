@@ -95,6 +95,11 @@ public class DockedSimplePanel extends DockingPanel {
 	}
 
 	@Override
+	public void setAnchor(String anchor) {
+		this.anchor = anchor;
+	}
+
+	@Override
 	public void setParent(DockingPanel parent) {
 		this.parent = parent;
 	}
@@ -165,12 +170,15 @@ public class DockedSimplePanel extends DockingPanel {
 
 			DockableWrapper anchorWrapper = DockingInternal.get(docking).getAnchor(anchor);
 
-			if (anchor == null || !DockingComponentUtils.isAnchorEmpty(docking, anchorWrapper.getDockable())) {
+			anchor = null;
+
+			if (anchorWrapper == null || !DockingComponentUtils.isAnchorEmpty(docking, anchorWrapper.getDockable())) {
 				parent.removeChild(this);
 			}
 			else {
 				anchor = null;
 				parent.replaceChild(this, new DockedAnchorPanel(docking, anchorWrapper));
+				anchorWrapper.setWindow(DockingInternal.get(docking).getWrapper(dockable).getWindow());
 			}
 
 			this.dockable.setParent(null);
