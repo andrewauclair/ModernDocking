@@ -36,11 +36,39 @@ The <code>dock</code> methods of the <code>Docking</code> class are used to dock
 </procedure>
 
 <procedure title="bringToFront" id="bringToFront">
-<p>This method will show a dockable if it is not already showing. If the dockable is not the active tab of a <code>JTabbedPanel</code> it will be made the active tab. If the dockable is unpinned it will be shown</p>
+Brings the dockable to the front if it is not showing. If the dockable is in a tab group it will be made the active tab. If the dockable is hidden due to the Auto Hide feature, then it will be shown. Finally, the frame containing the dockable will be brought to the front with the <code>JFrame::toFront</code> function.
+
+A <code>NotDockedException</code> exception is thrown if the dockable is not docked.
+<table style="header-column">
+<tr>
+<td>
+<code-block lang="java">
+bringToFront(Dockable dockable)
+</code-block>
+</td>
+<td>
+Call with an existing <code>Dockable</code> instance
+</td>
+</tr>
+<tr>
+<td>
+<code-block lang="java">
+bringToFront(String persistentID)
+</code-block>
+</td>
+<td>
+Call with the persistent ID of the dockable. Modern Docking will lookup the dockable. If not found, a <code>DockableNotFoundException</code> is thrown.
+</td>
+</tr>
+</table>
 </procedure>
 
 <procedure title="display" id="display">
 <p>This method is a combination of <code>dock</code> and <code>bringToFront</code>. If the dockable is not docked it will be docked and then brought to the front</p>
+<table style="header-column">
+<tr><td><code>display(Dockable dockable)</code></td><td></td></tr>
+<tr><td><code>display(String persistentID)</code></td><td></td></tr>
+</table>
 </procedure>
 
 <procedure title="isDocked" id="isDocked">

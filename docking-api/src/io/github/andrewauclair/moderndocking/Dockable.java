@@ -190,7 +190,7 @@ public interface Dockable {
 
 	/**
 	 * helper function to determine if the header 'more' option should be enabled
-	 * NOTE: allowPinning() = true results in more options regardless of this return value
+	 * NOTE: isAutoHideAllowed() = true results in more options regardless of this return value
 	 *
 	 * @return True if there are more options to display on the context menu
 	 */

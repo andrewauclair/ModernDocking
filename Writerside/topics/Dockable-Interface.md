@@ -8,7 +8,7 @@ The `Dockable` interface has a minimum subset of methods that must be implemente
 These optional methods provide extra customization points for the application per dockable.
 
 <warning>
-The return values for the `Dockable` interface methods should be constant after the creation of the dockable component.
+The return values for the <code>Dockable</code> interface methods should be constant after the creation of the dockable component.
 Certain methods can be dynamic and the framework provides methods to update their values within the framework. Any method that doesn't specify such
 a method can lead to unexpected behavior if changed after the dockable component is created.
 
@@ -30,12 +30,17 @@ These two methods do not provide default implementations in the interface and mu
 
 ## Optional Methods
 
-All the following methods are provided to the application with a default. This means the application only needs to implement the methods
+The following methods are provided to the application with a default. This means the application only needs to implement the methods
 if it wishes to change the default.
 
 <procedure title="getType" id="getType">
 <p><code>getType</code> provides an int to Modern Docking. This represents a unique type category for the dockable. Modern Docking will use this value when docking to determine which dockables to dock to.</p>
 <p>Default value is <code>0</code></p>
+</procedure>
+
+<procedure title="getTitleText" id="getTitleText">
+<p><code>getTitleText</code> provides the text that Modern Docking should display on the header. This string can be different than <code>getTabText</code></p>
+<p>Default value is <code>getTabText</code></p>
 </procedure>
 
 <procedure title="getTabTooltip" id="getTabTooltip">
@@ -44,28 +49,28 @@ if it wishes to change the default.
 </procedure>
 
 <procedure title="getIcon" id="getIcon">
-<p>Used by the framework to get the icon for the dockable to use in a `JTabbedPane` tab.</p>
+<p>Used by the framework to get the icon for the dockable to use in a <code>JTabbedPane</code> tab.</p>
 <p>Default value is <code>null</code></p>
 </procedure>
 
 <procedure title="isFloatingAllowed" id="isFloatingAllowed">
-<p>Used by the framework to decided whether the dockable component is allowed to be opened in its own window</p>
+<p>Tells Modern Docking if the dockable is allowed to be opened in its own window</p>
 <p>Default value is <code>true</code></p>
 </procedure>
 
-<procedure title="isLimitedToRoot" id="isLimitedToRoot">
-<code-block lang="java">boolean isLimitedToRoot()</code-block>
+<procedure title="isLimitedToWindow" id="isLimitedToWindow">
+<code-block lang="java">boolean isLimitedToWindow()</code-block>
    <p>Allows the application to limit the dockable to the window it was initially docked in.</p>
    <p>Default value is <code>false</code></p>
 </procedure>
 
 <procedure title="getStyle" id="getStyle">
-<p>The docking style of the dockable which can be <code>DockableStyle.VERTICAL</code>, <code>DockableStyle.HORIZONTAL</code> or <code>DockableStyle.BOTH</code>. Modern Docking will use this to determine which docking regions to allow when docking this dockable. Docking handles that do not match this style will be hidden.</p>
+<p>The docking style of the dockable which can be <code>DockableStyle.VERTICAL</code>, <code>DockableStyle.HORIZONTAL</code>, <code>DockableStyle.BOTH</code> or <code>DockableStyle.CENTER_ONLY</code>. Modern Docking will use this to determine which docking regions to allow when docking this dockable. Docking handles that do not match this style will be hidden.</p>
 <p>Default value is <code>DockableStyle.BOTH</code></p>
 </procedure>
 
-<procedure title="getPinningStyle" id="getPinningStyle">
-<p>Determines which toolbars this dockable can be displayed on. Uses the same values as <code>getStyle</code></p>
+<procedure title="getAutoHideStyle" id="getAutoHideStyle">
+<p>Determines which toolbars this dockable can be displayed on. Uses the same values as <code>getStyle</code>. <code>DockableStyle.VERTICAL</code> will allow the dockable on the east and west auto hide toolbars. <code>DockableStyle.HORIZONTAL</code> will allow the dockable on the south auto hide toolbar. <code>DockableStyle.CENTER_ONLY</code> is invalid for this method.</p>
 <p>Default value is <code>DockableStyle.BOTH</code></p>
 </procedure>
 
@@ -75,8 +80,14 @@ if it wishes to change the default.
 <p>Default value is <code>true</code></p>
 </procedure>
 
-<procedure title="isPinningAllowed" id="isPinningAllowed">
-<p>Determines if the dockable can be pinned to the pinning toolbars and hidden.</p>
+<procedure title="requestClose" id="requestClose">
+<code-block lang="java">boolean requestClose()</code-block>
+<p>Called by Modern Docking when the dockable is in the process of closing due to <code>undock</code>. This allows the application to stop the dockable from closing. For example, maybe the user has unsaved changes and the application wishes to confirm closing of the dockable.</p>
+<p>Default value is <code>true</code></p>
+</procedure>
+
+<procedure title="isAutoHideAllowed" id="isAutoHideAllowed">
+<p>Determines if the dockable can be set to the auto hide toolbars.</p>
 <p>Default value is <code>false</code></p>
 </procedure>
 
@@ -97,10 +108,10 @@ if it wishes to change the default.
 <p>Default value is <code>false</code></p>
 </procedure>
 
-<procedure title="getTabPosition" id="getTabPosition">
-<code-block lang="java">int getTabPosition()</code-block>
+<procedure title="getTabPreference" id="getTabPreference">
+<code-block lang="java">DockableTabPreference getTabPreference()</code-block>
 <p>Gives the dockables preferred tab location when in a <code>JTabbedPane</code></p>
-<p>Default value is <code>SwingConstants.BOTTOM</code></p>
+<p>Default value is <code>DockableTabPreference.NONE</code></p>
 </procedure>
 
 <procedure title="addMoreOptions" id="addMoreOptions">
