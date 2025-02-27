@@ -312,6 +312,7 @@ public class DockingInternal {
 	public void updateLAF() {
 		for (DockableWrapper wrapper : dockables.values()) {
 			SwingUtilities.updateComponentTreeUI(wrapper.getDisplayPanel());
+			wrapper.getHeaderUI().update();
 		}
 
 		for (InternalRootDockingPanel root : rootPanels.values()) {
@@ -344,7 +345,9 @@ public class DockingInternal {
 			updateLAF(splitPanel.getLeft());
 			updateLAF(splitPanel.getRight());
 		}
-		SwingUtilities.updateComponentTreeUI(panel);
+		if (panel != null) {
+			SwingUtilities.updateComponentTreeUI(panel);
+		}
 	}
 
 	public static BiFunction<HeaderController, HeaderModel, DockingHeaderUI> createHeaderUI = DefaultHeaderUI::new;

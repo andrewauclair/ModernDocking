@@ -105,6 +105,7 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 
 	@Override
 	public void displaySettingsMenu(JButton settings) {
+		SwingUtilities.updateComponentTreeUI(settingsMenu);
 		settingsMenu.show(settings, settings.getWidth(), settings.getHeight());
 	}
 
