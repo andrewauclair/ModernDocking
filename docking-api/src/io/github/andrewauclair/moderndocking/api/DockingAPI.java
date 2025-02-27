@@ -271,6 +271,7 @@ public class DockingAPI {
      * @param dockable Dockable to check
      * @return Whether the dockable can be auto hide
      */
+    @Deprecated(forRemoval = true, since = "0.12.1")
     public boolean autoHideAllowed(Dockable dockable) {
         InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, DockingComponentUtils.findWindowForDockable(this, dockable));
 
