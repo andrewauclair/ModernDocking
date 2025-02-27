@@ -386,25 +386,21 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 	}
 
 	@Override
-	public Integer call() throws Exception {
-		SwingUtilities.invokeLater(this::configureLookAndFeel);
+	public Integer call() {
+		configureLookAndFeel();
 
-		SwingUtilities.invokeLater(() -> {
+		// now that the main frame is set up with the defaults, we can restore the layout
+		AppState.setPersistFile(layoutFile);
 
-			setVisible(true);
+		try {
+			AppState.restore();
+		} catch (DockingLayoutException e) {
+			// something happened trying to load the layout file, record it here
+			e.printStackTrace();
+		}
 
-			// now that the main frame is set up with the defaults, we can restore the layout
-			AppState.setPersistFile(layoutFile);
-
-			try {
-				AppState.restore();
-			} catch (DockingLayoutException e) {
-				// something happened trying to load the layout file, record it here
-				e.printStackTrace();
-			}
-
-			AppState.setAutoPersist(true);
-		});
+		AppState.setAutoPersist(true);
+		SwingUtilities.invokeLater(() -> setVisible(true));
 		return 0;
 	}
 }
