@@ -128,11 +128,11 @@ public class DefaultDockingPanel extends JPanel implements Dockable, DockingList
 
     @Override
     public boolean isLimitedToWindow() {
-        return limitToRoot;
+        return limitedToWindow;
     }
 
     public void setLimitedToWindow(boolean limitToWindow) {
-        this.limitToRoot = limitToWindow;
+        this.limitedToWindow = limitToWindow;
     }
 
     @Override

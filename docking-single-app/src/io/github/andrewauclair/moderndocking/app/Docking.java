@@ -167,17 +167,6 @@ public class Docking {
      * @param window The window to configure auto hide on
      * @param layer The layout to use for auto hide in the JLayeredPane
      * @param allow Whether auto hide is allowed on this Window
-     */
-    public void configureAutoHide(Window window, int layer, boolean allow) {
-        instance.configureAutoHide(window, layer, allow);
-    }
-
-    /**
-     * allows the user to configure auto hide per window. by default auto hide is only enabled on the frames the docking framework creates
-     *
-     * @param window The window to configure auto hide on
-     * @param layer The layout to use for auto hide in the JLayeredPane
-     * @param allow Whether auto hide is allowed on this Window
     */
     public static void configureAutoHide(Window window, int layer, boolean allow) {
         instance.configureAutoHide(window, layer, allow);
@@ -198,31 +187,6 @@ public class Docking {
      *
      * @param dockable Dockable to check
      * @return Whether the dockable can be hidden
-     */
-    public static boolean isAutoHideAllowed(Dockable dockable) {
-        return instance.isAutoHideAllowed(dockable);
-    }
-
-    /**
-     * Check if auto hide is allowed for a dockable
-     *
-     * @param dockable Dockable to check
-     * @return Whether the dockable can be hidden
-     *
-     * @deprecated Replaced with the properly named isAutoHideAllowed
-     */
-    @Deprecated(forRemoval = true, since = "0.12.1")
-    public static boolean autoHideAllowed(Dockable dockable) {
-        return instance.autoHideAllowed(dockable);
-    }
-
-    /**
-     * Check if auto hide is allowed for a dockable
-     *
-     * @param dockable Dockable to check
-     * @return Whether the dockable can be hidden
-     *
-     * @deprecated Replaced with the properly named isAutoHideAllowed
      */
     public static boolean isAutoHideAllowed(Dockable dockable) {
         return instance.isAutoHideAllowed(dockable);
