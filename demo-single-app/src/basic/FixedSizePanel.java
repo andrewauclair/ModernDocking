@@ -21,14 +21,13 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.Dockable;
+import io.github.andrewauclair.moderndocking.Dockable;
 
-import javax.swing.*;
 import java.awt.*;
 
 public class FixedSizePanel extends BasePanel implements Dockable {
     public FixedSizePanel() {
-        super("Fixed Size", "fixed-size");
+        super("Fixed Size", "Fixed Size", "fixed-size");
 
 
     }
