@@ -638,12 +638,21 @@ public class LayoutPersistenceAPI {
                 String persistentID = reader.getAttributeValue(null, "persistentID");
                 String className = reader.getAttributeValue(null, "class-name");
                 String anchor = reader.getAttributeValue(null, "anchor");
+
+                // class name didn't always exist, set it to an empty string if it's null
+                if (className == null) {
+                    className = "";
+                }
                 node = new DockingTabPanelNode(docking, persistentID, className, anchor);
             }
             else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("tab")) {
                 currentPersistentID = reader.getAttributeValue(null, "persistentID");
-                String className = reader.getAttributeCount() > 1 ? reader.getAttributeValue(null, "class-name") : "";
+                String className = reader.getAttributeValue(null, "class-name");
 
+                // class name didn't always exist, set it to an empty string if it's null
+                if (className == null) {
+                    className = "";
+                }
                 if (node != null) {
                     node.addTab(currentPersistentID, className);
                 }
