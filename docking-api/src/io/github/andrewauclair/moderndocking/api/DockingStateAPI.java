@@ -22,14 +22,12 @@ SOFTWARE.
 package io.github.andrewauclair.moderndocking.api;
 
 import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.DockableTabPreference;
 import io.github.andrewauclair.moderndocking.exception.DockableNotFoundException;
 import io.github.andrewauclair.moderndocking.exception.RootDockingPanelNotFoundException;
 import io.github.andrewauclair.moderndocking.internal.*;
 import io.github.andrewauclair.moderndocking.layouts.*;
-import io.github.andrewauclair.moderndocking.persist.DockableState;
-import io.github.andrewauclair.moderndocking.persist.PanelState;
-import io.github.andrewauclair.moderndocking.persist.SplitState;
-import io.github.andrewauclair.moderndocking.persist.TabState;
+import io.github.andrewauclair.moderndocking.settings.Settings;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
 
 import javax.swing.*;
