@@ -50,12 +50,13 @@ This creates a new JFrame with the dockable in it. More dockables can then be do
 
 ![Floating Panels](floating_panel.gif)
 
-## Pinning a Panel
-Panels can be set to unpinned with View Mode > Unpinned from the settings button on the panel header.
+## Auto Hide a Panel
+Panels can be set to Auto Hide with View Mode > Auto Hide from the settings button on the panel header.
 This option will display the panel on a side toolbar as a button which can be pressed to display the panel.
-Clicking outside the panel will return it to the toolbar. To pin the panel and return it to normal, select the View Mode > Pinned option.
+Clicking the button again, or clicking off the panel, will return it to the toolbar. To return the panel to 
+normal, select the View Mode > Auto Hide option again to deselect it.
 
-![Pinning Panel](pinning_panel.gif)
+![Auto Hide Panel](pinning_panel.gif)
 
 
 ## Option Panel in New Window

@@ -72,9 +72,9 @@ Call with the persistent ID of the dockable. Modern Docking will lookup the dock
 </procedure>
 
 <procedure title="isDocked" id="isDocked">
-<p>Simple method to check if a dockable is already docked</p>
+<p>Checks if a dockable is already docked</p>
 </procedure>
 
 <procedure title="isMaximized" id="isMaximized">
-<p>Simple method to check if a dockable is currently maximized</p>
+<p>Checks if a dockable is currently maximized</p>
 </procedure>
