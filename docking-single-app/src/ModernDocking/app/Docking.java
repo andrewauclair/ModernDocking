@@ -27,6 +27,8 @@ import ModernDocking.api.DockingAPI;
 import ModernDocking.api.RootDockingPanelAPI;
 import ModernDocking.event.DockingListener;
 import ModernDocking.event.MaximizeListener;
+import ModernDocking.internal.InternalRootDockingPanel;
+import ModernDocking.ui.ToolbarLocation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -517,6 +519,38 @@ public class Docking {
      */
     public static void minimize(Dockable dockable) {
         instance.minimize(dockable);
+    }
+
+    public void autoShowDockable(Dockable dockable) {
+        instance.autoShowDockable(dockable);
+    }
+
+    public void autoShowDockable(String persistentID) {
+        instance.autoShowDockable(persistentID);
+    }
+
+    public void autoHideDockable(Dockable dockable) {
+        instance.autoHideDockable(dockable);
+    }
+
+    public void autoHideDockable(String persistentID) {
+        instance.autoHideDockable(persistentID);
+    }
+
+    public void autoHideDockable(Dockable dockable, ToolbarLocation location) {
+        instance.autoHideDockable(dockable, location);
+    }
+
+    public void autoHideDockable(String persistentID, ToolbarLocation location) {
+        instance.autoHideDockable(persistentID, location);
+    }
+
+    public void autoHideDockable(Dockable dockable, ToolbarLocation location, Window window) {
+        instance.autoHideDockable(dockable, location, window);
+    }
+
+    public void autoHideDockable(String persistentID, ToolbarLocation location, Window window) {
+        instance.autoHideDockable(persistentID, location, window);
     }
 
     /**
