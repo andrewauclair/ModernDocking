@@ -217,7 +217,7 @@ public interface Dockable {
 	}
 
 	default boolean hasMoreMenuOptions() {
-		return false;
+		return getHasMoreOptions();
 	}
 
 	/**

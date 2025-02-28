@@ -100,7 +100,7 @@ public class HeaderModel {
 	 * @return True if there are more options to add to the context menu
 	 */
 	public boolean hasMoreOptions() {
-		return dockable.getHasMoreOptions();
+		return dockable.hasMoreMenuOptions();
 	}
 
 	public boolean isFloatingAllowed() {
