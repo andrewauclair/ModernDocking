@@ -150,10 +150,5 @@ public class Example extends JFrame {
 		public boolean isMinMaxAllowed() {
 			return false;
 		}
-
-		@Override
-		public boolean getHasMoreOptions() {
-			return false;
-		}
 	}
 }

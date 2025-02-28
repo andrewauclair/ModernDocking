@@ -87,7 +87,7 @@ public class ToolPanel extends BasePanel {
 	}
 
 	@Override
-	public boolean getHasMoreOptions() {
+	public boolean hasMoreMenuOptions() {
 		return true;
 	}
 

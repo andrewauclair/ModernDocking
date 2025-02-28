@@ -111,7 +111,7 @@ public class OutputPanel extends ToolPanel {
 //    }
 
     @Override
-    public boolean getHasMoreOptions() {
+    public boolean hasMoreMenuOptions() {
         return true;
     }
 

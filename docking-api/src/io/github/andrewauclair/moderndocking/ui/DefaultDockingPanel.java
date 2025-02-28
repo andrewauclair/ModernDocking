@@ -192,7 +192,7 @@ public class DefaultDockingPanel extends JPanel implements Dockable, DockingList
     }
 
     @Override
-    public boolean getHasMoreOptions() {
+    public boolean hasMoreMenuOptions() {
         return moreOptions.size() > 0;
     }
 

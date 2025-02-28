@@ -85,11 +85,6 @@ public class OutputPanel extends ToolPanel {
     }
 
     @Override
-    public boolean getHasMoreOptions() {
-        return true;
-    }
-
-    @Override
     public void addMoreOptions(JPopupMenu menu) {
         JMenuItem rename = new JMenuItem("Rename");
         rename.addActionListener(e -> {
