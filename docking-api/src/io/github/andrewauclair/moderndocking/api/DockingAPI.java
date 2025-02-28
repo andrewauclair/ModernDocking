@@ -766,15 +766,46 @@ public class DockingAPI {
         pinDockable(dockable);
     }
 
+    public void autoShowDockable(String persistentID) {
+        pinDockable(internals.getDockable(persistentID));
+    }
+
     public void autoHideDockable(Dockable dockable) {
         unpinDockable(dockable);
+    }
+
+    public void autoHideDockable(String persistentID) {
+        unpinDockable(internals.getDockable(persistentID));
+    }
+
+    public void autoHideDockable(Dockable dockable, ToolbarLocation location) {
+        unpinDockable(dockable, location);
+    }
+
+    public void autoHideDockable(String persistentID, ToolbarLocation location) {
+        unpinDockable(internals.getDockable(persistentID), location);
+    }
+
+    public void autoHideDockable(Dockable dockable, ToolbarLocation location, Window window) {
+        InternalRootDockingPanel root = internals.getRootPanels().get(window);
+
+        unpinDockable(dockable, location, window, root.getRootPanel());
+    }
+
+    public void autoHideDockable(String persistentID, ToolbarLocation location, Window window) {
+        InternalRootDockingPanel root = internals.getRootPanels().get(window);
+
+        unpinDockable(internals.getDockable(persistentID), location, window, root.getRootPanel());
     }
 
     /**
      * pin a dockable. only valid if the dockable is unpinned
      *
      * @param dockable Dockable to pin
+     *
+     * @deprecated Replaced with autoShowDockable
      */
+    @Deprecated(forRemoval = true, since = "0.12.2")
     public void pinDockable(Dockable dockable) {
         Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
         InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);
@@ -791,7 +822,10 @@ public class DockingAPI {
     /**
      * unpin a dockable. only valid if the dockable is pinned
      * @param dockable Dockable to unpin
+     *
+     * @deprecated Replaced with autoHideDockable
      */
+    @Deprecated(forRemoval = true, since = "0.12.2")
     public void unpinDockable(Dockable dockable) {
         if (isHidden(dockable)) {
             return;
@@ -837,7 +871,10 @@ public class DockingAPI {
      * unpin a dockable. only valid if the dockable is pinned
      * @param dockable Dockable to unpin
      * @param location Toolbar location to unpin the dockable to
+     *
+     * @deprecated Replaced with autoHideDockable
      */
+    @Deprecated(forRemoval = true, since = "0.12.2")
     public void unpinDockable(Dockable dockable, ToolbarLocation location) {
         Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
         InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);
@@ -849,7 +886,10 @@ public class DockingAPI {
      * unpin a dockable. only valid if the dockable is pinned
      * @param dockable Dockable to unpin
      * @param location Toolbar location to unpin the dockable to
+     *
+     * @deprecated Replaced with autoHideDockable
      */
+    @Deprecated(forRemoval = true, since = "0.12.2")
     public void unpinDockable(Dockable dockable, ToolbarLocation location, Window window, RootDockingPanelAPI root) {
         if (isHidden(dockable)) {
             return;

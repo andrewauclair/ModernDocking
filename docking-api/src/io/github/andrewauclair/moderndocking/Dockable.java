@@ -193,8 +193,9 @@ public interface Dockable {
 	 * NOTE: isAutoHideAllowed() = true results in more options regardless of this return value
 	 *
 	 * @return True if there are more options to display on the context menu
+	 * @deprecated Replaced with hasMoreMenuOptions
 	 */
-	default boolean getHasMoreOptions() {
+	default boolean hasMoreMenuOptions() {
 		return false;
 	}
 
