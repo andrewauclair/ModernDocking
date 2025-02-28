@@ -209,9 +209,15 @@ public interface Dockable {
 	 * NOTE: allowPinning() = true results in more options regardless of this return value
 	 *
 	 * @return True if there are more options to display on the context menu
+	 * @deprecated Replaced with hasMoreMenuOptions
 	 */
+	@Deprecated(forRemoval = true, since = "0.12.2")
 	default boolean getHasMoreOptions() {
 		return false;
+	}
+
+	default boolean hasMoreMenuOptions() {
+		return getHasMoreOptions();
 	}
 
 	/**
