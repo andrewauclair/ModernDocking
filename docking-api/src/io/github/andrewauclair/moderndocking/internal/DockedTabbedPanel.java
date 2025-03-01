@@ -367,7 +367,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			parent.replaceChild(this, new DockedSimplePanel(docking, panels.get(0), null));
 		}
 
-		if (panels.isEmpty()) {
+		// protect against bad instances when failing to restore a layout
+		if (parent != null && panels.isEmpty()) {
 			parent.removeChild(this);
 		}
 	}
