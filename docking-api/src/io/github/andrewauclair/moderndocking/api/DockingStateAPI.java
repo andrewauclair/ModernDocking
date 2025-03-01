@@ -23,6 +23,7 @@ package io.github.andrewauclair.moderndocking.api;
 
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableTabPreference;
+import io.github.andrewauclair.moderndocking.DynamicDockableParameters;
 import io.github.andrewauclair.moderndocking.exception.DockableNotFoundException;
 import io.github.andrewauclair.moderndocking.exception.RootDockingPanelNotFoundException;
 import io.github.andrewauclair.moderndocking.internal.*;
@@ -254,26 +255,8 @@ public class DockingStateAPI {
         for (DockingSimplePanelNode simpleNode : node.getPersistentIDs()) {
             Dockable dockable = getDockable(docking, simpleNode.getPersistentID());
 
-            boolean generated = false;
-
             if (dockable instanceof FailedDockable) {
-                try {
-                    Class<?> aClass = Class.forName(simpleNode.getClassName());
-                    Constructor<?> constructor = aClass.getConstructor(String.class, String.class);
-
-                    docking.deregisterDockable(dockable);
-
-                    constructor.newInstance(simpleNode.getPersistentID(), simpleNode.getPersistentID());
-
-                    dockable = getDockable(docking, simpleNode.getPersistentID());
-
-                    generated = true;
-                }
-                catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
-                       InvocationTargetException e) {
-                    logger.log(Level.SEVERE, e.getMessage(), e);
-                    dockable = null;
-                }
+                dockable = createDynamicDockable(dockable, simpleNode.getPersistentID(), simpleNode.getClassName(), "", "");
             }
 
             if (dockable == null) {
@@ -284,9 +267,7 @@ public class DockingStateAPI {
 
             DockableProperties.configureProperties(wrapper, simpleNode.getProperties());
 
-            if (!generated) {
-                docking.undock(dockable);
-            }
+            docking.undock(dockable);
 
             wrapper.setWindow(window);
 
@@ -312,20 +293,7 @@ public class DockingStateAPI {
         Dockable dockable = getDockable(docking, node.getPersistentID());
 
         if (dockable instanceof FailedDockable) {
-            try {
-                Class<?> aClass = Class.forName(node.getClassName());
-                Constructor<?> constructor = aClass.getConstructor(String.class, String.class);
-
-                docking.deregisterDockable(dockable);
-
-                constructor.newInstance(node.getPersistentID(), node.getPersistentID());
-
-                dockable = getDockable(docking, node.getPersistentID());
-            }
-            catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
-                   InvocationTargetException e) {
-                logger.log(Level.INFO, e.getMessage(), e);
-            }
+            dockable = createDynamicDockable(dockable, node.getPersistentID(), node.getClassName(), "", "");
         }
 
         if (dockable == null) {
@@ -346,20 +314,7 @@ public class DockingStateAPI {
         Dockable dockable = getDockable(docking, node.getPersistentID());
 
         if (dockable instanceof FailedDockable) {
-            try {
-                Class<?> aClass = Class.forName(node.getClassName());
-                Constructor<?> constructor = aClass.getConstructor(String.class, String.class);
-
-                docking.deregisterDockable(dockable);
-
-                constructor.newInstance(node.getPersistentID(), node.getPersistentID());
-
-                dockable = getDockable(docking, node.getPersistentID());
-            }
-            catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
-                     InvocationTargetException e) {
-                logger.log(Level.INFO, e.getMessage(), e);
-            }
+            dockable = createDynamicDockable(dockable, node.getPersistentID(), node.getClassName(), "", "");
         }
 
         if (dockable == null) {
@@ -381,10 +336,57 @@ public class DockingStateAPI {
         return new DockedSimplePanel(docking, wrapper, node.getAnchor());
     }
 
+    private Dockable createDynamicDockable(Dockable dockable, String persistentID, String className, String tabText, String titleText) {
+        boolean foundNewConstructor = false;
+
+        try {
+            Class<?> aClass = Class.forName(className);
+            Constructor<?> constructor = aClass.getConstructor(DynamicDockableParameters.class);
+
+            // the failed dockable is registered with the persistentID we want to use
+            docking.deregisterDockable(dockable);
+
+            constructor.newInstance(new DynamicDockableParameters(persistentID, tabText, titleText));
+
+            foundNewConstructor = true;
+        }
+        catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+               InvocationTargetException e) {
+            logger.log(Level.INFO, "Failed to create instance of dynamic dockable with DynamicDockaleParameters constructor. Falling ack on (String, String)");
+            logger.log(Level.INFO, e.getMessage(), e);
+        }
+
+        if (!foundNewConstructor) {
+            try {
+                Class<?> aClass = Class.forName(className);
+                Constructor<?> constructor = aClass.getConstructor(String.class, String.class);
+
+                // the failed dockable is registered with the persistentID we want to use
+                docking.deregisterDockable(dockable);
+
+                // create the instance, this should register the dockable and let us look it up
+                constructor.newInstance(persistentID, persistentID);
+            }
+            catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+                     InvocationTargetException e) {
+                logger.log(Level.INFO, e.getMessage(), e);
+                return null;
+            }
+        }
+
+        dockable = getDockable(docking, persistentID);
+
+        if (dockable instanceof FailedDockable) {
+            return null;
+        }
+        return dockable;
+    }
+
     private Dockable getDockable(DockingAPI docking, String persistentID) {
         try {
             return DockingInternal.get(docking).getDockable(persistentID);
-        } catch (DockableNotFoundException ignore) {
+        }
+        catch (DockableNotFoundException ignore) {
         }
         return new FailedDockable(docking, persistentID);
     }
