@@ -23,6 +23,7 @@ package basic;
 
 import io.github.andrewauclair.moderndocking.DockableStyle;
 import io.github.andrewauclair.moderndocking.DockingProperty;
+import io.github.andrewauclair.moderndocking.DynamicDockableParameters;
 import io.github.andrewauclair.moderndocking.ui.DockingHeaderUI;
 import io.github.andrewauclair.moderndocking.ui.HeaderController;
 import io.github.andrewauclair.moderndocking.ui.HeaderModel;
@@ -92,8 +93,12 @@ public class SimplePanel extends BasePanel {
 	}
 
 	public SimplePanel(String tabText, String title, String persistentID) {
-		super(tabText, title, persistentID);
-		tabText = title;
+		this(new DynamicDockableParameters(persistentID, tabText, title));
+	}
+
+	public SimplePanel(DynamicDockableParameters parameters) {
+		super(parameters.getTabText(), parameters.getTitleText(), parameters.getPersistentID());
+		tabText = parameters.getTitleText();
 		style = DockableStyle.BOTH;
 
 		setLayout(new GridBagLayout());

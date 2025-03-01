@@ -43,6 +43,7 @@ public class ThemesPanel extends BasePanel implements Dockable {
             }
         };
         table.setTableHeader(null);
+//table.setBorder(BorderFactory.createEmptyBorder());
 
         DefaultTableModel model = new DefaultTableModel(0, 1);
 
@@ -60,7 +61,9 @@ public class ThemesPanel extends BasePanel implements Dockable {
         gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
 
-        add(new JScrollPane(table), gbc);
+        JScrollPane comp = new JScrollPane(table);
+        comp.setBorder(BorderFactory.createEmptyBorder());
+        add(comp, gbc);
 
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.getSelectionModel().addListSelectionListener(e -> {

@@ -22,6 +22,7 @@ SOFTWARE.
 package basic;
 
 import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.DockableStyle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,5 +42,10 @@ public class Anchor extends JPanel implements Dockable {
     @Override
     public String getTabText() {
         return "";
+    }
+
+    @Override
+    public DockableStyle getStyle() {
+        return DockableStyle.CENTER_ONLY;
     }
 }

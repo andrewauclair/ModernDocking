@@ -24,7 +24,10 @@ public class OutputPanel extends ToolPanel {
     public OutputPanel(String title, String persistentID, DockableStyle style, Icon icon) {
         super(title, persistentID, style, icon);
 
-        add(new JScrollPane(table));
+        table.setBorder(BorderFactory.createEmptyBorder());
+        JScrollPane comp = new JScrollPane(table);
+        comp.setBorder(BorderFactory.createEmptyBorder());
+        add(comp);
 
         updateColumnsProp();
         updateColumnSizesProp();

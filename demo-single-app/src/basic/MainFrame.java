@@ -88,8 +88,11 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 			Settings.setDefaultTabPreference(tabLocation);
 		}
 
+		Settings.setActiveHighlighterEnabled(false);
+
 		Docking.initialize(this);
 		DockingUI.initialize();
+
 
 		Docking.addNewFloatingFrameListener(new NewFloatingFrameListener() {
 			@Override
