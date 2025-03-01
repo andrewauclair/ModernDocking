@@ -315,6 +315,10 @@ public class DockingInternal {
 			wrapper.getHeaderUI().update();
 		}
 
+		for (DockableWrapper wrapper : anchors.values()) {
+			SwingUtilities.updateComponentTreeUI(wrapper.getDisplayPanel());
+		}
+
 		for (InternalRootDockingPanel root : rootPanels.values()) {
 			root.updateLAF();
 			updateLAF(root.getPanel());
