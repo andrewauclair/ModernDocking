@@ -75,4 +75,8 @@ public abstract class DockingPanel extends JPanel {
 	public abstract void removeChild(DockingPanel child);
 
 	public abstract List<DockingPanel> getChildren();
+
+	public boolean isInAutoHideToolbar() {
+		return false;
+	}
 }

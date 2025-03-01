@@ -48,8 +48,9 @@ public class DockedSimplePanel extends DockingPanel {
 	 * Parent panel of this simple panel
 	 */
 	private DockingPanel parent;
+    private final boolean addHighlightBorder;
 
-	/**
+    /**
 	 * Create a new instance of DockedSimplePanel with a wrapper
 	 *
 	 * @param docking Instance of the docking framework that this panel belongs to
@@ -67,9 +68,23 @@ public class DockedSimplePanel extends DockingPanel {
 	 * @param displayPanel The panel to display in the DockedSimplePanel for this dockable
 	 */
 	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable, String anchor, DisplayPanel displayPanel) {
-		setLayout(new BorderLayout());
+		this(docking, dockable, anchor, displayPanel, true);
+	}
 
-		setNotSelectedBorder();
+	/**
+	 * Create a new instance of DockedSimplePanel with a wrapper
+	 *
+	 * @param docking Instance of the docking framework that this panel belongs to
+	 * @param dockable Wrapper of the dockable in this simple panel
+	 * @param displayPanel The panel to display in the DockedSimplePanel for this dockable
+	 */
+	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable, String anchor, DisplayPanel displayPanel, boolean addHighlightBorder) {
+        this.addHighlightBorder = addHighlightBorder;
+        setLayout(new BorderLayout());
+
+		if (addHighlightBorder) {
+			setNotSelectedBorder();
+		}
 
 		dockable.setParent(this);
 
@@ -198,11 +213,20 @@ public class DockedSimplePanel extends DockingPanel {
 		// no-op, simple panel has no children
 	}
 
+	@Override
 	public List<DockingPanel> getChildren() {
 		return Collections.emptyList();
 	}
 
+	@Override
+	public boolean isInAutoHideToolbar() {
+		return !addHighlightBorder;
+	}
+
 	private void setNotSelectedBorder() {
+		if (!Settings.isActiveHighlighterEnabled()) {
+			return;
+		}
 		Color color = UIManager.getColor("Component.borderColor");
 
 		setBorder(
