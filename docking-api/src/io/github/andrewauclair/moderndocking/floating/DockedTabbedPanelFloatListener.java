@@ -93,6 +93,13 @@ public class DockedTabbedPanelFloatListener extends FloatListener {
         Dockable selectedDockable = dockables.get(tempFloatingFrame.getSelectedIndex()).getDockable();
 
         if (utilsFrame == null) {
+            for (DockableWrapper dockable : dockables) {
+                // don't allow dockables that can't be closed or are limited to their window to move to another window
+                if (dockable.getDockable().isLimitedToWindow() || !dockable.getDockable().isClosable()) {
+                    return false;
+                }
+            }
+
             boolean first = true;
             Dockable firstDockable = null;
             FloatingFrame newFrame = null;
@@ -127,8 +134,8 @@ public class DockedTabbedPanelFloatListener extends FloatListener {
         boolean first = true;
         Dockable firstDockable = null;
 
-        Window targetFrame = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
-        Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, targetFrame);
+        Window targetWindow = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
+        Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, targetWindow);
         DockingRegion region = dockableAtPos == null ? DockingRegion.CENTER : utilsFrame.getDockableRegion(dockableAtPos, null, mousePosOnScreen);
 
         if (utilsFrame.isOverDockableHandle()) {
@@ -136,9 +143,14 @@ public class DockedTabbedPanelFloatListener extends FloatListener {
         }
 
         for (DockableWrapper dockable : dockables) {
+            // don't allow dockables that can't be closed or are limited to their window to move to another window
+            if (targetWindow != getOriginalWindow() && (dockable.getDockable().isLimitedToWindow() || !dockable.getDockable().isClosable())) {
+                return false;
+            }
+
             if (first) {
                 if (utilsFrame.isOverRootHandle()) {
-                    docking.dock(dockable.getDockable(), targetFrame, utilsFrame.rootHandleRegion());
+                    docking.dock(dockable.getDockable(), targetWindow, utilsFrame.rootHandleRegion());
                 }
                 else if (dockableAtPos != null) {
                     docking.dock(dockable.getDockable(), dockableAtPos, region);

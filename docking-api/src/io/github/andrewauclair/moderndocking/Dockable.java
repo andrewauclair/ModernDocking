@@ -112,6 +112,8 @@ public interface Dockable {
 	/**
 	 * force the dockable to remain in the window it started in.
 	 * this is useful for having a new floating window with many dockables that are only allowed in that one window.
+	 * <p>
+	 * NOTE: Dockables that return false for isClosable() will function as if isLimitedToWindow returns false, regardless of the return value.
 	 *
 	 * @return Should this dockable be limited to the window it starts in?
 	 */
