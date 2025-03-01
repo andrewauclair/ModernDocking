@@ -21,15 +21,13 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.DockableTabPreference;
-
-import javax.swing.*;
+import io.github.andrewauclair.moderndocking.DockableTabPreference;
 
 // Docking panel that is always displayed and cannot be closed
 public class AlwaysDisplayedPanel extends SimplePanel {
 	// create a new basic.AlwaysDisplayedPanel with the given title and persistentID
 	public AlwaysDisplayedPanel(String title, String persistentID) {
-		super(title, persistentID);
+		super(title, title, persistentID);
 	}
 
 	@Override
@@ -43,7 +41,7 @@ public class AlwaysDisplayedPanel extends SimplePanel {
 	}
 
 	@Override
-	public boolean isLimitedToRoot() {
+	public boolean isLimitedToWindow() {
 		return true;
 	}
 

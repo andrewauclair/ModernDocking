@@ -21,26 +21,29 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.*;
-import ModernDocking.api.WindowLayoutBuilderAPI;
-import ModernDocking.app.*;
-import ModernDocking.exception.DockingLayoutException;
-import ModernDocking.layouts.ApplicationLayout;
-import ModernDocking.layouts.DockingLayouts;
-import ModernDocking.settings.Settings;
+import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.DockableTabPreference;
+import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
+import io.github.andrewauclair.moderndocking.api.WindowLayoutBuilderAPI;
+import io.github.andrewauclair.moderndocking.app.*;
+import io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener;
+import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
+import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
+import io.github.andrewauclair.moderndocking.layouts.DockingLayouts;
+import io.github.andrewauclair.moderndocking.settings.Settings;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
-import ModernDocking.ext.ui.DockingUI;
+import io.github.andrewauclair.moderndocking.ext.ui.DockingUI;
 import exception.FailOnThreadViolationRepaintManager;
 import picocli.CommandLine;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Objects;
 import java.util.Random;
@@ -88,6 +91,18 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		Docking.initialize(this);
 		DockingUI.initialize();
 
+		Docking.addNewFloatingFrameListener(new NewFloatingFrameListener() {
+			@Override
+			public void newFrameCreated(JFrame frame, RootDockingPanelAPI root) {
+				frame.setTitle("Testing New Floating Frame Listener");
+			}
+
+			@Override
+			public void newFrameCreated(JFrame frame, RootDockingPanelAPI root, Dockable dockable) {
+				frame.setTitle("Testing New Floating Frame Listener");
+			}
+		});
+
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 
@@ -131,7 +146,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		createPanel.addActionListener(e -> {
 			String panelName = JOptionPane.showInputDialog("Panel name");
 
-			SimplePanel panel = new SimplePanel(panelName, panelName);
+			SimplePanel panel = new SimplePanel(panelName, panelName, panelName);
 			Docking.dock(panel, MainFrame.this, DockingRegion.EAST);
 		});
 		file.add(createPanel);
@@ -164,14 +179,14 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-		SimplePanel one = new SimplePanel("one", "one");
-		SimplePanel two = new SimplePanel("two", "two");
-		SimplePanel three = new SimplePanel("three", "three");
-		SimplePanel four = new SimplePanel("four", "four");
-		SimplePanel five = new SimplePanel("five", "five");
-		SimplePanel six = new SimplePanel("six", "six");
-		SimplePanel seven = new SimplePanel("seven", "seven");
-		SimplePanel eight = new SimplePanel("eight", "eight");
+		SimplePanel one = new SimplePanel("one", "Panel One", "one");
+		SimplePanel two = new SimplePanel("two", "Panel Two", "two");
+		SimplePanel three = new SimplePanel("three", "Panel Three", "three");
+		SimplePanel four = new SimplePanel("four", "Panel Four", "four");
+		SimplePanel five = new SimplePanel("five", "Panel Five", "five");
+		SimplePanel six = new SimplePanel("six", "Panel Six", "six");
+		SimplePanel seven = new SimplePanel("seven", "Panel Seven", "seven", DockableStyle.CENTER_ONLY);
+		SimplePanel eight = new SimplePanel("eight", "Panel Eight", "eight");
 		ToolPanel explorer = new ToolPanel("Explorer", "explorer", DockableStyle.VERTICAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
 		ToolPanel output = new OutputPanel("Output", "output", DockableStyle.HORIZONTAL, new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/light/icons8-vga-16.png"))));
 		AlwaysDisplayedPanel alwaysDisplayed = new AlwaysDisplayedPanel("always displayed", "always-displayed");
@@ -204,7 +219,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		JMenuItem createNewDockable = new JMenuItem("Generate Random Dockable");
 		createNewDockable.addActionListener(e -> {
-			SimplePanel rand = new SimplePanel(generateString("alpha", 6), generateString("abcdefg", 10));
+			SimplePanel rand = new SimplePanel("rand", generateString("alpha", 6), generateString("abcdefg", 10));
 			Docking.dock(rand, one, DockingRegion.WEST);
 		});
 		view.add(createNewDockable);
@@ -230,11 +245,24 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		view.add(actionListenDock(explorer));
 		view.add(actionListenDock(output));
 		view.add(actionListenDock(fixedSize));
+		view.add(new DockableMenuItem("non-existent-dockable", "Does Not Exist"));
 		view.add(actionListenDock(propertiesDemoPanel));
 		view.add(new DockableMenuItem(() -> ((Dockable) alwaysDisplayed).getPersistentID(), ((Dockable) alwaysDisplayed).getTabText()));
 		view.add(changeText);
 		view.add(actionListenDock(themes));
 		view.add(actionListenDock(scrolling));
+
+		Anchor anchor = new Anchor();
+
+		Docking.registerDockingAnchor(anchor);
+
+		JMenuItem createAnchor = new JMenuItem("Create Anchor");
+		createAnchor.addActionListener(e -> {
+
+
+			Docking.dock(anchor, one, DockingRegion.EAST);
+		});
+		view.add(createAnchor);
 
 		JMenuItem storeCurrentLayout = new JMenuItem("Store Current Layout...");
 		storeCurrentLayout.addActionListener(e -> {
@@ -358,25 +386,21 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 	}
 
 	@Override
-	public Integer call() throws Exception {
-		SwingUtilities.invokeLater(this::configureLookAndFeel);
+	public Integer call() {
+		configureLookAndFeel();
 
-		SwingUtilities.invokeLater(() -> {
+		// now that the main frame is set up with the defaults, we can restore the layout
+		AppState.setPersistFile(layoutFile);
 
-			setVisible(true);
+		try {
+			AppState.restore();
+		} catch (DockingLayoutException e) {
+			// something happened trying to load the layout file, record it here
+			e.printStackTrace();
+		}
 
-			// now that the main frame is set up with the defaults, we can restore the layout
-			AppState.setPersistFile(layoutFile);
-
-			try {
-				AppState.restore();
-			} catch (DockingLayoutException e) {
-				// something happened trying to load the layout file, record it here
-				e.printStackTrace();
-			}
-
-			AppState.setAutoPersist(true);
-		});
+		AppState.setAutoPersist(true);
+		SwingUtilities.invokeLater(() -> setVisible(true));
 		return 0;
 	}
 }

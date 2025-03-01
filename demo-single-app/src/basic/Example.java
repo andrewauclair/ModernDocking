@@ -21,11 +21,13 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.*;
-import ModernDocking.app.AppState;
-import ModernDocking.app.Docking;
-import ModernDocking.app.RootDockingPanel;
-import ModernDocking.exception.DockingLayoutException;
+import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.app.AppState;
+import io.github.andrewauclair.moderndocking.app.Docking;
+import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
+import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -125,7 +127,7 @@ public class Example extends JFrame {
 		}
 
 		@Override
-		public boolean isLimitedToRoot() {
+		public boolean isLimitedToWindow() {
 			return false;
 		}
 
@@ -146,11 +148,6 @@ public class Example extends JFrame {
 
 		@Override
 		public boolean isMinMaxAllowed() {
-			return false;
-		}
-
-		@Override
-		public boolean getHasMoreOptions() {
 			return false;
 		}
 	}

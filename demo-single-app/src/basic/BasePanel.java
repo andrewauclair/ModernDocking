@@ -21,19 +21,21 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.Dockable;
-import ModernDocking.app.Docking;
+import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.app.Docking;
 
 import javax.swing.*;
 import java.awt.*;
 
 public abstract class BasePanel extends JPanel implements Dockable {
+	private final String tabText;
 	private final String title;
 	private final String persistentID;
 
-	public BasePanel(String title, String persistentID) {
+	public BasePanel(String tabText, String title, String persistentID) {
 		super(new BorderLayout());
 
+		this.tabText = tabText;
 		this.title = title;
 		this.persistentID = persistentID;
 
@@ -52,6 +54,11 @@ public abstract class BasePanel extends JPanel implements Dockable {
 
 	@Override
 	public String getTabText() {
+		return tabText;
+	}
+
+	@Override
+	public String getTitleText() {
 		return title;
 	}
 }

@@ -21,9 +21,9 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.app.AppState;
-import ModernDocking.DockingProperty;
-import ModernDocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.app.AppState;
+import io.github.andrewauclair.moderndocking.DockingProperty;
+import io.github.andrewauclair.moderndocking.DockingRegion;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -72,7 +72,7 @@ public class PropertiesDemoPanel extends BasePanel {
     private final JComboBox<DockingRegion> enumField = new JComboBox<>();
 
     public PropertiesDemoPanel() {
-        super("Properties Demo", "props-demo");
+        super("props", "Properties Demo", "props-demo");
 
         PlainDocument doc = (PlainDocument) byteField.getDocument();
         doc.setDocumentFilter(new MyIntFilter());

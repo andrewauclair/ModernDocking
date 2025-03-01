@@ -1,10 +1,10 @@
 # Modern Docking UI
 
-Modern Docking UI is an extension to Modern Docking that changes png's to svg's for the Settings and Close icons.
+Modern Docking UI is an extension to Modern Docking that changes png's to svg's for the Settings and Close icons using the FlatLaf library.
 
-## Initializing DockingUI
+## Initializing Modern Docking UI
 
-Using our [Hello World](Hello-World.md) example, we can update it to initialize DockingUI like below, which is all that's required to use Modern Docking UI.
+Using our [Hello World](Hello-World.md) example, we can update it to initialize the Modern Docking UI like below, which is all that's required to use Modern Docking UI.
 
 ```java
 public static class MainFrame extends JFrame {

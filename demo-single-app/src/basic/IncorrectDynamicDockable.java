@@ -23,6 +23,6 @@ package basic;
 
 public class IncorrectDynamicDockable extends BasePanel {
     public IncorrectDynamicDockable() {
-        super("Incorrect Dynamic Dockable", "incorrect-dynamic-dockable");
+        super("Incorrect Dynamic Dockable", "Incorrect", "incorrect-dynamic-dockable");
     }
 }

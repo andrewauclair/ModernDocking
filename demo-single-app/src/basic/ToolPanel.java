@@ -21,8 +21,7 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.DockableStyle;
-import ModernDocking.internal.DockableToolbar;
+import io.github.andrewauclair.moderndocking.DockableStyle;
 
 import javax.swing.*;
 
@@ -30,16 +29,16 @@ public class ToolPanel extends BasePanel {
 	private final DockableStyle style;
 	private final Icon icon;
 
-	public boolean limitToRoot = false;
+	public boolean limitToWindow = false;
 
 	public ToolPanel(String title, String persistentID, DockableStyle style) {
-		super(title, persistentID);
+		super(title, title, persistentID);
 		this.style = style;
 		this.icon = null;
 	}
 
 	public ToolPanel(String title, String persistentID, DockableStyle style, Icon icon) {
-		super(title, persistentID);
+		super(title, title, persistentID);
 		this.style = style;
 		this.icon = icon;
 
@@ -62,8 +61,8 @@ public class ToolPanel extends BasePanel {
 	}
 
 	@Override
-	public boolean isLimitedToRoot() {
-		return limitToRoot;
+	public boolean isLimitedToWindow() {
+		return limitToWindow;
 	}
 
 	@Override
@@ -97,7 +96,7 @@ public class ToolPanel extends BasePanel {
 	}
 
 	@Override
-	public boolean getHasMoreOptions() {
+	public boolean hasMoreMenuOptions() {
 		return true;
 	}
 

@@ -21,10 +21,11 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.DockingProperty;
-import ModernDocking.ui.DockingHeaderUI;
-import ModernDocking.ui.HeaderController;
-import ModernDocking.ui.HeaderModel;
+import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.DockingProperty;
+import io.github.andrewauclair.moderndocking.ui.DockingHeaderUI;
+import io.github.andrewauclair.moderndocking.ui.HeaderController;
+import io.github.andrewauclair.moderndocking.ui.HeaderModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,7 +39,7 @@ public class SimplePanel extends BasePanel {
 
 	private String tabText = "";
 
-	public boolean limitToRoot = false;
+	public boolean limitToWindow = false;
 
 	private Color backgroundColor = null;
 	private Color foregroundColor = null;
@@ -83,9 +84,17 @@ public class SimplePanel extends BasePanel {
 	private static final Random rand = new Random();
 	private DockingHeaderUI headerUI;
 
-	public SimplePanel(String title, String persistentID) {
-		super(title, persistentID);
+	private DockableStyle style;
+
+	public SimplePanel(String tabText, String title, String persistentID, DockableStyle style) {
+		this(tabText, title, persistentID);
+		this.style = style;
+	}
+
+	public SimplePanel(String tabText, String title, String persistentID) {
+		super(tabText, title, persistentID);
 		tabText = title;
+		style = DockableStyle.BOTH;
 
 		setLayout(new GridBagLayout());
 
@@ -156,8 +165,13 @@ public class SimplePanel extends BasePanel {
 	}
 
 	@Override
-	public boolean isLimitedToRoot() {
-		return limitToRoot;
+	public boolean isLimitedToWindow() {
+		return limitToWindow;
+	}
+
+	@Override
+	public DockableStyle getStyle() {
+		return style;
 	}
 
 	@Override
