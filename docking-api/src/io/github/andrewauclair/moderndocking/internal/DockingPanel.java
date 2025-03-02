@@ -31,8 +31,18 @@ import java.util.List;
  * Docking panel with docking regions of: north, south, east, west and center
  */
 public abstract class DockingPanel extends JPanel {
+	/**
+	 * Retrieve the anchor that is associated with this dockable
+	 *
+	 * @return The anchor for this dockable
+	 */
 	public abstract String getAnchor();
 
+	/**
+	 * Set the anchor that is associated with this dockable
+	 *
+	 * @param anchor The anchor for this dockable
+	 */
 	public void setAnchor(String anchor) {
 	}
 
@@ -74,8 +84,18 @@ public abstract class DockingPanel extends JPanel {
 	 */
 	public abstract void removeChild(DockingPanel child);
 
+	/**
+	 * Get a list of the children for this docking panel
+	 *
+	 * @return Children
+	 */
 	public abstract List<DockingPanel> getChildren();
 
+	/**
+	 * Check if this dockable is docked in an Auto Hide toolbar
+	 *
+	 * @return Is the dockable in an Auto Hide toolbar?
+	 */
 	public boolean isInAutoHideToolbar() {
 		return false;
 	}

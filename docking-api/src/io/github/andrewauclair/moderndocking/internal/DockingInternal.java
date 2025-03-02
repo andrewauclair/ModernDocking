@@ -91,10 +91,6 @@ public class DockingInternal {
 				.collect(Collectors.toList());
 	}
 
-	public AppStatePersister getAppStatePersister() {
-		return appStatePersister;
-	}
-
 	/**
 	 * registration function for DockingPanel
 	 *
@@ -296,6 +292,8 @@ public class DockingInternal {
 
 	/**
 	 * everything has been restored, go through the list of dockables and fire docked events for the ones that are docked
+	 *
+	 * @param docking The docking instance
 	 */
 	public static void fireDockedEventForAll(DockingAPI docking) {
 		for (Dockable dockable : DockingInternal.get(docking).getDockables()) {
@@ -356,6 +354,14 @@ public class DockingInternal {
 
 	public static BiFunction<HeaderController, HeaderModel, DockingHeaderUI> createHeaderUI = DefaultHeaderUI::new;
 
+	/**
+	 * Create an instance of the default header specified with createHeaderUI
+	 *
+	 * @param headerController The header controller to use for the docking header
+	 * @param headerModel The header model to use for the docking heade
+	 *
+	 * @return A new instance of a DockingHeaderUI
+	 */
 	public static DockingHeaderUI createDefaultHeaderUI(HeaderController headerController, HeaderModel headerModel) {
 		return createHeaderUI.apply(headerController, headerModel);
 	}

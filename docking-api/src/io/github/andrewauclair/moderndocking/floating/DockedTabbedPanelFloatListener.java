@@ -36,8 +36,6 @@ public class DockedTabbedPanelFloatListener extends FloatListener {
     private final DockingAPI docking;
     protected final DockedTabbedPanel tabs;
 
-    private DisplayPanelFloatListener listener = null;
-
     public DockedTabbedPanelFloatListener(DockingAPI docking, DockedTabbedPanel tabs, JComponent dragComponent) {
         super(docking, tabs, dragComponent);
 

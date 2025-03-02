@@ -27,7 +27,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * Custom JTabbedPane to be used by Modern Docking in order to add keyboard shortcuts for moving between tabs
+ */
 public class CustomTabbedPane extends JTabbedPane {
+    /**
+     * Create a new instance and configure the keyboard shortcuts
+     */
     public CustomTabbedPane() {
         setFocusable(false);
 
@@ -83,6 +89,14 @@ public class CustomTabbedPane extends JTabbedPane {
         );
     }
 
+    /**
+     * Find the index of the tab that our mouse is over
+     *
+     * @param mousePosOnScreen The position of the mouse on screen
+     * @param ignoreY Only check if we're within the X bounds
+     *
+     * @return The index of the tab at the mouse position, or -1 if none is found
+     */
     public int getTargetTabIndex(Point mousePosOnScreen, boolean ignoreY) {
         // convert the screen mouse position to a position on the tabbed pane
         Point newPoint = new Point(mousePosOnScreen);
@@ -105,6 +119,12 @@ public class CustomTabbedPane extends JTabbedPane {
         return -1;
     }
 
+    /**
+     * Check if the tab preference is TOP or BOTTOM
+     *
+     * @param tabPlacement The tab placement
+     * @return true if tab is TOP or BOTTOM
+     */
     public static boolean isTopBottomTabPlacement(int tabPlacement) {
         return tabPlacement == TOP || tabPlacement == BOTTOM;
     }

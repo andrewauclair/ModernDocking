@@ -55,6 +55,7 @@ public class DockedSimplePanel extends DockingPanel {
 	 *
 	 * @param docking Instance of the docking framework that this panel belongs to
 	 * @param dockable Wrapper of the dockable in this simple panel
+	 * @param anchor The anchor associated with this docking panel
 	 */
 	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable, String anchor) {
 		this(docking, dockable, anchor, dockable.getDisplayPanel());
@@ -65,6 +66,7 @@ public class DockedSimplePanel extends DockingPanel {
 	 *
 	 * @param docking Instance of the docking framework that this panel belongs to
 	 * @param dockable Wrapper of the dockable in this simple panel
+	 * @param anchor The anchor associated with this docking panel
 	 * @param displayPanel The panel to display in the DockedSimplePanel for this dockable
 	 */
 	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable, String anchor, DisplayPanel displayPanel) {
@@ -76,7 +78,9 @@ public class DockedSimplePanel extends DockingPanel {
 	 *
 	 * @param docking Instance of the docking framework that this panel belongs to
 	 * @param dockable Wrapper of the dockable in this simple panel
+	 * @param anchor The anchor associated with this docking panel
 	 * @param displayPanel The panel to display in the DockedSimplePanel for this dockable
+	 * @param addHighlightBorder Use the active dockable highlighter borders
 	 */
 	public DockedSimplePanel(DockingAPI docking, DockableWrapper dockable, String anchor, DisplayPanel displayPanel, boolean addHighlightBorder) {
         this.addHighlightBorder = addHighlightBorder;

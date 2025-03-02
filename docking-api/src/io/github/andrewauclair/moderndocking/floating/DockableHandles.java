@@ -31,6 +31,9 @@ import java.awt.*;
 
 import static io.github.andrewauclair.moderndocking.floating.DockingHandle.HANDLE_ICON_SIZE;
 
+/**
+ * Class for handling all of the docking handle operations while floating a dockable
+ */
 public class DockableHandles {
     private final DockingHandle dockableCenter = new DockingHandle(DockingRegion.CENTER, false);
     private final DockingHandle dockableWest = new DockingHandle(DockingRegion.WEST, false);
@@ -41,6 +44,12 @@ public class DockableHandles {
     private final Dockable targetDockable;
     private final Dockable floatingDockable;
 
+    /**
+     * Create a new instance for the frame and target dockable
+     *
+     * @param frame The frame to display these handles on
+     * @param targetDockable The target dockable the mouse is over
+     */
     public DockableHandles(JFrame frame, Dockable targetDockable) {
         this.frame = frame;
         this.targetDockable = targetDockable;
@@ -55,6 +64,13 @@ public class DockableHandles {
         setDockableHandleLocations();
     }
 
+    /**
+     * Create a new instance for the frame and target dockable
+     *
+     * @param frame The frame to display these handles on
+     * @param targetDockable The target dockable the mouse is over
+     * @param floatingDockable The dockable is floating
+     */
     public DockableHandles(JFrame frame, Dockable targetDockable, Dockable floatingDockable) {
         this.frame = frame;
         this.targetDockable = targetDockable;

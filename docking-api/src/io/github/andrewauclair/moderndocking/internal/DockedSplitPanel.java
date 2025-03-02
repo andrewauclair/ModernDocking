@@ -63,7 +63,9 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	/**
 	 * Create a new DockedSplitPanel
 	 *
+	 * @param docking The docking instance
 	 * @param window The window this panel is in. Used to tell the child DockableWrappers what Window they are a part of
+	 * @param anchor The anchor associated with this docking panel
 	 */
 	public DockedSplitPanel(DockingAPI docking, Window window, String anchor) {
 		this.docking = docking;

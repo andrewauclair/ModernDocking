@@ -55,6 +55,7 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 	/**
 	 * Create a new DockedAutoHidePanel to contain a dockable on a docking toolbar
 	 *
+	 * @param docking The docking instance
 	 * @param dockable The dockable contained on this panel
 	 * @param root The root panel of the Window
 	 * @param toolbar The toolbar this panel is in

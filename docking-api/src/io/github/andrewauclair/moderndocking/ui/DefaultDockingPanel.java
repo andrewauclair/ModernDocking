@@ -48,14 +48,27 @@ public class DefaultDockingPanel extends JPanel implements Dockable, DockingList
 
     private final List<DockingListener> listeners = new ArrayList<>();
 
+    /**
+     * Create a new instance
+     */
     public DefaultDockingPanel() {
     }
 
+    /**
+     * Create a new instance with the specific persistent ID and text
+     * @param persistentID The persistent ID of the dockable
+     * @param text The text to display on title bar and tabs
+     */
     public DefaultDockingPanel(String persistentID, String text) {
         this.persistentID = persistentID;
         this.tabText = text;
     }
 
+    /**
+     * Retrieve the persistent ID of the dockable
+     *
+     * @return Persistent ID
+     */
     @Override
     public String getPersistentID() {
         return persistentID;

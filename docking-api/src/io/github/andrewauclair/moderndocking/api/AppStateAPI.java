@@ -247,18 +247,39 @@ public class AppStateAPI {
 		defaultAppLayout = layout;
 	}
 
+	/**
+	 * Get the property for a dockable by name
+	 *
+	 * @param dockable The dockable to get a property for
+	 * @param propertyName The property to search for
+	 *
+	 * @return The property instance of the dockable, or null if not found
+	 */
 	public Property getProperty(Dockable dockable, String propertyName) {
 		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 
 		return wrapper.getProperty(propertyName);
 	}
 
+	/**
+	 * Set the value of a property on the dockable. If the property does not exist, it will be created
+	 *
+	 * @param dockable The dockable to set a property for
+	 * @param propertyName The name of the property we're setting
+	 * @param value The value of the property
+	 */
 	public void setProperty(Dockable dockable, String propertyName, Property value) {
 		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 
 		wrapper.setProperty(propertyName, value);
 	}
 
+	/**
+	 * Remove the property from the dockable
+	 *
+	 * @param dockable The dockable to remove the property from
+	 * @param propertyName The property to remove
+	 */
 	public void removeProperty(Dockable dockable, String propertyName) {
 		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 

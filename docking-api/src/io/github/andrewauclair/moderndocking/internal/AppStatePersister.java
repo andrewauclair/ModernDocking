@@ -35,6 +35,11 @@ import java.awt.event.WindowStateListener;
 public class AppStatePersister extends ComponentAdapter implements WindowStateListener {
 	private final DockingAPI docking;
 
+	/**
+	 * Create a new persister for the docking instance
+	 *
+	 * @param docking Docking instance
+	 */
 	public AppStatePersister(DockingAPI docking) {
 		this.docking = docking;
 	}

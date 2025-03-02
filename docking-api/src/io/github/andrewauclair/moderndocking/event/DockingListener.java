@@ -25,5 +25,10 @@ package io.github.andrewauclair.moderndocking.event;
  * Listener interface used to listen for docking events
  */
 public interface DockingListener {
+	/**
+	 * Called when docking events occur
+	 *
+	 * @param e The docking event
+	 */
 	void dockingChange(DockingEvent e);
 }

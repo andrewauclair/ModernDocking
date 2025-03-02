@@ -64,6 +64,11 @@ public class DockingHandle extends JLabel {
 		setVisible(false);
 	}
 
+	/**
+	 * Create a new handle for the given region
+	 *
+	 * @param region Docking region of the handle
+	 */
 	public DockingHandle(DockingRegion region) {
 		this.region = region;
 		this.isRoot = false;
@@ -74,10 +79,20 @@ public class DockingHandle extends JLabel {
 		setVisible(false);
 	}
 
+	/**
+	 * Mouse has moved on the screen
+	 *
+	 * @param mousePosition The new mouse position
+	 */
 	public void mouseMoved(Point mousePosition) {
 		mouseOver = getBounds().contains(mousePosition);
 	}
 
+	/**
+	 * Check if the mouse is over this handle
+	 *
+	 * @return Is mouse over handle?
+	 */
 	public boolean isMouseOver() {
 		if (!isVisible()) {
 			return false;

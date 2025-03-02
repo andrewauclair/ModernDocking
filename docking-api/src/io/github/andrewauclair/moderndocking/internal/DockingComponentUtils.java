@@ -60,6 +60,7 @@ public class DockingComponentUtils {
 	/**
 	 * used to undock all dockables in a container. called when a frame is to be disposed
 	 *
+	 * @param docking The docking instance
 	 * @param container Container to undock all components from
 	 */
 	public static void undockComponents(DockingAPI docking, Container container) {
@@ -76,6 +77,7 @@ public class DockingComponentUtils {
 	/**
 	 * search for a root panel on the screen at a specific position
 	 *
+	 * @param docking The docking instance
 	 * @param screenPos The screen position to search at
 	 * @return The window at screenPos. null if not found.
 	 */
@@ -92,6 +94,7 @@ public class DockingComponentUtils {
 
 	/**
 	 *
+	 * @param docking The docking instance
 	 * @param dockable The dockable to find a window for.
 	 * @return The window containing the dockable. null if not found.
 	 */
@@ -102,6 +105,7 @@ public class DockingComponentUtils {
 	/**
 	 * find the root for the given window, throws an exception if the window doesn't have a root panel
 	 *
+	 * @param docking The docking instance
 	 * @param window The window to find a root for
 	 * @return The root of the given window
 	 */
@@ -115,6 +119,7 @@ public class DockingComponentUtils {
 	/**
 	 * Find the window for a given root
 	 *
+	 * @param docking The docking instance
 	 * @param root The root to find a window for
 	 * @return The window for the root or null
 	 */
@@ -129,6 +134,7 @@ public class DockingComponentUtils {
 	/**
 	 * find a dockable at a given screen position
 	 *
+	 * @param docking The docking instance
 	 * @param screenPos Screen position to check for a dockable at
 	 * @return Dockable under the screen position, or null if none is found
 	 */
@@ -207,6 +213,7 @@ public class DockingComponentUtils {
 	/**
 	 * find a docking panel at a given screen position
 	 *
+	 * @param docking The docking instance
 	 * @param screenPos Screen position to check for a dockable at
 	 * @return DockingPanel under the screen position, or null if none is found
 	 */
@@ -258,6 +265,7 @@ public class DockingComponentUtils {
 	/**
 	 * remove panels from window if they return false for allowFloating() and there are no other dockables in the window
 	 *
+	 * @param docking The docking instance
 	 * @param window The window to remove illegal floating dockables from
 	 */
 	public static void removeIllegalFloats(DockingAPI docking, Window window) {
@@ -317,7 +325,9 @@ public class DockingComponentUtils {
 	 * Finds the first dockable of a specified type. The main frame is searched first and then
 	 * any other frames that exist
 	 *
+	 * @param docking The docking instance
 	 * @param type The type to search for
+	 *
 	 * @return The first Dockable of the given type, if any exist
 	 */
 	public static Optional<Dockable> findFirstDockableOfType(DockingAPI docking, int type) {
@@ -369,6 +379,9 @@ public class DockingComponentUtils {
 
 	/**
 	 * Check if an anchor is empty
+	 *
+	 * @param docking The docking instance
+	 * @param anchor The anchor to check
 	 *
 	 * @return The window for the root or null
 	 */

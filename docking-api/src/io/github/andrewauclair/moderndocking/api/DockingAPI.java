@@ -1008,18 +1008,38 @@ public class DockingAPI {
         DockingListeners.removeMaximizeListener(listener);
     }
 
+    /**
+     * Add a new docking listener
+     *
+     * @param listener Listener to add
+     */
     public void addDockingListener(DockingListener listener) {
         DockingListeners.addDockingListener(listener);
     }
 
+    /**
+     * Remove a docking listener
+     *
+     * @param listener Listener to remove
+     */
     public void removeDockingListener(DockingListener listener) {
         DockingListeners.removeDockingListener(listener);
     }
 
+    /**
+     * Add a new floating frame listener
+     *
+     * @param listener Listener to add
+     */
     public void addNewFloatingFrameListener(NewFloatingFrameListener listener) {
         DockingListeners.addNewFloatingFrameListener(listener);
     }
 
+    /**
+     * Remove a floating frame listener
+     *
+     * @param listener Listener to remove
+     */
     public void removeNewFloatingFrameListener(NewFloatingFrameListener listener) {
         DockingListeners.removeNewFloatingFrameListener(listener);
     }

@@ -39,6 +39,7 @@ public class DockingAnchorPanelNode implements DockingLayoutNode {
     /**
      * Create a new DockingAnchorPanelNode with just a persistent ID
      *
+     * @param docking The docking instance
      * @param persistentID The persistent ID of the anchor
      */
     public DockingAnchorPanelNode(DockingAPI docking, String persistentID, String className) {

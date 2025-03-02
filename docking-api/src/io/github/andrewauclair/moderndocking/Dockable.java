@@ -81,6 +81,8 @@ public interface Dockable {
 	 * provide the tab tooltip to the docking framework
 	 * <p>
 	 * NOTE: If this text changes, you will need to call Dockable.updateTabInfo()
+	 *
+	 * @return The text to display on a tooltip when hovering over the tab in a JTabbedPane
 	 */
 	default String getTabTooltip() {
 		return null;
@@ -200,6 +202,11 @@ public interface Dockable {
 		return false;
 	}
 
+	/**
+	 * The tab preference of the dockable, either TOP, BOTTOM or NONE
+	 *
+	 * @return Tab preference
+	 */
 	default DockableTabPreference getTabPreference() {
 		return DockableTabPreference.NONE;
 	}
