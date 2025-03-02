@@ -97,7 +97,7 @@ public class DisplayPanelFloatListener extends FloatListener {
                 docking.dock(floatingDockable.getDockable(), dockableAtPos, utilsFrame.dockableHandle());
             }
             else if (utilsFrame.isOverPinHandle()) {
-                docking.unpinDockable(floatingDockable.getDockable(), utilsFrame.pinRegion(), targetWindow, root.getRootPanel());
+                docking.autoHideDockable(floatingDockable.getDockable(), utilsFrame.pinRegion(), targetWindow);
             }
             else if (utilsFrame.isOverTab()) {
                 CustomTabbedPane tabbedPane = DockingComponentUtils.findTabbedPaneAtPos(mousePosOnScreen, targetWindow);

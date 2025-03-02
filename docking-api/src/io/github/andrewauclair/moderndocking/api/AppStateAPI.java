@@ -59,6 +59,11 @@ public class AppStateAPI {
 	private static Timer persistTimer = null;
 	private final DockingAPI docking;
 
+	/**
+	 * Create a new App State instance for the docking instance
+	 *
+	 * @param docking Docking instance
+	 */
 	protected AppStateAPI(DockingAPI docking) {
 		this.docking = docking;
 	}

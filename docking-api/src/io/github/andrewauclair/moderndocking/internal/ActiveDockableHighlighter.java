@@ -46,6 +46,8 @@ public class ActiveDockableHighlighter {
 
 	/**
 	 * Default constructor to create the highlighter
+	 *
+	 * @param docking Docking instance
 	 */
 	public ActiveDockableHighlighter(DockingAPI docking) {
 		// use an AWT event listener to set a border around the dockable that the mouse is currently over
@@ -98,16 +100,27 @@ public class ActiveDockableHighlighter {
 		UIManager.addPropertyChangeListener(propertyChangeListener);
 	}
 
+	/**
+	 * Removing the active dockable highlighter listeners
+	 */
 	public void removeListeners() {
 		Toolkit.getDefaultToolkit().removeAWTEventListener(awtEventListener);
 		UIManager.removePropertyChangeListener(propertyChangeListener);
 	}
 
+	/**
+	 * Set the selected border on the active panel that the mouse is over
+	 */
 	private void setSelectedBorder() {
 		Color color = DockingSettings.getHighlighterSelectedBorder();
 		activePanel.setBorder(BorderFactory.createLineBorder(color, 2));
 	}
 
+	/**
+	 * Change the border back to not selected. Done when the mouse moves off the panel
+	 *
+	 * @param panel The panel to change the border on
+	 */
 	public static void setNotSelectedBorder(DockingPanel panel) {
 		Color color = DockingSettings.getHighlighterNotSelectedBorder();
 

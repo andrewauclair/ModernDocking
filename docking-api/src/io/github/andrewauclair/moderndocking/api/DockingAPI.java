@@ -763,172 +763,165 @@ public class DockingAPI {
     }
 
     public void autoShowDockable(Dockable dockable) {
-        pinDockable(dockable);
+//        pinDockable(dockable);
     }
 
     public void autoShowDockable(String persistentID) {
-        pinDockable(internals.getDockable(persistentID));
+//        pinDockable(internals.getDockable(persistentID));
     }
 
     public void autoHideDockable(Dockable dockable) {
-        unpinDockable(dockable);
+//        unpinDockable(dockable);
     }
 
     public void autoHideDockable(String persistentID) {
-        unpinDockable(internals.getDockable(persistentID));
+//        unpinDockable(internals.getDockable(persistentID));
     }
 
     public void autoHideDockable(Dockable dockable, ToolbarLocation location) {
-        unpinDockable(dockable, location);
+//        unpinDockable(dockable, location);
     }
 
     public void autoHideDockable(String persistentID, ToolbarLocation location) {
-        unpinDockable(internals.getDockable(persistentID), location);
+//        unpinDockable(internals.getDockable(persistentID), location);
     }
 
     public void autoHideDockable(Dockable dockable, ToolbarLocation location, Window window) {
         InternalRootDockingPanel root = internals.getRootPanels().get(window);
 
-        unpinDockable(dockable, location, window, root.getRootPanel());
+//        unpinDockable(dockable, location, window, root.getRootPanel());
     }
 
     public void autoHideDockable(String persistentID, ToolbarLocation location, Window window) {
         InternalRootDockingPanel root = internals.getRootPanels().get(window);
 
-        unpinDockable(internals.getDockable(persistentID), location, window, root.getRootPanel());
+//        unpinDockable(internals.getDockable(persistentID), location, window, root.getRootPanel());
     }
 
-    /**
-     * pin a dockable. only valid if the dockable is unpinned
-     *
-     * @param dockable Dockable to pin
-     *
-     * @deprecated Replaced with autoShowDockable
-     */
-    @Deprecated(forRemoval = true, since = "0.12.2")
-    public void pinDockable(Dockable dockable) {
-        Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
-        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);
-
-        if (internals.getWrapper(dockable).isHidden()) {
-            root.setDockableShown(dockable);
-
-            internals.getWrapper(dockable).setHidden(false);
-
-            DockingListeners.fireAutoShownEvent(dockable);
-        }
-    }
-
-    /**
-     * unpin a dockable. only valid if the dockable is pinned
-     * @param dockable Dockable to unpin
-     *
-     * @deprecated Replaced with autoHideDockable
-     */
-    @Deprecated(forRemoval = true, since = "0.12.2")
-    public void unpinDockable(Dockable dockable) {
-        if (isHidden(dockable)) {
-            return;
-        }
-
-        Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
-        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);
-
-        Component component = (Component) dockable;
-
-        Point posInFrame = component.getLocation();
-        SwingUtilities.convertPointToScreen(posInFrame, component.getParent());
-        SwingUtilities.convertPointFromScreen(posInFrame, root);
-
-        posInFrame.x += component.getWidth() / 2;
-        posInFrame.y += component.getHeight() / 2;
-
-        boolean allowedSouth = dockable.getAutoHideStyle() == DockableStyle.BOTH || dockable.getAutoHideStyle() == DockableStyle.HORIZONTAL;
-
-        int westDist = posInFrame.x;
-        int eastDist = window.getWidth() - posInFrame.x;
-        int southDist = window.getHeight() - posInFrame.y;
-
-        boolean east = eastDist <= westDist;
-        boolean south = southDist < westDist && southDist < eastDist;
-
-        ToolbarLocation location;
-
-        if (south && allowedSouth) {
-            location = ToolbarLocation.SOUTH;
-        }
-        else if (east) {
-            location = ToolbarLocation.EAST;
-        }
-        else {
-            location = ToolbarLocation.WEST;
-        }
-
-        unpinDockable(dockable, location);
-    }
-
-    /**
-     * unpin a dockable. only valid if the dockable is pinned
-     * @param dockable Dockable to unpin
-     * @param location Toolbar location to unpin the dockable to
-     *
-     * @deprecated Replaced with autoHideDockable
-     */
-    @Deprecated(forRemoval = true, since = "0.12.2")
-    public void unpinDockable(Dockable dockable, ToolbarLocation location) {
-        Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
-        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);
-
-        unpinDockable(dockable, location, window, root.getRootPanel());
-    }
-
-    /**
-     * unpin a dockable. only valid if the dockable is pinned
-     * @param dockable Dockable to unpin
-     * @param location Toolbar location to unpin the dockable to
-     *
-     * @deprecated Replaced with autoHideDockable
-     */
-    @Deprecated(forRemoval = true, since = "0.12.2")
-    public void unpinDockable(Dockable dockable, ToolbarLocation location, Window window, RootDockingPanelAPI root) {
-        if (isHidden(dockable)) {
-            return;
-        }
-
-        InternalRootDockingPanel internalRoot = internals.getRootPanels().get(window);
-
-        Component component = (Component) dockable;
-
-        Point posInFrame = component.getLocation();
-        SwingUtilities.convertPointToScreen(posInFrame, component.getParent());
-        SwingUtilities.convertPointFromScreen(posInFrame, internalRoot);
-
-        posInFrame.x += component.getWidth() / 2;
-        posInFrame.y += component.getHeight() / 2;
-
-        if (!root.isAutoHideSupported()) {
-            return;
-        }
-
-        boolean floating = Floating.isFloating();
-        try {
-            // pretend we're floating this dockable to prevent the frame from closing
-            Floating.setFloating(true);
-            undock(dockable);
-        }
-        finally {
-            Floating.setFloating(floating);
-        }
-
-        // reset the window, undocking the dockable sets it to null
-        internals.getWrapper(dockable).setWindow(window);
-        internals.getWrapper(dockable).setHidden(true);
-
-        internalRoot.setDockableHidden(dockable, location);
-
-        DockingListeners.fireAutoHiddenEvent(dockable);
-        DockingListeners.fireHiddenEvent(dockable);
-    }
+//    @Deprecated(forRemoval = true, since = "0.12.2")
+//    public void pinDockable(Dockable dockable) {
+//        Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
+//        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);
+//
+//        if (internals.getWrapper(dockable).isHidden()) {
+//            root.setDockableShown(dockable);
+//
+//            internals.getWrapper(dockable).setHidden(false);
+//
+//            DockingListeners.fireAutoShownEvent(dockable);
+//        }
+//    }
+//
+//    /**
+//     * unpin a dockable. only valid if the dockable is pinned
+//     * @param dockable Dockable to unpin
+//     *
+//     * @deprecated Replaced with autoHideDockable
+//     */
+//    @Deprecated(forRemoval = true, since = "0.12.2")
+//    public void unpinDockable(Dockable dockable) {
+//        if (isHidden(dockable)) {
+//            return;
+//        }
+//
+//        Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
+//        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);
+//
+//        Component component = (Component) dockable;
+//
+//        Point posInFrame = component.getLocation();
+//        SwingUtilities.convertPointToScreen(posInFrame, component.getParent());
+//        SwingUtilities.convertPointFromScreen(posInFrame, root);
+//
+//        posInFrame.x += component.getWidth() / 2;
+//        posInFrame.y += component.getHeight() / 2;
+//
+//        boolean allowedSouth = dockable.getAutoHideStyle() == DockableStyle.BOTH || dockable.getAutoHideStyle() == DockableStyle.HORIZONTAL;
+//
+//        int westDist = posInFrame.x;
+//        int eastDist = window.getWidth() - posInFrame.x;
+//        int southDist = window.getHeight() - posInFrame.y;
+//
+//        boolean east = eastDist <= westDist;
+//        boolean south = southDist < westDist && southDist < eastDist;
+//
+//        ToolbarLocation location;
+//
+//        if (south && allowedSouth) {
+//            location = ToolbarLocation.SOUTH;
+//        }
+//        else if (east) {
+//            location = ToolbarLocation.EAST;
+//        }
+//        else {
+//            location = ToolbarLocation.WEST;
+//        }
+//
+//        unpinDockable(dockable, location);
+//    }
+//
+//    /**
+//     * unpin a dockable. only valid if the dockable is pinned
+//     * @param dockable Dockable to unpin
+//     * @param location Toolbar location to unpin the dockable to
+//     *
+//     * @deprecated Replaced with autoHideDockable
+//     */
+//    @Deprecated(forRemoval = true, since = "0.12.2")
+//    public void unpinDockable(Dockable dockable, ToolbarLocation location) {
+//        Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
+//        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);
+//
+//        unpinDockable(dockable, location, window, root.getRootPanel());
+//    }
+//
+//    /**
+//     * unpin a dockable. only valid if the dockable is pinned
+//     * @param dockable Dockable to unpin
+//     * @param location Toolbar location to unpin the dockable to
+//     *
+//     * @deprecated Replaced with autoHideDockable
+//     */
+//    @Deprecated(forRemoval = true, since = "0.12.2")
+//    public void unpinDockable(Dockable dockable, ToolbarLocation location, Window window, RootDockingPanelAPI root) {
+//        if (isHidden(dockable)) {
+//            return;
+//        }
+//
+//        InternalRootDockingPanel internalRoot = internals.getRootPanels().get(window);
+//
+//        Component component = (Component) dockable;
+//
+//        Point posInFrame = component.getLocation();
+//        SwingUtilities.convertPointToScreen(posInFrame, component.getParent());
+//        SwingUtilities.convertPointFromScreen(posInFrame, internalRoot);
+//
+//        posInFrame.x += component.getWidth() / 2;
+//        posInFrame.y += component.getHeight() / 2;
+//
+//        if (!root.isAutoHideSupported()) {
+//            return;
+//        }
+//
+//        boolean floating = Floating.isFloating();
+//        try {
+//            // pretend we're floating this dockable to prevent the frame from closing
+//            Floating.setFloating(true);
+//            undock(dockable);
+//        }
+//        finally {
+//            Floating.setFloating(floating);
+//        }
+//
+//        // reset the window, undocking the dockable sets it to null
+//        internals.getWrapper(dockable).setWindow(window);
+//        internals.getWrapper(dockable).setHidden(true);
+//
+//        internalRoot.setDockableHidden(dockable, location);
+//
+//        DockingListeners.fireAutoHiddenEvent(dockable);
+//        DockingListeners.fireHiddenEvent(dockable);
+//    }
 
     /**
      * display a dockable

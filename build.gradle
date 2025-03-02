@@ -3,21 +3,22 @@ plugins {
 	id 'idea'
 	id 'maven-publish'
 	id 'signing'
-	id "com.github.ben-manes.versions" version "0.51.0"
-}
-
-java {
-	sourceCompatibility = JavaVersion.VERSION_1_9
-	targetCompatibility = JavaVersion.VERSION_1_9
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+	id "com.github.ben-manes.versions" version "0.52.0"
 }
 
 subprojects {
+	java {
+		sourceCompatibility = JavaVersion.VERSION_1_9
+		targetCompatibility = JavaVersion.VERSION_1_9
+	}
+
+	repositories {
+		mavenLocal()
+		mavenCentral()
+		maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
+		maven { url = "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+	}
+
 	version = "1.1-SNAPSHOT"
 
 	ext {

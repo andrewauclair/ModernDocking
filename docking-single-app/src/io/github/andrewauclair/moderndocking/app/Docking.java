@@ -519,23 +519,6 @@ public class Docking {
     }
 
     /**
-     * pin a dockable. only valid if the dockable is unpinned
-     *
-     * @param dockable Dockable to pin
-     */
-    public static void pinDockable(Dockable dockable) {
-        instance.pinDockable(dockable);
-    }
-
-    /**
-     * unpin a dockable. only valid if the dockable is pinned
-     * @param dockable Dockable to unpin
-     */
-    public static void unpinDockable(Dockable dockable) {
-        instance.unpinDockable(dockable);
-    }
-
-    /**
      * display a dockable
      *
      * @param persistentID The persistentID of the dockable to display
