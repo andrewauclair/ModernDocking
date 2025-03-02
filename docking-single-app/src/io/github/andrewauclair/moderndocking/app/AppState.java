@@ -29,8 +29,17 @@ import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
 
 import java.io.File;
 
+/**
+ * Handle persistence and restoration of Application layouts
+ */
 public class AppState {
     private static final AppStateAPI instance = new AppStateAPI(Docking.getSingleInstance()){};
+
+    /**
+     * This class should not be instantiated
+     */
+    private AppState() {
+    }
 
     /**
      * Set whether the framework should auto persist the application layout to a file when

@@ -40,6 +40,7 @@ public class DisplayPanel extends JPanel {
 	 * Create a new internal display panel for the dockable
 	 *
 	 * @param wrapper Wrapper for the dockable that this panel will represent
+	 * @param isAnchor Is this display panel an anchor? Used to hide the header
 	 */
 	public DisplayPanel(DockableWrapper wrapper, boolean isAnchor) {
 		this.wrapper = wrapper;

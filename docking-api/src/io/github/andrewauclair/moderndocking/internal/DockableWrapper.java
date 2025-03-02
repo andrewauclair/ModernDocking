@@ -62,6 +62,7 @@ public class DockableWrapper {
 	/**
 	 * Create a new wrapper for the dockable
 	 *
+	 * @param docking The docking instance
 	 * @param dockable Dockable to contain in this wrapper
 	 */
 	public DockableWrapper(DockingAPI docking, Dockable dockable, boolean isAnchor) {

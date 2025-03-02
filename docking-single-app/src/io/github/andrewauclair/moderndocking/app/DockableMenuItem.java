@@ -57,6 +57,7 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 	}
 
 	/**
+	 * Create a new dockable menu to display a dockable
 	 *
 	 * @param persistentID The dockable this menu item refers to
 	 * @param text The display text for this menu item
@@ -71,8 +72,9 @@ public class DockableMenuItem extends JCheckBoxMenuItem implements ActionListene
 	}
 
 	/**
+	 * Create a new dockable menu to display a dockable and use a supplier for the persistent ID
 	 *
-	 * @param persistentIDProvider Provides the persistentID that will be displayed
+	 * @param persistentIDProvider Provides the persistent ID that will be displayed
 	 * @param text The display text for this menu item
 	 */
 	public DockableMenuItem(Supplier<String> persistentIDProvider, String text) {

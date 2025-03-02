@@ -30,6 +30,12 @@ import java.awt.*;
 public class DockingState {
     private static final DockingStateAPI instance = new DockingStateAPI(Docking.getSingleInstance()){};
 
+    /**
+     * This class should not be instantiated
+     */
+    private DockingState() {
+    }
+
     public static WindowLayout getWindowLayout(Window window) {
         return instance.getWindowLayout(window);
     }

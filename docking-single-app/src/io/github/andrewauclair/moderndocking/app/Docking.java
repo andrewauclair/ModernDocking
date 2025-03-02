@@ -46,6 +46,12 @@ public class Docking {
     private static DockingAPI instance;
 
     /**
+     * This class should not be instantiated
+     */
+    private Docking() {
+    }
+
+    /**
      * Create the one and only instance of the Docking class for the application
      * @param mainWindow The main window of the application
      */
@@ -94,6 +100,8 @@ public class Docking {
      * Check if a dockable has already been registered
      *
      * @param persistentID The persistent ID to look for
+     *
+     * @return Is the dockable registered?
      */
     public static boolean isDockableRegistered(String persistentID) {
         return instance.isDockableRegistered(persistentID);

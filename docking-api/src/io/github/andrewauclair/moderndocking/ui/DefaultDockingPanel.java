@@ -206,7 +206,7 @@ public class DefaultDockingPanel extends JPanel implements Dockable, DockingList
 
     @Override
     public boolean hasMoreMenuOptions() {
-        return moreOptions.size() > 0;
+        return !moreOptions.isEmpty();
     }
 
     /**
@@ -225,10 +225,20 @@ public class DefaultDockingPanel extends JPanel implements Dockable, DockingList
         }
     }
 
+    /**
+     * Add a new docking listener
+     *
+     * @param listener Listener to add
+     */
     public void addDockingListener(DockingListener listener) {
         listeners.add(listener);
     }
 
+    /**
+     * Remove a docking listener
+     *
+     * @param listener Listener to remove
+     */
     public void removeDockingListener(DockingListener listener) {
         listeners.remove(listener);
     }

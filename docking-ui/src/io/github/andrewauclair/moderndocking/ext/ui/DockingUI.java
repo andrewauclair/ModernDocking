@@ -29,10 +29,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeListener;
 
+/**
+ * Primary class for the Modern Docking UI Extension. Used to initialize extra UI functionality within Modern Docking API
+ */
 public class DockingUI {
     private static boolean initialized = false;
     private static PropertyChangeListener propertyChangeListener;
-    private static FlatSVGIcon settingsIcon = new FlatSVGIcon(DockingUI.class.getResource("/ui_ext_icons/settings.svg"));
+    private static final FlatSVGIcon settingsIcon = new FlatSVGIcon(DockingUI.class.getResource("/ui_ext_icons/settings.svg"));
+
+    /**
+     * This class should not be instantiated
+     */
+    private DockingUI() {
+    }
 
     /**
      * Initialize the FlatLaf UI extension. This reconfigures the docking framework to use FlatLaf SVG icons and color filters.
@@ -66,6 +75,11 @@ public class DockingUI {
         UIManager.addPropertyChangeListener(propertyChangeListener);
     }
 
+    /**
+     * Change the color property used for the settings icon on JTabbedPanes
+     *
+     * @param property The new color property to use
+     */
     public static void setSettingsIconColorProperty(String property) {
         if (!initialized) {
             return;

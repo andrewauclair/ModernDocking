@@ -76,6 +76,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	/**
 	 * Create a new instance of DockedTabbedPanel
 	 *
+	 * @param docking The docking instance
 	 * @param dockable The first dockable in the tabbed pane
 	 * @param anchor The anchor associated with this docking panel
 	 */

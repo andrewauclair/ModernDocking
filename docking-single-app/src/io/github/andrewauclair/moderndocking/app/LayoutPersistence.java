@@ -28,8 +28,14 @@ import io.github.andrewauclair.moderndocking.layouts.WindowLayout;
 
 import java.io.File;
 
+/**
+ * Persist and restore Application and Window layouts to/from files
+ */
 public class LayoutPersistence {
     private static final LayoutPersistenceAPI instance = new LayoutPersistenceAPI(Docking.getSingleInstance()){};
+
+    private LayoutPersistence() {
+    }
 
     /**
      * saves a docking layout to the given file

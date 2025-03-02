@@ -224,5 +224,14 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 
 	protected abstract JFrame createFloatingFrame();
 
+	/**
+	 * Drop the floating panel
+	 *
+	 * @param utilsFrame The utils frame that provides the docking handles and overlay
+	 * @param floatingFrame The floating frame that contains the floating dockable
+	 * @param mousePosOnScreen The position of the mouse on screen
+	 *
+	 * @return Did we successfully dock the floating dockable?
+	 */
 	protected abstract boolean dropPanel(FloatUtilsFrame utilsFrame, JFrame floatingFrame, Point mousePosOnScreen);
 }

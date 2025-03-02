@@ -85,6 +85,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	/**
 	 * Create a new dockable toolbar for the window, its root and a location (west, south or east)
 	 *
+	 * @param docking The docking instance
 	 * @param window The window this toolbar is attached to
 	 * @param root The root of the attached window
 	 * @param location The location of this toolbar within the window
