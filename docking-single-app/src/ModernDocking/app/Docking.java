@@ -521,35 +521,35 @@ public class Docking {
         instance.minimize(dockable);
     }
 
-    public void autoShowDockable(Dockable dockable) {
+    public static void autoShowDockable(Dockable dockable) {
         instance.autoShowDockable(dockable);
     }
 
-    public void autoShowDockable(String persistentID) {
+    public static void autoShowDockable(String persistentID) {
         instance.autoShowDockable(persistentID);
     }
 
-    public void autoHideDockable(Dockable dockable) {
+    public static void autoHideDockable(Dockable dockable) {
         instance.autoHideDockable(dockable);
     }
 
-    public void autoHideDockable(String persistentID) {
+    public static void autoHideDockable(String persistentID) {
         instance.autoHideDockable(persistentID);
     }
 
-    public void autoHideDockable(Dockable dockable, ToolbarLocation location) {
+    public static void autoHideDockable(Dockable dockable, ToolbarLocation location) {
         instance.autoHideDockable(dockable, location);
     }
 
-    public void autoHideDockable(String persistentID, ToolbarLocation location) {
+    public static void autoHideDockable(String persistentID, ToolbarLocation location) {
         instance.autoHideDockable(persistentID, location);
     }
 
-    public void autoHideDockable(Dockable dockable, ToolbarLocation location, Window window) {
+    public static void autoHideDockable(Dockable dockable, ToolbarLocation location, Window window) {
         instance.autoHideDockable(dockable, location, window);
     }
 
-    public void autoHideDockable(String persistentID, ToolbarLocation location, Window window) {
+    public static void autoHideDockable(String persistentID, ToolbarLocation location, Window window) {
         instance.autoHideDockable(persistentID, location, window);
     }
 
@@ -557,7 +557,9 @@ public class Docking {
      * pin a dockable. only valid if the dockable is unpinned
      *
      * @param dockable Dockable to pin
+     * @deprecated Replaced with autoShowDockable
      */
+    @Deprecated(forRemoval = true, since = "0.12.3")
     public static void pinDockable(Dockable dockable) {
         instance.pinDockable(dockable);
     }
@@ -565,7 +567,9 @@ public class Docking {
     /**
      * unpin a dockable. only valid if the dockable is pinned
      * @param dockable Dockable to unpin
+     * @deprecated Replaced with autoHideDockable
      */
+    @Deprecated(forRemoval = true, since = "0.12.3")
     public static void unpinDockable(Dockable dockable) {
         instance.unpinDockable(dockable);
     }
