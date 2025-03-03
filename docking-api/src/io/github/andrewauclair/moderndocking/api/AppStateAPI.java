@@ -29,9 +29,7 @@ import io.github.andrewauclair.moderndocking.internal.DockingInternal;
 import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
 import io.github.andrewauclair.moderndocking.layouts.DockingLayouts;
 import io.github.andrewauclair.moderndocking.layouts.WindowLayout;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.HashMap;
@@ -40,6 +38,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.Timer;
 
 /**
  * This class is used for auto persisting the application layout to a file when there are changes to the layout

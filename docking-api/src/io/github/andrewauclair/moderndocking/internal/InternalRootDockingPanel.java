@@ -28,11 +28,12 @@ import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.settings.Settings;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Window;
 import java.util.Collections;
 import java.util.List;
+import javax.swing.SwingUtilities;
 
 public class InternalRootDockingPanel extends DockingPanel {
     private final DockingAPI docking;

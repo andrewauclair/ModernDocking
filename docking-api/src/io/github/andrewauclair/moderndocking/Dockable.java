@@ -25,8 +25,8 @@ import io.github.andrewauclair.moderndocking.internal.DockingInternal;
 import io.github.andrewauclair.moderndocking.ui.DockingHeaderUI;
 import io.github.andrewauclair.moderndocking.ui.HeaderController;
 import io.github.andrewauclair.moderndocking.ui.HeaderModel;
-
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.JPopupMenu;
 
 /**
  * this is the main interface for a Dockable. Any panel that an application wishes to be dockable must implement

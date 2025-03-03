@@ -24,8 +24,7 @@ package io.github.andrewauclair.moderndocking.app;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
-
-import java.awt.*;
+import java.awt.Window;
 import java.util.EnumSet;
 
 public class RootDockingPanel extends RootDockingPanelAPI {

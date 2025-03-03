@@ -1,8 +1,10 @@
 package io.github.andrewauclair.moderndocking.util;
 
-import javax.swing.*;
 import java.util.Enumeration;
 import java.util.Vector;
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
 
 /**
  * special form of ButtonGroup that allows the currently selected button to deselected

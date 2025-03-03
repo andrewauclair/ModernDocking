@@ -24,8 +24,7 @@ package io.github.andrewauclair.moderndocking.app;
 import io.github.andrewauclair.moderndocking.api.DockingStateAPI;
 import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
 import io.github.andrewauclair.moderndocking.layouts.WindowLayout;
-
-import java.awt.*;
+import java.awt.Window;
 
 public class DockingState {
     private static final DockingStateAPI instance = new DockingStateAPI(Docking.getSingleInstance()){};
@@ -68,6 +67,12 @@ public class DockingState {
         instance.restoreWindowLayout(window, layout);
     }
 
+    /**
+     * Restore the layout of a single window, preserving the current size and position of the window
+     *
+     * @param window Window to restore the layout onto
+     * @param layout The layout to restore
+     */
     public static void restoreWindowLayout_PreserveSizeAndPos(Window window, WindowLayout layout) {
         instance.restoreWindowLayout_PreserveSizeAndPos(window, layout);
     }

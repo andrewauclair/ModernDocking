@@ -23,11 +23,23 @@ package io.github.andrewauclair.moderndocking.floating;
 
 import io.github.andrewauclair.moderndocking.internal.DockableWrapper;
 import io.github.andrewauclair.moderndocking.settings.Settings;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
 import java.util.Collections;
 import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 /**
  * this is a frame used temporarily when floating a panel

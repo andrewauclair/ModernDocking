@@ -22,8 +22,7 @@ SOFTWARE.
 package io.github.andrewauclair.moderndocking.settings;
 
 import io.github.andrewauclair.moderndocking.DockableTabPreference;
-
-import javax.swing.*;
+import javax.swing.JTabbedPane;
 
 public class Settings {
     private static DockableTabPreference defaultTabPreference = DockableTabPreference.BOTTOM;

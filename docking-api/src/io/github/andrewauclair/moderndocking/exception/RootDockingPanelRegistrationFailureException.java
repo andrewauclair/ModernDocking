@@ -22,8 +22,7 @@ SOFTWARE.
 package io.github.andrewauclair.moderndocking.exception;
 
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
-
-import java.awt.*;
+import java.awt.Window;
 
 /**
  * This exception is thrown when the docking framework fails to register a RootDockingPanel because one already exists for the window

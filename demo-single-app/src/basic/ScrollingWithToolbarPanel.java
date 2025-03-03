@@ -1,7 +1,12 @@
 package basic;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JToolBar;
 
 public class ScrollingWithToolbarPanel extends BasePanel {
     public ScrollingWithToolbarPanel() {

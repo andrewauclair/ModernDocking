@@ -29,8 +29,7 @@ import io.github.andrewauclair.moderndocking.floating.FloatListener;
 import io.github.andrewauclair.moderndocking.ui.DockingHeaderUI;
 import io.github.andrewauclair.moderndocking.ui.HeaderController;
 import io.github.andrewauclair.moderndocking.ui.HeaderModel;
-
-import java.awt.*;
+import java.awt.Window;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

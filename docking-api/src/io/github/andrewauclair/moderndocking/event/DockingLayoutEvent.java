@@ -23,6 +23,9 @@ package io.github.andrewauclair.moderndocking.event;
 
 import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
 
+/**
+ * 
+ */
 public class DockingLayoutEvent {
     public enum ID {
         ADDED,

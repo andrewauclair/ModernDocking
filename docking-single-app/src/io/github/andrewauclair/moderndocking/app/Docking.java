@@ -30,13 +30,14 @@ import io.github.andrewauclair.moderndocking.event.MaximizeListener;
 import io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener;
 import io.github.andrewauclair.moderndocking.internal.DockingInternal;
 import io.github.andrewauclair.moderndocking.internal.DockingListeners;
-import io.github.andrewauclair.moderndocking.internal.InternalRootDockingPanel;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Window;
 import java.util.List;
 import java.util.Map;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 /**
  * Convenience class for apps that only need a single instance of the docking framework. Working with the static functions

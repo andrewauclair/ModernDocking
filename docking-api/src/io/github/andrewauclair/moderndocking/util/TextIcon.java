@@ -1,10 +1,18 @@
 package io.github.andrewauclair.moderndocking.util;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Map;
+import javax.swing.Icon;
+import javax.swing.JComponent;
 
 /**
  *  The TextIcon will paint a String of text as an Icon. The Icon

@@ -21,10 +21,13 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.ext.ui;
 
-import io.github.andrewauclair.moderndocking.ui.*;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-
-import java.awt.*;
+import io.github.andrewauclair.moderndocking.ui.DefaultHeaderUI;
+import io.github.andrewauclair.moderndocking.ui.DockingHeaderUI;
+import io.github.andrewauclair.moderndocking.ui.DockingSettings;
+import io.github.andrewauclair.moderndocking.ui.HeaderController;
+import io.github.andrewauclair.moderndocking.ui.HeaderModel;
+import java.awt.Color;
 
 /**
  * Custom DefaultHeaderUI that uses SVG Icons for settings and close when using FlatLaf

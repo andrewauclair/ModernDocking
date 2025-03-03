@@ -23,8 +23,8 @@ package io.github.andrewauclair.moderndocking.ui;
 
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
-
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.JPopupMenu;
 
 /**
  * Model for the header of a dockable. Provides wrapper access to functions in the dockable

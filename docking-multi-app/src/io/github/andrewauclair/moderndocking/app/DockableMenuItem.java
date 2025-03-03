@@ -24,13 +24,12 @@ package io.github.andrewauclair.moderndocking.app;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.internal.DockingInternal;
-
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JCheckBoxMenuItem;
 
 /**
  * Special JCheckBoxMenuItem that handles updating the checkbox for us based on the docking state of the dockable

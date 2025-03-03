@@ -21,11 +21,15 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.layouts;
 
-import javax.swing.*;
 import java.awt.Dialog.ModalityType;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Point;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 /**
  * layout of a single frame

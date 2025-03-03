@@ -29,9 +29,14 @@ import io.github.andrewauclair.moderndocking.internal.CustomTabbedPane;
 import io.github.andrewauclair.moderndocking.internal.DockingInternal;
 import io.github.andrewauclair.moderndocking.internal.InternalRootDockingPanel;
 import io.github.andrewauclair.moderndocking.ui.DockingSettings;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 public class FloatingOverlay {
     // determines how close to the edge the user has to drag the panel before they see an overlay other than CENTER

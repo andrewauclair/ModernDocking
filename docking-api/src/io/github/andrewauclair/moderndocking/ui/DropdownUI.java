@@ -21,7 +21,7 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.ui;
 
-import javax.swing.*;
+import javax.swing.JButton;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 
 // TODO This isn't used right now. I think I was trying to make a dropdown that could be used to swap panels instead of putting them in a tabbed pane.

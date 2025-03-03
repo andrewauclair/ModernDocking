@@ -22,9 +22,11 @@ SOFTWARE.
 package io.github.andrewauclair.moderndocking.internal;
 
 import io.github.andrewauclair.moderndocking.settings.Settings;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 /**
  * The internal JPanel used to display the Dockable plus its header

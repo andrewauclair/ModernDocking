@@ -26,12 +26,11 @@ import io.github.andrewauclair.moderndocking.Property;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.internal.DockingInternal;
 import io.github.andrewauclair.moderndocking.settings.Settings;
-
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.swing.JSplitPane;
 
 /**
  * Docking layout node for a tabbed panel. A that contains multiple dockables in a JTabbedPane.

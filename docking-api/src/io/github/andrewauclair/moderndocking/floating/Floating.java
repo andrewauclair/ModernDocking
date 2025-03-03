@@ -23,11 +23,10 @@ package io.github.andrewauclair.moderndocking.floating;
 
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.internal.InternalRootDockingPanel;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Window;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.SwingUtilities;
 
 public class Floating {
     private static final Map<Window, FloatUtilsFrame> utilFrames = new HashMap<>();

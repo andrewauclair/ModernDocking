@@ -21,18 +21,23 @@ SOFTWARE.
  */
 package basic;
 
-import io.github.andrewauclair.moderndocking.api.DockingAPI;
+import com.formdev.flatlaf.FlatLaf;
 import io.github.andrewauclair.moderndocking.DockingProperty;
+import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.ui.DefaultHeaderUI;
 import io.github.andrewauclair.moderndocking.ui.DockingHeaderUI;
 import io.github.andrewauclair.moderndocking.ui.HeaderController;
 import io.github.andrewauclair.moderndocking.ui.HeaderModel;
-import com.formdev.flatlaf.FlatLaf;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.Objects;
 import java.util.Random;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
 
 public class SimplePanel extends BasePanel {
 	private String tabText = "";

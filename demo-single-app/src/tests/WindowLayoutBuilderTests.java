@@ -21,6 +21,11 @@ SOFTWARE.
  */
 package tests;
 
+import basic.SimplePanel;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+import exception.FailOnThreadViolationRepaintManager;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.app.ApplicationLayoutMenuItem;
 import io.github.andrewauclair.moderndocking.app.Docking;
@@ -29,16 +34,15 @@ import io.github.andrewauclair.moderndocking.app.WindowLayoutBuilder;
 import io.github.andrewauclair.moderndocking.event.DockingLayoutEvent;
 import io.github.andrewauclair.moderndocking.event.DockingLayoutListener;
 import io.github.andrewauclair.moderndocking.layouts.DockingLayouts;
-import basic.SimplePanel;
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatLaf;
-import com.formdev.flatlaf.FlatLightLaf;
-import exception.FailOnThreadViolationRepaintManager;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class WindowLayoutBuilderTests extends JFrame implements DockingLayoutListener {
 

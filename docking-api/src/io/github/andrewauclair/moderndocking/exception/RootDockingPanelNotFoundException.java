@@ -21,7 +21,7 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.exception;
 
-import java.awt.*;
+import java.awt.Window;
 
 public class RootDockingPanelNotFoundException extends RuntimeException {
     private final Window window;

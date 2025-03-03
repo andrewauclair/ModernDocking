@@ -21,10 +21,14 @@ SOFTWARE.
  */
 package tests;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
-import static java.awt.GraphicsDevice.WindowTranslucency.*;
+import static java.awt.GraphicsDevice.WindowTranslucency.PERPIXEL_TRANSLUCENT;
+import static java.awt.GraphicsDevice.WindowTranslucency.PERPIXEL_TRANSPARENT;
+import static java.awt.GraphicsDevice.WindowTranslucency.TRANSLUCENT;
 
 public class TranslucentTest extends JFrame {
     public TranslucentTest() {

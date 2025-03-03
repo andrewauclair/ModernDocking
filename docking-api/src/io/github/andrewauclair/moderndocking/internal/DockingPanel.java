@@ -23,9 +23,8 @@ package io.github.andrewauclair.moderndocking.internal;
 
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockingRegion;
-
-import javax.swing.*;
 import java.util.List;
+import javax.swing.JPanel;
 
 /**
  * Docking panel with docking regions of: north, south, east, west and center

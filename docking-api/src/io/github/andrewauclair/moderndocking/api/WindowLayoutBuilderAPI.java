@@ -23,8 +23,12 @@ package io.github.andrewauclair.moderndocking.api;
 
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.Property;
-import io.github.andrewauclair.moderndocking.layouts.*;
-
+import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
+import io.github.andrewauclair.moderndocking.layouts.DockingLayoutNode;
+import io.github.andrewauclair.moderndocking.layouts.DockingLayoutRootNode;
+import io.github.andrewauclair.moderndocking.layouts.DockingSimplePanelNode;
+import io.github.andrewauclair.moderndocking.layouts.DockingTabPanelNode;
+import io.github.andrewauclair.moderndocking.layouts.WindowLayout;
 import java.util.HashMap;
 import java.util.Map;
 

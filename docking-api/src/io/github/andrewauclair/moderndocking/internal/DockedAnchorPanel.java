@@ -25,8 +25,7 @@ import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.settings.Settings;
-
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.util.Collections;
 import java.util.List;
 

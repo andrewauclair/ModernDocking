@@ -27,11 +27,25 @@ import io.github.andrewauclair.moderndocking.internal.DockedTabbedPanel;
 import io.github.andrewauclair.moderndocking.internal.DockingComponentUtils;
 import io.github.andrewauclair.moderndocking.internal.InternalRootDockingPanel;
 import io.github.andrewauclair.moderndocking.layouts.WindowLayout;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Cursor;
+import java.awt.Point;
+import java.awt.Window;
 import java.awt.datatransfer.StringSelection;
-import java.awt.dnd.*;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragGestureRecognizer;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceAdapter;
+import java.awt.dnd.DragSourceDragEvent;
+import java.awt.dnd.DragSourceDropEvent;
+import java.awt.dnd.DragSourceListener;
+import java.awt.dnd.DragSourceMotionListener;
+import java.awt.dnd.InvalidDnDOperationException;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 public abstract class FloatListener extends DragSourceAdapter implements DragSourceMotionListener, DragSourceListener {
 	private final DockingAPI docking;

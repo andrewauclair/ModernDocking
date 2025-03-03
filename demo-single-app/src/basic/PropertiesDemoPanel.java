@@ -21,13 +21,20 @@ SOFTWARE.
  */
 package basic;
 
-import io.github.andrewauclair.moderndocking.app.AppState;
 import io.github.andrewauclair.moderndocking.DockingProperty;
 import io.github.andrewauclair.moderndocking.DockingRegion;
-
-import javax.swing.*;
-import javax.swing.text.*;
-import java.awt.*;
+import io.github.andrewauclair.moderndocking.app.AppState;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
 
 public class PropertiesDemoPanel extends BasePanel {
     @DockingProperty(name = "sample_byte", defaultValue = "0")

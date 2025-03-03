@@ -26,7 +26,6 @@ import io.github.andrewauclair.moderndocking.Property;
 import io.github.andrewauclair.moderndocking.api.AppStateAPI;
 import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
 import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
-
 import java.io.File;
 
 /**

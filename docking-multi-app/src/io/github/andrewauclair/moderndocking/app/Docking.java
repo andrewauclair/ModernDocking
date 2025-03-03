@@ -22,8 +22,7 @@ SOFTWARE.
 package io.github.andrewauclair.moderndocking.app;
 
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
-
-import java.awt.*;
+import java.awt.Window;
 
 /**
  * Convenience class for apps that only need a single instance of the docking framework. Working with the static functions

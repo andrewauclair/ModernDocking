@@ -23,8 +23,7 @@ package io.github.andrewauclair.moderndocking.event;
 
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
-
-import javax.swing.*;
+import javax.swing.JFrame;
 
 /**
  * Used to inform the application that a new floating frame has been created

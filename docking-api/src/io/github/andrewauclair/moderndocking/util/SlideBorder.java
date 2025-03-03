@@ -22,9 +22,9 @@ SOFTWARE.
 package io.github.andrewauclair.moderndocking.util;
 
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import javax.swing.JPanel;
 
 /**
  * Panel that provides a slider for unpinned dockables when they are displayed

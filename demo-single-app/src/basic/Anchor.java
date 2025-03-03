@@ -23,9 +23,10 @@ package basic;
 
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableStyle;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class Anchor extends JPanel implements Dockable {
     public Anchor() {

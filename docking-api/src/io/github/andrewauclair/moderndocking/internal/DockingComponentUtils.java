@@ -25,10 +25,14 @@ import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.exception.RootDockingPanelNotFoundException;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Window;
 import java.util.Optional;
+import javax.swing.JDialog;
+import javax.swing.SwingUtilities;
 
 /**
  * set of internal utilities for dealing with the component hierarchy of dockables

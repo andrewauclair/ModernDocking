@@ -21,8 +21,8 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.ui;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import javax.swing.JButton;
 
 /**
  * Interface used for defining Docking header UIs that can be updated

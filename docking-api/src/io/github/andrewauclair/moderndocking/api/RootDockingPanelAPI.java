@@ -22,10 +22,13 @@ SOFTWARE.
 package io.github.andrewauclair.moderndocking.api;
 
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.GridBagLayout;
+import java.awt.Window;
 import java.util.EnumSet;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 
 /**
  * Panel that should be added to each frame that should support docking

@@ -26,11 +26,21 @@ import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.event.DockingLayoutEvent;
 import io.github.andrewauclair.moderndocking.event.DockingLayoutListener;
-import io.github.andrewauclair.moderndocking.internal.*;
-
-import javax.swing.*;
-import java.util.*;
+import io.github.andrewauclair.moderndocking.internal.DockableProperties;
+import io.github.andrewauclair.moderndocking.internal.DockableWrapper;
+import io.github.andrewauclair.moderndocking.internal.DockedAnchorPanel;
+import io.github.andrewauclair.moderndocking.internal.DockedSimplePanel;
+import io.github.andrewauclair.moderndocking.internal.DockedSplitPanel;
+import io.github.andrewauclair.moderndocking.internal.DockedTabbedPanel;
+import io.github.andrewauclair.moderndocking.internal.DockingComponentUtils;
+import io.github.andrewauclair.moderndocking.internal.DockingInternal;
+import io.github.andrewauclair.moderndocking.internal.DockingPanel;
+import io.github.andrewauclair.moderndocking.internal.InternalRootDockingPanel;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.swing.JSplitPane;
 
 public class DockingLayouts {
 	private static final List<DockingLayoutListener> listeners = new ArrayList<>();

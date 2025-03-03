@@ -1,7 +1,10 @@
 package io.github.andrewauclair.moderndocking.util;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import javax.swing.Icon;
 
 /**
  *  The RotatedIcon allows you to change the orientation of an Icon by

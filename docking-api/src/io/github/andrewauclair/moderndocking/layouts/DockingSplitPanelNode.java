@@ -21,12 +21,11 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.layouts;
 
-import io.github.andrewauclair.moderndocking.DockingRegion;
-import io.github.andrewauclair.moderndocking.api.DockingAPI;
-import io.github.andrewauclair.moderndocking.internal.DockingInternal;
-import io.github.andrewauclair.moderndocking.settings.Settings;
-
-import javax.swing.*;
+ import io.github.andrewauclair.moderndocking.DockingRegion;
+ import io.github.andrewauclair.moderndocking.api.DockingAPI;
+ import io.github.andrewauclair.moderndocking.internal.DockingInternal;
+ import io.github.andrewauclair.moderndocking.settings.Settings;
+ import javax.swing.JSplitPane;
 
  /**
   * Layout node that represents a splitpane

@@ -23,8 +23,7 @@ package io.github.andrewauclair.moderndocking.internal;
 
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
-
-import javax.swing.*;
+import javax.swing.JPanel;
 
 /**
  * Represents a dockable that has failed to load from a layout file.

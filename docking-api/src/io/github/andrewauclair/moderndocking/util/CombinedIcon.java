@@ -21,8 +21,9 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.util;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Graphics;
+import javax.swing.Icon;
 
 /**
  * Special Icon to combine multiple Icons.

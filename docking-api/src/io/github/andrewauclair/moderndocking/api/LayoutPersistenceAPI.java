@@ -29,10 +29,15 @@ import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
 import io.github.andrewauclair.moderndocking.internal.DockableProperties;
 import io.github.andrewauclair.moderndocking.internal.DockableWrapper;
 import io.github.andrewauclair.moderndocking.internal.DockingInternal;
-import io.github.andrewauclair.moderndocking.layouts.*;
-
-import javax.xml.stream.*;
-import java.awt.*;
+import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
+import io.github.andrewauclair.moderndocking.layouts.DockingAnchorPanelNode;
+import io.github.andrewauclair.moderndocking.layouts.DockingLayoutNode;
+import io.github.andrewauclair.moderndocking.layouts.DockingSimplePanelNode;
+import io.github.andrewauclair.moderndocking.layouts.DockingSplitPanelNode;
+import io.github.andrewauclair.moderndocking.layouts.DockingTabPanelNode;
+import io.github.andrewauclair.moderndocking.layouts.WindowLayout;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,6 +49,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 public class LayoutPersistenceAPI {
     private static final Logger logger = Logger.getLogger(LayoutPersistenceAPI.class.getPackageName());

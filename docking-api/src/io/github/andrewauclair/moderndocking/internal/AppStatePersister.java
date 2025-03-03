@@ -22,8 +22,7 @@ SOFTWARE.
 package io.github.andrewauclair.moderndocking.internal;
 
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
-
-import java.awt.*;
+import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;

@@ -21,13 +21,13 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.ext.ui;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import io.github.andrewauclair.moderndocking.internal.DockedTabbedPanel;
 import io.github.andrewauclair.moderndocking.internal.DockingInternal;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
 import java.beans.PropertyChangeListener;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 /**
  * Primary class for the Modern Docking UI Extension. Used to initialize extra UI functionality within Modern Docking API

@@ -22,7 +22,6 @@ SOFTWARE.
 package io.github.andrewauclair.moderndocking.api;
 
 import io.github.andrewauclair.moderndocking.Dockable;
-import io.github.andrewauclair.moderndocking.DockableStyle;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.event.DockingListener;
 import io.github.andrewauclair.moderndocking.event.MaximizeListener;
@@ -30,15 +29,33 @@ import io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener;
 import io.github.andrewauclair.moderndocking.exception.NotDockedException;
 import io.github.andrewauclair.moderndocking.exception.RootDockingPanelNotFoundException;
 import io.github.andrewauclair.moderndocking.floating.Floating;
-import io.github.andrewauclair.moderndocking.internal.*;
+import io.github.andrewauclair.moderndocking.internal.ActiveDockableHighlighter;
+import io.github.andrewauclair.moderndocking.internal.DisplayPanel;
+import io.github.andrewauclair.moderndocking.internal.DockableWrapper;
+import io.github.andrewauclair.moderndocking.internal.DockedTabbedPanel;
+import io.github.andrewauclair.moderndocking.internal.DockingComponentUtils;
+import io.github.andrewauclair.moderndocking.internal.DockingInternal;
+import io.github.andrewauclair.moderndocking.internal.DockingListeners;
+import io.github.andrewauclair.moderndocking.internal.DockingPanel;
+import io.github.andrewauclair.moderndocking.internal.FloatingFrame;
+import io.github.andrewauclair.moderndocking.internal.InternalRootDockingPanel;
 import io.github.andrewauclair.moderndocking.layouts.WindowLayout;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Window;
 import java.beans.PropertyChangeListener;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 /**
  * Single instance of the docking framework. Useful when a single JVM is to host multiple instances of an application

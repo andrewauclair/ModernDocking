@@ -21,17 +21,22 @@ SOFTWARE.
  */
 package basic;
 
-import io.github.andrewauclair.moderndocking.Dockable;
-import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
-
-import javax.swing.*;
+import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.api.DockingAPI;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 
 public class ThemesPanel extends BasePanel implements Dockable {
     public ThemesPanel(DockingAPI docking) {

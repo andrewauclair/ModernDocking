@@ -26,8 +26,7 @@ import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.app.Docking;
 import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
-
-import javax.swing.*;
+import javax.swing.JDialog;
 
 public class DialogWithDocking extends JDialog {
 

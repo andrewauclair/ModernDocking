@@ -24,8 +24,8 @@ package io.github.andrewauclair.moderndocking.app;
 import io.github.andrewauclair.moderndocking.event.DockingLayoutEvent;
 import io.github.andrewauclair.moderndocking.event.DockingLayoutListener;
 import io.github.andrewauclair.moderndocking.layouts.DockingLayouts;
-
-import javax.swing.*;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
 /**
  * Custom JMenu that displays all the layouts in DockingLayouts as menu items

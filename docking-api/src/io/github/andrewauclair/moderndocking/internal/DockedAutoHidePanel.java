@@ -26,13 +26,16 @@ import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
 import io.github.andrewauclair.moderndocking.util.SlideBorder;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 /**
  * Special JPanel used to contain a dockable within a docking toolbar

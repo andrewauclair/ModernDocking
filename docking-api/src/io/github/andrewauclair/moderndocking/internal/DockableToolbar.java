@@ -30,15 +30,25 @@ import io.github.andrewauclair.moderndocking.util.CombinedIcon;
 import io.github.andrewauclair.moderndocking.util.RotatedIcon;
 import io.github.andrewauclair.moderndocking.util.TextIcon;
 import io.github.andrewauclair.moderndocking.util.UnselectableButtonGroup;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+import javax.swing.UIManager;
 
 /**
  * This class is a special panel used to display toolbars on the West, East or South side of a frame to display dockables

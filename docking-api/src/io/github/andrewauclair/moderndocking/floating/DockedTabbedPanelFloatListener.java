@@ -24,13 +24,19 @@ package io.github.andrewauclair.moderndocking.floating;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
-import io.github.andrewauclair.moderndocking.internal.*;
-
-import javax.swing.*;
-import java.awt.*;
+import io.github.andrewauclair.moderndocking.internal.DockableWrapper;
+import io.github.andrewauclair.moderndocking.internal.DockedTabbedPanel;
+import io.github.andrewauclair.moderndocking.internal.DockingComponentUtils;
+import io.github.andrewauclair.moderndocking.internal.DockingListeners;
+import io.github.andrewauclair.moderndocking.internal.FloatingFrame;
+import java.awt.Point;
+import java.awt.Window;
 import java.awt.dnd.DragGestureEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 public class DockedTabbedPanelFloatListener extends FloatListener {
     private final DockingAPI docking;

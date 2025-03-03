@@ -25,11 +25,10 @@ import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.Property;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.settings.Settings;
-
-import javax.swing.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.JSplitPane;
 
 /**
  * Docking layout node for a simple panel. A that contains a single dockable.

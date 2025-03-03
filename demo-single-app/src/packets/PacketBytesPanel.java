@@ -24,8 +24,7 @@ package packets;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableStyle;
 import io.github.andrewauclair.moderndocking.app.Docking;
-
-import javax.swing.*;
+import javax.swing.JPanel;
 
 public class PacketBytesPanel extends JPanel implements Dockable {
 	public PacketBytesPanel() {

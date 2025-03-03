@@ -23,9 +23,14 @@ package io.github.andrewauclair.moderndocking.floating;
 
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.ui.DockingSettings;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Stroke;
+import javax.swing.JLabel;
 
 /**
  * Special label used to draw the docking handles on an overlay

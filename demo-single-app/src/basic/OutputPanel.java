@@ -1,17 +1,23 @@
 package basic;
 
-import io.github.andrewauclair.moderndocking.app.AppState;
 import io.github.andrewauclair.moderndocking.DockableStyle;
 import io.github.andrewauclair.moderndocking.DockingProperty;
-
-import javax.swing.*;
+import io.github.andrewauclair.moderndocking.app.AppState;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import java.util.*;
 
 public class OutputPanel extends ToolPanel {
     @DockingProperty(name = "first-column-name", defaultValue = "one")

@@ -21,11 +21,15 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.internal;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 /**
  * Custom JTabbedPane to be used by Modern Docking in order to add keyboard shortcuts for moving between tabs

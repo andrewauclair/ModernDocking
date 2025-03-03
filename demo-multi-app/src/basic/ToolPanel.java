@@ -23,8 +23,9 @@ package basic;
 
 import io.github.andrewauclair.moderndocking.DockableStyle;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
-
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 public class ToolPanel extends BasePanel {
 	private final DockableStyle style;
