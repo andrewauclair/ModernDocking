@@ -24,13 +24,25 @@ package io.github.andrewauclair.moderndocking.event;
 import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
 
 /**
- * 
+ * Event used when the application layout has changed
  */
 public class DockingLayoutEvent {
     public enum ID {
+        /**
+         * Layout has been added
+         */
         ADDED,
+        /**
+         * Layout has been removed
+         */
         REMOVED,
+        /**
+         * Layout has been restored
+         */
         RESTORED,
+        /**
+         * Layout has been saved to a file
+         */
         PERSISTED
     }
 

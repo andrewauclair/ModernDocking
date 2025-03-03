@@ -21,6 +21,14 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.event;
 
+/**
+ * Listen for changes to layouts
+ */
 public interface DockingLayoutListener {
+    /**
+     * A layout has changed
+     *
+     * @param e Information about the layout that has changed
+     */
     void layoutChange(DockingLayoutEvent e);
 }

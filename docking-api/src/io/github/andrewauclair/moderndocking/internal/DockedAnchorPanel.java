@@ -29,6 +29,9 @@ import java.awt.BorderLayout;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Docking panel that wraps the application anchor panel for display
+ */
 public class DockedAnchorPanel extends DockingPanel {
     private final DockingAPI docking;
 
@@ -39,6 +42,12 @@ public class DockedAnchorPanel extends DockingPanel {
      */
     private DockingPanel parent;
 
+    /**
+     * Create a new anchor panel to wrap the application anchor
+     *
+     * @param docking The docking instance this panel belongs to
+     * @param anchor The anchor wrapper to associate with this panel
+     */
     public DockedAnchorPanel(DockingAPI docking, DockableWrapper anchor) {
         setLayout(new BorderLayout());
 

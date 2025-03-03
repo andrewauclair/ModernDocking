@@ -24,10 +24,15 @@ package io.github.andrewauclair.moderndocking.layouts;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 
 /**
- * Used to avoid exceptions?
+ * Used to avoid issues with null nodes when root layout nodes are empty
  */
-// TODO might be good to get rid of this?
 public class EmptyPanelNode implements DockingLayoutNode {
+	/**
+	 * Create new instance
+	 */
+	public EmptyPanelNode() {
+	}
+
 	@Override
 	public DockingLayoutNode findNode(String persistentID) {
 		return null;

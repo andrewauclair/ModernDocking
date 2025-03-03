@@ -61,16 +61,32 @@ public class DockingInternal {
 
 	private final AppStatePersister appStatePersister;
 
+	/**
+	 * Create a new instance of our internal helper for the docking instance
+	 *
+	 * @param docking Docking instance
+	 */
 	public DockingInternal(DockingAPI docking) {
 		this.docking = docking;
 		this.appStatePersister = new AppStatePersister(docking);
 		internals.put(docking, this);
 	}
 
+	/**
+	 * Lookup the internal helper for a docking instance
+	 *
+	 * @param docking The instance to find a helper for
+	 * @return The internal helper or null if not found
+	 */
 	public static DockingInternal get(DockingAPI docking) {
 		return internals.get(docking);
 	}
 
+	/**
+	 * Remove an internal helper
+	 *
+	 * @param docking The docking instance
+	 */
 	public static void remove(DockingAPI docking) {
 		internals.remove(docking);
 	}
@@ -184,7 +200,7 @@ public class DockingInternal {
 	}
 
 	/**
-	 * register an anchor with the framework
+	 * Register an anchor with the framework
 	 *
 	 * @param anchor The anchor to register
 	 */
@@ -195,6 +211,11 @@ public class DockingInternal {
 		anchors.put(anchor.getPersistentID(), new DockableWrapper(docking, anchor, true));
 	}
 
+	/**
+	 * Deregister an anchor with the framework
+	 *
+	 * @param anchor The anchor to deregister
+	 */
 	public void deregisterDockingAnchor(Dockable anchor) {
 		anchors.remove(anchor.getPersistentID());
 	}
@@ -356,6 +377,9 @@ public class DockingInternal {
 		}
 	}
 
+	/**
+	 * Function used to create a new instance of the Header UI. This allows us to replace the function in the Modern Docking UI Extension
+	 */
 	public static BiFunction<HeaderController, HeaderModel, DockingHeaderUI> createHeaderUI = DefaultHeaderUI::new;
 
 	/**

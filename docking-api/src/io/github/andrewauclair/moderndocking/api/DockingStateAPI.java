@@ -85,6 +85,13 @@ public class DockingStateAPI {
         this.docking = docking;
     }
 
+    /**
+     * Get the current window layout of a window
+     *
+     * @param window The window to get a layout for
+     *
+     * @return The window layout
+     */
     public WindowLayout getWindowLayout(Window window) {
         InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(docking, window);
 
@@ -234,6 +241,12 @@ public class DockingStateAPI {
         }
     }
 
+    /**
+     * Restore the layout of a single window, preserving the current size and position of the window
+     *
+     * @param window Window to restore the layout onto
+     * @param layout The layout to restore
+     */
     public void restoreWindowLayout_PreserveSizeAndPos(Window window, WindowLayout layout) {
         Point location = window.getLocation();
         Dimension size = window.getSize();

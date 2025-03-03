@@ -42,9 +42,18 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.JSplitPane;
 
+/**
+ * Manage storage, persistence and restoration of application layouts
+ */
 public class DockingLayouts {
 	private static final List<DockingLayoutListener> listeners = new ArrayList<>();
 	private static final Map<String, ApplicationLayout> layouts = new HashMap<>();
+
+	/**
+	 * Unused. All methods are static
+	 */
+	private DockingLayouts() {
+	}
 
 	/**
 	 * Add a new layouts listener
@@ -64,6 +73,12 @@ public class DockingLayouts {
 		listeners.remove(listener);
 	}
 
+	/**
+	 * Store a new layout with the given name
+	 *
+	 * @param name The name of the layout
+	 * @param layout The layout to store
+	 */
 	public static void addLayout(String name, ApplicationLayout layout) {
 		removeLayout(name);
 		layouts.put(name, layout);
@@ -90,6 +105,7 @@ public class DockingLayouts {
 	 * Lookup a layout by name
 	 *
 	 * @param name Name of the layout to find
+	 *
 	 * @return The layout, or null if it is not found
 	 */
 	public static ApplicationLayout getLayout(String name) {

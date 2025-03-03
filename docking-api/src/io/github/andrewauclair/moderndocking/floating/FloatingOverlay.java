@@ -111,6 +111,14 @@ public class FloatingOverlay {
         this.size = size;
     }
 
+    /**
+     * Update the overlay for a new target dockable
+     *
+     * @param targetDockable The new target dockable
+     * @param floatingDockable The dockable being floated
+     * @param mousePosOnScreen The position of the mouse on screen
+     * @param region The region of the dockable the overlay is over
+     */
     public void updateForDockable(Dockable targetDockable, Dockable floatingDockable, Point mousePosOnScreen, DockingRegion region) {
         setVisible(true);
 
@@ -211,6 +219,15 @@ public class FloatingOverlay {
         this.visible = visible;
     }
 
+    /**
+     * Check which region the overlay is over
+     *
+     * @param targetDockable The target dockable
+     * @param floatingDockable The dockable that is being floated
+     * @param mousePosOnScreen The mouse position on screen
+     *
+     * @return The region the overlay is over, or null
+     */
     public DockingRegion getRegion(Dockable targetDockable, Dockable floatingDockable, Point mousePosOnScreen) {
         JComponent component = DockingInternal.get(docking).getWrapper(targetDockable).getDisplayPanel();
 
@@ -247,10 +264,19 @@ public class FloatingOverlay {
         return DockingRegion.CENTER;
     }
 
+    /**
+     * Is the mouse currently over a tab? Renders a different overlay
+     * @return Over tab
+     */
     public boolean isOverTab() {
         return targetTab != null;
     }
 
+    /**
+     * Paint the overlay
+     *
+     * @param g Graphics instance
+     */
     public void paint(Graphics g) {
         if (!visible) {
             return;
@@ -277,6 +303,11 @@ public class FloatingOverlay {
         return dockable.getStyle() == DockableStyle.VERTICAL;
     }
 
+    /**
+     * Check if this overlay is visible
+     *
+     * @return Is visible
+     */
     public boolean isVisible() {
         return visible;
     }

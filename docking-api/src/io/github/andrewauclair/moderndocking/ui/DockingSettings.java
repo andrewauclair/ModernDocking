@@ -24,6 +24,9 @@ package io.github.andrewauclair.moderndocking.ui;
 import java.awt.Color;
 import javax.swing.UIManager;
 
+/**
+ * Settings for theme related configuration items
+ */
 public class DockingSettings {
     /*
      * colors:
@@ -76,6 +79,17 @@ public class DockingSettings {
     private static String currentHeaderBackground = themeHeaderBackground;
     private static String currentHeaderForeground = themeHeaderForeground;
 
+    /**
+     * Unused. All methods are static
+     */
+    private DockingSettings() {
+    }
+
+    /**
+     * Set a new property to use for the background color on Docking Handles
+     *
+     * @param property The new background property name
+     */
     public static void setHandleBackgroundProperty(String property) {
         currentHandleBackground = property;
     }
@@ -91,9 +105,15 @@ public class DockingSettings {
         return defaultHandleBackground;
     }
 
+    /**
+     * Set a new property to use for the foreground color on Docking Handles
+     *
+     * @param property The new foreground property name
+     */
     public static void setHandleForegroundProperty(String property) {
         currentHandleForeground = property;
     }
+
     public static Color getHandleForeground() {
         if (UIManager.get(handleForeground) != null) {
             return UIManager.getColor(handleForeground);
@@ -104,6 +124,11 @@ public class DockingSettings {
         return defaultHandleForeground;
     }
 
+    /**
+     * Set a new property to use for the background color of the floating overlay display
+     *
+     * @param property The new background color property
+     */
     public static void setOverlayBackgroundProperty(String property) {
         currentOverlayBackground = property;
     }
@@ -118,6 +143,11 @@ public class DockingSettings {
         return defaultOverlayBackground;
     }
 
+    /**
+     * Set a new property to use for the border color used by the active dockable highlighter
+     *
+     * @param property The new selected border color property
+     */
     public static void setHighlighterSelectedBorderProperty(String property) {
         currentHighlightSelectedBorder = property;
     }
@@ -146,6 +176,11 @@ public class DockingSettings {
         return defaultHighlightColor;
     }
 
+    /**
+     * Set a new property to use for the default background color of docking headers
+     *
+     * @param property The new background color property
+     */
     public static void setHeaderBackgroundProperty(String property) {
         currentHeaderBackground = property;
     }
@@ -160,6 +195,11 @@ public class DockingSettings {
         return defaultHeaderBackground;
     }
 
+    /**
+     * Set a new property to use for the default foreground color of docking headers
+     *
+     * @param property The new foreground color property
+     */
     public static void setHeaderForegroundProperty(String property) {
         currentHeaderForeground = property;
     }

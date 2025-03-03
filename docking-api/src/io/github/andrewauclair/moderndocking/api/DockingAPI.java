@@ -99,6 +99,11 @@ public class DockingAPI {
         return layoutPersistence;
     }
 
+    /**
+     * Create a new instance of the DockingAPI. Applications will use the single-app or multi-app Docking class
+     *
+     * @param mainWindow The main window for this docking instance
+     */
     protected DockingAPI(Window mainWindow) {
         this.mainWindow = mainWindow;
 

@@ -30,6 +30,17 @@ import javax.swing.plaf.basic.BasicComboBoxUI;
  * An unused (yet) UI for custom dropdowns
  */
 public class DropdownUI extends BasicComboBoxUI {
+	/**
+	 * Unused
+	 */
+	public DropdownUI() {
+	}
+
+	/**
+	 * Unused
+	 *
+	 * @return Arrow button
+	 */
 	@Override
 	protected JButton createArrowButton() {
 		JButton button = super.createArrowButton();

@@ -38,6 +38,12 @@ import javax.swing.SwingUtilities;
  * set of internal utilities for dealing with the component hierarchy of dockables
  */
 public class DockingComponentUtils {
+	/**
+	 * Not used. All methods in this class are static
+	 */
+	private DockingComponentUtils() {
+	}
+
 	//
 	//
 	/**
@@ -97,6 +103,7 @@ public class DockingComponentUtils {
 	}
 
 	/**
+	 * Find the window that a dockable is docked to
 	 *
 	 * @param docking The docking instance
 	 * @param dockable The dockable to find a window for.
@@ -187,6 +194,14 @@ public class DockingComponentUtils {
 		return ((DisplayPanel) component).getWrapper().getDockable();
 	}
 
+	/**
+	 * Find an instance of our CustomTabbedPane at the position in the window
+	 *
+	 * @param screenPos The screen position on the window to check
+	 * @param window The window to check
+	 *
+	 * @return Instance of CustomTabbedPane that was found or null
+	 */
 	public static CustomTabbedPane findTabbedPaneAtPos(Point screenPos, Window window) {
 		// window is null so there's no dockable to find
 		if (window == null) {

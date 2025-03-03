@@ -92,6 +92,11 @@ public class DockableHandles {
         setDockableHandleLocations();
     }
 
+    /**
+     * The mouse has moved. Update all the handles for mouse over events
+     *
+     * @param mousePosOnScreen The new mouse position on screen
+     */
     public void mouseMoved(Point mousePosOnScreen) {
         Point framePoint = new Point(mousePosOnScreen);
         SwingUtilities.convertPointFromScreen(framePoint, frame);
@@ -181,6 +186,11 @@ public class DockableHandles {
         return dockable.getStyle() == DockableStyle.VERTICAL;
     }
 
+    /**
+     * Paint the handles
+     *
+     * @param g2 The graphics instance
+     */
     public void paint(Graphics2D g2) {
         int centerX = dockableCenter.getX() + (dockableCenter.getWidth() / 2);
         int centerY = dockableCenter.getY() + (dockableCenter.getWidth() / 2);
@@ -255,6 +265,11 @@ public class DockableHandles {
         return handle.getWidth() + 8;
     }
 
+    /**
+     * Find the region of the docking handle the mouse is over
+     *
+     * @return Region the mouse is over or null
+     */
     public DockingRegion getRegion() {
         if (dockableCenter.isMouseOver()) {
             return DockingRegion.CENTER;

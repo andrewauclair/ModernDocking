@@ -21,25 +21,50 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking;
 
+/**
+ * Parameters passed to the constructor of a dynamic dockable
+ */
 public class DynamicDockableParameters {
     private final String persistentID;
     private final String tabText;
     private final String titleText;
 
+    /**
+     * Create a new instance
+     *
+     * @param persistentID Persistent ID of the dynamic dockable
+     * @param tabText Tab text of the dynamic dockable
+     * @param titleText Title text of the dynamic dockable
+     */
     public DynamicDockableParameters(String persistentID, String tabText, String titleText) {
         this.persistentID = persistentID;
         this.tabText = tabText;
         this.titleText = titleText;
     }
 
+    /**
+     * The persistent ID of the dynamic dockable under construction
+     *
+     * @return Persistent ID
+     */
     public String getPersistentID() {
         return persistentID;
     }
 
+    /**
+     * Get the tab text of the dynamic dockable under construction
+     *
+     * @return Tab text
+     */
     public String getTabText() {
         return tabText;
     }
 
+    /**
+     * Get the title text of the dynamic dockable under construction
+     *
+     * @return Title text
+     */
     public String getTitleText() {
         return titleText;
     }

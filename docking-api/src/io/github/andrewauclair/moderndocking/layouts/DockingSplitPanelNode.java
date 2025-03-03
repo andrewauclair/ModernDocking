@@ -43,10 +43,12 @@ package io.github.andrewauclair.moderndocking.layouts;
 	 /**
 	  * Create a new DockingSplitPanelNode for a layout
 	  *
+	  * @param docking The docking instance this node belongs to
 	  * @param left The left component of the split
 	  * @param right The right component of the split
 	  * @param orientation The orientation of the split
 	  * @param dividerProportion The divider proportion of the split
+	  * @param anchor The anchor associated with this node
 	  */
 	public DockingSplitPanelNode(DockingAPI docking, DockingLayoutNode left, DockingLayoutNode right, int orientation, double dividerProportion, String anchor) {
 		this.docking = docking;

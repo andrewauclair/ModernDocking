@@ -40,6 +40,12 @@ public class DockingListeners {
 	private static final List<NewFloatingFrameListener> newFloatingFrameListeners = new ArrayList<>();
 
 	/**
+	 * Unused. All methods are static
+	 */
+	private DockingListeners() {
+	}
+
+	/**
 	 * Add a new maximize listener. Will be called when a dockable is maximized
 	 *
 	 * @param listener Listener to add
@@ -89,10 +95,20 @@ public class DockingListeners {
 		dockingListeners.remove(listener);
 	}
 
+	/**
+	 * Add a new floating frame listener
+	 *
+	 * @param listener Listener to add
+	 */
 	public static void addNewFloatingFrameListener(NewFloatingFrameListener listener) {
 		newFloatingFrameListeners.add(listener);
 	}
 
+	/**
+	 * Remove a floating frame listener
+	 *
+	 * @param listener Listener to remove
+	 */
 	public static void removeNewFloatingFrameListener(NewFloatingFrameListener listener) {
 		newFloatingFrameListeners.remove(listener);
 	}
@@ -159,6 +175,11 @@ public class DockingListeners {
 		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.HIDDEN, dockable)));
 	}
 
+	/**
+	 * Fire a new docking event
+	 *
+	 * @param e Docking event to fire
+	 */
 	public static void fireDockingEvent(DockingEvent e) {
 		dockingListeners.forEach(listener -> listener.dockingChange(e));
 	}

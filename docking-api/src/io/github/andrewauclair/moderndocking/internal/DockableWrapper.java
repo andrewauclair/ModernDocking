@@ -63,6 +63,7 @@ public class DockableWrapper {
 	 *
 	 * @param docking The docking instance
 	 * @param dockable Dockable to contain in this wrapper
+	 * @param isAnchor Is this wrapper an anchor instead of a dockable
 	 */
 	public DockableWrapper(DockingAPI docking, Dockable dockable, boolean isAnchor) {
 		this.docking = docking;

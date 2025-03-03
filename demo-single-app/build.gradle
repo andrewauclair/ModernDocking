@@ -44,3 +44,5 @@ jar {
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
+
+tasks.withType(Javadoc).all { enabled = false } // don't generate javadocs for the demo projects

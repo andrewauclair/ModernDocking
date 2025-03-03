@@ -27,6 +27,9 @@ import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Layout node representing a docking anchor for Window and Application layouts
+ */
 public class DockingAnchorPanelNode implements DockingLayoutNode {
     private final DockingAPI docking;
     private final String persistentID;
@@ -40,6 +43,7 @@ public class DockingAnchorPanelNode implements DockingLayoutNode {
      *
      * @param docking The docking instance
      * @param persistentID The persistent ID of the anchor
+     * @param className The name of the anchor class to instantiate, if dockable is not found
      */
     public DockingAnchorPanelNode(DockingAPI docking, String persistentID, String className) {
         this.docking = docking;
@@ -78,6 +82,11 @@ public class DockingAnchorPanelNode implements DockingLayoutNode {
         return persistentID;
     }
 
+    /**
+     * Get the class name of the anchor
+     *
+     * @return Name of the class
+     */
     public String getClassName() {
         return className;
     }

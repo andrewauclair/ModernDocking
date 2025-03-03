@@ -26,12 +26,32 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Java annotation used to indicate a field is a docking property and should be saved and restored when saving and loading layout files
+ */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
+@Target({ElementType.FIELD})
 public @interface DockingProperty {
+    /**
+     * The name of the property. Used for saving to layout files
+     *
+     * @return Name of the property
+     */
     String name();
 
+    /**
+     * Indicate that this property is required to properly initialize a dockable
+     *
+     * NOTE: Currently unused
+     *
+     * @return Is this property required when initializing dockables
+     */
     boolean required() default false;
 
+    /**
+     * The default value of the property
+     *
+     * @return Default value
+     */
     String defaultValue() default "__no_default_value__";
 }

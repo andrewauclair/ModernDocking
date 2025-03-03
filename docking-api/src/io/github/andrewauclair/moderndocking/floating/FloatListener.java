@@ -47,6 +47,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+/**
+ * Base class for float listeners. Listen for drags that might be dockable floating events
+ */
 public abstract class FloatListener extends DragSourceAdapter implements DragSourceMotionListener, DragSourceListener {
 	private final DockingAPI docking;
 	private final JPanel panel;
@@ -65,14 +68,34 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 	private FloatUtilsFrame currentUtilFrame;
 	private DragGestureRecognizer alternateDragGesture;
 
+	/**
+	 * Create a new listener for a specific panel
+	 *
+	 * @param docking The docking instance
+	 * @param panel The panel to listen for drags on
+	 */
 	public FloatListener(DockingAPI docking, DisplayPanel panel) {
 		this(docking, panel, (JComponent) panel.getWrapper().getHeaderUI());
 	}
 
+	/**
+	 * Create a new listener for a specific panel
+	 *
+	 * @param docking The docking instance
+	 * @param panel The panel to listen for drags on
+	 * @param dragComponent The component to add the drag listeners to
+	 */
 	public FloatListener(DockingAPI docking, DisplayPanel panel, JComponent dragComponent) {
 		this(docking, (JPanel) panel, dragComponent);
 	}
 
+	/**
+	 * Create a new listener for a tabbed panel
+	 *
+	 * @param docking The docking instance
+	 * @param tabs The tabbed panel to listen for drags on
+	 * @param dragComponent The component to add drag listeners to
+	 */
 	public FloatListener(DockingAPI docking, DockedTabbedPanel tabs, JComponent dragComponent) {
 		this(docking, (JPanel) tabs, dragComponent);
 	}
@@ -101,6 +124,12 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 		return panel;
 	}
 
+	/**
+	 * Check if this listener is interested in the drag
+	 *
+	 * @param dragGestureEvent The drag event that is in progress
+	 * @return True if this listener wishes to handle the drag
+	 */
 	protected abstract boolean allowDrag(DragGestureEvent dragGestureEvent);
 
 	public void startDrag(DragGestureEvent dragGestureEvent) {
@@ -232,10 +261,23 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 		floatingFrame = null;
 	}
 
+	/**
+	 * Get the original window that the dockable started in at the start of this floating event
+	 *
+	 * @return The original window of the dockable
+	 */
 	protected abstract Window getOriginalWindow();
 
+	/**
+	 * Undock the dockable now that a drag has started
+	 */
 	protected abstract void undock();
 
+	/**
+	 * Create a new floating frame to contain a dockable
+	 *
+	 * @return The new frame
+	 */
 	protected abstract JFrame createFloatingFrame();
 
 	/**

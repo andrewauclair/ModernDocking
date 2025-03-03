@@ -46,6 +46,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+/**
+ * A special invisible frame that's used to provide docking handles and overlays
+ */
 public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener, ComponentListener {
     private final Window referenceDockingWindow;
     private final InternalRootDockingPanel root;

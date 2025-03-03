@@ -125,6 +125,9 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		settingsMenu.show(settings, settings.getWidth(), settings.getHeight());
 	}
 
+	/**
+	 * Initialize the header UI components
+	 */
 	protected void init() {
 		if (initialized) {
 			return;
@@ -194,6 +197,9 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		}
 	}
 
+	/**
+	 * Configure the background and foreground colors of the header
+	 */
 	protected void configureColors() {
 		Color color = DockingSettings.getHeaderBackground();
 		setBackground(color);

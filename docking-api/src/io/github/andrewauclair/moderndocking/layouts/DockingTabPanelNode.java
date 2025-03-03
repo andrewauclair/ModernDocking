@@ -46,7 +46,10 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	/**
 	 * Create a new tab panel node with a single dockable to start
 	 *
+	 * @param docking The docking instance this node belongs to
 	 * @param selectedTabID Persistent ID of first dockable
+	 * @param selectedTabClassName The name of the class for the selected tab, used to create the dockable if not found
+	 * @param anchor The anchor associated with this node
 	 */
 	public DockingTabPanelNode(DockingAPI docking, String selectedTabID, String selectedTabClassName, String anchor) {
 		this.docking = docking;
@@ -57,7 +60,10 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	/**
 	 * Create a new tab panel node with a single dockable to start
 	 *
+	 * @param docking The docking instance this node belongs to
 	 * @param selectedTabID Persistent ID of first dockable
+	 * @param anchor The anchor associated with this node
+	 * @param selectedTabClassName The name of the class for the selected tab, used to create the dockable if not found
 	 * @param properties Properties of the dockable
 	 */
 	public DockingTabPanelNode(DockingAPI docking, String selectedTabID, String selectedTabClassName, String anchor, Map<String, Property> properties) {
@@ -70,6 +76,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 * Add a new dockable to the tab panel
 	 *
 	 * @param persistentID Dockable persistent ID to add
+	 * @param className The name of the class for this dockable
 	 */
 	public void addTab(String persistentID, String className) {
 		if (findNode(persistentID) != null) {
@@ -105,6 +112,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 * Add a new dockable to the tab panel
 	 *
 	 * @param persistentID Dockable persistent ID to add
+	 * @param className The name of the class for this dockable
 	 * @param properties Properties of the dockable
 	 */
 	public void addTab(String persistentID, String className, Map<String, Property> properties) {
@@ -137,6 +145,12 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 		tabs.add(tab);
 	}
 
+	/**
+	 * Set the properties that belong to a tab in this node
+	 *
+	 * @param persistentID The persistent ID of the dockable tab we're setting properties for
+	 * @param properties The properties of the dockable
+	 */
 	public void setProperties(String persistentID, Map<String, Property> properties) {
 		Optional<DockingSimplePanelNode> first = tabs.stream()
 				.filter(dockingSimplePanelNode -> dockingSimplePanelNode.getPersistentID().equals(persistentID))

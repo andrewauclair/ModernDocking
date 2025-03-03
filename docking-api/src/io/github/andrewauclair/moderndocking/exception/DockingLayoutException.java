@@ -27,8 +27,17 @@ import java.io.File;
  * Exception wrapper for exceptions encountered while dealing loading or saving docking layouts
  */
 public class DockingLayoutException extends Exception {
+    /**
+     * The type of failure for the exception
+     */
     public enum FailureType {
+        /**
+         * A docking layout has failed to load from a file
+         */
         LOAD,
+        /**
+         * A docking layout has failed to save to a file
+         */
         SAVE
     }
     private final File file;

@@ -25,13 +25,31 @@ import io.github.andrewauclair.moderndocking.Dockable;
 
 public class DockingEvent {
     public enum ID {
+        /**
+         * Dockable has been docked
+         */
         DOCKED,
+        /**
+         * Dockable has been undocked
+         */
         UNDOCKED,
 
+        /**
+         * Dockable has been shown
+         */
         SHOWN,
+        /**
+         * Dockable has been hidden
+         */
         HIDDEN,
 
+        /**
+         * Dockable has been assigned to an Auto Hide toolbar
+         */
         AUTO_HIDE_ENABLED,
+        /**
+         * Dockable has been removed from an Auto Hide toolbar
+         */
         AUTO_HIDE_DISABLED
     }
 

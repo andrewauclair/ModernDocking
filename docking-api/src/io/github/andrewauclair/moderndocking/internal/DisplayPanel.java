@@ -92,6 +92,9 @@ public class DisplayPanel extends JPanel {
 		return wrapper;
 	}
 
+	/**
+	 * The parent for this display panel has changed and the panel needs to be updated for the new parent
+	 */
 	public void parentChanged() {
 		buildUI();
 	}

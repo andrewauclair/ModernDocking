@@ -31,6 +31,12 @@ import javax.swing.JPanel;
  */
 public abstract class DockingPanel extends JPanel {
 	/**
+	 * Create a new docking panel. Nothing to initialize
+	 */
+	public DockingPanel() {
+	}
+
+	/**
 	 * Retrieve the anchor that is associated with this dockable
 	 *
 	 * @return The anchor for this dockable

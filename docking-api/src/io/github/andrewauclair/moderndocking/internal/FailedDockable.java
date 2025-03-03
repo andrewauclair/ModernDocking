@@ -40,6 +40,7 @@ public class FailedDockable extends JPanel implements Dockable {
 	/**
 	 * Create a new FailedDockable
 	 *
+	 * @param docking The docking instance this failed dockable belongs to
 	 * @param persistentID Persistent ID that has failed to load
 	 */
 	public FailedDockable(DockingAPI docking, String persistentID) {

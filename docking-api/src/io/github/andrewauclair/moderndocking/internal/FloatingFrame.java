@@ -33,10 +33,18 @@ import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.SwingUtilities;
 
+/**
+ * This class is used when a floating dockable is dropped outside any existing frames
+ */
 public class FloatingFrame extends JFrame {
 	private final DockingAPI docking;
 	private RootDockingPanelAPI root;
 
+	/**
+	 * Create a new floating frame
+	 *
+	 * @param docking The docking instance this frame belongs to
+	 */
 	public FloatingFrame(DockingAPI docking) {
 		this.docking = docking;
 		setLayout(new BorderLayout());
@@ -57,6 +65,14 @@ public class FloatingFrame extends JFrame {
 		pack();
 	}
 
+	/**
+	 * Create a new floating frame with size, location, and state
+	 *
+	 * @param docking The docking instance this frame belongs to
+	 * @param location The location of the frame
+	 * @param size The size of the frame
+	 * @param state The state of the frame
+	 */
 	public FloatingFrame(DockingAPI docking, Point location, Dimension size, int state) {
 		this.docking = docking;
 		setLocation(location);
@@ -77,10 +93,17 @@ public class FloatingFrame extends JFrame {
 		docking.configureAutoHide(this, JLayeredPane.MODAL_LAYER, true);
 
 		setVisible(true);
-
 	}
 
-	// create a new floating frame. this is used when calling Docking.newWindow or when restoring the layout from a file
+	/**
+	 * Create a new floating frame. this is used when calling Docking.newWindow or when restoring the layout from a file
+	 *
+	 * @param docking The docking instance this window belongs to
+	 * @param dockable The dockable the window will contain
+	 * @param mousePosOnScreen The position of the mouse on screen
+	 * @param size The size of the window
+	 * @param state The state of the window
+	 */
 	public FloatingFrame(DockingAPI docking, Dockable dockable, Point mousePosOnScreen, Dimension size, int state) {
 		this.docking = docking;
 
@@ -115,7 +138,13 @@ public class FloatingFrame extends JFrame {
 		finalizeSize(dockable, location, size);
 	}
 
-	// create a floating frame from a temporary frame as a result of docking
+	/**
+	 * Create a floating frame from a temporary frame as a result of docking
+	 *
+	 * @param docking The docking instance this window belongs to
+	 * @param dockable The dockable the window will contain
+	 * @param floatingFrame The floating frame to set the frame size and location from
+	 */
 	public FloatingFrame(DockingAPI docking, Dockable dockable, TempFloatingFrame floatingFrame) {
 		this.docking = docking;
 		setLayout(new BorderLayout());
@@ -174,6 +203,11 @@ public class FloatingFrame extends JFrame {
 		});
 	}
 
+	/**
+	 * Get the root panel
+	 *
+	 * @return Root of the floating frame
+	 */
 	public RootDockingPanelAPI getRoot() {
 		return root;
 	}

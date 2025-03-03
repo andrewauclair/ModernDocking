@@ -146,6 +146,11 @@ public class DefaultDockingPanel extends JPanel implements Dockable, DockingList
         return limitedToWindow;
     }
 
+    /**
+     * Set the limited to window flag
+     *
+     * @param limitToWindow New flag value
+     */
     public void setLimitedToWindow(boolean limitToWindow) {
         this.limitedToWindow = limitToWindow;
     }

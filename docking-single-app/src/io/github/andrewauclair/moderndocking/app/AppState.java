@@ -123,14 +123,35 @@ public class AppState {
         instance.setDefaultApplicationLayout(layout);
     }
 
+    /**
+     * Get the property for a dockable by name
+     *
+     * @param dockable The dockable to get a property for
+     * @param propertyName The property to search for
+     *
+     * @return The property instance of the dockable, or null if not found
+     */
     public static Property getProperty(Dockable dockable, String propertyName) {
         return instance.getProperty(dockable, propertyName);
     }
 
+    /**
+     * Set the value of a property on the dockable. If the property does not exist, it will be created
+     *
+     * @param dockable The dockable to set a property for
+     * @param propertyName The name of the property we're setting
+     * @param value The value of the property
+     */
     public static void setProperty(Dockable dockable, String propertyName, String value) {
         instance.setProperty(dockable, propertyName, new Property.StringProperty(propertyName, value));
     }
 
+    /**
+     * Remove the property from the dockable
+     *
+     * @param dockable The dockable to remove the property from
+     * @param propertyName The property to remove
+     */
     public static void removeProperty(Dockable dockable, String propertyName) {
         instance.removeProperty(dockable, propertyName);
     }

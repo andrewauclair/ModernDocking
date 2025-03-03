@@ -45,7 +45,10 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 	/**
 	 * Create a new DockingSimplePanelNode with just a persistent ID
 	 *
+	 * @param docking The docking instance for this node
 	 * @param persistentID The persistent ID of the contained dockable
+	 * @param className The name of the dockable class to instantiate, if dockable is not found
+	 * @param anchor The anchor associated with this node
 	 */
 	public DockingSimplePanelNode(DockingAPI docking, String persistentID, String className, String anchor) {
 		this.docking = docking;
@@ -57,7 +60,10 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 	/**
 	 * Create a new DockingSimplePanelNode with properties
 	 *
+	 * @param docking The docking instance for this node
 	 * @param persistentID The persistent ID of the contained dockable
+	 * @param className The name of the dockable class to instantiate, if dockable is not found
+	 * @param anchor The anchor associated with this node
 	 * @param properties Properties of the dockable
 	 */
 	public DockingSimplePanelNode(DockingAPI docking, String persistentID, String className, String anchor, Map<String, Property> properties) {

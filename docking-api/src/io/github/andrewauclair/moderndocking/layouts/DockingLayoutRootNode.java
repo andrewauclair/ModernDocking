@@ -33,6 +33,11 @@ public class DockingLayoutRootNode implements DockingLayoutNode {
     private final DockingAPI docking;
     private DockingLayoutNode node;
 
+    /**
+     * Create a new instance for the docking instance
+     *
+     * @param docking Docking instance this root node is tied to
+     */
     public DockingLayoutRootNode(DockingAPI docking) {
         this.docking = docking;
     }
@@ -76,6 +81,10 @@ public class DockingLayoutRootNode implements DockingLayoutNode {
     public void setParent(DockingLayoutNode parent) {
     }
 
+    /**
+     * Get the first node in the hierarchy
+     * @return The primary node. This will be null if the root is empty
+     */
     public DockingLayoutNode getNode() {
         return node;
     }

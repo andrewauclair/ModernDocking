@@ -35,6 +35,13 @@ public class DockingState {
     private DockingState() {
     }
 
+    /**
+     * Get the current window layout of a window
+     *
+     * @param window The window to get a layout for
+     *
+     * @return The window layout
+     */
     public static WindowLayout getWindowLayout(Window window) {
         return instance.getWindowLayout(window);
     }

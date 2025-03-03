@@ -41,6 +41,9 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+/**
+ * Floating listener used for floating individual panels
+ */
 public class DisplayPanelFloatListener extends FloatListener {
     private final DockingAPI docking;
     private final DisplayPanel panel;

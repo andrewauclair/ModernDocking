@@ -35,6 +35,12 @@ import java.util.stream.Collectors;
 public class DockableProperties {
     private static boolean loadingLegacyFile = false;
 
+    /**
+     * Unused. All methods are static
+     */
+    private DockableProperties() {
+    }
+
     public static void setLoadingLegacyFile(boolean legacy) {
         loadingLegacyFile = legacy;
     }

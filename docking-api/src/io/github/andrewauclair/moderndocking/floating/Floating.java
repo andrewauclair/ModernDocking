@@ -28,31 +28,79 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.SwingUtilities;
 
+/**
+ * Small utility class for floating feature
+ */
 public class Floating {
     private static final Map<Window, FloatUtilsFrame> utilFrames = new HashMap<>();
     private static boolean isFloating = false;
     private static boolean isFloatingTabbedPane = false;
 
+    /**
+     * Unused. All methods are static
+     */
+    private Floating() {
+    }
+
+    /**
+     * Register a new docking window and create a utility frame for it
+     *
+     * @param docking The docking instance this window is for
+     * @param window The window being registered
+     * @param root The internal root in the window
+     */
     public static void registerDockingWindow(DockingAPI docking, Window window, InternalRootDockingPanel root) {
         SwingUtilities.invokeLater(() -> utilFrames.put(window, new FloatUtilsFrame(docking, window, root)));
     }
 
+    /**
+     * Deregister a window. Used when a window is closed
+     *
+     * @param window The window to deregister
+     */
     public static void deregisterDockingWindow(Window window) {
         utilFrames.remove(window);
     }
 
+    /**
+     * Lookup the utility frame for a window
+     *
+     * @param window The window to search for
+     *
+     * @return Utility frame or null
+     */
     public static FloatUtilsFrame frameForWindow(Window window) {
         return utilFrames.get(window);
     }
 
+    /**
+     * Check if we have a dockable actively floating
+     *
+     * @return Are we floating a dockable?
+     */
     public static boolean isFloating() { return isFloating; }
 
+    /**
+     * Set the floating state
+     *
+     * @param floating New floating state
+     */
     public static void setFloating(boolean floating) {
         isFloating = floating;
     }
 
+    /**
+     * Check if we're floating a tabbed pane instead of a simple panel
+     *
+     * @return Are we floating a tabbed pane?
+     */
     public static boolean isFloatingTabbedPane() { return isFloatingTabbedPane; }
 
+    /**
+     * Set the floating tabbed pane flag
+     *
+     * @param floating New floating tabbed pane state
+     */
     public static void setFloatingTabbedPane(boolean floating) {
         isFloatingTabbedPane = floating;
     }
