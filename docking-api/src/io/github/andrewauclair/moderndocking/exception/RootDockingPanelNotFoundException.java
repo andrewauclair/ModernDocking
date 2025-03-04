@@ -23,6 +23,9 @@ package io.github.andrewauclair.moderndocking.exception;
 
 import java.awt.Window;
 
+/**
+ * Exception thrown when a RootDockingPanel is not found for the given window
+ */
 public class RootDockingPanelNotFoundException extends RuntimeException {
     private final Window window;
 

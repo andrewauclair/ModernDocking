@@ -112,10 +112,23 @@ public class DockingLayouts {
 		return layouts.get(name);
 	}
 
+	/**
+	 * Get a list of names of all layouts
+	 *
+	 * @return List of layout names
+	 */
 	public static List<String> getLayoutNames() {
 		return new ArrayList<>(layouts.keySet());
 	}
 
+	/**
+	 * Create a layout from an existing window
+	 *
+	 * @param docking Docking instance
+	 * @param root The root of the window to get the layout for
+	 *
+	 * @return Layout of the window
+	 */
 	public static WindowLayout layoutFromRoot(DockingAPI docking, RootDockingPanelAPI root) {
 		InternalRootDockingPanel internalRoot = DockingInternal.get(docking).getRootPanels().entrySet().stream()
 				.filter(entry -> entry.getValue().getRootPanel() == root)

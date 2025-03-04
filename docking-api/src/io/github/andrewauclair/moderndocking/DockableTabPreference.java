@@ -21,12 +21,30 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking;
 
+/**
+ * Specify the tab preference of dockables and applications
+ */
 public enum DockableTabPreference {
+    /**
+     * Dockable has no tab preference
+     */
     NONE,
+    /**
+     * Dockable prefers tabs on the bottom
+     */
     BOTTOM,
+    /**
+     * Dockable prefers tabs on the top
+     */
     TOP,
 
     // use these options with Settings.setDefaultTabPreference to force tabs to always display, even with a single dockable
+    /**
+     * Application wants tabs always on the top
+     */
     BOTTOM_ALWAYS,
+    /**
+     * Application wants tabs always on the bottom
+     */
     TOP_ALWAYS
 }

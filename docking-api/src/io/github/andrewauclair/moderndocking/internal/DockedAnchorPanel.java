@@ -103,6 +103,11 @@ public class DockedAnchorPanel extends DockingPanel {
         return Collections.emptyList();
     }
 
+    /**
+     * Get the wrapper for the anchor
+     *
+     * @return Dockable wrapper for this anchor
+     */
     public DockableWrapper getWrapper() {
         return anchor;
     }

@@ -27,6 +27,9 @@ import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
  * Event used when the application layout has changed
  */
 public class DockingLayoutEvent {
+    /**
+     * The ID of the layout event
+     */
     public enum ID {
         /**
          * Layout has been added
@@ -50,20 +53,42 @@ public class DockingLayoutEvent {
     private final String layoutName;
     private final ApplicationLayout layout;
 
+    /**
+     * Create a new docking layout event
+     *
+     * @param id ID of event that has occurred
+     * @param layoutName The name of the layout changed
+     * @param layout The application layout that changed
+     */
     public DockingLayoutEvent(ID id, String layoutName, ApplicationLayout layout) {
         this.id = id;
         this.layoutName = layoutName;
         this.layout = layout;
     }
 
+    /**
+     * The ID of this event
+     *
+     * @return Event ID
+     */
     public ID getID() {
         return id;
     }
 
+    /**
+     * The name of the layout in this event
+     *
+     * @return Layout name
+     */
     public String getLayoutName() {
         return layoutName;
     }
 
+    /**
+     * The application layout in this event
+     *
+     * @return Application layout
+     */
     public ApplicationLayout getLayout() {
         return layout;
     }

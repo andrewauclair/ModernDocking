@@ -43,6 +43,7 @@ public class WindowLayoutBuilderAPI {
 	/**
 	 * Start building a new layout
 	 *
+	 * @param docking The docking instance we're building a layout for
 	 * @param firstID First dockable ID in the layout
 	 */
 	protected WindowLayoutBuilderAPI(DockingAPI docking, String firstID) {
@@ -93,10 +94,26 @@ public class WindowLayoutBuilderAPI {
 		return this;
 	}
 
+	/**
+	 * Dock a dockable to the root in this layout builder
+	 *
+	 * @param persistentID Persistent ID of the dockable
+	 * @param region The region to dock into
+	 *
+	 * @return This WindowLayoutBuilderAPI instance
+	 */
 	public WindowLayoutBuilderAPI dockToRoot(String persistentID, DockingRegion region) {
 		return dockToRoot(persistentID, region, 0.25);
 	}
 
+	/**
+	 * Dock a dockable to the root in this layout builder
+	 * @param persistentID Persistent ID of the dockable
+	 * @param region The region to dock into
+	 * @param dividerProportion The divider proportion to use
+	 *
+	 * @return This WindowLayoutBuilderAPI instance
+	 */
 	public WindowLayoutBuilderAPI dockToRoot(String persistentID, DockingRegion region, double dividerProportion) {
 		if (exists(persistentID)) {
 			throw new RuntimeException("Dockable already in layout: " + persistentID);
@@ -106,6 +123,13 @@ public class WindowLayoutBuilderAPI {
 		return this;
 	}
 
+	/**
+	 * Bring a dockable to the front in this builder
+	 *
+	 * @param persistentID The dockable to bring to front
+	 *
+	 * @return This WindowLayoutBuilderAPI instance
+	 */
 	public WindowLayoutBuilderAPI display(String persistentID) {
 		DockingLayoutNode node = findNode(persistentID);
 
@@ -186,6 +210,15 @@ public class WindowLayoutBuilderAPI {
 		return this;
 	}
 
+	/**
+	 * Set a property for the dockable
+	 *
+	 * @param persistentID The dockable persistent ID
+	 * @param property The name of the property to set
+	 * @param value The value of the property
+	 *
+	 * @return This WindowLayoutBuilderAPI instance
+	 */
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, boolean value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
@@ -230,11 +263,22 @@ public class WindowLayoutBuilderAPI {
 		return new WindowLayout(rootNode.getNode());
 	}
 
-	// shortcut for building an ApplicationLayout from this builder's WindowLayout
+	/**
+	 * Shortcut for building an ApplicationLayout from this builder's WindowLayout
+	 *
+	 * @return Application layout
+	 */
 	public ApplicationLayout buildApplicationLayout() {
 		return new ApplicationLayout(build());
 	}
 
+	/**
+	 * Find the node for a dockable
+	 *
+	 * @param persistentID Persistent ID of the dockabe to find
+	 *
+	 * @return Dockable layout node or null if not found
+	 */
 	public DockingLayoutNode findNode(String persistentID) {
 		DockingLayoutNode node = rootNode.findNode(persistentID);
 

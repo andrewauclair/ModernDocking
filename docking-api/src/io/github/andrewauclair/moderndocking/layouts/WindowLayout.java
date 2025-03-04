@@ -130,6 +130,11 @@ public class WindowLayout {
 		return location;
 	}
 
+	/**
+	 * Set the location of the window
+	 *
+	 * @param location New location of the window
+	 */
 	public void setLocation(Point location) {
 		this.location = location;
 	}
@@ -143,22 +148,47 @@ public class WindowLayout {
 		return size;
 	}
 
+	/**
+	 * Set the size of the window
+	 *
+	 * @param size New size for window
+	 */
 	public void setSize(Dimension size) {
 		this.size = size;
 	}
 
+	/**
+	 * Get state of window (ICONIFIED, MAXIMIZED, NORMAL)
+	 *
+	 * @return State of window
+	 */
 	public int getState() {
 		return state;
 	}
 
+	/**
+	 * Current modality type of the window
+	 *
+	 * @return Modality type
+	 */
 	public ModalityType getModalityType() {
 		return modalityType;
 	}
 
+	/**
+	 * Get the root layout node of the window
+	 *
+	 * @return Root layout node
+	 */
 	public DockingLayoutNode getRootNode() {
 		return rootNode;
 	}
 
+	/**
+	 * Set the dockable that is maximized
+	 *
+	 * @param persistentID Persistent ID of maximized dockable or null
+	 */
 	public void setMaximizedDockable(String persistentID) {
 		maximizedDockable = persistentID;
 	}
@@ -229,10 +259,20 @@ public class WindowLayout {
 		return southAutoHideToolbarIDs;
 	}
 
+	/**
+	 * Check if this window layout has information about the size and location of the window
+	 *
+	 * @return Does the layout have size and location?
+	 */
 	public boolean hasSizeAndLocationInformation() {
 		return hasSizeAndLocationInformation;
 	}
 
+	/**
+	 * Get the hash code of the window
+	 *
+	 * @return Window hash code
+	 */
 	public int getWindowHashCode() {
 		return windowHashCode;
 	}

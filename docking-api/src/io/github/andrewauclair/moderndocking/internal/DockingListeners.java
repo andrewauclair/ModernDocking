@@ -113,10 +113,23 @@ public class DockingListeners {
 		newFloatingFrameListeners.remove(listener);
 	}
 
+	/**
+	 * Fire a new floating frame event
+	 *
+	 * @param frame The frame that was created
+	 * @param root The root of the frame
+	 */
 	public static void fireNewFloatingFrameEvent(JFrame frame, RootDockingPanelAPI root) {
 		newFloatingFrameListeners.forEach(listener -> listener.newFrameCreated(frame, root));
 	}
 
+	/**
+	 * Fire a new floating frame event
+	 *
+	 * @param frame The frame that was created
+	 * @param root The root of the frame
+	 * @param dockable The dockable in the frame
+	 */
 	public static void fireNewFloatingFrameEvent(JFrame frame, RootDockingPanelAPI root, Dockable dockable) {
 		newFloatingFrameListeners.forEach(listener -> listener.newFrameCreated(frame, root, dockable));
 	}

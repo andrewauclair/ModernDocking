@@ -111,15 +111,31 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 		}
 	}
 
+	/**
+	 * Add an alternate drag source, used for dragging from tabs
+	 *
+	 * @param dragComponent Drag component to add
+	 * @param listener The drag gesture listener to add
+	 */
 	public void addAlternateDragSource(JComponent dragComponent, DragGestureListener listener) {
 		alternateDragGesture = dragSource.createDefaultDragGestureRecognizer(dragComponent, DnDConstants.ACTION_MOVE, listener);
 	}
 
+	/**
+	 * Remove the alternate drag source
+	 *
+	 * @param listener The listener to remove
+	 */
 	public void removeAlternateDragSource(DragGestureListener listener) {
 		alternateDragGesture.removeDragGestureListener(listener);
 		alternateDragGesture = null;
 	}
 
+	/**
+	 * Get the panel that we're listening to
+	 *
+	 * @return Dockable panel
+	 */
 	public JPanel getPanel() {
 		return panel;
 	}
@@ -132,6 +148,11 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 	 */
 	protected abstract boolean allowDrag(DragGestureEvent dragGestureEvent);
 
+	/**
+	 * Start a new drag
+	 *
+	 * @param dragGestureEvent The drag gesture
+	 */
 	public void startDrag(DragGestureEvent dragGestureEvent) {
 		// if there is already a floating panel, don't float this one
 		if (Floating.isFloating()) {
@@ -187,6 +208,9 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 		}
 	}
 
+	/**
+	 * Remove our drag source motion listener
+	 */
 	public void removeListeners() {
 		dragSource.removeDragSourceMotionListener(this);
 	}

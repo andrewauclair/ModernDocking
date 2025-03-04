@@ -32,6 +32,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Internal utilities for managing dockable properties
+ */
 public class DockableProperties {
     private static boolean loadingLegacyFile = false;
 
@@ -45,6 +48,12 @@ public class DockableProperties {
         loadingLegacyFile = legacy;
     }
 
+    /**
+     * Set the values of properties on a dockable
+     *
+     * @param wrapper The dockable to update
+     * @param properties The properties to set on the dockable DockingProperty annotated fields
+     */
     public static void configureProperties(DockableWrapper wrapper, Map<String, Property> properties) {
         Dockable dockable = wrapper.getDockable();
 

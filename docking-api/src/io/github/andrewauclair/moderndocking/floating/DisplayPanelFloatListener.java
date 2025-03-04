@@ -48,12 +48,25 @@ public class DisplayPanelFloatListener extends FloatListener {
     private final DockingAPI docking;
     private final DisplayPanel panel;
 
+    /**
+     * Create a new float listener for the specific display panel
+     *
+     * @param docking Docking instance
+     * @param panel The display panel to listen to
+     */
     public DisplayPanelFloatListener(DockingAPI docking, DisplayPanel panel) {
         super(docking, panel);
         this.docking = docking;
         this.panel = panel;
     }
 
+    /**
+     * Create a new float listener for the specific display panel
+     *
+     * @param docking Docking instance
+     * @param panel The display panel to listen to
+     * @param dragComponent The component to add the drag listener to
+     */
     public DisplayPanelFloatListener(DockingAPI docking, DisplayPanel panel, JComponent dragComponent) {
         super(docking, panel, dragComponent);
         this.docking = docking;
@@ -65,6 +78,11 @@ public class DisplayPanelFloatListener extends FloatListener {
         return true;
     }
 
+    /**
+     * Get the dockable that this float listener is listening to for drag events
+     *
+     * @return Dockable this panel is tied to
+     */
     public Dockable getDockable() {
         return panel.getWrapper().getDockable();
     }

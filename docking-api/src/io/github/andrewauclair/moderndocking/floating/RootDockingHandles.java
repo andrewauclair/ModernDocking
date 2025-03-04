@@ -36,6 +36,9 @@ import javax.swing.SwingUtilities;
 
 import static io.github.andrewauclair.moderndocking.floating.DockingHandle.HANDLE_ICON_SIZE;
 
+/**
+ * Collection of the handles for the root of a window
+ */
 public class RootDockingHandles {
     private final DockingHandle rootCenter = new DockingHandle(DockingRegion.CENTER, true);
     private final DockingHandle rootWest = new DockingHandle(DockingRegion.WEST, true);
@@ -181,6 +184,11 @@ public class RootDockingHandles {
                 pinWest.isMouseOver();
     }
 
+    /**
+     * Get the root region that the mouse is over
+     *
+     * @return Root region or null
+     */
     public DockingRegion getRegion() {
         if (rootCenter.isMouseOver()) {
             return DockingRegion.CENTER;
@@ -200,6 +208,11 @@ public class RootDockingHandles {
         return null;
     }
 
+    /**
+     * Get the auto-hide region that the mouse is over
+     *
+     * @return Auto-hide region or null
+     */
     public ToolbarLocation getPinRegion() {
         if (pinEast.isMouseOver()) {
             return ToolbarLocation.EAST;

@@ -24,6 +24,9 @@ package io.github.andrewauclair.moderndocking.settings;
 import io.github.andrewauclair.moderndocking.DockableTabPreference;
 import javax.swing.JTabbedPane;
 
+/**
+ * General settings for Modern Docking
+ */
 public class Settings {
     private static DockableTabPreference defaultTabPreference = DockableTabPreference.BOTTOM;
 
@@ -31,10 +34,26 @@ public class Settings {
 
     private static boolean enableActiveHighlighter = true;
 
+    /**
+     * Unused. All methods are static
+     */
+    private Settings() {
+    }
+
+    /**
+     * Checks if we're forcing tabs to always be on top or bottom
+     *
+     * @return Are we using a default tab preference of TOP_ALWAYS or BOTTOM_ALWAYS?
+     */
     public static boolean alwaysDisplayTabsMode() {
         return defaultTabPreference == DockableTabPreference.TOP_ALWAYS || defaultTabPreference == DockableTabPreference.BOTTOM_ALWAYS;
     }
 
+    /**
+     * Get the current default tab preferenced used by Modern Docking in JTabbedPanes
+     *
+     * @return Default tab preference
+     */
     public static DockableTabPreference defaultTabPreference() {
         return defaultTabPreference;
     }
@@ -48,10 +67,20 @@ public class Settings {
         defaultTabPreference = tabPreference;
     }
 
+    /**
+     * Get the current tab layout policy used by Modern Docking for JTabbedPanes
+     *
+     * @return Current tab layout policy
+     */
     public static int getTabLayoutPolicy() {
         return tabLayoutPolicy;
     }
 
+    /**
+     * Set the tab layout policy Modern Docking should use for JTabbedPanes
+     *
+     * @param tabLayoutPolicy New tab layout policy
+     */
     public static void setTabLayoutPolicy(int tabLayoutPolicy) {
         if (tabLayoutPolicy != JTabbedPane.WRAP_TAB_LAYOUT && tabLayoutPolicy != JTabbedPane.SCROLL_TAB_LAYOUT) {
             throw new IllegalArgumentException("illegal tab layout policy: must be WRAP_TAB_LAYOUT or SCROLL_TAB_LAYOUT");
@@ -59,10 +88,20 @@ public class Settings {
         Settings.tabLayoutPolicy = tabLayoutPolicy;
     }
 
+    /**
+     * Check if the active dockable highlighter is enabled
+     *
+     * @return Is the ActiveDockableHighlighter enabled?
+     */
     public static boolean isActiveHighlighterEnabled() {
         return enableActiveHighlighter;
     }
 
+    /**
+     * Enable or disable the ActiveDockableHighlighter
+     *
+     * @param enabled New flag state
+     */
     public static void setActiveHighlighterEnabled(boolean enabled) {
         enableActiveHighlighter = enabled;
     }

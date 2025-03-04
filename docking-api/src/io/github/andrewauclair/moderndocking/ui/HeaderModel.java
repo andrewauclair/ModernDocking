@@ -40,6 +40,7 @@ public class HeaderModel {
 	/**
 	 * Create a new model for the given dockable
 	 *
+	 * @param docking The docking instance this header belongs to
 	 * @param dockable Dockable for the model
 	 */
 	public HeaderModel(Dockable dockable, DockingAPI docking) {
@@ -66,14 +67,19 @@ public class HeaderModel {
 	}
 
 	/**
-	 * Check if pinning is allowed for this dockable
+	 * Check if auto-hide is allowed for this dockable
 	 *
-	 * @return Is pinning allowed?
+	 * @return Is auto-hide allowed?
 	 */
 	public boolean isAutoHideAllowed() {
 		return dockable.isAutoHideAllowed();
 	}
 
+	/**
+	 * Check if auto-hide is enabled for this dockable
+	 *
+	 * @return Is auto-hide enabled?
+	 */
 	public boolean isAutoHideEnabled() {
 		return docking.isHidden(dockable);
 	}
@@ -87,15 +93,26 @@ public class HeaderModel {
 		return dockable.isMinMaxAllowed();
 	}
 
+	/**
+	 * Check if the dockable is currently maximized
+	 *
+	 * @return Is dockable maximized?
+	 */
 	public boolean isMaximized() {
 		return docking.isMaximized(dockable);
 	}
 
+	/**
+	 * Check if this dockable can be closed
+	 *
+	 * @return Are we allowed to close this dockable?
+	 */
 	public boolean isCloseAllowed() {
 		return dockable.isClosable();
 	}
 
 	/**
+	 * Check if there are more menu options to display
 	 *
 	 * @return True if there are more options to add to the context menu
 	 */
@@ -103,6 +120,11 @@ public class HeaderModel {
 		return dockable.hasMoreMenuOptions();
 	}
 
+	/**
+	 * Check if floating is allowed for this dockable
+	 *
+	 * @return Are we allowed to float this dockable?
+	 */
 	public boolean isFloatingAllowed() {
 		return dockable.isFloatingAllowed();
 	}

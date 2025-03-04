@@ -35,6 +35,9 @@ import java.util.Collections;
 import java.util.List;
 import javax.swing.SwingUtilities;
 
+/**
+ * Internal wrapper panel for the applications root docking panel. This is used to add the auto-hide toolbars
+ */
 public class InternalRootDockingPanel extends DockingPanel {
     private final DockingAPI docking;
     private final RootDockingPanelAPI rootPanel;
@@ -54,6 +57,12 @@ public class InternalRootDockingPanel extends DockingPanel {
      */
     private DockableToolbar eastToolbar = null;
 
+    /**
+     * Create new instance
+     *
+     * @param docking Docking instance
+     * @param rootPanel Root panel from application
+     */
     public InternalRootDockingPanel(DockingAPI docking, RootDockingPanelAPI rootPanel) {
         this.docking = docking;
         this.rootPanel = rootPanel;
@@ -74,6 +83,11 @@ public class InternalRootDockingPanel extends DockingPanel {
         eastToolbar = new DockableToolbar(docking, rootPanel.getWindow(), rootPanel, ToolbarLocation.EAST);
     }
 
+    /**
+     * Get the application root that we're wrapping
+     *
+     * @return Application window root
+     */
     public RootDockingPanelAPI getRootPanel() {
         return rootPanel;
     }
@@ -383,6 +397,9 @@ public class InternalRootDockingPanel extends DockingPanel {
         return southToolbar.getPersistentIDs();
     }
 
+    /**
+     * Update the look and feel of the toolbars and empty panel
+     */
     public void updateLAF() {
         if (southToolbar != null) {
             SwingUtilities.updateComponentTreeUI(southToolbar);

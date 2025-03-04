@@ -165,6 +165,12 @@ public class FloatingOverlay {
         this.size = size;
     }
 
+    /**
+     * Update the overlay for dispay over a tab
+     *
+     * @param tabbedPane The tabbed pane the mouse is over
+     * @param mousePosOnScreen The mouse position on screen
+     */
     public void updateForTab(CustomTabbedPane tabbedPane, Point mousePosOnScreen) {
         setVisible(true);
 

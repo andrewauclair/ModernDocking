@@ -77,6 +77,13 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         }
     };
 
+    /**
+     * Create a new instance for a specific window
+     *
+     * @param docking The docking instance
+     * @param referenceDockingWindow The window that this utils frame is tied to
+     * @param root The root within the reference window
+     */
     public FloatUtilsFrame(DockingAPI docking, Window referenceDockingWindow, InternalRootDockingPanel root) {
         this.referenceDockingWindow = referenceDockingWindow;
         this.root = root;
@@ -110,6 +117,14 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         }
     }
 
+    /**
+     * Activate this utilities frame and display it
+     *
+     * @param floatListener The float listener that started the drag
+     * @param floatingFrame The frame that contains the floating dockable
+     * @param dragSource The source of the drag
+     * @param mousePosOnScreen The mouse position on screen
+     */
     public void activate(FloatListener floatListener, JFrame floatingFrame, DragSource dragSource, Point mousePosOnScreen) {
         this.floatListener = floatListener;
         this.floatingFrame = floatingFrame;
@@ -254,22 +269,47 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
     public void componentHidden(ComponentEvent e) {
     }
 
+    /**
+     * Check if the mouse is over a root handle
+     *
+     * @return Is the mouse over a root handle?
+     */
     public boolean isOverRootHandle() {
         return rootHandles.isOverHandle();
     }
 
+    /**
+     * Get the root region that's selected
+     *
+     * @return Root region or null
+     */
     public DockingRegion rootHandleRegion() {
         return rootHandles.getRegion();
     }
 
+    /**
+     * Check if the mouse is over an auto-hide handle
+     *
+     * @return Is the mouse over an auto-hide handle?
+     */
     public boolean isOverPinHandle() {
         return rootHandles.isOverPinHandle();
     }
 
+    /**
+     * Get the auto-hide region
+     *
+     * @return Auto-hide region or null
+     */
     public ToolbarLocation pinRegion() {
         return rootHandles.getPinRegion();
     }
 
+    /**
+     * Check if the mouse is over a dockable handle
+     *
+     * @return Is the mouse over a dockable handle?
+     */
     public boolean isOverDockableHandle() {
         if (dockableHandles == null) {
             return false;
@@ -277,6 +317,11 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         return dockableHandles.getRegion() != null;
     }
 
+    /**
+     * Check if the mouse is over a tab
+     *
+     * @return Is the mouse over a tab?
+     */
     public boolean isOverTab() {
         return overlay.isOverTab();
     }

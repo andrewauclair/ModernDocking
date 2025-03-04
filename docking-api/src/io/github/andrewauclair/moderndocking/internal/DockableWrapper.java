@@ -118,6 +118,11 @@ public class DockableWrapper {
 		return dockable;
 	}
 
+	/**
+	 * Get the float listener tied to the display panel of this dockable
+	 *
+	 * @return Float listener
+	 */
 	public FloatListener getFloatListener() {
 		return floatListener;
 	}
@@ -177,6 +182,11 @@ public class DockableWrapper {
 		displayPanel.parentChanged();
 	}
 
+	/**
+	 * Check if this wrapper represents an anchor instead of a dockable
+	 *
+	 * @return Is this wrapper an anchor?
+	 */
 	public boolean isAnchor() {
 		return isAnchor;
 	}
@@ -217,18 +227,40 @@ public class DockableWrapper {
 		return root;
 	}
 
+	/**
+	 * Get the properties for this dockable
+	 *
+	 * @return Map of properties for this dockable
+	 */
 	public Map<String, Property> getProperties() {
 		return Collections.unmodifiableMap(properties);
 	}
 
+	/**
+	 * Get the value of a property
+	 *
+	 * @param propertyName The name of the property to lookup
+	 * @return Value of property, or null if it does not exist
+	 */
 	public Property getProperty(String propertyName) {
 		return properties.get(propertyName);
 	}
 
+	/**
+	 * Set a new value for a property. The property will be created if missing
+	 *
+	 * @param propertyName The name of the property to set
+	 * @param value The new value of the property
+	 */
 	public void setProperty(String propertyName, Property value) {
 		properties.put(propertyName, value);
 	}
 
+	/**
+	 * Remove a property from this dockable
+	 *
+	 * @param propertyName The name of the property to remove
+	 */
 	public void removeProperty(String propertyName) {
 		properties.remove(propertyName);
 	}

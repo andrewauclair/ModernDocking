@@ -46,6 +46,9 @@ public class RootDockingPanelAPI extends JPanel {
 
 	private boolean autoHideSupported = false;
 
+	/**
+	 * Create a new default panel with a GridBagLayout
+	 */
 	protected RootDockingPanelAPI() {
 		setLayout(new GridBagLayout());
 	}
@@ -92,6 +95,7 @@ public class RootDockingPanelAPI extends JPanel {
 	/**
 	 * Create a new RootDockingPanel for the given window and set of supported toolbars
 	 *
+	 * @param docking The docking instance for this root
 	 * @param window Window this root panel is attached to
 	 * @param supportedToolbars Supported toolbars
 	 */
@@ -111,6 +115,11 @@ public class RootDockingPanelAPI extends JPanel {
 		return window;
 	}
 
+	/**
+	 * Get the empty panel
+	 *
+	 * @return Current empty panel
+	 */
 	public JPanel getEmptyPanel() {
 		return emptyPanel;
 	}
@@ -164,6 +173,12 @@ public class RootDockingPanelAPI extends JPanel {
 		autoHideLayer = layer;
 	}
 
+	/**
+	 * Check if an auto-hide toolbar location is supported
+	 * @param location Location to check
+	 *
+	 * @return Is the location supported?
+	 */
 	public boolean isLocationSupported(ToolbarLocation location) {
 		return supportedToolbars.contains(location);
 	}

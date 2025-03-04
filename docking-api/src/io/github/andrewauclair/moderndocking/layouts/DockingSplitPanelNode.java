@@ -151,10 +151,20 @@ package io.github.andrewauclair.moderndocking.layouts;
 		return right;
 	}
 
+	 /**
+	  * Get the orientation
+	  *
+	  * @return The orientation of the JSplitPane
+	  */
 	public int getOrientation() {
 		return orientation;
 	}
 
+	 /**
+	  * Get the divider proportion
+	  *
+	  * @return Proportion of the JSPlitPane Divider
+	  */
 	public double getDividerProportion() {
 		return dividerProportion;
 	}

@@ -56,6 +56,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+/**
+ * Save and load layouts to/from files and streams
+ */
 public class LayoutPersistenceAPI {
     private static final Logger logger = Logger.getLogger(LayoutPersistenceAPI.class.getPackageName());
 

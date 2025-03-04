@@ -356,6 +356,12 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		repaint();
 	}
 
+	/**
+	 * Dock a dockable at the specific index. Other dockables will be moved to the right one index
+	 *
+	 * @param dockable The dockable to dock
+	 * @param index The index to dock at
+	 */
 	public void dockAtIndex(Dockable dockable, int index) {
 		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 		wrapper.setWindow(panels.get(0).getWindow());
