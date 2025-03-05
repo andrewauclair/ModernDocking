@@ -49,6 +49,13 @@ public class TempFloatingFrame extends JFrame {
 	private final List<DockableWrapper> dockables;
 	private final int selectedIndex;
 
+	/**
+	 * Create a new temporary floating frame for a floating dockable
+	 *
+	 * @param dockable The dockable that we are currently floating
+	 * @param dragSrc The source of the drag. Used to assign the frame to the proper screen location
+	 * @param size The desired size of the frame
+	 */
 	public TempFloatingFrame(DockableWrapper dockable, JComponent dragSrc, Dimension size) {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -58,6 +65,14 @@ public class TempFloatingFrame extends JFrame {
 		build(dockable.getDisplayPanel(), dragSrc, size);
 	}
 
+	/**
+	 * Create a new temporary floating frame for a floating dockable
+	 *
+	 * @param dockables The dockables that we are currently floating
+	 * @param selectedIndex The selected index in the group of dockables
+	 * @param dragSrc The source of the drag. Used to assign the frame to the proper screen location
+	 * @param size The desired size of the frame
+	 */
 	public TempFloatingFrame(List<DockableWrapper> dockables, int selectedIndex, JComponent dragSrc, Dimension size) {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -130,10 +145,20 @@ public class TempFloatingFrame extends JFrame {
 		setVisible(true);
 	}
 
+	/**
+	 * The dockables that are in this temporary floating frame
+	 *
+	 * @return List of dockables
+	 */
 	public List<DockableWrapper> getDockables() {
 		return dockables;
 	}
 
+	/**
+	 * The selected dockable index
+	 *
+	 * @return Selected index
+	 */
 	public int getSelectedIndex() {
 		return selectedIndex;
 	}

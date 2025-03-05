@@ -28,7 +28,13 @@ import java.awt.Window;
  * This exception is thrown when the docking framework fails to register a RootDockingPanel because one already exists for the window
  */
 public class RootDockingPanelRegistrationFailureException extends RuntimeException {
+    /**
+     * The root docking panel that the application attempted to register
+     */
     private final RootDockingPanelAPI panel;
+    /**
+     * The window that already has a root docking panel registered for it
+     */
     private final Window window;
 
     /**

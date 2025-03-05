@@ -36,6 +36,9 @@ public class DisplayPanel extends JPanel {
 	 * Dockable contained in this display panel
 	 */
 	private final DockableWrapper wrapper;
+	/**
+	 * Is this display panel for an anchor? Tells us to hide the header
+	 */
 	private final boolean isAnchor;
 
 	/**

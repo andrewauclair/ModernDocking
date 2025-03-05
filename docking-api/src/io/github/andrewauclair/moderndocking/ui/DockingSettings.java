@@ -94,6 +94,11 @@ public class DockingSettings {
         currentHandleBackground = property;
     }
 
+    /**
+     * Get the current handle background color
+     *
+     * @return Handle background color
+     */
     public static Color getHandleBackground() {
         if (UIManager.get(handleBackground) != null) {
             return UIManager.getColor(handleBackground);
@@ -114,6 +119,11 @@ public class DockingSettings {
         currentHandleForeground = property;
     }
 
+    /**
+     * Get the current handle foreground color
+     *
+     * @return Handle foreground color
+     */
     public static Color getHandleForeground() {
         if (UIManager.get(handleForeground) != null) {
             return UIManager.getColor(handleForeground);
@@ -185,6 +195,11 @@ public class DockingSettings {
         currentHeaderBackground = property;
     }
 
+    /**
+     * Get the header background color
+     *
+     * @return Current header background color
+     */
     public static Color getHeaderBackground() {
         if (UIManager.get(currentHeaderBackground) != null) {
             return UIManager.getColor(currentHeaderBackground);
@@ -204,6 +219,11 @@ public class DockingSettings {
         currentHeaderForeground = property;
     }
 
+    /**
+     * Get the header foreground color
+     *
+     * @return Current header foreground color
+     */
     public static Color getHeaderForeground() {
         if (UIManager.get(currentHeaderForeground) != null) {
             return UIManager.getColor(currentHeaderForeground);

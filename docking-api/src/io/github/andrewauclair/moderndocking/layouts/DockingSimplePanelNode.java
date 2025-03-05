@@ -167,10 +167,20 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 		return Collections.unmodifiableMap(properties);
 	}
 
+	/**
+	 * Set the properties of the dockable
+	 *
+	 * @param properties New properties for the dockable
+	 */
 	public void setProperties(Map<String, Property> properties) {
 		this.properties = new HashMap<>(properties);
 	}
 
+	/**
+	 * The persistent ID of the anchor this node is associated with
+	 *
+	 * @return Anchor this node is associated with or null
+	 */
 	public String getAnchor() {
 		return anchor;
 	}

@@ -85,6 +85,11 @@ public class DockingLayouts {
 		listeners.forEach(l -> l.layoutChange(new DockingLayoutEvent(DockingLayoutEvent.ID.ADDED, name, layout)));
 	}
 
+	/**
+	 * Remove a layout with the given name
+	 *
+	 * @param name The name of the layout
+	 */
 	public static void removeLayout(String name) {
 		ApplicationLayout layout = layouts.remove(name);
 
@@ -93,10 +98,20 @@ public class DockingLayouts {
 		}
 	}
 
+	/**
+	 * Send out docking layout restored events
+	 *
+	 * @param layout The layout that has been restored
+	 */
 	public static void layoutRestored(ApplicationLayout layout) {
 		listeners.forEach(l -> l.layoutChange(new DockingLayoutEvent(DockingLayoutEvent.ID.RESTORED, "current", layout)));
 	}
 
+	/**
+	 * Send out docking layout persisted events
+	 *
+	 * @param layout The layout that has been restored
+	 */
 	public static void layoutPersisted(ApplicationLayout layout) {
 		listeners.forEach(l -> l.layoutChange(new DockingLayoutEvent(DockingLayoutEvent.ID.PERSISTED, "current", layout)));
 	}
@@ -145,6 +160,14 @@ public class DockingLayouts {
 		return layout;
 	}
 
+	/**
+	 * Convert a displayed panel into its layout node representation
+	 *
+	 * @param docking The docking instance the panel belongs to
+	 * @param panel The panel to convert
+	 *
+	 * @return The resulting layout node
+	 */
 	private static DockingLayoutNode panelToNode(DockingAPI docking, DockingPanel panel) {
 		DockingLayoutNode node;
 

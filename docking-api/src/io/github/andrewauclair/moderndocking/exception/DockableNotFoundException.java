@@ -25,6 +25,9 @@ package io.github.andrewauclair.moderndocking.exception;
  * This exception is thrown when the docking framework tries to lookup a dockable and fails
  */
 public class DockableNotFoundException extends RuntimeException {
+	/**
+	 * The persistent ID that we were unable to find a dockable registered with
+	 */
 	private final String persistentID;
 
 	/**

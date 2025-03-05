@@ -55,6 +55,9 @@ import javax.swing.UIManager;
  * that are auto hide enabled
  */
 public class DockableToolbar extends JPanel implements ComponentListener {
+	/**
+	 * The docking instance this toolbar belongs to
+	 */
 	private final DockingAPI docking;
 	private final Window window;
 	private final RootDockingPanelAPI root;
@@ -89,7 +92,14 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 		}
 	}
 
+	/**
+	 * The dockables that are assigned to this auto-hide toolbar
+	 */
 	private final List<Entry> dockables = new ArrayList<>();
+
+	/**
+	 * The group of all the toolbar buttons for the auto-hide dockables
+	 */
 	private final UnselectableButtonGroup buttonGroup = new UnselectableButtonGroup();
 
 	/**

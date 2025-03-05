@@ -394,6 +394,13 @@ public class DockingInternal {
 		return createHeaderUI.apply(headerController, headerModel);
 	}
 
+	/**
+	 * Get the wrapper for an anchor
+	 *
+	 * @param anchor Anchor Persistent ID
+	 *
+	 * @return Anchor wrapper or null
+	 */
 	public DockableWrapper getAnchor(String anchor) {
 		return anchors.get(anchor);
 	}

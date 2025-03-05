@@ -40,7 +40,15 @@ public class DockingLayoutException extends Exception {
          */
         SAVE
     }
+
+    /**
+     * The file that we attempted to load or save
+     */
     private final File file;
+
+    /**
+     * The type of failure. load or save
+     */
     private final FailureType failureType;
 
     /**

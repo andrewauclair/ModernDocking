@@ -37,6 +37,9 @@ import javax.swing.SwingUtilities;
  * This class is used when a floating dockable is dropped outside any existing frames
  */
 public class FloatingFrame extends JFrame {
+	/**
+	 * The docking instance this floating frame belongs to
+	 */
 	private final DockingAPI docking;
 	private RootDockingPanelAPI root;
 

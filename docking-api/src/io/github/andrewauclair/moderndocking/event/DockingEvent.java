@@ -56,6 +56,11 @@ public class DockingEvent {
     private final ID id;
     private final Dockable dockable;
 
+    /**
+     *
+     * @param id
+     * @param dockable
+     */
     public DockingEvent(ID id, Dockable dockable) {
         this.id = id;
         this.dockable = dockable;

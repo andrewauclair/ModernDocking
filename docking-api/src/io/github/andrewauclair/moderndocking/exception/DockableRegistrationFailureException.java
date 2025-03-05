@@ -25,6 +25,9 @@ package io.github.andrewauclair.moderndocking.exception;
  * This exception is thrown when the docking framework fails to register a dockable because one with the same persistentID already exists
  */
 public class DockableRegistrationFailureException extends RuntimeException {
+	/**
+	 * The persistent ID of the dockable that we failed to register
+	 */
 	private final String persistentID;
 
 	/**

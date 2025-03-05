@@ -27,6 +27,9 @@ import java.awt.Window;
  * Exception thrown when a RootDockingPanel is not found for the given window
  */
 public class RootDockingPanelNotFoundException extends RuntimeException {
+    /**
+     * The window that we wouldn't find a registered root docking panel for
+     */
     private final Window window;
 
     /**

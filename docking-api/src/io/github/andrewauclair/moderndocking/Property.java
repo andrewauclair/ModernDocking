@@ -70,6 +70,11 @@ public abstract class Property {
             return Byte.toString(value);
         }
 
+        /**
+         * Get the value of this property
+         *
+         * @return Current value
+         */
         public byte getValue() {
             return value;
         }
@@ -107,6 +112,11 @@ public abstract class Property {
             return Short.toString(value);
         }
 
+        /**
+         * Get the value of this property
+         *
+         * @return Current value
+         */
         public short getValue() {
             return value;
         }
@@ -144,6 +154,11 @@ public abstract class Property {
             return Integer.toString(value);
         }
 
+        /**
+         * Get the value of this property
+         *
+         * @return Current value
+         */
         public int getValue() {
             return value;
         }
@@ -181,6 +196,11 @@ public abstract class Property {
             return Long.toString(value);
         }
 
+        /**
+         * Get the value of this property
+         *
+         * @return Current value
+         */
         public long getValue() {
             return value;
         }
@@ -218,6 +238,11 @@ public abstract class Property {
             return Float.toString(value);
         }
 
+        /**
+         * Get the value of this property
+         *
+         * @return Current value
+         */
         public float getValue() {
             return value;
         }
@@ -255,6 +280,11 @@ public abstract class Property {
             return Double.toString(value);
         }
 
+        /**
+         * Get the value of this property
+         *
+         * @return Current value
+         */
         public double getValue() {
             return value;
         }
@@ -292,6 +322,11 @@ public abstract class Property {
             return Character.toString(value);
         }
 
+        /**
+         * Get the value of this property
+         *
+         * @return Current value
+         */
         public char getValue() {
             return value;
         }
@@ -329,6 +364,11 @@ public abstract class Property {
             return Boolean.toString(value);
         }
 
+        /**
+         * Get the value of this property
+         *
+         * @return Current value
+         */
         public boolean getValue() {
             return value;
         }
@@ -366,6 +406,11 @@ public abstract class Property {
             return value;
         }
 
+        /**
+         * Get the value of this property
+         *
+         * @return Current value
+         */
         public String getValue() {
             return value;
         }

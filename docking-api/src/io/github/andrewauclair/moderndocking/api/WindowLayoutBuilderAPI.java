@@ -140,6 +140,15 @@ public class WindowLayoutBuilderAPI {
 		return this;
 	}
 
+	/**
+	 * Set the value of a dockable property
+	 *
+	 * @param persistentID The persistent ID of the dockable we're setting a property for
+	 * @param property The name of the property we're configuring
+	 * @param value The value of the property
+	 *
+	 * @return This WindowLayoutBuilderAPI instance
+	 */
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, byte value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
@@ -150,6 +159,15 @@ public class WindowLayoutBuilderAPI {
 		return this;
 	}
 
+	/**
+	 * Set the value of a dockable property
+	 *
+	 * @param persistentID The persistent ID of the dockable we're setting a property for
+	 * @param property The name of the property we're configuring
+	 * @param value The value of the property
+	 *
+	 * @return This WindowLayoutBuilderAPI instance
+	 */
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, short value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
@@ -160,6 +178,15 @@ public class WindowLayoutBuilderAPI {
 		return this;
 	}
 
+	/**
+	 * Set the value of a dockable property
+	 *
+	 * @param persistentID The persistent ID of the dockable we're setting a property for
+	 * @param property The name of the property we're configuring
+	 * @param value The value of the property
+	 *
+	 * @return This WindowLayoutBuilderAPI instance
+	 */
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, int value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
@@ -170,6 +197,15 @@ public class WindowLayoutBuilderAPI {
 		return this;
 	}
 
+	/**
+	 * Set the value of a dockable property
+	 *
+	 * @param persistentID The persistent ID of the dockable we're setting a property for
+	 * @param property The name of the property we're configuring
+	 * @param value The value of the property
+	 *
+	 * @return This WindowLayoutBuilderAPI instance
+	 */
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, long value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
@@ -180,6 +216,15 @@ public class WindowLayoutBuilderAPI {
 		return this;
 	}
 
+	/**
+	 * Set the value of a dockable property
+	 *
+	 * @param persistentID The persistent ID of the dockable we're setting a property for
+	 * @param property The name of the property we're configuring
+	 * @param value The value of the property
+	 *
+	 * @return This WindowLayoutBuilderAPI instance
+	 */
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, float value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
@@ -190,6 +235,15 @@ public class WindowLayoutBuilderAPI {
 		return this;
 	}
 
+	/**
+	 * Set the value of a dockable property
+	 *
+	 * @param persistentID The persistent ID of the dockable we're setting a property for
+	 * @param property The name of the property we're configuring
+	 * @param value The value of the property
+	 *
+	 * @return This WindowLayoutBuilderAPI instance
+	 */
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, double value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
@@ -200,6 +254,15 @@ public class WindowLayoutBuilderAPI {
 		return this;
 	}
 
+	/**
+	 * Set the value of a dockable property
+	 *
+	 * @param persistentID The persistent ID of the dockable we're setting a property for
+	 * @param property The name of the property we're configuring
+	 * @param value The value of the property
+	 *
+	 * @return This WindowLayoutBuilderAPI instance
+	 */
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, char value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
@@ -229,6 +292,15 @@ public class WindowLayoutBuilderAPI {
 		return this;
 	}
 
+	/**
+	 * Set the value of a dockable property
+	 *
+	 * @param persistentID The persistent ID of the dockable we're setting a property for
+	 * @param property The name of the property we're configuring
+	 * @param value The value of the property
+	 *
+	 * @return This WindowLayoutBuilderAPI instance
+	 */
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, String value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
@@ -239,7 +311,15 @@ public class WindowLayoutBuilderAPI {
 		return this;
 	}
 
-	// support for custom user types
+	/**
+	 * Set the value of a custom dockable property
+	 *
+	 * @param persistentID The persistent ID of the dockable we're setting a property for
+	 * @param property The name of the property we're configuring
+	 * @param value The value of the property
+	 *
+	 * @return This WindowLayoutBuilderAPI instance
+	 */
 	public WindowLayoutBuilderAPI setProperty(String persistentID, String property, Property value) {
 		Map<String, Property> props = properties.getOrDefault(persistentID, new HashMap<>());
 
@@ -250,7 +330,11 @@ public class WindowLayoutBuilderAPI {
 		return this;
 	}
 
-	// build a WindowLayout using the rootNode
+	/**
+	 * build a WindowLayout using the rootNode
+	 *
+	 * @return The built window layout
+	 */
 	public WindowLayout build() {
 		properties.forEach((persistentID, stringPropertyMap) -> {
 			DockingLayoutNode node = findNode(persistentID);

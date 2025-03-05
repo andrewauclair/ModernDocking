@@ -34,16 +34,35 @@ import javax.swing.JPanel;
  * Panel that should be added to each frame that should support docking
  */
 public class RootDockingPanelAPI extends JPanel {
+	/**
+	 * The docking instance this root docking panel belongs to
+	 */
 	private DockingAPI docking = null;
 
+	/**
+	 * The window this root docking panel is contained in
+	 */
 	private Window window = null;
 
+	/**
+	 * A panel to display when there are no dockables in the root docking panel
+	 */
 	private JPanel emptyPanel = new JPanel();
 
+	/**
+	 * The layer to display auto-hide dockables in when showing. This is used because the dockable panel needs
+	 * to be displayed above the rest of the panels
+	 */
 	private int autoHideLayer = JLayeredPane.MODAL_LAYER;
 
+	/**
+	 * The toolbars that are supported on this root docking panel. The application can turn some off
+	 */
 	private EnumSet<ToolbarLocation> supportedToolbars = EnumSet.noneOf(ToolbarLocation.class);
 
+	/**
+	 * Does this root docking panel support the toolbars and display of auto-hide dockables?
+	 */
 	private boolean autoHideSupported = false;
 
 	/**

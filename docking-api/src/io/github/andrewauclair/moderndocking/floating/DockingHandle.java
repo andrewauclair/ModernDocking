@@ -49,8 +49,15 @@ public class DockingHandle extends JLabel {
 	 * Flag indicating whether this handle display is for the root handles
 	 */
 	private final boolean isRoot;
+
+	/**
+	 * This docking handle represents an auto-hide handle
+	 */
 	private final boolean isPin;
 
+	/**
+	 * The mouse is currently over this handle
+	 */
 	private boolean mouseOver = false;
 
 	/**

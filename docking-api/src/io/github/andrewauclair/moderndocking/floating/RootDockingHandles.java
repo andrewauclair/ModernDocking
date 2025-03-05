@@ -170,6 +170,11 @@ public class RootDockingHandles {
         pinSouth.paintHandle(g2);
     }
 
+    /**
+     * Check if the mouse is over a root handle
+     *
+     * @return Is the mouse over a root handle?
+     */
     public boolean isOverHandle() {
         return rootCenter.isMouseOver() ||
                 rootEast.isMouseOver() ||
@@ -178,6 +183,11 @@ public class RootDockingHandles {
                 rootSouth.isMouseOver();
     }
 
+    /**
+     * Check if the mouse is over an auto-hide handle
+     *
+     * @return Is the mouse over an auto-hide handle?
+     */
     public boolean isOverPinHandle() {
         return pinEast.isMouseOver() ||
                 pinSouth.isMouseOver() ||

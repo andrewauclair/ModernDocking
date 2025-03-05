@@ -27,6 +27,9 @@ import io.github.andrewauclair.moderndocking.Dockable;
  * Exception that is thrown when a dockable is not already docked
  */
 public class NotDockedException extends RuntimeException {
+	/**
+	 * The dockable that was not docked while attempting a docking operation
+	 */
 	private final Dockable dockable;
 
 	/**

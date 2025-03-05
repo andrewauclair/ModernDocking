@@ -44,6 +44,11 @@ public class DockableProperties {
     private DockableProperties() {
     }
 
+    /**
+     * If true, we're loading a file from before 0.12.0
+     *
+     * @param legacy Legacy flag
+     */
     public static void setLoadingLegacyFile(boolean legacy) {
         loadingLegacyFile = legacy;
     }
@@ -115,8 +120,13 @@ public class DockableProperties {
         dockable.updateProperties();
     }
 
-
-
+    /**
+     * Get the properties from the dockable as a map
+     *
+     * @param wrapper The dockable to get properties for
+     *
+     * @return Map of properties
+     */
     public static Map<String, Property> saveProperties(DockableWrapper wrapper) {
         Dockable dockable = wrapper.getDockable();
 
@@ -157,6 +167,15 @@ public class DockableProperties {
         }
     }
 
+    /**
+     * Parse a property string into the proper type
+     *
+     * @param property Property name
+     * @param type Type of property
+     * @param value The string value of the property
+     *
+     * @return Instance of Property with the proper Java class type
+     */
     public static Property parseProperty(String property, String type, String value) {
         if (type.equals("byte")) {
             return new Property.ByteProperty(property, value.isEmpty() ? (byte) 0 : Byte.parseByte(value));

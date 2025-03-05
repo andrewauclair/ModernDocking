@@ -39,9 +39,18 @@ import javax.swing.SwingUtilities;
  * Internal wrapper panel for the applications root docking panel. This is used to add the auto-hide toolbars
  */
 public class InternalRootDockingPanel extends DockingPanel {
+    /**
+     * The docking instance this internal root docking panel belongs to
+     */
     private final DockingAPI docking;
+    /**
+     * The application root docking panel this internal panel wraps
+     */
     private final RootDockingPanelAPI rootPanel;
 
+    /**
+     * The first panel contained in the root
+     */
     private DockingPanel panel = null;
 
     /**

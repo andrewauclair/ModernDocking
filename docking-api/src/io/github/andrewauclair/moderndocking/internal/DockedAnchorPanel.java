@@ -33,8 +33,13 @@ import java.util.List;
  * Docking panel that wraps the application anchor panel for display
  */
 public class DockedAnchorPanel extends DockingPanel {
+    /**
+     * The docking instance this anchor belongs to
+     */
     private final DockingAPI docking;
-
+    /**
+     * The wrapper for the anchor
+     */
     private final DockableWrapper anchor;
 
     /**
