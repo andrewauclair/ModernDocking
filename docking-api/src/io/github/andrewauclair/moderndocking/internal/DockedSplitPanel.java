@@ -54,10 +54,25 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	 */
 	private DockingPanel right = null;
 
+	/**
+	 * The split pane we're controlling
+	 */
 	private final JSplitPane splitPane = new JSplitPane();
+	/**
+	 * The parent panel of this split panel
+	 */
 	private DockingPanel parent;
+	/**
+	 * The docking instance this panel belongs to
+	 */
 	private final DockingAPI docking;
+	/**
+	 * The window this panel is in
+	 */
 	private final Window window;
+	/**
+	 * The anchor this panel belongs to, if any
+	 */
 	private String anchor;
 
 	/**

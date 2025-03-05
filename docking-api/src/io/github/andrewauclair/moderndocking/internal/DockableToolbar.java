@@ -59,8 +59,17 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	 * The docking instance this toolbar belongs to
 	 */
 	private final DockingAPI docking;
+	/**
+	 * The window this toolbar is in
+	 */
 	private final Window window;
+	/**
+	 * The root docking panel of the window
+	 */
 	private final RootDockingPanelAPI root;
+	/**
+	 * The location of this toolbar. Either WEST, SOUTH or EAST
+	 */
 	private final ToolbarLocation location;
 
 	private static class Entry {

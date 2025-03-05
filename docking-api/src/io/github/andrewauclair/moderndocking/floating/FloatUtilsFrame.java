@@ -145,6 +145,9 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         orderFrames();
     }
 
+    /**
+     * Floating has ended, deactivate the utilities
+     */
     public void deactivate() {
         setVisible(false);
 
@@ -333,6 +336,15 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         return dockableHandles.getRegion();
     }
 
+    /**
+     * Get the current region the dockable is over
+     *
+     * @param targetDockable The dockable the mouse is over
+     * @param floatingDockable The active floating dockable
+     * @param mousePosOnScreen The mouse position on screen
+     *
+     * @return The docking region or null
+     */
     public DockingRegion getDockableRegion(Dockable targetDockable, Dockable floatingDockable, Point mousePosOnScreen) {
         return overlay.getRegion(targetDockable, floatingDockable, mousePosOnScreen);
     }

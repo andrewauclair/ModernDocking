@@ -41,6 +41,9 @@ public class FloatingFrame extends JFrame {
 	 * The docking instance this floating frame belongs to
 	 */
 	private final DockingAPI docking;
+	/**
+	 * The root docking panel for this floating frame
+	 */
 	private RootDockingPanelAPI root;
 
 	/**

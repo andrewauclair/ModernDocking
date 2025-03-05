@@ -36,18 +36,54 @@ import javax.swing.JPopupMenu;
  * Default implementation of the Dockable interface. Useful for GUI builders where you can set each property.
  */
 public class DefaultDockingPanel extends JPanel implements Dockable, DockingListener {
+    /**
+     * Persistent ID for the dockable in this panel
+     */
     private String persistentID;
+    /**
+     * The type for this dockable
+     */
     private int type;
+    /**
+     * Tab text to display on tabbed panes
+     */
     private String tabText = "";
+    /**
+     * Icon to use on tabbed panes, auto-hide toolbars, and windows
+     */
     private Icon icon;
+    /**
+     * Is this dockable allowed to float?
+     */
     private boolean floatingAllowed;
+    /**
+     * Is this dockable limited to its starting window?
+     */
     private boolean limitedToWindow;
+    /**
+     * What positions is this dockable allowed to be in?
+     */
     private DockableStyle style;
+    /**
+     * Can the user close this dockable?
+     */
     private boolean canBeClosed;
+    /**
+     * Can this dockable be displayed on an auto-hide toolbar?
+     */
     private boolean allowAutoHide;
+    /**
+     * Is min/max an option for this dockable?
+     */
     private boolean allowMinMax;
+    /**
+     * Extra menu options to display on context menu
+     */
     private List<JMenu> moreOptions = new ArrayList<>();
 
+    /**
+     * Listeners listening to docking changes for this dockable
+     */
     private final List<DockingListener> listeners = new ArrayList<>();
 
     /**

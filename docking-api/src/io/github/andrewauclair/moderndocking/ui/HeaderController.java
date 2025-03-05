@@ -32,13 +32,32 @@ import io.github.andrewauclair.moderndocking.internal.DockingListeners;
  * Controller for the header of dockables. Responsible for controlling the state of all buttons on the header.
  */
 public class HeaderController implements MaximizeListener, DockingListener {
+	/**
+	 * The dockable this header controller references
+	 */
 	private final Dockable dockable;
+	/**
+	 * The docking instance the dockable belongs to
+	 */
 	private final DockingAPI docking;
 
+	/**
+	 * The header model controlled
+	 */
 	private final HeaderModel model;
 
+	/**
+	 * The header UI
+	 */
 	private DockingHeaderUI ui;
 
+	/**
+	 * Create a new header controller for a dockable
+	 *
+	 * @param dockable The dockable this header controller uses
+	 * @param docking The docking instance the dockable belongs to
+	 * @param model The header model for the dockable
+	 */
 	public HeaderController(Dockable dockable, DockingAPI docking, HeaderModel model) {
 		this.dockable = dockable;
 		this.docking = docking;
@@ -48,15 +67,26 @@ public class HeaderController implements MaximizeListener, DockingListener {
 		DockingListeners.addDockingListener(this);
 	}
 
+	/**
+	 * Change the header UI we're controlling
+	 *
+	 * @param ui New header UI
+	 */
 	public void setUI(DockingHeaderUI ui) {
 		this.ui = ui;
 	}
 
+	/**
+	 * Remove the docking listeners that we've added
+	 */
 	public void removeListeners() {
 		DockingListeners.removeMaximizeListener(this);
 		DockingListeners.removeDockingListener(this);
 	}
 
+	/**
+	 * Flip the auto-hide flag
+	 */
 	public void toggleAutoHide() {
 		if (model.isAutoHideEnabled()) {
 			docking.autoShowDockable(dockable);
@@ -87,6 +117,9 @@ public class HeaderController implements MaximizeListener, DockingListener {
 		docking.maximize(dockable);
 	}
 
+	/**
+	 * Close the dockable
+	 */
 	public void close() {
 		if (dockable.requestClose()) {
 			docking.undock(dockable);

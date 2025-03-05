@@ -31,6 +31,9 @@ import javax.swing.JPanel;
  * These are stripped out after restoring from the layout.
  */
 public class FailedDockable extends JPanel implements Dockable {
+	/**
+	 * The docking instance this failed dockable belongs to
+	 */
 	private final DockingAPI docking;
 	/**
 	 * Persistent ID that no dockable has been registered for

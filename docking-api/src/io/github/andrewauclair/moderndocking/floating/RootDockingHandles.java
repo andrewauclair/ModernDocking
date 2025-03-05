@@ -56,6 +56,12 @@ public class RootDockingHandles {
     private DockingRegion mouseOverRegion = null;
     private DockingRegion mouseOverPin = null;
 
+    /**
+     * Create a new instance of the root docking handles
+     *
+     * @param frame The frame this root docking handle belongs to
+     * @param rootPanel The root panel for the frame
+     */
     public RootDockingHandles(JFrame frame, InternalRootDockingPanel rootPanel) {
         this.frame = frame;
         this.rootPanel = rootPanel;
@@ -73,10 +79,18 @@ public class RootDockingHandles {
         SwingUtilities.invokeLater(this::setRootHandleLocations);
     }
 
+    /**
+     * Update the handle positions within the frame
+     */
     public void updateHandlePositions() {
         setRootHandleLocations();
     }
 
+    /**
+     * Change the dockable that is being floated
+     *
+     * @param dockable New floating dockable or null
+     */
     public void setFloatingDockable(Dockable dockable) {
         if (dockable == null) {
             pinWest.setVisible(false);
@@ -92,6 +106,11 @@ public class RootDockingHandles {
         pinSouth.setVisible(dockable.isAutoHideAllowed() && (dockable.getAutoHideStyle() == DockableStyle.BOTH || dockable.getAutoHideStyle() == DockableStyle.HORIZONTAL));
     }
 
+    /**
+     * The mouse has moved on screen, and we need to check its position against all the root docking handles
+     *
+     * @param mousePosOnScreen New mouse position on screen
+     */
     public void mouseMoved(Point mousePosOnScreen) {
         Point framePoint = new Point(mousePosOnScreen);
         SwingUtilities.convertPointFromScreen(framePoint, frame);

@@ -41,15 +41,23 @@ public class DockedSimplePanel extends DockingPanel {
 	 * Wrapper of the dockable in this simple panel
 	 */
 	private final DockableWrapper dockable;
-
+	/**
+	 * The docking instance this panel belongs to
+	 */
 	private final DockingAPI docking;
 
+	/**
+	 * The anchor this panel belongs to, if any
+	 */
 	private String anchor;
 
 	/**
 	 * Parent panel of this simple panel
 	 */
 	private DockingPanel parent;
+	/**
+	 * Should we add the 1 pixel empty border used by the active dockable highlighter?
+	 */
     private final boolean addHighlightBorder;
 
     /**

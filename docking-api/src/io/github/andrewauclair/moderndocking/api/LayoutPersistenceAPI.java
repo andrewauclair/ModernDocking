@@ -68,6 +68,11 @@ public class LayoutPersistenceAPI {
     private final XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
     private final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 
+    /**
+     * Create a new instance of the layout persistence API
+     *
+     * @param docking The docking instance this belongs to
+     */
     protected LayoutPersistenceAPI(DockingAPI docking) {
         this.docking = docking;
     }
@@ -103,6 +108,13 @@ public class LayoutPersistenceAPI {
         }
     }
 
+    /**
+     * Save the application layout to an output stream
+     *
+     * @param out The output stream to write the layout to
+     * @param layout The layout to save
+     * @throws XMLStreamException Thrown if there are any XML issues while saving
+     */
     public void saveLayoutToOutputStream(final OutputStream out, final  ApplicationLayout layout) throws XMLStreamException {
         XMLStreamWriter writer = outputFactory.createXMLStreamWriter(out);
 
@@ -152,6 +164,13 @@ public class LayoutPersistenceAPI {
         }
     }
 
+    /**
+     * Load an application layout from an input stream
+     *
+     * @param in The input stream to read from
+     * @return The new application layout
+     * @throws XMLStreamException Thrown if the XML is not properly formatted
+     */
     public ApplicationLayout loadApplicationLayoutFromInputStream(final InputStream in) throws XMLStreamException {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(in);
         try {
@@ -203,6 +222,14 @@ public class LayoutPersistenceAPI {
         }
     }
 
+    /**
+     * Save a window layout to a file
+     *
+     * @param file The file to save to
+     * @param layout The layout to save
+     *
+     * @return True if the file was successfully saved, false otherwise
+     */
     public boolean saveWindowLayoutToFile(File file, WindowLayout layout) {
         //noinspection ResultOfMethodCallIgnored
         file.getParentFile().mkdirs();

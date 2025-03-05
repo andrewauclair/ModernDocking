@@ -99,7 +99,13 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 	 */
 	protected boolean initialized = false;
 
+	/**
+	 * Override the background color of the header with a new color
+	 */
 	private Color backgroundOverride = null;
+	/**
+	 * Override the foreground color of the header with a new color
+	 */
 	private Color foregroundOverride = null;
 
 	/**

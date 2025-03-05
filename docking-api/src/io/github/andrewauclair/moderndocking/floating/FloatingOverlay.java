@@ -44,9 +44,13 @@ public class FloatingOverlay {
 
     private boolean visible = false;
 
-    // the top left location where the overlay starts
+    /**
+     * the top left location where the overlay starts
+     */
     private Point location = new Point(0, 0);
-    // the total size of the overlay, used for drawing
+    /**
+     * the total size of the overlay, used for drawing
+     */
     private Dimension size = new Dimension(0, 0);
     private Rectangle targetTab = null;
 
@@ -61,11 +65,19 @@ public class FloatingOverlay {
         this.utilFrame = utilFrame;
     }
 
+    /**
+     * Check if the overlay needs to be redrawn
+     *
+     * @return True if the overlay requires a redraw
+     */
     public boolean requiresRedraw() {
         return !location.equals(prevLocation) ||
                 !size.equals(prevSize);
     }
 
+    /**
+     * Overlay has been redrawn. Clear the flag
+     */
     public void clearRedraw() {
         prevLocation = location;
         prevSize = size;
@@ -221,6 +233,11 @@ public class FloatingOverlay {
         }
     }
 
+    /**
+     * Set the visibility of the overlay
+     *
+     * @param visible New visibility
+     */
     public void setVisible(boolean visible) {
         this.visible = visible;
     }

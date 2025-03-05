@@ -46,7 +46,13 @@ import javax.swing.UIManager;
  */
 public class TempFloatingFrame extends JFrame {
 	private static final int BORDER_SIZE = 2;
+	/**
+	 * The dockables that we are currently floating
+	 */
 	private final List<DockableWrapper> dockables;
+	/**
+	 * The selected index in the group of dockables
+	 */
 	private final int selectedIndex;
 
 	/**
