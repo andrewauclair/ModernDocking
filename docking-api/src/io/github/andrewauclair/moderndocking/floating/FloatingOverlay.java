@@ -38,10 +38,16 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+/**
+ * Utility for displaying the overlay highlight over the target frame while floating a dockable
+ */
 public class FloatingOverlay {
     // determines how close to the edge the user has to drag the panel before they see an overlay other than CENTER
     private static final double REGION_SENSITIVITY = 0.35;
 
+    /**
+     * Is this overlay visible?
+     */
     private boolean visible = false;
 
     /**
@@ -60,6 +66,12 @@ public class FloatingOverlay {
     private Point prevLocation = location;
     private Dimension prevSize = size;
 
+    /**
+     * Create a new overlay, attached to a utility frame
+     *
+     * @param docking The docking instance this overlay belongs to
+     * @param utilFrame The utility frame this overlay is tied to
+     */
     public FloatingOverlay(DockingAPI docking, JFrame utilFrame) {
         this.docking = docking;
         this.utilFrame = utilFrame;
@@ -83,6 +95,12 @@ public class FloatingOverlay {
         prevSize = size;
     }
 
+    /**
+     * Update the overlay for a new region in the root panel
+     *
+     * @param rootPanel The root panel that we're showing root handles in
+     * @param region The region of the handle the mouse is over
+     */
     public void updateForRoot(InternalRootDockingPanel rootPanel, DockingRegion region) {
         setVisible(true);
 

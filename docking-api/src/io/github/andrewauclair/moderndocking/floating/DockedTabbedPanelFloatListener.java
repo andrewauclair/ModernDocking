@@ -38,10 +38,23 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+/**
+ * Listener for drag events on tab groups
+ */
 public class DockedTabbedPanelFloatListener extends FloatListener {
     private final DockingAPI docking;
+    /**
+     * The tabbed panel we're listening to
+     */
     protected final DockedTabbedPanel tabs;
 
+    /**
+     * Create a new instance, tied to the tabbed panel
+     *
+     * @param docking The docking instance this listener belongs to
+     * @param tabs The tabbed panel to listen for drags on
+     * @param dragComponent The drag component to add the drag listener to
+     */
     public DockedTabbedPanelFloatListener(DockingAPI docking, DockedTabbedPanel tabs, JComponent dragComponent) {
         super(docking, tabs, dragComponent);
 

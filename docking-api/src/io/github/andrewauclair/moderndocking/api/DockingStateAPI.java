@@ -72,6 +72,9 @@ import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
+/**
+ * Utility class to get layouts from existing windows and to restore layouts onto existing windows
+ */
 public class DockingStateAPI {
     private static final Logger logger = Logger.getLogger(DockingStateAPI.class.getPackageName());
 
@@ -79,8 +82,14 @@ public class DockingStateAPI {
      * cached layout for when a maximized dockable is minimized
      */
     public final Map<Window, WindowLayout> maximizeRestoreLayout = new HashMap<>();
+
     private final DockingAPI docking;
 
+    /**
+     * Create a new instance for the given docking instance
+     *
+     * @param docking Docking instance this docking state belongs to
+     */
     protected DockingStateAPI(DockingAPI docking) {
         this.docking = docking;
     }

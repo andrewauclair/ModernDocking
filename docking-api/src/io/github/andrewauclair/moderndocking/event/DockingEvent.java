@@ -23,7 +23,13 @@ package io.github.andrewauclair.moderndocking.event;
 
 import io.github.andrewauclair.moderndocking.Dockable;
 
+/**
+ * Event used when a dockable is docked, undocked, shown, or hidden
+ */
 public class DockingEvent {
+    /**
+     * The ID of a docking event. Describes what type of event occurred
+     */
     public enum ID {
         /**
          * Dockable has been docked
@@ -57,19 +63,30 @@ public class DockingEvent {
     private final Dockable dockable;
 
     /**
+     * Create a new docking event
      *
-     * @param id
-     * @param dockable
+     * @param id The ID of the event
+     * @param dockable The dockable which has been effected
      */
     public DockingEvent(ID id, Dockable dockable) {
         this.id = id;
         this.dockable = dockable;
     }
 
+    /**
+     * The type of event that has occurred
+     *
+     * @return Event ID
+     */
     public ID getID() {
         return id;
     }
 
+    /**
+     * Get the dockable which has been effected
+     *
+     * @return Dockable for this event
+     */
     public Dockable getDockable() {
         return dockable;
     }

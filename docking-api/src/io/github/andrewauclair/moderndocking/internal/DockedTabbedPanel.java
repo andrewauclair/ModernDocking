@@ -68,12 +68,27 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 */
 	private final List<DockableWrapper> panels = new ArrayList<>();
 
+	/**
+	 * The listener using this tabbed panel
+	 */
 	private FloatListener floatListener;
+	/**
+	 * All the drag listeners tied to this tabbed panel
+	 */
 	private List<DragGestureListener> listeners = new ArrayList<>();
 
+	/**
+	 * The JTabbedPane to display
+	 */
 	private final CustomTabbedPane tabs = new CustomTabbedPane();
+	/**
+	 * The docking instance this tabbed panel is tied to
+	 */
 	private final DockingAPI docking;
 
+	/**
+	 * The anchor this tabbed panel belongs to
+	 */
 	private String anchor;
 
 	/**
@@ -474,14 +489,31 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		}
 	}
 
+	/**
+	 * Check if this tabbed panel is using top tabs
+	 *
+	 * @return Are the tabs placed on the top?
+	 */
 	public boolean isUsingTopTabs() {
 		return tabs.getTabPlacement() == JTabbedPane.TOP;
 	}
 
+	/**
+	 * Check if this tabbed panel is using bottom tabs
+	 *
+	 * @return Are the tabs placed on the bottom?
+	 */
 	public boolean isUsingBottomTabs() {
 		return tabs.getTabPlacement() == JTabbedPane.BOTTOM;
 	}
 
+	/**
+	 * Get the tab component for a dockable
+	 *
+	 * @param wrapper The dockable to find
+	 *
+	 * @return The tab component or null
+	 */
 	public Component getTabForDockable(DockableWrapper wrapper) {
 		for (int i = 0; i < panels.size(); i++) {
 			DockableWrapper panel = panels.get(i);
@@ -515,6 +547,12 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		return tabs.getTargetTabIndex(mousePosOnScreen, false);
 	}
 
+	/**
+	 * Get the index of a specific panel
+	 *
+	 * @param displayPanel The panel to look for
+	 * @return The index of the panel or -1 if not found
+	 */
 	public int getIndexOfPanel(DisplayPanel displayPanel) {
 		for (int i = 0; i < panels.size(); i++) {
 			if (panels.get(i).getDisplayPanel() == displayPanel) {
@@ -524,6 +562,13 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		return -1;
 	}
 
+	/**
+	 * Check if a drag has started in the "gutter" of a tabbed panel
+	 *
+	 * @param point The point of the drag
+	 *
+	 * @return Are we dragging from the tabbed panel?
+	 */
 	public boolean isDraggingFromTabGutter(Point point) {
 		Rectangle boundsAt = tabs.getBoundsAt(0);
 

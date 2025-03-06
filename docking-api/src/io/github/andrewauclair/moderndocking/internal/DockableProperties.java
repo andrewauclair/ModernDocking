@@ -154,10 +154,23 @@ public class DockableProperties {
     }
 
     // throws if validation failed
+
+    /**
+     * Validate a property instance
+     *
+     * @param field The field for the property
+     * @param property The docking property annotation
+     */
     public static void validateProperty(Field field, DockingProperty property) {
         createProperty(field, property);
     }
 
+    /**
+     * Validate a property
+     *
+     * @param field The field for the property
+     * @param property The internal property instance
+     */
     public static void validateProperty(Field field, Property property) {
         Objects.requireNonNull(field);
         Objects.requireNonNull(property);

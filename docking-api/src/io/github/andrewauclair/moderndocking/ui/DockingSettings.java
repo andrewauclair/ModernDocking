@@ -143,6 +143,11 @@ public class DockingSettings {
         currentOverlayBackground = property;
     }
 
+    /**
+     * Get the overlay background color
+     *
+     * @return Overlay background color
+     */
     public static Color getOverlayBackground() {
         if (UIManager.get(currentOverlayBackground) != null) {
             return UIManager.getColor(currentOverlayBackground);
@@ -162,6 +167,11 @@ public class DockingSettings {
         currentHighlightSelectedBorder = property;
     }
 
+    /**
+     * Get the selected border color for the active dockable highlighter
+     *
+     * @return Selected border color
+     */
     public static Color getHighlighterSelectedBorder() {
         if (UIManager.get(currentHighlightSelectedBorder) != null) {
             return UIManager.getColor(currentHighlightSelectedBorder);
@@ -172,10 +182,20 @@ public class DockingSettings {
         return defaultHighlightColor;
     }
 
+    /**
+     * Define a color property to use when a panel is not highlighted by the active dockable highlighter
+     *
+     * @param property UIManager property name to use for not selected border color
+     */
     public static void setHighlighterNotSelectedBorderProperty(String property) {
         currentHighlightNotSelectedBorder = property;
     }
 
+    /**
+     * Get the not selected border color for the active dockable highlighter
+     *
+     * @return Highlighter not selected border color
+     */
     public static Color getHighlighterNotSelectedBorder() {
         if (UIManager.get(currentHighlightNotSelectedBorder) != null) {
             return UIManager.getColor(currentHighlightNotSelectedBorder);

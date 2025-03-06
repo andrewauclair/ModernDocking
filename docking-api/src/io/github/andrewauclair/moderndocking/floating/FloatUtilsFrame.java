@@ -50,18 +50,51 @@ import javax.swing.SwingUtilities;
  * A special invisible frame that's used to provide docking handles and overlays
  */
 public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener, ComponentListener {
+    /**
+     * The window this utility frame is tied to
+     */
     private final Window referenceDockingWindow;
+    /**
+     * The internal root of the reference docking window
+     */
     private final InternalRootDockingPanel root;
+    /**
+     * The root docking handles to render
+     */
     private final RootDockingHandles rootHandles;
+    /**
+     * The overlay to render
+     */
     private final FloatingOverlay overlay;
 
+    /**
+     * The active floating listener
+     */
     private FloatListener floatListener;
+    /**
+     * The temporary frame used for floating
+     */
     private JFrame floatingFrame;
+    /**
+     * The source of the drag that was started
+     */
     private DragSource dragSource;
+    /**
+     * The currently floating dockable
+     */
     private Dockable currentDockable;
+    /**
+     * Handles to display on target dockables
+     */
     private DockableHandles dockableHandles;
 
-    BufferStrategy bs; //create an strategy for multi-buffering.
+    /**
+     * create a strategy for multi-buffering.
+     */
+    BufferStrategy bs;
+    /**
+     * Render panel used to render the utilities. Do this so we're not painting directly onto the transparent frame
+     */
     JPanel renderPanel = new JPanel() {
         @Override
         protected void paintComponent(Graphics g) {
@@ -329,6 +362,11 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         return overlay.isOverTab();
     }
 
+    /**
+     * Get the handle the mouse is over in the target dockable
+     *
+     * @return Region in the target dockable or null
+     */
     public DockingRegion dockableHandle() {
         if (dockableHandles == null) {
             return null;

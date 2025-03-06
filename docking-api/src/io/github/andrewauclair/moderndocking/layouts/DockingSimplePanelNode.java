@@ -154,6 +154,11 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 		return persistentID;
 	}
 
+	/**
+	 * The name of the class of the application dockable panel
+	 *
+	 * @return Class name
+	 */
 	public String getClassName() {
 		return className;
 	}
