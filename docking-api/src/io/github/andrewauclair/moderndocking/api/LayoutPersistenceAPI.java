@@ -87,19 +87,18 @@ public class LayoutPersistenceAPI {
     public void saveLayoutToFile(File file, ApplicationLayout layout) throws DockingLayoutException {
         // create the file if it doens't exist
         try {
+            // make sure all the required directories exist
+            if (file.getParentFile() != null) {
+                //noinspection ResultOfMethodCallIgnored
+                file.getParentFile().mkdirs();
+            }
+
             //noinspection ResultOfMethodCallIgnored
             file.createNewFile();
         }
         catch (IOException e) {
             throw new DockingLayoutException(file, DockingLayoutException.FailureType.SAVE, e);
         }
-
-        // make sure all the required directories exist
-        if (file.getParentFile() != null) {
-            //noinspection ResultOfMethodCallIgnored
-            file.getParentFile().mkdirs();
-        }
-
 
         try (OutputStream out = Files.newOutputStream(file.toPath())) {
             saveLayoutToOutputStream(out, layout);
