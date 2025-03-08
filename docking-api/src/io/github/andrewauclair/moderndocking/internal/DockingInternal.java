@@ -418,10 +418,10 @@ public class DockingInternal {
 				.filter(d -> docking.isDocked(d))
 				.filter(d -> getWrapper(d).getAnchor() == anchor)
 				.sorted((o1, o2) -> {
-                    Dimension sizeA = ((JComponent) getWrapper(o1).getParent()).getSize();
-                    Dimension sizeB = ((JComponent) getWrapper(o2).getParent()).getSize();
+                    Dimension sizeA = getWrapper(o1).getParent().getSize();
+                    Dimension sizeB = getWrapper(o2).getParent().getSize();
 
-                    return Integer.compare(sizeA.height * sizeA.width, sizeB.height * sizeB.width);
+                    return Integer.compare(sizeB.height * sizeB.width, sizeA.height * sizeA.width);
                 })
 				.findFirst();
 

@@ -41,6 +41,7 @@ import java.util.Map;
 public class DockableWrapper {
 	private final HeaderController headerController;
 	private Window window;
+	// TODO this is suddenly very confusing to me. This is really just the display panel it's connected to. which for simple panels is direct, but for tabbed, it's not
 	private DockingPanel parent = null;
 	private final Dockable dockable;
 	private final DockingAPI docking;
