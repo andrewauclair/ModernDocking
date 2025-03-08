@@ -24,6 +24,7 @@ package io.github.andrewauclair.moderndocking.layouts;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.Property;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
+import io.github.andrewauclair.moderndocking.internal.DockingInternal;
 import io.github.andrewauclair.moderndocking.settings.Settings;
 import java.util.Collections;
 import java.util.HashMap;

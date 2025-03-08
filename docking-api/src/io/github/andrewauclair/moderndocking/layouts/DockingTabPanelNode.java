@@ -97,7 +97,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 
 		if (className.isEmpty()) {
 			try {
-				className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();
+				className = DockingInternal.get(docking).getDockable(persistentID).getClass().getTypeName();
 			}
 			catch (Exception ignored) {
 			}
@@ -134,7 +134,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 
 		if (className.isEmpty()) {
 			try {
-				className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();
+				className = DockingInternal.get(docking).getDockable(persistentID).getClass().getTypeName();
 			}
 			catch (Exception ignored) {
 			}
@@ -213,7 +213,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(docking, persistentID, "", anchor);
 			}
 			else {
-				String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getCanonicalName();
+				String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getTypeName();
 
 				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(docking, persistentID, className, anchor) : this;
 				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(docking, persistentID, className, anchor);

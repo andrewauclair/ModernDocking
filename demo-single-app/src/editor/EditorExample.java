@@ -10,8 +10,15 @@ import io.github.andrewauclair.moderndocking.app.AppState;
 import io.github.andrewauclair.moderndocking.app.Docking;
 import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
 import io.github.andrewauclair.moderndocking.app.WindowLayoutBuilder;
+import io.github.andrewauclair.moderndocking.event.DockingEvent;
+import io.github.andrewauclair.moderndocking.event.DockingListener;
 import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
 
+import io.github.andrewauclair.moderndocking.ui.DefaultDockingPanel;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Scanner;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -22,12 +29,14 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 
 public class EditorExample {
-    public static class FilePanel extends JPanel implements Dockable {
+    public static class FilePanel extends JPanel implements Dockable, DockingListener {
         private File file;
 
         @DockingProperty(name = "file-path", required = true, defaultValue = "")
         private String filePath;
         private DynamicDockableParameters parameters;
+
+        private final JTextArea area = new JTextArea();
 
         public FilePanel(File file) {
             parameters = new DynamicDockableParameters(file.getName(), file.getName(), file.getName());
@@ -36,6 +45,18 @@ public class EditorExample {
 
             this.file = file;
             filePath = file.getAbsolutePath();
+
+            area.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+
+            setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.weightx = 1;
+            gbc.weighty = 1;
+            gbc.fill = GridBagConstraints.BOTH;
+
+            add(new JScrollPane(area), gbc);
+
+            displayFileContents();
         }
 
         public FilePanel(DynamicDockableParameters parameters) {
@@ -44,9 +65,22 @@ public class EditorExample {
             Docking.registerDockable(this);
         }
 
+        private void displayFileContents() {
+            try (FileInputStream input = new FileInputStream(file)) {
+                Scanner scanner = new Scanner(input);
+
+                while (scanner.hasNext()) {
+                    area.append(scanner.nextLine() + '\n');
+                }
+            }
+            catch (IOException e) {
+            }
+        }
+
         @Override
         public void updateProperties() {
             file = new File(filePath);
+            displayFileContents();
         }
 
         @Override
@@ -57,6 +91,15 @@ public class EditorExample {
         @Override
         public String getTabText() {
             return parameters.getTabText();
+        }
+
+        @Override
+        public void dockingChange(DockingEvent e) {
+            // TODO what's the right way to deregister when we close a dockable?
+//            if (e.getID() == DockingEvent.ID.UNDOCKED) {
+//                Docking.deregisterDockable(this);
+//                Docking.removeDockingListener(this);
+//            }
         }
     }
 
@@ -98,7 +141,25 @@ public class EditorExample {
             tree.setCellRenderer(new DefaultTreeCellRenderer() {
                 @Override
                 public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-                    return super.getTreeCellRendererComponent(tree, ((File) value).getName(), sel, expanded, leaf, row, hasFocus);
+                    Component comp = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+
+                    if (comp instanceof JLabel) {
+                        DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+                        File file = (File) node.getUserObject();
+                        if (file != null) {
+                            ((JLabel) comp).setText(file.getName());
+                        }
+                    }
+
+                    if(sel && !hasFocus) {
+                        setBackgroundSelectionColor(UIManager.getColor("Panel.background"));
+                        setTextSelectionColor(UIManager.getColor("Panel.foreground"));
+                    }
+                    else {
+                        setTextSelectionColor(UIManager.getColor("Tree.selectionForeground"));
+                        setBackgroundSelectionColor(UIManager.getColor("Tree.selectionBackground"));
+                    }
+                    return comp;
                 }
             });
 
@@ -108,7 +169,14 @@ public class EditorExample {
                     if (e.getClickCount() == 2) {
                         int row = tree.getRowForLocation(e.getX(), e.getY());
                         TreePath path = tree.getPathForRow(row);
-                        new FilePanel((File) path.getLastPathComponent());
+                        if (path != null) {
+                            DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+                            File file = (File) node.getUserObject();
+                            if (file.isFile()) {
+                                FilePanel panel = new FilePanel(file);
+                                Docking.dock(panel, "files", DockingRegion.CENTER);
+                            }
+                        }
                     }
                 }
             });
@@ -131,10 +199,12 @@ public class EditorExample {
             }
 
             for (File file : folder.listFiles()) {
-                DefaultMutableTreeNode child = new DefaultMutableTreeNode(file);
-                fileNode.add(child);
                 if (file.isDirectory()) {
-                    addFiles(file, child);
+                    addFiles(file, fileNode);
+                }
+                else {
+                    DefaultMutableTreeNode child = new DefaultMutableTreeNode(file);
+                    fileNode.add(child);
                 }
             }
         }
@@ -191,11 +261,18 @@ public class EditorExample {
             AppState.setAutoPersist(true);
             AppState.setPersistFile(new File(System.getProperty("java.io.tmpdir") + "/editor-example-layout.xml"));
 
+//            AppState.setDefaultApplicationLayout(
+//                    new WindowLayoutBuilder("info")
+//                    .dock("folder", "info", DockingRegion.NORTH)
+//                    .dock("files", "folder", DockingRegion.EAST)
+//                    .buildApplicationLayout()
+//            );
+
             AppState.setDefaultApplicationLayout(
                     new WindowLayoutBuilder("info")
-                    .dock("folder", "info", DockingRegion.NORTH)
-                    .dock("files", "folder", DockingRegion.EAST)
-                    .buildApplicationLayout()
+                            .dock("folder", "info", DockingRegion.NORTH)
+                            .dock("files", "folder", DockingRegion.EAST)
+                            .buildApplicationLayout()
             );
 
             try {

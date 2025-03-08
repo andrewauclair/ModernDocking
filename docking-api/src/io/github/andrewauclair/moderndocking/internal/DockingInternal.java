@@ -23,6 +23,7 @@ package io.github.andrewauclair.moderndocking.internal;
 
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockingProperty;
+import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.exception.DockableNotFoundException;
@@ -33,16 +34,19 @@ import io.github.andrewauclair.moderndocking.ui.DefaultHeaderUI;
 import io.github.andrewauclair.moderndocking.ui.DockingHeaderUI;
 import io.github.andrewauclair.moderndocking.ui.HeaderController;
 import io.github.andrewauclair.moderndocking.ui.HeaderModel;
+import java.awt.Dimension;
 import java.awt.Window;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -287,6 +291,10 @@ public class DockingInternal {
 		return dockables.containsKey(persistentID);
 	}
 
+	public boolean hasAnchor(String persistentID) {
+		return anchors.containsKey(persistentID);
+	}
+
 	/**
 	 * Find a dockable with the given persistent ID
 	 * @param persistentID persistent ID to search for
@@ -403,5 +411,22 @@ public class DockingInternal {
 	 */
 	public DockableWrapper getAnchor(String anchor) {
 		return anchors.get(anchor);
+	}
+
+	public void dockToLargestAnchorPanel(Dockable dockable, String anchor) {
+		Optional<Dockable> biggest = docking.getDockables().stream()
+				.filter(d -> docking.isDocked(d))
+				.filter(d -> getWrapper(d).getAnchor() == anchor)
+				.sorted((o1, o2) -> {
+                    Dimension sizeA = ((JComponent) getWrapper(o1).getParent()).getSize();
+                    Dimension sizeB = ((JComponent) getWrapper(o2).getParent()).getSize();
+
+                    return Integer.compare(sizeA.height * sizeA.width, sizeB.height * sizeB.width);
+                })
+				.findFirst();
+
+		if (biggest.isPresent()) {
+			docking.dock(dockable, biggest.get(), DockingRegion.CENTER);
+		}
 	}
 }

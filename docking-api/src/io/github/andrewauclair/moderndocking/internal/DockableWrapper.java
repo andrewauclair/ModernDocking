@@ -45,9 +45,12 @@ public class DockableWrapper {
 	private final Dockable dockable;
 	private final DockingAPI docking;
 
+	private String anchor = null;
+
 	private final DockingHeaderUI headerUI;
 
 	private final DisplayPanel displayPanel;
+	private DockingPanel internalPanel;
 
 	private final FloatListener floatListener;
 
@@ -191,6 +194,14 @@ public class DockableWrapper {
 		return isAnchor;
 	}
 
+	public String getAnchor() {
+		return anchor;
+	}
+
+	public void setAnchor(String anchor) {
+		this.anchor = anchor;
+	}
+
 	/**
 	 * Get the header UI of the dockable
 	 *
@@ -207,6 +218,14 @@ public class DockableWrapper {
 	 */
 	public DisplayPanel getDisplayPanel() {
 		return displayPanel;
+	}
+
+	public DockingPanel getInternalPanel() {
+		return internalPanel;
+	}
+
+	public void setInternalPanel(DockingPanel panel) {
+		this.internalPanel = panel;
 	}
 
 	/**

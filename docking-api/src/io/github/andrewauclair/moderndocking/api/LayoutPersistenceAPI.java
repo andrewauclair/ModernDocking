@@ -134,7 +134,7 @@ public class LayoutPersistenceAPI {
             if (!docking.isDocked(dockable)) {
                 DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 
-                writeSimpleNodeToFile(writer, new DockingSimplePanelNode(docking, dockable.getPersistentID(), dockable.getClass().getCanonicalName(), "", DockableProperties.saveProperties(wrapper)));
+                writeSimpleNodeToFile(writer, new DockingSimplePanelNode(docking, dockable.getPersistentID(), dockable.getClass().getTypeName(), "", DockableProperties.saveProperties(wrapper)));
             }
         }
 
@@ -340,7 +340,7 @@ public class LayoutPersistenceAPI {
     private void writeSimpleNodeToFile(XMLStreamWriter writer, DockingSimplePanelNode node) throws XMLStreamException {
         writer.writeStartElement("simple");
         writer.writeAttribute("persistentID", node.getPersistentID());
-        writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(node.getPersistentID()).getClass().getCanonicalName());
+        writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(node.getPersistentID()).getClass().getTypeName());
         if (node.getAnchor() != null) {
             writer.writeAttribute("anchor", node.getAnchor());
         }
@@ -396,7 +396,7 @@ public class LayoutPersistenceAPI {
         writer.writeCharacters(NL);
 
         writer.writeStartElement("selectedTab");
-        writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(node.getSelectedTabID()).getClass().getCanonicalName());
+        writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(node.getSelectedTabID()).getClass().getTypeName());
         writer.writeAttribute("persistentID", node.getSelectedTabID());
         writer.writeCharacters(NL);
         writer.writeEndElement();
@@ -405,7 +405,7 @@ public class LayoutPersistenceAPI {
         for (DockingSimplePanelNode simpleNode : node.getPersistentIDs()) {
             writer.writeStartElement("tab");
             writer.writeAttribute("persistentID", simpleNode.getPersistentID());
-            writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(simpleNode.getPersistentID()).getClass().getCanonicalName());
+            writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(simpleNode.getPersistentID()).getClass().getTypeName());
             writer.writeCharacters(NL);
 
             writer.writeStartElement("properties");
@@ -443,7 +443,7 @@ public class LayoutPersistenceAPI {
     private void writeAnchorNodeToFile(XMLStreamWriter writer, DockingAnchorPanelNode node) throws XMLStreamException {
         writer.writeStartElement("anchor");
         writer.writeAttribute("persistentID", node.getPersistentID());
-        writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(node.getPersistentID()).getClass().getCanonicalName());
+        writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(node.getPersistentID()).getClass().getTypeName());
         writer.writeCharacters(NL);
 
         writer.writeEndElement();

@@ -53,11 +53,15 @@ public class DockingAnchorPanelNode implements DockingLayoutNode {
 
     @Override
     public DockingLayoutNode findNode(String persistentID) {
+        if (this.persistentID.equals(persistentID)) {
+            return this;
+        }
         return null;
     }
 
     @Override
     public void dock(String persistentID, DockingRegion region, double dividerProportion) {
+        // TODO I think we need to handle something here
     }
 
     @Override

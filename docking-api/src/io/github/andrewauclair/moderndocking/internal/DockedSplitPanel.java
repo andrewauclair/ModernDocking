@@ -234,6 +234,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	public void setLeft(DockingPanel panel) {
 		left = panel;
 		left.setParent(this);
+//		left.setAnchor(anchor);
 
 		// remember where the divider was and put it back
 		int dividerLocation = splitPane.getDividerLocation();
@@ -260,6 +261,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	public void setRight(DockingPanel panel) {
 		right = panel;
 		right.setParent(this);
+//		right.setAnchor(anchor);
 
 		// remember where the divider was and put it back
 		int dividerLocation = splitPane.getDividerLocation();

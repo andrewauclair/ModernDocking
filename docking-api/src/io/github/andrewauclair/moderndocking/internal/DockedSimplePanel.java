@@ -101,6 +101,7 @@ public class DockedSimplePanel extends DockingPanel {
 		}
 
 		dockable.setParent(this);
+		dockable.setAnchor(anchor);
 
 		this.dockable = dockable;
 		this.docking = docking;

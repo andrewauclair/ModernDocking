@@ -380,6 +380,10 @@ public class DockingStateAPI {
 
         wrapper.setWindow(window);
 
+        if (wrapper.isAnchor()) {
+            return new DockedAnchorPanel(docking, wrapper);
+        }
+
         if (Settings.alwaysDisplayTabsMode() || dockable.getTabPreference() == DockableTabPreference.TOP) {
             return new DockedTabbedPanel(docking, wrapper, node.getAnchor());
         }

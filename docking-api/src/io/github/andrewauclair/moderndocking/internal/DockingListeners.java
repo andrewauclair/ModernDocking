@@ -72,7 +72,8 @@ public class DockingListeners {
 	 * @param maximized New maximized state
 	 */
 	public static void fireMaximizeEvent(Dockable dockable, boolean maximized) {
-		maximizeListeners.forEach(listener -> listener.maximized(dockable, maximized));
+		List<MaximizeListener> listeners = new ArrayList<>(maximizeListeners);
+		listeners.forEach(listener -> listener.maximized(dockable, maximized));
 	}
 
 	/**
@@ -120,7 +121,8 @@ public class DockingListeners {
 	 * @param root The root of the frame
 	 */
 	public static void fireNewFloatingFrameEvent(JFrame frame, RootDockingPanelAPI root) {
-		newFloatingFrameListeners.forEach(listener -> listener.newFrameCreated(frame, root));
+		List<NewFloatingFrameListener> listeners = new ArrayList<>(newFloatingFrameListeners);
+		listeners.forEach(listener -> listener.newFrameCreated(frame, root));
 	}
 
 	/**
@@ -131,7 +133,8 @@ public class DockingListeners {
 	 * @param dockable The dockable in the frame
 	 */
 	public static void fireNewFloatingFrameEvent(JFrame frame, RootDockingPanelAPI root, Dockable dockable) {
-		newFloatingFrameListeners.forEach(listener -> listener.newFrameCreated(frame, root, dockable));
+		List<NewFloatingFrameListener> listeners = new ArrayList<>(newFloatingFrameListeners);
+		listeners.forEach(listener -> listener.newFrameCreated(frame, root, dockable));
 	}
 
 	/**
@@ -140,7 +143,8 @@ public class DockingListeners {
 	 * @param dockable Dockable that was docked
 	 */
 	public static void fireDockedEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.DOCKED, dockable)));
+		List<DockingListener> listeners = new ArrayList<>(dockingListeners);
+		listeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.DOCKED, dockable)));
 	}
 
 	/**
@@ -149,7 +153,8 @@ public class DockingListeners {
 	 * @param dockable Dockable that was undocked
 	 */
 	public static void fireUndockedEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.UNDOCKED, dockable)));
+		List<DockingListener> listeners = new ArrayList<>(dockingListeners);
+		listeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.UNDOCKED, dockable)));
 	}
 
 	/**
@@ -158,7 +163,8 @@ public class DockingListeners {
 	 * @param dockable Dockable that was auto hide enabled
 	 */
 	public static void fireAutoShownEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.AUTO_HIDE_ENABLED, dockable)));
+		List<DockingListener> listeners = new ArrayList<>(dockingListeners);
+		listeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.AUTO_HIDE_ENABLED, dockable)));
 	}
 
 	/**
@@ -167,7 +173,8 @@ public class DockingListeners {
 	 * @param dockable Dockable that was auto hide disabled
 	 */
 	public static void fireAutoHiddenEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.AUTO_HIDE_DISABLED, dockable)));
+		List<DockingListener> listeners = new ArrayList<>(dockingListeners);
+		listeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.AUTO_HIDE_DISABLED, dockable)));
 	}
 
 	/**
@@ -176,7 +183,8 @@ public class DockingListeners {
 	 * @param dockable Dockable that was shown
 	 */
 	public static void fireShownEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.SHOWN, dockable)));
+		List<DockingListener> listeners = new ArrayList<>(dockingListeners);
+		listeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.SHOWN, dockable)));
 	}
 
 	/**
@@ -185,7 +193,8 @@ public class DockingListeners {
 	 * @param dockable Dockable that was hidden
 	 */
 	public static void fireHiddenEvent(Dockable dockable) {
-		dockingListeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.HIDDEN, dockable)));
+		List<DockingListener> listeners = new ArrayList<>(dockingListeners);
+		listeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.HIDDEN, dockable)));
 	}
 
 	/**
@@ -194,6 +203,7 @@ public class DockingListeners {
 	 * @param e Docking event to fire
 	 */
 	public static void fireDockingEvent(DockingEvent e) {
-		dockingListeners.forEach(listener -> listener.dockingChange(e));
+		List<DockingListener> listeners = new ArrayList<>(dockingListeners);
+		listeners.forEach(listener -> listener.dockingChange(e));
 	}
 }

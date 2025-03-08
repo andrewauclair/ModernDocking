@@ -176,7 +176,7 @@ public class DockingLayouts {
 
 			Map<String, Property> properties = DockableProperties.saveProperties(wrapper);
 
-			node = new DockingSimplePanelNode(docking, wrapper.getDockable().getPersistentID(), wrapper.getDockable().getClass().getCanonicalName(), panel.getAnchor(), properties);
+			node = new DockingSimplePanelNode(docking, wrapper.getDockable().getPersistentID(), wrapper.getDockable().getClass().getTypeName(), panel.getAnchor(), properties);
 		}
 		else if (panel instanceof DockedSplitPanel) {
 			node = splitPanelToNode(docking, (DockedSplitPanel) panel);
@@ -187,7 +187,7 @@ public class DockingLayouts {
 		else if (panel instanceof DockedAnchorPanel) {
 			DockableWrapper wrapper = ((DockedAnchorPanel) panel).getWrapper();
 
-			node = new DockingAnchorPanelNode(docking, wrapper.getDockable().getPersistentID(), wrapper.getClass().getCanonicalName());
+			node = new DockingAnchorPanelNode(docking, wrapper.getDockable().getPersistentID(), wrapper.getClass().getTypeName());
 		}
 		else if (panel == null) {
 			// the main frame root node contains a null panel if there is nothing docked

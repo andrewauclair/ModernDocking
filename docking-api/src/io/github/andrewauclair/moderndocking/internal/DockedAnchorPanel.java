@@ -79,16 +79,21 @@ public class DockedAnchorPanel extends DockingPanel {
         // when docking to an anchor we replace the anchor with the new dockable always
         DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 
-        DockingPanel newPanel;
+        if (parent.getChildren().contains(this)) {
+            DockingPanel newPanel;
 
-        if (Settings.alwaysDisplayTabsMode()) {
-            newPanel = new DockedTabbedPanel(docking, wrapper, anchor.getDockable().getPersistentID());
+            if (Settings.alwaysDisplayTabsMode()) {
+                newPanel = new DockedTabbedPanel(docking, wrapper, anchor.getDockable().getPersistentID());
+            }
+            else {
+                newPanel = new DockedSimplePanel(docking, wrapper, anchor.getDockable().getPersistentID());
+            }
+            parent.replaceChild(this, newPanel);
         }
         else {
-            newPanel = new DockedSimplePanel(docking, wrapper, anchor.getDockable().getPersistentID());
+            // find the largest dockable on screen that references this anchor
+            DockingInternal.get(docking).dockToLargestAnchorPanel(dockable, anchor.getDockable().getPersistentID());
         }
-
-        parent.replaceChild(this, newPanel);
     }
 
     @Override

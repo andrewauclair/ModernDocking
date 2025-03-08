@@ -278,6 +278,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		}
 
 		dockable.setParent(this);
+		dockable.setAnchor(anchor);
 	}
 
 	/**
@@ -402,7 +403,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		removePanel(DockingInternal.get(docking).getWrapper(dockable));
 
 		if (!Floating.isFloatingTabbedPane() && !Settings.alwaysDisplayTabsMode() && panels.size() == 1 && parent != null && panels.get(0).getDockable().getTabPreference() != DockableTabPreference.TOP) {
-			parent.replaceChild(this, new DockedSimplePanel(docking, panels.get(0), null));
+			parent.replaceChild(this, new DockedSimplePanel(docking, panels.get(0), anchor));
 		}
 
 		// protect against bad instances when failing to restore a layout
