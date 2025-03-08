@@ -142,8 +142,13 @@ public class AppStateAPI {
 					if (!paused && docking.getRootPanels().containsKey(docking.getMainWindow())) {
 						ApplicationLayout layout = docking.getDockingState().getApplicationLayout();
 
+						/*
+						Remember the size of all windows before they were minimized or maximized
+						This allows us to return to the normal state after restoring a layout and have the proper size
+						Without this change the window would remain nearly full screen, but in the NORMAL state
+						 */
 						if (lastPersistedLayout != null) {
-							if (layout.getMainFrameLayout().getState() != Frame.NORMAL){
+							if (layout.getMainFrameLayout().getState() != Frame.NORMAL) {
 								// set position and size of all frames into the new layout
 								layout.getMainFrameLayout().setLocation(lastPersistedLayout.getMainFrameLayout().getLocation());
 								layout.getMainFrameLayout().setSize(lastPersistedLayout.getMainFrameLayout().getSize());
