@@ -144,8 +144,8 @@ public class RootDockingHandles {
     }
 
     private void setRootHandleLocations() {
-        Point location = rootPanel.getLocation();
-        Dimension size = rootPanel.getSize();
+        Point location = rootPanel.getRootPanel().getLocation();
+        Dimension size = rootPanel.getRootPanel().getSize();
         location.x += size.width / 2;
         location.y += size.height / 2;
 
