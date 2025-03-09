@@ -215,7 +215,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         // hide the overlay. it will be marked visible again if we update it
         overlay.setVisible(false);
 
-        if (!referenceDockingWindow.getBounds().contains(mousePosOnScreen)) {
+        if (!referenceDockingWindow.contains(mousePosOnScreen)) {
             return;
         }
 

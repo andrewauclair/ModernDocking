@@ -41,6 +41,8 @@ public class DockingHandle extends JLabel {
 	 */
 	public static final int HANDLE_ICON_SIZE = 32;
 
+	private static final Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
+
 	/**
 	 * The region that this docking handle display is drawing
 	 */
@@ -149,8 +151,6 @@ public class DockingHandle extends JLabel {
 			return;
 		}
 
-		Rectangle bounds = getBounds();
-
 		Color background = DockingSettings.getHandleBackground();
 		Color hover = DockingSettings.getHandleForeground();
 		Color outline = DockingSettings.getHandleForeground();
@@ -163,10 +163,10 @@ public class DockingHandle extends JLabel {
 		}
 
 		if (mouseOver && isPin) {
-			int quarterWidth = bounds.width / 4;
+			int quarterWidth = getWidth() / 4;
 			int x1 = getX() + quarterWidth;
 
-			g2.fillRect(x1, bounds.y, bounds.width / 2, bounds.height / 2);
+			g2.fillRect(x1, getY(), getWidth() / 2, getHeight() / 2);
 		}
 		else if (mouseOver) {
 			g2.setColor(hover);
@@ -185,19 +185,19 @@ public class DockingHandle extends JLabel {
 			drawRootOutline(g2);
 		}
 		else if (isPin) {
-			int quarterWidth = bounds.width / 4;
+			int quarterWidth = getWidth() / 4;
 			int x1 = getX() + quarterWidth;
 
-			g2.drawLine(x1, bounds.y, x1 + (bounds.width / 2), bounds.y);
-			g2.drawLine(x1, bounds.y+ (bounds.height / 2), x1 + (bounds.width / 2), bounds.y+ (bounds.height / 2));
+			g2.drawLine(x1, getY(), x1 + (getWidth() / 2), getY());
+			g2.drawLine(x1, getY()+ (getHeight() / 2), x1 + (getWidth() / 2), getY()+ (getHeight() / 2));
 
-			g2.drawLine(x1, bounds.y, x1, bounds.y + (bounds.height / 2));
-			g2.drawLine(x1 + (bounds.width / 2), bounds.y, x1 + (bounds.width / 2), bounds.y + (bounds.height / 2));
+			g2.drawLine(x1, getY(), x1, getY() + (getHeight() / 2));
+			g2.drawLine(x1 + (getWidth() / 2), getY(), x1 + (getWidth() / 2), getY() + (getHeight() / 2));
 
-			g2.drawLine(x1 + quarterWidth, bounds.y + (bounds.height / 2), x1 + quarterWidth, bounds.y + (bounds.height));
+			g2.drawLine(x1 + quarterWidth, getY() + (getHeight() / 2), x1 + quarterWidth, getY() + (getHeight()));
 		}
 		else {
-			g2.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+			g2.drawRect(getX(), getY(), getWidth(), getHeight());
 		}
 	}
 
@@ -218,21 +218,19 @@ public class DockingHandle extends JLabel {
 	}
 
 	private void drawRootOutline(Graphics g) {
-		Rectangle bounds = getBounds();
-
 		boolean north = region == DockingRegion.NORTH;
 		boolean south = region == DockingRegion.SOUTH;
 		boolean east = region == DockingRegion.EAST;
 
-		int halfWidth = bounds.width / 2;
+		int halfWidth = getWidth() / 2;
 
-		int x = east ? bounds.x + halfWidth : bounds.x;
-		int y = south ? bounds.y + halfWidth : bounds.y;
-		int width = north || south ? bounds.width : halfWidth;
-		int height = north || south ? halfWidth : bounds.height;
+		int x = east ? getX() + halfWidth : getX();
+		int y = south ? getY() + halfWidth : getY();
+		int width = north || south ? getWidth() : halfWidth;
+		int height = north || south ? halfWidth : getHeight();
 
 		if (region == DockingRegion.CENTER) {
-			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+			g.drawRect(getX(), getY(), getWidth(), getHeight());
 		}
 		else {
 			g.drawRect(x, y, width, height);
@@ -240,21 +238,19 @@ public class DockingHandle extends JLabel {
 	}
 
 	private void fillMouseOverRegion(Graphics g) {
-		Rectangle bounds = getBounds();
-
 		boolean north = region == DockingRegion.NORTH;
 		boolean south = region == DockingRegion.SOUTH;
 		boolean east = region == DockingRegion.EAST;
 
-		int halfWidth = bounds.width / 2;
+		int halfWidth = getWidth() / 2;
 
-		int x = east ? bounds.x + halfWidth : bounds.x;
-		int y = south ? bounds.y + halfWidth : bounds.y;
-		int width = north || south ? bounds.width : halfWidth;
-		int height = north || south ? halfWidth : bounds.height;
+		int x = east ? getX() + halfWidth : getX();
+		int y = south ? getY() + halfWidth : getY();
+		int width = north || south ? getWidth() : halfWidth;
+		int height = north || south ? halfWidth : getHeight();
 
 		if (region == DockingRegion.CENTER) {
-			g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+			g.fillRect(getX(), getY(), getWidth(), getHeight());
 		}
 		else {
 			g.fillRect(x, y, width, height);
@@ -264,23 +260,20 @@ public class DockingHandle extends JLabel {
 	private void drawDashedLine(Graphics2D g2) {
 		Stroke currentStroke = g2.getStroke();
 
-		Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
 		g2.setStroke(dashed);
-
-		Rectangle bounds = getBounds();
 
 		boolean north = region == DockingRegion.NORTH;
 		boolean south = region == DockingRegion.SOUTH;
 
-		int halfWidth = bounds.width / 2;
+		int halfWidth = getWidth() / 2;
 
-		int x = north || south ? bounds.x : bounds.x + halfWidth;
-		int y = north || south ? bounds.y + halfWidth : bounds.y;
-		int x2 = north || south ? bounds.x + bounds.width : bounds.x + halfWidth;
-		int y2 = north || south ? bounds.y + halfWidth : bounds.y + bounds.height;
+		int x = north || south ? getX() : getX() + halfWidth;
+		int y = north || south ? getY() + halfWidth : getY();
+		int x2 = north || south ? getX() + getWidth() : getX() + halfWidth;
+		int y2 = north || south ? getY() + halfWidth : getY() + getHeight();
 
 		if (region == DockingRegion.CENTER) {
-			g2.drawLine(bounds.x, bounds.y, bounds.width, bounds.height);
+			g2.drawLine(getX(), getY(), getWidth(), getHeight());
 		}
 		else {
 			g2.drawLine(x, y, x2, y2);
