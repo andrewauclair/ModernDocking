@@ -46,6 +46,20 @@ public class EditorExample {
             this.file = file;
             filePath = file.getAbsolutePath();
 
+            createContents();
+
+            displayFileContents();
+        }
+
+        public FilePanel(DynamicDockableParameters parameters) {
+            this.parameters = parameters;
+
+            Docking.registerDockable(this);
+
+            createContents();
+        }
+
+        private void createContents() {
             area.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 
             setLayout(new GridBagLayout());
@@ -55,14 +69,6 @@ public class EditorExample {
             gbc.fill = GridBagConstraints.BOTH;
 
             add(new JScrollPane(area), gbc);
-
-            displayFileContents();
-        }
-
-        public FilePanel(DynamicDockableParameters parameters) {
-            this.parameters = parameters;
-
-            Docking.registerDockable(this);
         }
 
         private void displayFileContents() {
