@@ -64,7 +64,7 @@ public class TempFloatingFrame extends JFrame {
 	 */
 	public TempFloatingFrame(DockableWrapper dockable, JComponent dragSrc, Dimension size) {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
+		setTitle("Temp Floating Frame");
 		dockables = Collections.emptyList();
 		selectedIndex = 0;
 
@@ -81,6 +81,8 @@ public class TempFloatingFrame extends JFrame {
 	 */
 	public TempFloatingFrame(List<DockableWrapper> dockables, int selectedIndex, JComponent dragSrc, Dimension size) {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+		setTitle("Temp Floating Frame");
 
 		this.dockables = dockables;
 		this.selectedIndex = selectedIndex;

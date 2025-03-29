@@ -42,6 +42,8 @@ import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceListener;
 import java.awt.dnd.DragSourceMotionListener;
 import java.awt.dnd.InvalidDnDOperationException;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;

@@ -40,7 +40,11 @@ import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceMotionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -49,7 +53,7 @@ import javax.swing.SwingUtilities;
 /**
  * A special invisible frame that's used to provide docking handles and overlays
  */
-public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener, ComponentListener {
+public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener, ComponentListener, WindowListener {
     /**
      * The window this utility frame is tied to
      */
@@ -88,6 +92,8 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
      */
     private DockableHandles dockableHandles;
 
+    private List<Window> windowStack = new ArrayList<>();
+
     /**
      * create a strategy for multi-buffering.
      */
@@ -123,10 +129,15 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         this.rootHandles = new RootDockingHandles(this, root);
         this.overlay = new FloatingOverlay(docking, this);
 
+        setTitle("Utils Frame");
+
         this.referenceDockingWindow.addComponentListener(this);
         SwingUtilities.invokeLater(this::setSizeAndLocation);
 
         orderFrames();
+
+        referenceDockingWindow.addWindowListener(this);
+        addWindowListener(this);
 
         setLayout(null); // don't use a layout manager for this custom painted frame
         setUndecorated(true); // don't want to see a frame border
@@ -164,6 +175,8 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         this.dragSource = dragSource;
         dragSource.addDragSourceMotionListener(this);
 
+        floatingFrame.addWindowListener(this);
+
         mouseMoved(mousePosOnScreen);
 
         if (floatListener instanceof DisplayPanelFloatListener) {
@@ -186,6 +199,9 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
         if (dragSource != null) {
             dragSource.removeDragSourceMotionListener(this);
+        }
+        if (floatingFrame != null) {
+            floatingFrame.removeWindowListener(this);
         }
         floatListener = null;
         floatingFrame = null;
@@ -280,11 +296,14 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
     }
 
     private void orderFrames() {
-        SwingUtilities.invokeLater(referenceDockingWindow::toFront);
+        windowStack.clear();
+        windowStack.add(this);
         if (floatingFrame != null) {
-            SwingUtilities.invokeLater(floatingFrame::toFront);
+            windowStack.add(floatingFrame);
         }
-        SwingUtilities.invokeLater(this::toFront);
+        windowStack.add(referenceDockingWindow);
+
+        SwingUtilities.invokeLater(referenceDockingWindow::toFront);
     }
 
     @Override
@@ -415,5 +434,73 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
         revalidate();
         repaint();
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+        System.out.println("windowActivated " + ((JFrame) e.getWindow()).getTitle());
+        windowStack.remove(e.getWindow());
+        windowStack.add(e.getWindow());
+
+        // expected:
+        //   reference window
+        //   floating window
+        //   utils window
+
+        if (windowStack.size() == 3 && windowStack.get(0) == referenceDockingWindow &&
+            windowStack.get(1) == floatingFrame && windowStack.get(2) == this) {
+            // perfect
+//            System.out.println("Windows are in proper order 1");
+        }
+        else if (windowStack.size() == 2 && windowStack.get(0) == referenceDockingWindow &&
+            windowStack.get(1) == this) {
+            // perfect
+//            System.out.println("Windows are in proper order 2");
+        }
+        else if (windowStack.get(0) != referenceDockingWindow) {
+            // reference window isn't at the bottom, figure out which frame is out of order
+            if (windowStack.get(0) == floatingFrame) {
+//                System.out.println("first frame is floating frame, bring to front");
+                SwingUtilities.invokeLater(floatingFrame::toFront);
+            }
+            else if (windowStack.get(0) == this) {
+//                System.out.println("First frame is utils frame, bring to front");
+                SwingUtilities.invokeLater(this::toFront);
+            }
+        }
+        else if (windowStack.size() > 1 && windowStack.get(1) != floatingFrame) {
+//            System.out.println("Second frame is not floating frame, bring utils to front");
+            SwingUtilities.invokeLater(this::toFront);
+        }
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+
     }
 }

@@ -172,11 +172,12 @@ public class FloatingOverlay {
 
         switch (region) {
             case WEST: {
-                size = new Dimension((int) (size.width / DROP_SIZE), size.height);
+                size.width /= (int) DROP_SIZE;
                 break;
             }
             case NORTH: {
                 size = new Dimension(size.width, (int) (size.height / DROP_SIZE));
+                size.height /= (int) DROP_SIZE;
                 break;
             }
             case EAST: {
