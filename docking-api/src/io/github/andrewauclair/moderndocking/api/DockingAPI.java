@@ -403,6 +403,14 @@ public class DockingAPI {
 
             wrapper.getParent().undock(dockable);
 
+            DockingComponentUtils.removeIllegalFloats(this, wrapper.getWindow());
+
+            // dispose the window if we need to
+            if (canDisposeWindow(wrapper.getWindow()) && internals.getRootPanels().get(wrapper.getWindow()).isEmpty() && !Floating.isFloating()) {
+                deregisterDockingPanel(wrapper.getWindow());
+                wrapper.getWindow().dispose();
+            }
+
             // don't fire an undocked event for this one
         }
 
