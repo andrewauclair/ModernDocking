@@ -401,7 +401,10 @@ public class DockingAPI {
                 wrapper.getWindow().dispose();
             }
 
-            // don't fire an undocked event for this one
+            // fire an undock event if the dockable is changing windows
+            if (wrapper.getWindow() != window) {
+                DockingListeners.fireUndockedEvent(dockable);
+            }
         }
 
         root.dock(dockable, region, dividerProportion);
@@ -497,7 +500,10 @@ public class DockingAPI {
                 wrapper.getWindow().dispose();
             }
 
-            // don't fire an undocked event for this one
+            // fire an undock event if the dockable is changing windows
+            if (wrapper.getWindow() != internals.getWrapper(target).getWindow()) {
+                DockingListeners.fireUndockedEvent(source);
+            }
         }
 
         DockableWrapper wrapper = internals.getWrapper(target);
