@@ -393,7 +393,18 @@ public class DockingAPI {
 
             wrapper.getParent().undock(dockable);
 
-            // don't fire an undocked event for this one
+            DockingComponentUtils.removeIllegalFloats(this, wrapper.getWindow());
+
+            // dispose the window if we need to
+            if (canDisposeWindow(wrapper.getWindow()) && internals.getRootPanels().get(wrapper.getWindow()).isEmpty() && !Floating.isFloating()) {
+                deregisterDockingPanel(wrapper.getWindow());
+                wrapper.getWindow().dispose();
+            }
+
+            // fire an undock event if the dockable is changing windows
+            if (wrapper.getWindow() != window) {
+                DockingListeners.fireUndockedEvent(dockable);
+            }
         }
 
         root.dock(dockable, region, dividerProportion);
@@ -480,6 +491,19 @@ public class DockingAPI {
             DockableWrapper wrapper = internals.getWrapper(source);
 
             wrapper.getParent().undock(source);
+
+            DockingComponentUtils.removeIllegalFloats(this, wrapper.getWindow());
+
+            // dispose the window if we need to
+            if (canDisposeWindow(wrapper.getWindow()) && internals.getRootPanels().get(wrapper.getWindow()).isEmpty() && !Floating.isFloating()) {
+                deregisterDockingPanel(wrapper.getWindow());
+                wrapper.getWindow().dispose();
+            }
+
+            // fire an undock event if the dockable is changing windows
+            if (wrapper.getWindow() != internals.getWrapper(target).getWindow()) {
+                DockingListeners.fireUndockedEvent(source);
+            }
         }
 
         DockableWrapper wrapper = internals.getWrapper(target);
