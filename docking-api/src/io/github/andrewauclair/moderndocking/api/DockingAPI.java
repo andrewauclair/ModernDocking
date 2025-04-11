@@ -411,7 +411,10 @@ public class DockingAPI {
                 wrapper.getWindow().dispose();
             }
 
-            // don't fire an undocked event for this one
+            // fire an undock event if the dockable is changing windows
+            if (wrapper.getWindow() != window) {
+                DockingListeners.fireUndockedEvent(dockable);
+            }
         }
 
         root.dock(dockable, region, dividerProportion);
@@ -505,6 +508,11 @@ public class DockingAPI {
             if (canDisposeWindow(wrapper.getWindow()) && internals.getRootPanels().get(wrapper.getWindow()).isEmpty() && !Floating.isFloating()) {
                 deregisterDockingPanel(wrapper.getWindow());
                 wrapper.getWindow().dispose();
+            }
+
+            // fire an undock event if the dockable is changing windows
+            if (wrapper.getWindow() != wrapper.getWindow()) {
+                DockingListeners.fireUndockedEvent(source);
             }
         }
 
