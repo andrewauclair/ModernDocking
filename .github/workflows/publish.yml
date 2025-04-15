@@ -35,7 +35,7 @@ jobs:
           gpg --list-secret-keys  --keyid-format LONG
           gpg --pinentry-mode=loopback --yes --passphrase "${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}" --keyring secring.gpg --export-secret-keys > /home/runner/.gnupg/secring.gpg
       - name: Validate Gradle wrapper
-        uses: gradle/actions/wrapper-validation@v3
+        uses: gradle/actions/wrapper-validation@v4
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
       - name: Publish package
