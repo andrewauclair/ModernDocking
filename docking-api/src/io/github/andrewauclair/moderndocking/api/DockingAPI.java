@@ -511,7 +511,7 @@ public class DockingAPI {
             }
 
             // fire an undock event if the dockable is changing windows
-            if (wrapper.getWindow() != wrapper.getWindow()) {
+            if (wrapper.getWindow() != internals.getWrapper(source).getWindow()) {
                 DockingListeners.fireUndockedEvent(source);
             }
         }
