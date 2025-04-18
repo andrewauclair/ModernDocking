@@ -42,8 +42,6 @@ import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceListener;
 import java.awt.dnd.DragSourceMotionListener;
 import java.awt.dnd.InvalidDnDOperationException;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -62,11 +60,11 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 
 	private Point dragComponentDragOffset = new Point();
 
-	private Window originalWindow;
+	protected Window originalWindow;
 	private WindowLayout originalWindowLayout;
 	private JFrame floatingFrame;
 
-	private Window currentWindow;
+	private Window currentUtilWindow;
 	private FloatUtilsFrame currentUtilFrame;
 	private DragGestureRecognizer alternateDragGesture;
 
@@ -173,7 +171,7 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 			return;
 		}
 
-		currentWindow = null;
+		currentUtilWindow = null;
 
 		Floating.setFloating(true);
 
@@ -237,14 +235,14 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 		// find the frame at our current position
 		Window frame = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
 
-		if (frame != currentWindow) {
+		if (frame != currentUtilWindow) {
 			if (currentUtilFrame != null) {
 				currentUtilFrame.deactivate();
 			}
 
-			currentWindow = frame;
+			currentUtilWindow = frame;
 
-			currentUtilFrame = Floating.frameForWindow(currentWindow);
+			currentUtilFrame = Floating.frameForWindow(currentUtilWindow);
 
 			if (currentUtilFrame != null) {
 				currentUtilFrame.activate(this, floatingFrame, dragSource, mousePosOnScreen);
