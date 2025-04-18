@@ -71,7 +71,7 @@ import picocli.CommandLine;
 
 public class MainFrame extends JFrame implements Callable<Integer> {
 	private final File layoutFile;
-	@CommandLine.Option(names = "--laf", required = true, description = "look and feel to use. one of: system, light, dark, github-dark or solarized-dark")
+	@CommandLine.Option(names = "--laf", defaultValue = "light", description = "look and feel to use. one of: system, light, dark, github-dark or solarized-dark")
 	String lookAndFeel;
 
 	@CommandLine.Option(names = "--enable-edt-violation-detector", defaultValue = "false", description = "enable the Event Dispatch Thread (EDT) violation checker")
