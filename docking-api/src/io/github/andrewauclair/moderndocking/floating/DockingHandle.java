@@ -99,7 +99,7 @@ public class DockingHandle extends JLabel {
 	 * @param mousePosition The new mouse position
 	 */
 	public void mouseMoved(Point mousePosition) {
-		mouseOver = contains(mousePosition);
+		mouseOver = getBounds().contains(mousePosition);
 	}
 
 	/**

@@ -653,6 +653,7 @@ public class DockingAPI {
 
         Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
 
+        // TODO something about DockingStateAPI.restoreAnchor is causing a null here
         Objects.requireNonNull(window);
 
         InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);
