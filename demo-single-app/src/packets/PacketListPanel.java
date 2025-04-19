@@ -21,10 +21,9 @@ SOFTWARE.
  */
 package packets;
 
-import ModernDocking.Dockable;
-import ModernDocking.app.Docking;
-
-import javax.swing.*;
+import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.app.Docking;
+import javax.swing.JPanel;
 
 public class PacketListPanel extends JPanel implements Dockable {
 	private static int packetListCount = 0;
@@ -49,7 +48,7 @@ public class PacketListPanel extends JPanel implements Dockable {
 	}
 
 	@Override
-	public boolean isLimitedToRoot() {
+	public boolean isLimitedToWindow() {
 		return true;
 	}
 

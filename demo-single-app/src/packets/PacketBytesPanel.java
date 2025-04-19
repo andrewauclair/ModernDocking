@@ -21,11 +21,10 @@ SOFTWARE.
  */
 package packets;
 
-import ModernDocking.Dockable;
-import ModernDocking.DockableStyle;
-import ModernDocking.app.Docking;
-
-import javax.swing.*;
+import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.app.Docking;
+import javax.swing.JPanel;
 
 public class PacketBytesPanel extends JPanel implements Dockable {
 	public PacketBytesPanel() {

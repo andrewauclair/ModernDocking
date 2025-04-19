@@ -21,13 +21,17 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.Dockable;
-import ModernDocking.app.Docking;
-import ModernDocking.DockingRegion;
-import ModernDocking.app.RootDockingPanel;
-
-import javax.swing.*;
-import java.awt.*;
+import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.app.Docking;
+import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Point;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 public class FloatingSample extends JFrame {
     private static class DockingPanel extends JPanel implements Dockable {

@@ -1,18 +1,23 @@
 package basic;
 
-import ModernDocking.DockableStyle;
-import ModernDocking.api.DockingAPI;
-import ModernDocking.DockingProperty;
-import ModernDocking.api.AppStateAPI;
-
-import javax.swing.*;
+import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.DockingProperty;
+import io.github.andrewauclair.moderndocking.api.DockingAPI;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import java.util.*;
 
 public class OutputPanel extends ToolPanel {
     @DockingProperty(name = "first-column-name", defaultValue = "one")
@@ -25,7 +30,11 @@ public class OutputPanel extends ToolPanel {
     public OutputPanel(DockingAPI docking, String title, String persistentID, DockableStyle style, Icon icon) {
         super(docking, title, persistentID, style, icon);
 
-        add(new JScrollPane(table));
+        table.setBorder(BorderFactory.createEmptyBorder());
+
+        JScrollPane comp = new JScrollPane(table);
+        comp.setBorder(BorderFactory.createEmptyBorder());
+        add(comp);
 
         updateColumnsProp();
         updateColumnSizesProp();
@@ -112,7 +121,7 @@ public class OutputPanel extends ToolPanel {
 //    }
 
     @Override
-    public boolean getHasMoreOptions() {
+    public boolean hasMoreMenuOptions() {
         return true;
     }
 

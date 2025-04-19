@@ -21,23 +21,28 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.api.DockingAPI;
-import ModernDocking.DockingProperty;
-import ModernDocking.ui.DefaultHeaderUI;
-import ModernDocking.ui.DockingHeaderUI;
-import ModernDocking.ui.HeaderController;
-import ModernDocking.ui.HeaderModel;
 import com.formdev.flatlaf.FlatLaf;
-
-import javax.swing.*;
-import java.awt.*;
+import io.github.andrewauclair.moderndocking.DockingProperty;
+import io.github.andrewauclair.moderndocking.api.DockingAPI;
+import io.github.andrewauclair.moderndocking.ui.DefaultHeaderUI;
+import io.github.andrewauclair.moderndocking.ui.DockingHeaderUI;
+import io.github.andrewauclair.moderndocking.ui.HeaderController;
+import io.github.andrewauclair.moderndocking.ui.HeaderModel;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.Objects;
 import java.util.Random;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
 
 public class SimplePanel extends BasePanel {
 	private String tabText = "";
 
-	public boolean limitToRoot = false;
+	public boolean limitToWindow = false;
 
 	private Color backgroundColor = null;
 	private Color foregroundColor = null;
@@ -187,8 +192,8 @@ public class SimplePanel extends BasePanel {
 	}
 
 	@Override
-	public boolean isLimitedToRoot() {
-		return limitToRoot;
+	public boolean isLimitedToWindow() {
+		return limitToWindow;
 	}
 
 	@Override

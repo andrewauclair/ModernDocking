@@ -21,11 +21,10 @@ SOFTWARE.
  */
 package packets;
 
-import ModernDocking.Dockable;
-import ModernDocking.DockableStyle;
-import ModernDocking.app.Docking;
-
-import javax.swing.*;
+import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.app.Docking;
+import javax.swing.JPanel;
 
 public class PacketInfoPanel extends JPanel implements Dockable {
 	public PacketInfoPanel() {
@@ -38,18 +37,8 @@ public class PacketInfoPanel extends JPanel implements Dockable {
 	}
 
 	@Override
-	public int getType() {
-		return 0;
-	}
-
-	@Override
 	public String getTabText() {
 		return "Info";
-	}
-
-	@Override
-	public Icon getIcon() {
-		return null;
 	}
 
 	@Override
@@ -58,7 +47,7 @@ public class PacketInfoPanel extends JPanel implements Dockable {
 	}
 
 	@Override
-	public boolean isLimitedToRoot() {
+	public boolean isLimitedToWindow() {
 		return true;
 	}
 
@@ -68,22 +57,7 @@ public class PacketInfoPanel extends JPanel implements Dockable {
 	}
 
 	@Override
-	public boolean isClosable() {
-		return true;
-	}
-
-	@Override
 	public boolean isAutoHideAllowed() {
 		return true;
-	}
-
-	@Override
-	public boolean isMinMaxAllowed() {
-		return false;
-	}
-
-	@Override
-	public boolean getHasMoreOptions() {
-		return false;
 	}
 }

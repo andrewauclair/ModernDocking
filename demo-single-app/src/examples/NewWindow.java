@@ -1,13 +1,14 @@
 package examples;
 
-import ModernDocking.app.Docking;
-import ModernDocking.DockingRegion;
-import ModernDocking.app.RootDockingPanel;
-import ModernDocking.ui.DefaultDockingPanel;
-import ModernDocking.ext.ui.DockingUI;
-
-import javax.swing.*;
-import java.awt.*;
+import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.app.Docking;
+import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
+import io.github.andrewauclair.moderndocking.ext.ui.DockingUI;
+import io.github.andrewauclair.moderndocking.ui.DefaultDockingPanel;
+import java.awt.BorderLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 public class NewWindow extends JFrame {
     public NewWindow() {

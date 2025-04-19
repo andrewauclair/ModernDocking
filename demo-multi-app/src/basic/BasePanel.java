@@ -21,11 +21,10 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.Dockable;
-import ModernDocking.api.DockingAPI;
-
-import javax.swing.*;
-import java.awt.*;
+import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.api.DockingAPI;
+import java.awt.BorderLayout;
+import javax.swing.JPanel;
 
 public abstract class BasePanel extends JPanel implements Dockable {
 	private final String title;

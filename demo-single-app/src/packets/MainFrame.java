@@ -21,19 +21,25 @@ SOFTWARE.
  */
 package packets;
 
-import ModernDocking.app.AppState;
-import ModernDocking.app.DockableMenuItem;
-import ModernDocking.app.Docking;
-import ModernDocking.app.RootDockingPanel;
-import ModernDocking.exception.DockingLayoutException;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import exception.FailOnThreadViolationRepaintManager;
-
-import javax.swing.*;
-import java.awt.*;
+import io.github.andrewauclair.moderndocking.app.AppState;
+import io.github.andrewauclair.moderndocking.app.DockableMenuItem;
+import io.github.andrewauclair.moderndocking.app.Docking;
+import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
+import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.File;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class MainFrame extends JFrame {
 	private final PacketBytesPanel bytesPanel;

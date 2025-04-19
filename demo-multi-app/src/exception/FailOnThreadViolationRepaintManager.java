@@ -12,7 +12,8 @@
  */
 package exception;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.RepaintManager;
 
 /**
  * <p>

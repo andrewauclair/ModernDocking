@@ -1,18 +1,12 @@
 plugins {
     id 'java'
     id 'idea'
-    id "com.github.ben-manes.versions" version "0.51.0"
+    id "com.github.ben-manes.versions" version "0.52.0"
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_9
-    targetCompatibility = JavaVersion.VERSION_1_9
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 sourceSets.main.java.srcDirs = ['src']
@@ -32,9 +26,9 @@ dependencies {
     implementation 'com.formdev:flatlaf:' + flatLafVersion
     implementation 'com.formdev:flatlaf-intellij-themes:' + flatLafVersion
 
-    implementation 'com.ardikars.pcap:pcap-jdk7:1.5.1'
+    implementation 'com.ardikars.pcap:pcap-jdk7:1.5.3'
 
-    implementation 'info.picocli:picocli:4.7.6'
+    implementation 'info.picocli:picocli:4.7.7'
 }
 
 jar {
@@ -47,3 +41,5 @@ jar {
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
+
+tasks.withType(Javadoc).all { enabled = false } // don't generate javadocs for the demo projects

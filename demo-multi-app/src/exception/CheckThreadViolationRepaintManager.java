@@ -12,9 +12,10 @@
  */
 package exception;
 
-import javax.swing.*;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
+import javax.swing.JComponent;
+import javax.swing.RepaintManager;
 
 import static javax.swing.SwingUtilities.isEventDispatchThread;
 

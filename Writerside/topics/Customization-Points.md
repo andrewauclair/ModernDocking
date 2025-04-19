@@ -2,7 +2,7 @@
 
 ## Tab Placement
 
-By default, Modern Docking places all tabs in `JTabbePane`s at the bottom. This can be changed using `Settings.alwaysDisplayTabsMode` which will switch the tab placement to the top.
+By default, Modern Docking places all tabs in `JTabbedPane`s at the bottom. This can be changed using `Settings.alwaysDisplayTabsMode` which will switch the tab placement to the top.
 
 
 ## Tab Layout Policy

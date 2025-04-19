@@ -21,30 +21,49 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.*;
-import ModernDocking.api.DockingAPI;
-import ModernDocking.api.RootDockingPanelAPI;
-import ModernDocking.app.*;
-import ModernDocking.exception.DockingLayoutException;
-import ModernDocking.layouts.ApplicationLayout;
-import ModernDocking.layouts.DockingLayouts;
-import ModernDocking.settings.Settings;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
-import ModernDocking.ext.ui.DockingUI;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMTGitHubDarkIJTheme;
 import exception.FailOnThreadViolationRepaintManager;
-import picocli.CommandLine;
-
-import javax.swing.*;
-import java.awt.*;
+import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.DockableTabPreference;
+import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.api.DockingAPI;
+import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
+import io.github.andrewauclair.moderndocking.app.ApplicationLayoutMenuItem;
+import io.github.andrewauclair.moderndocking.app.DockableMenuItem;
+import io.github.andrewauclair.moderndocking.app.Docking;
+import io.github.andrewauclair.moderndocking.app.LayoutsMenu;
+import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
+import io.github.andrewauclair.moderndocking.app.WindowLayoutBuilder;
+import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
+import io.github.andrewauclair.moderndocking.ext.ui.DockingUI;
+import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
+import io.github.andrewauclair.moderndocking.layouts.DockingLayouts;
+import io.github.andrewauclair.moderndocking.settings.Settings;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.File;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.Callable;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import picocli.CommandLine;
 
 public class MainFrame extends JFrame implements Callable<Integer> {
 	private final File layoutFile;
@@ -86,7 +105,9 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		docking = new Docking(this);
 
-		Settings.setAlwaysDisplayTabMode(alwaysUseTabs);
+		if (alwaysUseTabs) {
+			Settings.setDefaultTabPreference(DockableTabPreference.TOP_ALWAYS);
+		}
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -293,7 +314,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 				UIManager.setLookAndFeel(new FlatDarkLaf());
 			}
 			else if (lookAndFeel.equals("github-dark")) {
-				UIManager.setLookAndFeel(new FlatGitHubDarkIJTheme());
+				UIManager.setLookAndFeel(new FlatMTGitHubDarkIJTheme());
 			}
 			else if (lookAndFeel.equals("solarized-dark")) {
 				UIManager.setLookAndFeel(new FlatSolarizedDarkIJTheme());

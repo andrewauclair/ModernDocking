@@ -21,15 +21,21 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.DockingProperty;
-import ModernDocking.ui.DockingHeaderUI;
-import ModernDocking.ui.HeaderController;
-import ModernDocking.ui.HeaderModel;
-
-import javax.swing.*;
-import java.awt.*;
+import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.DockingProperty;
+import io.github.andrewauclair.moderndocking.DynamicDockableParameters;
+import io.github.andrewauclair.moderndocking.ui.DockingHeaderUI;
+import io.github.andrewauclair.moderndocking.ui.HeaderController;
+import io.github.andrewauclair.moderndocking.ui.HeaderModel;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.Objects;
 import java.util.Random;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 
 public class SimplePanel extends BasePanel {
 	public static final String STRING_TEST_PROP = "test";
@@ -38,7 +44,7 @@ public class SimplePanel extends BasePanel {
 
 	private String tabText = "";
 
-	public boolean limitToRoot = false;
+	public boolean limitToWindow = false;
 
 	private Color backgroundColor = null;
 	private Color foregroundColor = null;
@@ -83,9 +89,21 @@ public class SimplePanel extends BasePanel {
 	private static final Random rand = new Random();
 	private DockingHeaderUI headerUI;
 
-	public SimplePanel(String title, String persistentID) {
-		super(title, persistentID);
-		tabText = title;
+	private DockableStyle style;
+
+	public SimplePanel(String tabText, String title, String persistentID, DockableStyle style) {
+		this(tabText, title, persistentID);
+		this.style = style;
+	}
+
+	public SimplePanel(String tabText, String title, String persistentID) {
+		this(new DynamicDockableParameters(persistentID, tabText, title));
+	}
+
+	public SimplePanel(DynamicDockableParameters parameters) {
+		super(parameters.getTabText(), parameters.getTitleText(), parameters.getPersistentID());
+		tabText = parameters.getTitleText();
+		style = DockableStyle.BOTH;
 
 		setLayout(new GridBagLayout());
 
@@ -156,8 +174,13 @@ public class SimplePanel extends BasePanel {
 	}
 
 	@Override
-	public boolean isLimitedToRoot() {
-		return limitToRoot;
+	public boolean isLimitedToWindow() {
+		return limitToWindow;
+	}
+
+	@Override
+	public DockableStyle getStyle() {
+		return style;
 	}
 
 	@Override

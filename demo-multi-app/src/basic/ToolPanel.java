@@ -21,17 +21,17 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.DockableStyle;
-import ModernDocking.api.DockingAPI;
-import ModernDocking.internal.DockableToolbar;
-
-import javax.swing.*;
+import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.api.DockingAPI;
+import javax.swing.Icon;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 public class ToolPanel extends BasePanel {
 	private final DockableStyle style;
 	private final Icon icon;
 
-	public boolean limitToRoot = false;
+	public boolean limitToWindow = false;
 
 	public ToolPanel(DockingAPI docking, String title, String persistentID, DockableStyle style) {
 		super(docking, title, persistentID);
@@ -63,8 +63,8 @@ public class ToolPanel extends BasePanel {
 	}
 
 	@Override
-	public boolean isLimitedToRoot() {
-		return limitToRoot;
+	public boolean isLimitedToWindow() {
+		return limitToWindow;
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class ToolPanel extends BasePanel {
 	}
 
 	@Override
-	public boolean isPinningAllowed() {
+	public boolean isAutoHideAllowed() {
 		return true;
 	}
 
@@ -88,7 +88,7 @@ public class ToolPanel extends BasePanel {
 	}
 
 	@Override
-	public boolean getHasMoreOptions() {
+	public boolean hasMoreMenuOptions() {
 		return true;
 	}
 

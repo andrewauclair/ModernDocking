@@ -21,12 +21,12 @@ SOFTWARE.
  */
 package basic;
 
-import ModernDocking.*;
-import ModernDocking.api.RootDockingPanelAPI;
-import ModernDocking.app.Docking;
-import ModernDocking.app.RootDockingPanel;
-
-import javax.swing.*;
+import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
+import io.github.andrewauclair.moderndocking.app.Docking;
+import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
+import javax.swing.JDialog;
 
 public class DialogWithDocking extends JDialog {
 
@@ -45,11 +45,11 @@ public class DialogWithDocking extends JDialog {
 		output = new ToolPanel("output", "output-dialog", DockableStyle.HORIZONTAL);
 		explorer = new ToolPanel("explorer", "explorer-dialog", DockableStyle.VERTICAL);
 
-		one = new SimplePanel("one", "one-dialog");
+		one = new SimplePanel("The First Panel", "one", "one-dialog");
 
-		output.limitToRoot = true;
-		explorer.limitToRoot = true;
-		one.limitToRoot = true;
+		output.limitToWindow = true;
+		explorer.limitToWindow = true;
+		one.limitToWindow = true;
 
 		Docking.dock(one, this);
 		Docking.dock(explorer, one, DockingRegion.EAST);
