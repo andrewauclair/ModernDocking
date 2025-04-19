@@ -26,12 +26,12 @@ dependencies {
     implementation 'com.formdev:flatlaf:' + flatLafVersion
     implementation 'com.formdev:flatlaf-intellij-themes:' + flatLafVersion
 
-    implementation 'com.ardikars.pcap:pcap-jdk7:1.5.1'
+    implementation 'com.ardikars.pcap:pcap-jdk7:1.5.3'
 
-    implementation 'info.picocli:picocli:4.7.6'
+    implementation 'info.picocli:picocli:4.7.7'
 
     // uncomment this line to test Modern Docking persistence with a non-default XML parser
-    // implementation 'com.fasterxml:aalto-xml:1.3.1'
+    // implementation 'com.fasterxml:aalto-xml:1.3.3'
 }
 
 jar {
