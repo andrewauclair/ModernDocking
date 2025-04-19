@@ -38,7 +38,7 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 	private final DockingAPI docking;
 	private final String persistentID;
 	private final String className;
-    private String anchor;
+    private String anchor = "";
 
     private Map<String, Property> properties = new HashMap<>();
 	private DockingLayoutNode parent;
@@ -100,8 +100,8 @@ public class DockingSimplePanelNode implements DockingLayoutNode {
 		else if (region == DockingRegion.CENTER) {
 			DockingTabPanelNode tab = new DockingTabPanelNode(docking, persistentID, "", anchor);
 
-			tab.addTab(this.persistentID, "");
-			tab.addTab(persistentID, "");
+			tab.addTab(this.persistentID, "", anchor);
+			tab.addTab(persistentID, "", anchor);
 
 			parent.replaceChild(this, tab);
 		}

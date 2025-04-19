@@ -89,7 +89,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	/**
 	 * The anchor this tabbed panel belongs to
 	 */
-	private String anchor;
+	private String anchor = "";
 
 	/**
 	 * The parent of this DockedTabbedPanel
@@ -408,7 +408,18 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 		// protect against bad instances when failing to restore a layout
 		if (parent != null && panels.isEmpty()) {
-			parent.removeChild(this);
+			DockableWrapper anchorWrapper = DockingInternal.get(docking).getAnchor(anchor);
+
+			anchor = "";
+
+			if (anchorWrapper == null || !DockingComponentUtils.isAnchorEmpty(docking, anchorWrapper.getDockable())) {
+				parent.removeChild(this);
+			}
+			else {
+				anchor = "";
+				parent.replaceChild(this, new DockedAnchorPanel(docking, anchorWrapper));
+				anchorWrapper.setWindow(DockingInternal.get(docking).getWrapper(dockable).getWindow());
+			}
 		}
 	}
 

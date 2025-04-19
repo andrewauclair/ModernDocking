@@ -49,7 +49,7 @@ public class DockedSimplePanel extends DockingPanel {
 	/**
 	 * The anchor this panel belongs to, if any
 	 */
-	private String anchor;
+	private String anchor = "";
 
 	/**
 	 * Parent panel of this simple panel
@@ -200,13 +200,13 @@ public class DockedSimplePanel extends DockingPanel {
 
 			DockableWrapper anchorWrapper = DockingInternal.get(docking).getAnchor(anchor);
 
-			anchor = null;
+			anchor = "";
 
 			if (anchorWrapper == null || !DockingComponentUtils.isAnchorEmpty(docking, anchorWrapper.getDockable())) {
 				parent.removeChild(this);
 			}
 			else {
-				anchor = null;
+				anchor = "";
 				parent.replaceChild(this, new DockedAnchorPanel(docking, anchorWrapper));
 				anchorWrapper.setWindow(DockingInternal.get(docking).getWrapper(dockable).getWindow());
 			}

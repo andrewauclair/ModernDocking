@@ -219,7 +219,7 @@ public class DockingLayouts {
 		DockingTabPanelNode node = new DockingTabPanelNode(docking, panel.getSelectedTabID(), "", panel.getAnchor(), DockableProperties.saveProperties(wrapper));
 
 		for (DockableWrapper dockable : panel.getDockables()) {
-			node.addTab(dockable.getDockable().getPersistentID(), "", DockableProperties.saveProperties(dockable));
+			node.addTab(dockable.getDockable().getPersistentID(), "", dockable.getAnchor(), DockableProperties.saveProperties(dockable));
 		}
 		return node;
 	}

@@ -54,13 +54,13 @@ public class DockingComponentUtils {
 	public static void clearAnchors(Container container) {
 		for (Component component : container.getComponents()) {
 			if (component instanceof DockedSimplePanel) {
-				((DockedSimplePanel) component).setAnchor(null);
+				((DockedSimplePanel) component).setAnchor("");
 			}
 			else if (component instanceof DockedSplitPanel) {
-				((DockedSplitPanel) component).setAnchor(null);
+				((DockedSplitPanel) component).setAnchor("");
 			}
 			else if (component instanceof DockedTabbedPanel) {
-				((DockedTabbedPanel) component).setAnchor(null);
+				((DockedTabbedPanel) component).setAnchor("");
 			}
 			else if (component instanceof Container) {
 				clearAnchors((Container) component);
@@ -420,7 +420,7 @@ public class DockingComponentUtils {
 	}
 
 	private static boolean isAnchorNotEmpty(DockingPanel child) {
-		if (child.getAnchor() != null) {
+		if (child.getAnchor() != "") {
 			return true;
 		}
 		for (DockingPanel childChild : child.getChildren()) {

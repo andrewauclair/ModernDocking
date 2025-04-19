@@ -46,7 +46,7 @@ public class DockableWrapper {
 	private final Dockable dockable;
 	private final DockingAPI docking;
 
-	private String anchor = null;
+	private String anchor = "";
 
 	private final DockingHeaderUI headerUI;
 

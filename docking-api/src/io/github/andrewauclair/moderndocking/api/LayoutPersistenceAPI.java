@@ -398,6 +398,7 @@ public class LayoutPersistenceAPI {
         writer.writeStartElement("selectedTab");
         writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(node.getSelectedTabID()).getClass().getTypeName());
         writer.writeAttribute("persistentID", node.getSelectedTabID());
+        writer.writeAttribute("anchor", node.getAnchor());
         writer.writeCharacters(NL);
         writer.writeEndElement();
         writer.writeCharacters(NL);
@@ -406,6 +407,7 @@ public class LayoutPersistenceAPI {
             writer.writeStartElement("tab");
             writer.writeAttribute("persistentID", simpleNode.getPersistentID());
             writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(simpleNode.getPersistentID()).getClass().getTypeName());
+            writer.writeAttribute("anchor", simpleNode.getAnchor());
             writer.writeCharacters(NL);
 
             writer.writeStartElement("properties");
@@ -670,6 +672,7 @@ public class LayoutPersistenceAPI {
         DockingTabPanelNode node = null;
 
         String currentPersistentID = "";
+        String anchor = "";
 
         while (reader.hasNext()) {
             int next = reader.nextTag();
@@ -677,24 +680,31 @@ public class LayoutPersistenceAPI {
             if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("selectedTab")) {
                 String persistentID = reader.getAttributeValue(null, "persistentID");
                 String className = reader.getAttributeValue(null, "class-name");
-                String anchor = reader.getAttributeValue(null, "anchor");
+                anchor = reader.getAttributeValue(null, "anchor");
 
                 // class name didn't always exist, set it to an empty string if it's null
                 if (className == null) {
                     className = "";
+                }
+                if (anchor == null) {
+                    anchor = "";
                 }
                 node = new DockingTabPanelNode(docking, persistentID, className, anchor);
             }
             else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("tab")) {
                 currentPersistentID = reader.getAttributeValue(null, "persistentID");
                 String className = reader.getAttributeValue(null, "class-name");
+                anchor = reader.getAttributeValue(null, "anchor");
 
                 // class name didn't always exist, set it to an empty string if it's null
                 if (className == null) {
                     className = "";
                 }
+                if (anchor == null) {
+                    anchor = "";
+                }
                 if (node != null) {
-                    node.addTab(currentPersistentID, className);
+                    node.addTab(currentPersistentID, className, anchor);
                 }
             }
             else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("properties")) {

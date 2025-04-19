@@ -58,13 +58,13 @@ public class DockingLayoutRootNode implements DockingLayoutNode {
             node = new DockingAnchorPanelNode(docking, persistentID, className);
         }
         else if (Settings.alwaysDisplayTabsMode()) {
-            node = new DockingTabPanelNode(docking, persistentID, "", null);
+            node = new DockingTabPanelNode(docking, persistentID, "", "");
             node.setParent(this);
         }
         else {
             String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getTypeName();
 
-            node = new DockingSimplePanelNode(docking, persistentID, className, null);
+            node = new DockingSimplePanelNode(docking, persistentID, className, "");
             node.setParent(this);
         }
     }

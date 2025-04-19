@@ -73,7 +73,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	/**
 	 * The anchor this panel belongs to, if any
 	 */
-	private String anchor;
+	private String anchor = "";
 
 	/**
 	 * the last divider proportion that setDividerLocation was called with

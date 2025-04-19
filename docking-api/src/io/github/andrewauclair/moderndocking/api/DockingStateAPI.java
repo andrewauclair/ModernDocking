@@ -289,7 +289,7 @@ public class DockingStateAPI {
     }
 
     private DockedSplitPanel restoreSplit(DockingAPI docking, DockingSplitPanelNode node, Window window) {
-        DockedSplitPanel panel = new DockedSplitPanel(docking, window, null);
+        DockedSplitPanel panel = new DockedSplitPanel(docking, window, "");
 
         panel.setLeft(restoreLayout(docking, node.getLeft(), window));
         panel.setRight(restoreLayout(docking, node.getRight(), window));
@@ -322,7 +322,7 @@ public class DockingStateAPI {
             wrapper.setWindow(window);
 
             if (panel == null) {
-                panel = new DockedTabbedPanel(docking, wrapper, null);
+                panel = new DockedTabbedPanel(docking, wrapper, node.getAnchor());
             } else {
                 panel.addPanel(wrapper);
             }
