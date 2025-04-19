@@ -25,7 +25,7 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMTGitHubDarkIJTheme;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import java.awt.GridBagConstraints;
@@ -85,7 +85,7 @@ public class ThemesPanel extends BasePanel implements Dockable {
                         UIManager.setLookAndFeel(new FlatDarkLaf());
                         break;
                     case "Github Dark":
-                        UIManager.setLookAndFeel(new FlatGitHubDarkIJTheme());
+                        UIManager.setLookAndFeel(new FlatMTGitHubDarkIJTheme());
                         break;
                     case "Solarized Dark":
                         UIManager.setLookAndFeel(new FlatSolarizedDarkIJTheme());

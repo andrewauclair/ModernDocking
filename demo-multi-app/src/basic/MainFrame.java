@@ -25,7 +25,7 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMTGitHubDarkIJTheme;
 import exception.FailOnThreadViolationRepaintManager;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableStyle;
@@ -314,7 +314,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 				UIManager.setLookAndFeel(new FlatDarkLaf());
 			}
 			else if (lookAndFeel.equals("github-dark")) {
-				UIManager.setLookAndFeel(new FlatGitHubDarkIJTheme());
+				UIManager.setLookAndFeel(new FlatMTGitHubDarkIJTheme());
 			}
 			else if (lookAndFeel.equals("solarized-dark")) {
 				UIManager.setLookAndFeel(new FlatSolarizedDarkIJTheme());
