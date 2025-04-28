@@ -177,7 +177,6 @@ public class FloatingOverlay {
             }
             case NORTH: {
                 size = new Dimension(size.width, (int) (size.height / DROP_SIZE));
-                size.height /= (int) DROP_SIZE;
                 break;
             }
             case EAST: {
