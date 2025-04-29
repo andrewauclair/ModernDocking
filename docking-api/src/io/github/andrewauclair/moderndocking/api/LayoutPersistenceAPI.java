@@ -569,6 +569,14 @@ public class LayoutPersistenceAPI {
         String className = reader.getAttributeValue(null, "class-name");
         String anchor = reader.getAttributeValue(null, "anchor");
 
+        // class name didn't always exist, set it to an empty string if it's null
+        if (className == null) {
+            className = "";
+        }
+        // anchor didn't always exist, set it to an empty string if it's null
+        if (anchor == null) {
+            anchor = "";
+        }
         return new DockingSimplePanelNode(docking, persistentID, className, anchor, readProperties(reader));
     }
 
@@ -643,6 +651,11 @@ public class LayoutPersistenceAPI {
         double dividerProportion = Double.parseDouble(reader.getAttributeValue(null, "divider-proportion"));
         String anchor = reader.getAttributeValue(null, "anchor");
 
+        // anchor didn't always exist, set it to an empty string if it's null
+        if (anchor == null) {
+            anchor = "";
+        }
+
         if (dividerProportion < 0.0) {
             dividerProportion = 0.0;
         }
@@ -700,6 +713,7 @@ public class LayoutPersistenceAPI {
                 if (className == null) {
                     className = "";
                 }
+                // anchor didn't always exist, set it to an empty string if it's null
                 if (anchor == null) {
                     anchor = "";
                 }
