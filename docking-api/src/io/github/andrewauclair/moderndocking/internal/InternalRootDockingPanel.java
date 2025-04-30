@@ -185,11 +185,11 @@ public class InternalRootDockingPanel extends DockingPanel {
             panel.dock(dockable, region, dividerProportion);
         }
         else if (Settings.defaultTabPreference() == DockableTabPreference.TOP_ALWAYS) {
-            setPanel(new DockedTabbedPanel(docking, wrapper, null));
+            setPanel(new DockedTabbedPanel(docking, wrapper, ""));
             wrapper.setWindow(rootPanel.getWindow());
         }
         else {
-            setPanel(new DockedSimplePanel(docking, wrapper, null));
+            setPanel(new DockedSimplePanel(docking, wrapper, ""));
             wrapper.setWindow(rootPanel.getWindow());
         }
     }
