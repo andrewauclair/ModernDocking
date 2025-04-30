@@ -28,13 +28,8 @@ import io.github.andrewauclair.moderndocking.internal.CustomTabbedPane;
 import io.github.andrewauclair.moderndocking.internal.DockingComponentUtils;
 import io.github.andrewauclair.moderndocking.internal.InternalRootDockingPanel;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.IllegalComponentStateException;
-import java.awt.Point;
-import java.awt.Window;
+
+import java.awt.*;
 import java.awt.dnd.DragSource;
 import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceMotionListener;
@@ -147,8 +142,16 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         getRootPane().setBackground(new Color(0, 0, 0, 0)); // don't want a background for the root pane either. Workaround for a FlatLaf macOS issue.
         getContentPane().setBackground(new Color(0, 0, 0, 0)); // don't want a background for the content frame either.
 
-        add(renderPanel);
-        renderPanel.setOpaque(false);
+//        add(renderPanel);
+//        renderPanel.setOpaque(false);
+        GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+        BufferCapabilities bufferCapabilities = gc.getBufferCapabilities();
+
+        if (bufferCapabilities.isMultiBufferAvailable())
+        {
+            add(renderPanel);
+            renderPanel.setOpaque(false);
+        }
 
         try {
             if (getContentPane() instanceof JComponent) {
@@ -186,8 +189,13 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
         setVisible(true);
 
-        createBufferStrategy(2);
-        bs = this.getBufferStrategy();
+        GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+        BufferCapabilities bufferCapabilities = gc.getBufferCapabilities();
+
+        if (!bufferCapabilities.isMultiBufferAvailable()) {
+            createBufferStrategy(2);
+            bs = this.getBufferStrategy();
+        }
         orderFrames();
     }
 
@@ -306,6 +314,30 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         SwingUtilities.invokeLater(referenceDockingWindow::toFront);
     }
 
+    @Override
+    public void paint(Graphics g) {
+        if (bs == null) {
+            super.paint(g);
+            return;
+        }
+
+        g = bs.getDrawGraphics();
+        Graphics2D g2 = (Graphics2D) bs.getDrawGraphics();
+
+        g2.clearRect(0, 0, getWidth(), getHeight());
+
+        rootHandles.paint(g2);
+
+        if (dockableHandles != null) {
+            dockableHandles.paint(g2);
+        }
+
+        overlay.paint(g);
+
+        g2.dispose();
+
+        bs.show();
+    }
     @Override
     public void componentResized(ComponentEvent e) {
         SwingUtilities.invokeLater(this::setSizeAndLocation);
@@ -463,7 +495,7 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
     @Override
     public void windowActivated(WindowEvent e) {
-        System.out.println("windowActivated " + ((JFrame) e.getWindow()).getTitle());
+//        System.out.println("windowActivated " + ((JFrame) e.getWindow()).getTitle());
         windowStack.remove(e.getWindow());
         windowStack.add(e.getWindow());
 

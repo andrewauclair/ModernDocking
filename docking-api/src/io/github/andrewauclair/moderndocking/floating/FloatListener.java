@@ -27,9 +27,8 @@ import io.github.andrewauclair.moderndocking.internal.DockedTabbedPanel;
 import io.github.andrewauclair.moderndocking.internal.DockingComponentUtils;
 import io.github.andrewauclair.moderndocking.internal.InternalRootDockingPanel;
 import io.github.andrewauclair.moderndocking.layouts.WindowLayout;
-import java.awt.Cursor;
-import java.awt.Point;
-import java.awt.Window;
+
+import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
@@ -204,7 +203,7 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 
 		// hide the original window if it is not the main window of the app
 		if (currentRoot.isEmpty() && docking.getMainWindow() != originalWindow) {
-			originalWindow.setVisible(false);
+//			originalWindow.setVisible(false);
 		}
 	}
 
