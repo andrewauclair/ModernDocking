@@ -317,7 +317,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 
 		wrapper.setWindow(window);
 
-		DockedSplitPanel split = new DockedSplitPanel(docking, window, null);
+		DockedSplitPanel split = new DockedSplitPanel(docking, window, anchor);
 		parent.replaceChild(this, split);
 
 		DockingPanel newPanel;
