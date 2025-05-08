@@ -17,10 +17,10 @@ There are many existing Java Swing docking frameworks, but they are outdated and
 ### Snapshots
 
 Modern Docking snapshot binaries are available on
-[Sonatype OSSRH](https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/andrewauclair/).
+[Sonatype Central Portal](https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/io/github/andrewauclair/).
 To access the latest snapshot, change the Modern Docking version in your dependencies
 to `<version>-SNAPSHOT` (e.g. `1.1-SNAPSHOT`) and add the repository
-`https://s01.oss.sonatype.org/content/repositories/snapshots/` to your build (see
+`https://central.sonatype.com/repository/maven-snapshots/` to your build (see
 [Maven](https://maven.apache.org/guides/mini/guide-multiple-repositories.html)
 and
 [Gradle](https://docs.gradle.org/current/userguide/declaring_repositories.html#sec:declaring_custom_repository)
