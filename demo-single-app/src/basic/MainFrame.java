@@ -335,7 +335,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 		ApplicationLayout defaultLayout = layoutBuilder.buildApplicationLayout();
 
 		DockingLayouts.addLayout("default", defaultLayout);
-		AppState.setDefaultApplicationLayout(defaultLayout);
+//		AppState.setDefaultApplicationLayout(defaultLayout);
 	}
 
 	static Random rng = new Random();
