@@ -4,7 +4,7 @@ plugins {
 	id 'maven-publish'
 	id 'signing'
 	id "com.github.ben-manes.versions" version "0.52.0"
-	id "io.deepmedia.tools.deployer" version "0.16.0"
+	id "io.deepmedia.tools.deployer" version "0.18.0"
 }
 
 subprojects {
@@ -47,11 +47,12 @@ subprojects {
 deployer {
 	project.description = ""
 
-	centralPortalSpec {
+	centralPortalSpec("") {
 		auth.user = System.getenv("MAVEN_USERNAME")
 		auth.password = System.getenv("MAVEN_PASSWORD")
 
-		signing.user = System.getenv("MAVEN_GPG_KEY_ID")
+
+		signing.key = System.getenv("MAVEN_GPG_KEY_ID")
 		signing.password = System.getenv("MAVEN_GPG_PASSPHRASE")
 	}
 }
