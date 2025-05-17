@@ -23,8 +23,8 @@ dependencies {
         implementation project(':docking-multi-app')
     }
 
-    implementation 'com.formdev:flatlaf:' + flatLafVersion
-    implementation 'com.formdev:flatlaf-intellij-themes:' + flatLafVersion
+    implementation 'com.formdev:flatlaf:3.6'
+    implementation 'com.formdev:flatlaf-intellij-themes:3.6'
 
     implementation 'com.ardikars.pcap:pcap-jdk7:1.5.3'
 

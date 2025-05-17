@@ -21,10 +21,12 @@ subprojects {
 	version = "1.1.3"
 
 	ext {
-		val flatLafVersion = "3.6"
+
 	}
 }
-
+buildscript {
+	val flatLafVersion by extra("3.6")
+}
 //publishing {
 //	repositories {
 //		maven {
@@ -41,28 +43,28 @@ subprojects {
 //	}
 //}
 
-deployer {
-	content {
-		kotlinComponents()
-	}
-	projectInfo {
-		description = "Modern docking framework for Java Swing"
-		url = "https://github.com/andrewauclair/ModernDocking"
-		scm.fromGithub("andrewauclair", "ModernDocking")
-		license(MIT)
-		developer("Andrew Auclair", "mightymalakai33@gmail.com")
-		groupId = "io.github.andrewauclair.moderndocking"
-	}
-
-	signing {
-		key = secret(System.getenv("MAVEN_GPG_KEY_ID"))
-		password = secret(System.getenv("MAVEN_GPG_PASSPHRASE"))
-	}
-	centralPortalSpec {
-		auth.user = secret(System.getenv("MAVEN_USERNAME"))
-		auth.password = secret(System.getenv("MAVEN_PASSWORD"))
-	}
-}
+//deployer {
+//	content {
+//		kotlinComponents()
+//	}
+//	projectInfo {
+//		description = "Modern docking framework for Java Swing"
+//		url = "https://github.com/andrewauclair/ModernDocking"
+//		scm.fromGithub("andrewauclair", "ModernDocking")
+//		license(MIT)
+//		developer("Andrew Auclair", "mightymalakai33@gmail.com")
+//		groupId = "io.github.andrewauclair.moderndocking"
+//	}
+//
+//	signing {
+//		key = secret(System.getenv("MAVEN_GPG_KEY_ID"))
+//		password = secret(System.getenv("MAVEN_GPG_PASSPHRASE"))
+//	}
+//	centralPortalSpec {
+//		auth.user = secret(System.getenv("MAVEN_USERNAME"))
+//		auth.password = secret(System.getenv("MAVEN_PASSWORD"))
+//	}
+//}
 //deployer {
 //	project.description = ""
 //
