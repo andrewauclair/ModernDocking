@@ -57,12 +57,12 @@ deployer {
 	}
 
 	signing {
-		key = secret(System.getenv("MAVEN_GPG_KEY_ID"))
-		password = secret(System.getenv("MAVEN_GPG_PASSPHRASE"))
+		key = secret("MAVEN_GPG_KEY_ID")
+		password = secret("MAVEN_GPG_PASSPHRASE")
 	}
 	centralPortalSpec {
-		auth.user = secret(System.getenv("MAVEN_USERNAME"))
-		auth.password = secret(System.getenv("MAVEN_PASSWORD"))
+		auth.user = secret("MAVEN_USERNAME")
+		auth.password = secret("MAVEN_PASSWORD")
 	}
 }
 //deployer {
