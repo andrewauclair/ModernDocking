@@ -406,7 +406,7 @@ public class DockingStateAPI {
         }
         catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
                InvocationTargetException e) {
-            logger.log(Level.INFO, "Failed to create instance of dynamic dockable with DynamicDockaleParameters constructor. Falling ack on (String, String)");
+            logger.log(Level.INFO, "Failed to create instance of dynamic dockable with DynamicDockableParameters constructor. Falling back on (String, String)");
             logger.log(Level.INFO, e.getMessage(), e);
         }
 
