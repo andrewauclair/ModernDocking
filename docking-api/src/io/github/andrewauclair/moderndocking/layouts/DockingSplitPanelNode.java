@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.layouts;
 
+ import io.github.andrewauclair.moderndocking.Dockable;
  import io.github.andrewauclair.moderndocking.DockingRegion;
  import io.github.andrewauclair.moderndocking.api.DockingAPI;
  import io.github.andrewauclair.moderndocking.internal.DockingInternal;
@@ -100,15 +101,18 @@ package io.github.andrewauclair.moderndocking.layouts;
 			DockingLayoutNode left;
 			DockingLayoutNode right;
 
+			Dockable dockable = DockingInternal.get(docking).getDockable(persistentID);
+			String className = dockable.getClass().getTypeName();
+
 			if (Settings.alwaysDisplayTabsMode()) {
-				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingTabPanelNode(docking, persistentID, "", anchor) : this;
-				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(docking, persistentID, "", anchor);
+				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingTabPanelNode(docking, persistentID, className, anchor, dockable.getTitleText(), dockable.getTabText()) : this;
+				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(docking, persistentID, className, anchor, dockable.getTitleText(), dockable.getTabText());
 			}
 			else {
-				String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getTypeName();
 
-				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(docking, persistentID, className, anchor) : this;
-				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(docking, persistentID, className, anchor);
+
+				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(docking, persistentID, className, anchor, dockable.getTitleText(), dockable.getTabText()) : this;
+				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(docking, persistentID, className, anchor, dockable.getTitleText(), dockable.getTabText());
 			}
 
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
