@@ -42,6 +42,7 @@ public class SimplePanel extends BasePanel {
 	public static final String STRING_TEST1_PROP = "test1";
 	public static final String TEST_INT_1_PROP = "test_int_1";
 
+	private String titleText = "";
 	private String tabText = "";
 
 	public boolean limitToWindow = false;
@@ -102,7 +103,8 @@ public class SimplePanel extends BasePanel {
 
 	public SimplePanel(DynamicDockableParameters parameters) {
 		super(parameters.getTabText(), parameters.getTitleText(), parameters.getPersistentID());
-		tabText = parameters.getTitleText();
+		titleText = parameters.getTitleText();
+		tabText = parameters.getTabText();
 		style = DockableStyle.BOTH;
 
 		setLayout(new GridBagLayout());
@@ -181,6 +183,14 @@ public class SimplePanel extends BasePanel {
 	@Override
 	public DockableStyle getStyle() {
 		return style;
+	}
+
+	@Override
+	public String getTitleText() {
+		if (titleText == null || titleText.isEmpty()) {
+			return super.getTitleText();
+		}
+		return titleText;
 	}
 
 	@Override

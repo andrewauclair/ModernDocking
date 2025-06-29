@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.layouts;
 
+import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.Property;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
@@ -38,7 +39,7 @@ import javax.swing.JSplitPane;
 public class DockingTabPanelNode implements DockingLayoutNode {
 	private final List<DockingSimplePanelNode> tabs = new ArrayList<>();
 	private final DockingAPI docking;
-	private String selectedTabID;
+    private String selectedTabID;
 	private String anchor = "";
 
 	private DockingLayoutNode parent;
@@ -51,9 +52,9 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 * @param selectedTabClassName The name of the class for the selected tab, used to create the dockable if not found
 	 * @param anchor The anchor associated with this node
 	 */
-	public DockingTabPanelNode(DockingAPI docking, String selectedTabID, String selectedTabClassName, String anchor) {
+	public DockingTabPanelNode(DockingAPI docking, String selectedTabID, String selectedTabClassName, String anchor, String titleText, String tabText) {
 		this.docking = docking;
-		addTab(selectedTabID, selectedTabClassName, anchor);
+        addTab(selectedTabID, selectedTabClassName, anchor, titleText, tabText);
 		this.selectedTabID = selectedTabID;
 	}
 
@@ -66,9 +67,9 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 * @param selectedTabClassName The name of the class for the selected tab, used to create the dockable if not found
 	 * @param properties Properties of the dockable
 	 */
-	public DockingTabPanelNode(DockingAPI docking, String selectedTabID, String selectedTabClassName, String anchor, Map<String, Property> properties) {
+	public DockingTabPanelNode(DockingAPI docking, String selectedTabID, String selectedTabClassName, String anchor, String titleText, String tabText, Map<String, Property> properties) {
 		this.docking = docking;
-		addTab(selectedTabID, selectedTabClassName, anchor, properties);
+		addTab(selectedTabID, selectedTabClassName, anchor, titleText, tabText, properties);
 		this.selectedTabID = selectedTabID;
 	}
 
@@ -78,7 +79,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 * @param persistentID Dockable persistent ID to add
 	 * @param className The name of the class for this dockable
 	 */
-	public void addTab(String persistentID, String className, String anchor) {
+	public void addTab(String persistentID, String className, String anchor, String titleText, String tabText) {
 		if (findNode(persistentID) != null) {
 			DockingSimplePanelNode node = null;
 			for (DockingSimplePanelNode tab : tabs) {
@@ -103,7 +104,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 			}
 		}
 
-		DockingSimplePanelNode tab = new DockingSimplePanelNode(docking, persistentID, className, anchor);
+		DockingSimplePanelNode tab = new DockingSimplePanelNode(docking, persistentID, className, anchor, titleText, tabText);
 		tab.setParent(this);
 		tabs.add(tab);
 	}
@@ -115,7 +116,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	 * @param className The name of the class for this dockable
 	 * @param properties Properties of the dockable
 	 */
-	public void addTab(String persistentID, String className, String anchor, Map<String, Property> properties) {
+	public void addTab(String persistentID, String className, String anchor, String titleText, String tabText, Map<String, Property> properties) {
 		if (findNode(persistentID) != null) {
 			DockingSimplePanelNode node = null;
 			for (DockingSimplePanelNode tab : tabs) {
@@ -140,7 +141,7 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 			}
 		}
 
-		DockingSimplePanelNode tab = new DockingSimplePanelNode(docking, persistentID, className, anchor, properties);
+		DockingSimplePanelNode tab = new DockingSimplePanelNode(docking, persistentID, className, anchor, titleText, tabText, properties);
 		tab.setParent(this);
 		tabs.add(tab);
 	}
@@ -200,7 +201,10 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 	@Override
 	public void dock(String persistentID, DockingRegion region, double dividerProportion) {
 		if (region == DockingRegion.CENTER) {
-			addTab(persistentID, "", anchor);
+			Dockable dockable = DockingInternal.get(docking).getDockable(persistentID);
+			String className = dockable.getClass().getTypeName();
+
+			addTab(persistentID, className, anchor, dockable.getTitleText(), dockable.getTabText());
 		}
 		else {
 			int orientation = region == DockingRegion.EAST || region == DockingRegion.WEST ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
@@ -208,15 +212,16 @@ public class DockingTabPanelNode implements DockingLayoutNode {
 			DockingLayoutNode left;
 			DockingLayoutNode right;
 
+			Dockable dockable = DockingInternal.get(docking).getDockable(persistentID);
+			String className = dockable.getClass().getTypeName();
+
 			if (Settings.alwaysDisplayTabsMode()) {
-				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingTabPanelNode(docking, persistentID, "", anchor) : this;
-				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(docking, persistentID, "", anchor);
+				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingTabPanelNode(docking, persistentID, className, anchor, dockable.getTitleText(), dockable.getTabText()) : this;
+				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(docking, persistentID, className, anchor, dockable.getTitleText(), dockable.getTabText());
 			}
 			else {
-				String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getTypeName();
-
-				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(docking, persistentID, className, anchor) : this;
-				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(docking, persistentID, className, anchor);
+				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(docking, persistentID, className, anchor, dockable.getTitleText(), dockable.getTabText()) : this;
+				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(docking, persistentID, className, anchor, dockable.getTitleText(), dockable.getTabText());
 			}
 
 			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
