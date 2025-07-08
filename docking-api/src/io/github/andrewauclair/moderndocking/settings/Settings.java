@@ -34,6 +34,9 @@ public class Settings {
 
     private static boolean enableActiveHighlighter = true;
 
+    private static int dragThreshold = 20;
+    private static boolean useExistingDragThreshold = false;
+
     /**
      * Unused. All methods are static
      */
@@ -104,5 +107,37 @@ public class Settings {
      */
     public static void setActiveHighlighterEnabled(boolean enabled) {
         enableActiveHighlighter = enabled;
+    }
+
+    /**
+     * The drag threshold Modern Docking should use
+     */
+    public static int getDragThreshold() {
+        return dragThreshold;
+    }
+
+    /**
+     * Is Modern Docking using an existing drag threhsold?
+     */
+    public static boolean isUseExistingDragThreshold() {
+        return useExistingDragThreshold;
+    }
+
+    /**
+     * Set the drag threshold. Modern Docking will use 20 by default
+     * <p>
+     * This setting will only take effect if called before the first instance of DockingAPI is created
+     */
+    public static void setDragThreshold(int threshold) {
+        dragThreshold = threshold;
+    }
+
+    /**
+     * Use the existing drag threshold instead of setting the AWT property
+     * <p>
+     * This setting will only take effect if called before the first instance of DockingAPI is created
+     */
+    public static void useExistingDragThreshold(boolean useExisting) {
+        useExistingDragThreshold = useExisting;
     }
 }
