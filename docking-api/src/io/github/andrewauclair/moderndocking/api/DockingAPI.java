@@ -41,6 +41,7 @@ import io.github.andrewauclair.moderndocking.internal.DockingPanel;
 import io.github.andrewauclair.moderndocking.internal.FloatingFrame;
 import io.github.andrewauclair.moderndocking.internal.InternalRootDockingPanel;
 import io.github.andrewauclair.moderndocking.layouts.WindowLayout;
+import io.github.andrewauclair.moderndocking.settings.Settings;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
 
 import java.awt.*;
@@ -108,6 +109,10 @@ public class DockingAPI {
         this.mainWindow = mainWindow;
 
         UIManager.addPropertyChangeListener(propertyChangeListener);
+
+        if (!Settings.isUseExistingDragThreshold()) {
+            System.setProperty("awt.dnd.drag.threshold", String.valueOf(Settings.getDragThreshold()));
+        }
     }
 
     /**

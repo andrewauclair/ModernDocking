@@ -4,5 +4,5 @@
 <ihp version="2.0">
     <topics dir="topics" web-path="/modern-docking"/>
     <images dir="images" web-path="/modern-docking/images"/>
-    <instance src="m.tree" version="1.1.5"/>
+    <instance src="m.tree" version="1.2.0"/>
 </ihp>
