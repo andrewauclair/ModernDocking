@@ -49,11 +49,8 @@ import io.github.andrewauclair.moderndocking.layouts.DockingTabPanelNode;
 import io.github.andrewauclair.moderndocking.layouts.WindowLayout;
 import io.github.andrewauclair.moderndocking.settings.Settings;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Window;
+
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.HierarchyEvent;
@@ -193,6 +190,23 @@ public class DockingStateAPI {
         }
 
         if (layout.hasSizeAndLocationInformation()) {
+            if (layout.getState() != Frame.MAXIMIZED_BOTH) {
+                GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                GraphicsDevice[] devices = env.getScreenDevices();
+
+                boolean locationOnScreen = false;
+
+                for (GraphicsDevice device : devices) {
+                    if (device.getDefaultConfiguration().getBounds().contains(layout.getLocation())) {
+                        locationOnScreen = true;
+                    }
+                }
+
+                if (!locationOnScreen && devices.length > 0) {
+                    layout.setLocation(devices[0].getDefaultConfiguration().getBounds().getLocation());
+                }
+            }
+
             window.setLocation(layout.getLocation());
             window.setSize(layout.getSize());
 
