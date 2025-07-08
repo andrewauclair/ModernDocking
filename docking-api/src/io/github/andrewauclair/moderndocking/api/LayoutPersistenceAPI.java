@@ -134,7 +134,7 @@ public class LayoutPersistenceAPI {
             if (!docking.isDocked(dockable)) {
                 DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 
-                writeSimpleNodeToFile(writer, new DockingSimplePanelNode(docking, dockable.getPersistentID(), dockable.getClass().getTypeName(), "", DockableProperties.saveProperties(wrapper)));
+                writeSimpleNodeToFile(writer, new DockingSimplePanelNode(docking, dockable.getPersistentID(), dockable.getClass().getTypeName(), "", dockable.getTitleText(), dockable.getTabText(), DockableProperties.saveProperties(wrapper)));
             }
         }
 
@@ -344,6 +344,8 @@ public class LayoutPersistenceAPI {
         if (node.getAnchor() != null) {
             writer.writeAttribute("anchor", node.getAnchor());
         }
+        writer.writeAttribute("title-text", node.getTitleText());
+        writer.writeAttribute("tab-text", node.getTabText());
         writer.writeCharacters(NL);
 
         writer.writeStartElement("properties");
@@ -396,9 +398,12 @@ public class LayoutPersistenceAPI {
         writer.writeCharacters(NL);
 
         writer.writeStartElement("selectedTab");
-        writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(node.getSelectedTabID()).getClass().getTypeName());
+        Dockable selectedTab = DockingInternal.get(docking).getDockable(node.getSelectedTabID());
+        writer.writeAttribute("class-name", selectedTab.getClass().getTypeName());
         writer.writeAttribute("persistentID", node.getSelectedTabID());
         writer.writeAttribute("anchor", node.getAnchor());
+        writer.writeAttribute("title-text", selectedTab.getTitleText());
+        writer.writeAttribute("tab-text", selectedTab.getTabText());
         writer.writeCharacters(NL);
         writer.writeEndElement();
         writer.writeCharacters(NL);
@@ -408,6 +413,8 @@ public class LayoutPersistenceAPI {
             writer.writeAttribute("persistentID", simpleNode.getPersistentID());
             writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(simpleNode.getPersistentID()).getClass().getTypeName());
             writer.writeAttribute("anchor", simpleNode.getAnchor());
+            writer.writeAttribute("title-text", simpleNode.getTitleText());
+            writer.writeAttribute("tab-text", simpleNode.getTabText());
             writer.writeCharacters(NL);
 
             writer.writeStartElement("properties");
@@ -568,6 +575,8 @@ public class LayoutPersistenceAPI {
         String persistentID = reader.getAttributeValue(null, "persistentID");
         String className = reader.getAttributeValue(null, "class-name");
         String anchor = reader.getAttributeValue(null, "anchor");
+        String titleText = reader.getAttributeValue(null, "title-text");
+        String tabText = reader.getAttributeValue(null, "tab-text");
 
         // class name didn't always exist, set it to an empty string if it's null
         if (className == null) {
@@ -577,7 +586,14 @@ public class LayoutPersistenceAPI {
         if (anchor == null) {
             anchor = "";
         }
-        return new DockingSimplePanelNode(docking, persistentID, className, anchor, readProperties(reader));
+        if (titleText == null) {
+            titleText = "";
+        }
+        if (tabText == null) {
+            tabText = "";
+        }
+
+        return new DockingSimplePanelNode(docking, persistentID, className, anchor, titleText, tabText, readProperties(reader));
     }
 
     // expects that we haven't already read the starting element for <properties>
@@ -695,6 +711,9 @@ public class LayoutPersistenceAPI {
                 String className = reader.getAttributeValue(null, "class-name");
                 anchor = reader.getAttributeValue(null, "anchor");
 
+                String titleText = reader.getAttributeValue(null, "title-text");
+                String tabText = reader.getAttributeValue(null, "tab-text");
+
                 // class name didn't always exist, set it to an empty string if it's null
                 if (className == null) {
                     className = "";
@@ -702,12 +721,21 @@ public class LayoutPersistenceAPI {
                 if (anchor == null) {
                     anchor = "";
                 }
-                node = new DockingTabPanelNode(docking, persistentID, className, anchor);
+                if (titleText == null) {
+                    titleText = "";
+                }
+                if (tabText == null) {
+                    tabText = "";
+                }
+                node = new DockingTabPanelNode(docking, persistentID, className, anchor, titleText, tabText);
             }
             else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("tab")) {
                 currentPersistentID = reader.getAttributeValue(null, "persistentID");
                 String className = reader.getAttributeValue(null, "class-name");
                 anchor = reader.getAttributeValue(null, "anchor");
+
+                String titleText = reader.getAttributeValue(null, "title-text");
+                String tabText = reader.getAttributeValue(null, "tab-text");
 
                 // class name didn't always exist, set it to an empty string if it's null
                 if (className == null) {
@@ -717,8 +745,14 @@ public class LayoutPersistenceAPI {
                 if (anchor == null) {
                     anchor = "";
                 }
+                if (titleText == null) {
+                    titleText = "";
+                }
+                if (tabText == null) {
+                    tabText = "";
+                }
                 if (node != null) {
-                    node.addTab(currentPersistentID, className, anchor);
+                    node.addTab(currentPersistentID, className, anchor, titleText, tabText);
                 }
             }
             else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("properties")) {

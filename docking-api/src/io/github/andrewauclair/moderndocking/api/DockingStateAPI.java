@@ -306,7 +306,7 @@ public class DockingStateAPI {
             Dockable dockable = getDockable(docking, simpleNode.getPersistentID());
 
             if (dockable instanceof FailedDockable) {
-                dockable = createDynamicDockable(dockable, simpleNode.getPersistentID(), simpleNode.getClassName(), "", "");
+                dockable = createDynamicDockable(dockable, simpleNode.getPersistentID(), simpleNode.getClassName(), simpleNode.getTitleText(), simpleNode.getTabText());
             }
 
             if (dockable == null) {
@@ -364,7 +364,7 @@ public class DockingStateAPI {
         Dockable dockable = getDockable(docking, node.getPersistentID());
 
         if (dockable instanceof FailedDockable) {
-            dockable = createDynamicDockable(dockable, node.getPersistentID(), node.getClassName(), "", "");
+            dockable = createDynamicDockable(dockable, node.getPersistentID(), node.getClassName(), node.getTitleText(), node.getTabText());
         }
 
         if (dockable == null) {
@@ -390,7 +390,7 @@ public class DockingStateAPI {
         return new DockedSimplePanel(docking, wrapper, node.getAnchor());
     }
 
-    private Dockable createDynamicDockable(Dockable dockable, String persistentID, String className, String tabText, String titleText) {
+    private Dockable createDynamicDockable(Dockable dockable, String persistentID, String className, String titleText, String tabText) {
         boolean foundNewConstructor = false;
 
         try {

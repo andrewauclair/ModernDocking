@@ -21,6 +21,7 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.layouts;
 
+import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.internal.DockingInternal;
@@ -58,13 +59,14 @@ public class DockingLayoutRootNode implements DockingLayoutNode {
             node = new DockingAnchorPanelNode(docking, persistentID, className);
         }
         else if (Settings.alwaysDisplayTabsMode()) {
-            node = new DockingTabPanelNode(docking, persistentID, "", "");
+            node = new DockingTabPanelNode(docking, persistentID, "", "", "", "");
             node.setParent(this);
         }
         else {
-            String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getTypeName();
+            Dockable dockable = DockingInternal.get(docking).getDockable(persistentID);
+            String className = dockable.getClass().getTypeName();
 
-            node = new DockingSimplePanelNode(docking, persistentID, className, "");
+            node = new DockingSimplePanelNode(docking, persistentID, className, "", dockable.getTitleText(), dockable.getTabText());
             node.setParent(this);
         }
     }
