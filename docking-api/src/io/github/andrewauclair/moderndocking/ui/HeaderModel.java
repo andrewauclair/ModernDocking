@@ -23,6 +23,9 @@ package io.github.andrewauclair.moderndocking.ui;
 
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
+import io.github.andrewauclair.moderndocking.internal.DockingComponentUtils;
+import io.github.andrewauclair.moderndocking.internal.DockingInternal;
+import java.awt.Window;
 import javax.swing.Icon;
 import javax.swing.JPopupMenu;
 
@@ -127,6 +130,21 @@ public class HeaderModel {
 	 */
 	public boolean isFloatingAllowed() {
 		return dockable.isFloatingAllowed();
+	}
+
+	/**
+	 * Check if the dockable is in a window by itself
+	 *
+	 * @return Are we alone in this window?
+	 */
+	public boolean isDockableAloneInWindow() {
+		Window window = DockingComponentUtils.findWindowForDockable(docking, dockable);
+
+		long dockables = DockingInternal.get(docking).getDockables().stream()
+				.filter(otherDockable -> DockingInternal.get(docking).getWrapper(otherDockable).getWindow() == window)
+				.count();
+
+		return dockables == 1;
 	}
 
 	/**
