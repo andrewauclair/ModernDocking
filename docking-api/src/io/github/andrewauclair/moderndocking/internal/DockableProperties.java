@@ -24,12 +24,21 @@ package io.github.andrewauclair.moderndocking.internal;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockingProperty;
 import io.github.andrewauclair.moderndocking.Property;
+import io.github.andrewauclair.moderndocking.api.LayoutPersistenceAPI;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -37,6 +46,8 @@ import java.util.stream.Collectors;
  */
 public class DockableProperties {
     private static boolean loadingLegacyFile = false;
+
+    private static final Logger logger = Logger.getLogger(DockableProperties.class.getPackageName());
 
     /**
      * Unused. All methods are static
@@ -217,6 +228,14 @@ public class DockableProperties {
         else if (type.equals("String")) {
             return new Property.StringProperty(property, value);
         }
+        else if (type.equals("Serializable")) {
+            byte[] data = Base64.getDecoder().decode(value);
+            try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(data))) {
+                return new Property.SerializableProperty(property, (Serializable) in.readObject());
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
         else {
             throw new RuntimeException("Unsupported property type");
         }
@@ -261,6 +280,22 @@ public class DockableProperties {
         else if (type == String.class) {
             return new Property.StringProperty(property, value);
         }
+        else if (Serializable.class.isInstance(type)) {
+            if (value.isEmpty()) {
+                try {
+                    return new Property.SerializableProperty(property, (Serializable) type.getConstructor().newInstance());
+                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                         InvocationTargetException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+            byte[] data = Base64.getDecoder().decode(value);
+            try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(data))) {
+                return new Property.SerializableProperty(property, (Serializable) in.readObject());
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
 //        else if (type.isEnum()) {
 //            return Integer.toString(((Enum<?>) field.get(dockable)).ordinal());
 //            return "";
@@ -302,6 +337,9 @@ public class DockableProperties {
         else if (type == String.class) {
             return new Property.StringProperty(property, (String) field.get(dockable));
         }
+        else if (Serializable.class.isInstance(type)) {
+            return new Property.SerializableProperty(property, (Serializable) field.get(dockable));
+        }
 //        else if (type.isEnum()) {
 //            return Integer.toString(((Enum<?>) field.get(dockable)).ordinal());
 //            return "";
@@ -340,6 +378,11 @@ public class DockableProperties {
         }
         else if (type == String.class) {
             field.set(dockable, ((Property.StringProperty) value).getValue());
+        }
+        else if (Serializable.class.isInstance(type)) {
+            Serializable serializable = ((Property.SerializableProperty) value).getValue();
+            field.set(dockable, type.cast(serializable));
+
         }
 //        else if (type.isEnum()) {
 //            int ordinal = Integer.parseInt(value);

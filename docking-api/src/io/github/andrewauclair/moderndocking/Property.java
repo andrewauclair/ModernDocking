@@ -1,5 +1,11 @@
 package io.github.andrewauclair.moderndocking;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Base64;
+
 /**
  * Base class for all Property classes
  */
@@ -412,6 +418,54 @@ public abstract class Property {
          * @return Current value
          */
         public String getValue() {
+            return value;
+        }
+    }
+
+    /**
+     * Property class that provides access to a String
+     */
+    public static class SerializableProperty extends Property {
+        private final Serializable value;
+
+        /**
+         * Create a new instance
+         *
+         * @param name The name of the property
+         * @param value The value of the property
+         */
+        public SerializableProperty(String name, Serializable value) {
+            super(name);
+            this.value = value;
+        }
+
+        @Override
+        public Class<?> getType() {
+            return Serializable.class;
+        }
+
+        @Override
+        public boolean isNull() {
+            return value == null;
+        }
+
+        @Override
+        public String toString() {
+            try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+                ObjectOutputStream os = new ObjectOutputStream(bos);
+                os.writeObject(value);
+                return Base64.getEncoder().encodeToString(bos.toByteArray());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        /**
+         * Get the value of this property
+         *
+         * @return Current value
+         */
+        public Serializable getValue() {
             return value;
         }
     }

@@ -26,6 +26,8 @@ import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.app.AppState;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -63,6 +65,9 @@ public class PropertiesDemoPanel extends BasePanel {
 
     @DockingProperty(name = "sample_string")
     private String stringValue;
+
+    @DockingProperty(name = "list_ints")
+    private ArrayList<Integer> ints = new ArrayList<>();
 
 //    @DockingProperty(name = "sample_enum", defaultValue = "0")
 //    private DockingRegion dockingRegion;
@@ -161,6 +166,10 @@ public class PropertiesDemoPanel extends BasePanel {
             booleanValue = Boolean.parseBoolean(booleanField.getText());
             stringValue = stringField.getText();
 
+            ints.add(1);
+            ints.add(2);
+            ints.add(3);
+
             AppState.persist();
         });
     }
@@ -178,6 +187,8 @@ public class PropertiesDemoPanel extends BasePanel {
         charField.setText(String.valueOf(charValue));
         booleanField.setText(Boolean.toString(booleanValue));
         stringField.setText(stringValue);
+
+        ints.stream().forEach(integer -> System.out.println("integer = " + integer));
     }
 
     static class MyIntFilter extends DocumentFilter {
