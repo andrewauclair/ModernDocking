@@ -191,7 +191,7 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.weightx = 0;
 
-		if (headerModel.hasMoreOptions() || headerModel.isMaximizeAllowed() || headerModel.isAutoHideAllowed() || headerModel.isFloatingAllowed()) {
+		if (headerModel.hasMoreOptions() || headerModel.isMaximizeAllowed() || headerModel.isAutoHideAllowed() || (headerModel.isFloatingAllowed() && !headerModel.isDockableAloneInWindow())) {
 			addOptions();
 
 			add(settings, gbc);
@@ -238,8 +238,6 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		if (settingsMenu.getComponentCount() > 0) {
 			settingsMenu.addSeparator();
 		}
-
-		window.setEnabled(headerModel.isFloatingAllowed());
 
 		autoHide.addActionListener(e -> headerController.toggleAutoHide());
 
@@ -336,6 +334,8 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 
 		autoHide.setEnabled(headerModel.isAutoHideAllowed());
 		autoHide.setSelected(headerModel.isAutoHideEnabled());
+
+		window.setEnabled(headerModel.isFloatingAllowed() && !headerModel.isDockableAloneInWindow());
 	}
 
 	@Override
