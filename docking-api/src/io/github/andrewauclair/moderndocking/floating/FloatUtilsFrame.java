@@ -142,25 +142,29 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
         getRootPane().setBackground(new Color(0, 0, 0, 0)); // don't want a background for the root pane either. Workaround for a FlatLaf macOS issue.
         getContentPane().setBackground(new Color(0, 0, 0, 0)); // don't want a background for the content frame either.
 
-//        add(renderPanel);
-//        renderPanel.setOpaque(false);
-        GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-        BufferCapabilities bufferCapabilities = gc.getBufferCapabilities();
-
-        if (bufferCapabilities.isMultiBufferAvailable())
-        {
+        // always use the render panel on Windows
+        if (System.getProperty("os.name").contains("Windows")) {
             add(renderPanel);
             renderPanel.setOpaque(false);
         }
+        else {
+            // handle Linux differently. if we have multi-buffer, use the render panel, else, use a buffer strategy
+            GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+            BufferCapabilities bufferCapabilities = gc.getBufferCapabilities();
 
-        try {
-            if (getContentPane() instanceof JComponent) {
-                ((JComponent) getContentPane()).setOpaque(false);
+            if (bufferCapabilities.isMultiBufferAvailable()) {
+                add(renderPanel);
+                renderPanel.setOpaque(false);
             }
-        }
-        catch (IllegalComponentStateException e) {
-            // TODO we need to handle platforms that don't support translucent display
-            // this exception indicates that the platform doesn't support changing the opacity
+
+            try {
+                if (getContentPane() instanceof JComponent) {
+                    ((JComponent) getContentPane()).setOpaque(false);
+                }
+            } catch (IllegalComponentStateException e) {
+                // TODO we need to handle platforms that don't support translucent display
+                // this exception indicates that the platform doesn't support changing the opacity
+            }
         }
     }
 
@@ -189,12 +193,14 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
 
         setVisible(true);
 
-        GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-        BufferCapabilities bufferCapabilities = gc.getBufferCapabilities();
+        if (!System.getProperty("os.name").contains("Windows")) {
+            GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+            BufferCapabilities bufferCapabilities = gc.getBufferCapabilities();
 
-        if (!bufferCapabilities.isMultiBufferAvailable()) {
-            createBufferStrategy(2);
-            bs = this.getBufferStrategy();
+            if (!bufferCapabilities.isMultiBufferAvailable()) {
+                createBufferStrategy(2);
+                bs = this.getBufferStrategy();
+            }
         }
         orderFrames();
     }

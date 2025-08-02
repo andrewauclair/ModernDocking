@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<app-layout>
+<layout main-frame="true" location="792,425" size="647,524" state="0">
+<westToolbar>
+</westToolbar>
+<eastToolbar>
+</eastToolbar>
+<southToolbar>
+</southToolbar>
+<split orientation="0" divider-proportion="0.6206225752830505">
+<left>
+<split orientation="1" divider-proportion="0.49764519929885864">
+<left>
+<split orientation="0" divider-proportion="0.4983818829059601">
+<left>
+<simple persistentID="two" class-name="basic.Example$Panel" anchor="" title-text="two" tab-text="two">
+<properties></properties>
+</simple>
+</left>
+<right>
+<simple persistentID="one" class-name="basic.Example$Panel" anchor="" title-text="one" tab-text="one">
+<properties></properties>
+</simple>
+</right>
+</split>
+</left>
+<right>
+<simple persistentID="three" class-name="basic.Example$Panel" anchor="" title-text="three" tab-text="three">
+<properties></properties>
+</simple>
+</right>
+</split>
+</left>
+<right>
+<simple persistentID="four" class-name="basic.Example$Panel" anchor="" title-text="four" tab-text="four">
+<properties></properties>
+</simple>
+</right>
+</split>
+</layout>
+<undocked>
+</undocked>
+</app-layout>
