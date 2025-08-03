@@ -14,7 +14,7 @@ charset-normalizer==3.4.2
     # via requests
 colorama==0.4.6
     # via sphinx
-docutils==0.19
+docutils==0.21.2
     # via sphinx
 idna==3.10
     # via requests
@@ -30,9 +30,11 @@ pygments==2.19.2
     # via sphinx
 requests==2.32.4
     # via sphinx
+roman-numerals-py==3.1.0
+    # via sphinx
 snowballstemmer==3.0.1
     # via sphinx
-sphinx==5.3.0
+sphinx==8.2.3
     # via
     #   -r requirements.in
     #   sphinx-documatt-theme
