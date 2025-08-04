@@ -26,3 +26,4 @@ exclude_patterns = []
 
 html_theme = 'readable'
 html_static_path = ['_static']
+html_theme_path = [sphinx_readable_theme.get_html_theme_path()]
