@@ -11,6 +11,9 @@ Java 11 and newer are supported.
    :maxdepth: 2
    :caption: Contents:
 
+   User-Facing-Features
+   Packaging
+   Modern-Docking-API
    Hello-World
    Docking-Programmatically
-   User-Facing-Features
+   
