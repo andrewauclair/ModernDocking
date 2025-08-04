@@ -14,6 +14,3 @@ Java 11 and newer are supported.
    User-Facing-Features
    Packaging
    Modern-Docking-API
-   Hello-World
-   Docking-Programmatically
-   
