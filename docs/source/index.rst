@@ -1,17 +1,15 @@
-.. Modern Docking documentation master file, created by
-   sphinx-quickstart on Sun Aug  3 17:25:24 2025.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Modern Docking documentation
+Welcome to Modern Docking
 ============================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+Welcome! This documentation explains the user facing features of Modern Docking, its API, and some of the internals.
 
+Modern Docking provides a rich set of features to enhance any Java Swing User Interface with a desire to provider user customizable layouts of UI components.
+
+Java 11 and newer are supported.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   Hello-World
+   Docking-Programmatically
