@@ -9,13 +9,12 @@ Typically, this interface is implemented by a class that extends from `JPanel`.
 The `Dockable` interface has a minimum subset of methods that must be implemented by the application and a set of methods that are optional.
 These optional methods provide extra customization points for the application per dockable.
 
-<warning>
-The return values for the <code>Dockable</code> interface methods should be constant after the creation of the dockable component.
-Certain methods can be dynamic and the framework provides methods to update their values within the framework. Any method that doesn't specify such
-a method can lead to unexpected behavior if changed after the dockable component is created.
+.. warning::
+    The return values for the <code>Dockable</code> interface methods should be constant after the creation of the dockable component.
+    Certain methods can be dynamic and the framework provides methods to update their values within the framework. Any method that doesn't specify such
+    a method can lead to unexpected behavior if changed after the dockable component is created.
 
-Generally, if you wish to modify the return values after creating the dockable component, do so while the dockable is not docked. This can be checked with <b>Docking.isDocked</b>.
-</warning>
+    Generally, if you wish to modify the return values after creating the dockable component, do so while the dockable is not docked. This can be checked with <b>Docking.isDocked</b>.
 
 -----------------
 Mandatory Methods
@@ -23,16 +22,18 @@ Mandatory Methods
 
 These two methods do not provide default implementations in the interface and must be implemented by the application.
 
-<procedure title="getPersistentID" id="getPersistentID">
-<code-block lang="java">String getPersistentID()</code-block>
-<p><code>getPersistentID</code> provides a unique ID that the framework can use to refer to the dockable. This is the main piece of information that the application and the framework share in order to refer to specific dockables.</p>
-</procedure>
+.. code-block:: java
+    String persistentID()
 
-<procedure title="getTabText" id="getTabText">
-<code-block lang="java">String getTabText()</code-block>
-<p><code>getTabText</code> provides the text that should be displayed on a tab when this dockable is in a <code>JTabbedPane</code>.</p>
-<note>If the text displayed on the tab ever changes, the application must call <b>Docking.updateTabText</b> with the dockables persistentID to force the framework to update the text. This should be done anytime the text is changed, just in case the dockable is displaying in a JTabbedPane. Undocking and docking the dockable again will also update the tab text.</note>
-</procedure>
+Provides a unique ID for the dockable to use within Modern Docking
+
+.. code-block:: java
+    getTabText
+
+Provides the text that will be displayed on a tab when the dockable is in a ``JTabbedPane``.
+
+.. note::
+    If the text displayed on the tab ever changes, the application must call <b>Docking.updateTabText</b> with the dockables persistentID to force the framework to update the text. This should be done anytime the text is changed, just in case the dockable is displaying in a JTabbedPane. Undocking and docking the dockable again will also update the tab text.</note>
 
 ----------------
 Optional Methods
