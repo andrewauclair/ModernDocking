@@ -10,6 +10,10 @@ build:
   tools:
     python: "3.13"
 
+formats:
+  - htmlzip
+  - pdf
+
 # Build documentation in the "docs/" directory with Sphinx
 sphinx:
    configuration: docs/source/conf.py
