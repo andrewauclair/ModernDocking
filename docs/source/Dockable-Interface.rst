@@ -2,11 +2,11 @@
 Dockable Interface
 ==================
 
-The `Dockable` interface is required to be implemented by any component that will be dockable.
+The ``Dockable`` interface is required to be implemented by any component that will be dockable.
 
-Typically, this interface is implemented by a class that extends from `JPanel`.
+Typically, this interface is implemented by a class that extends from ``JPanel``.
 
-The `Dockable` interface has a minimum subset of methods that must be implemented by the application and a set of methods that are optional.
+The ``Dockable`` interface has a minimum subset of methods that must be implemented by the application and a set of methods that are optional.
 These optional methods provide extra customization points for the application per dockable.
 
 .. warning::
@@ -32,7 +32,7 @@ Provides a unique ID for the dockable to use within Modern Docking
 
 Provides the text that will be displayed on a tab when the dockable is in a ``JTabbedPane``.
 
-.. note::
+.. important::
     If the text displayed on the tab ever changes, the application must call <b>Docking.updateTabText</b> with the dockables persistentID to force the framework to update the text. This should be done anytime the text is changed, just in case the dockable is displaying in a JTabbedPane. Undocking and docking the dockable again will also update the tab text.</note>
 
 ----------------
@@ -42,23 +42,25 @@ Optional Methods
 The following methods are provided to the application with a default. This means the application only needs to implement the methods
 if it wishes to change the default.
 
-<procedure title="getType" id="getType">
-<code-block lang="java">int getType()</code-block>
-<p><code>getType</code> provides an int to Modern Docking. This represents a unique type category for the dockable. Modern Docking will use this value when docking to determine which dockables to dock to.</p>
-<p>Default value is <code>0</code></p>
-</procedure>
+.. code-block::
+    int getType()
 
-<procedure title="getTitleText" id="getTitleText">
-<code-block lang="java">String getTitleText()</code-block>
-<p><code>getTitleText</code> provides the text that Modern Docking should display on the header. This string can be different than <code>getTabText</code></p>
-<p>Default value is <code>getTabText</code></p>
-</procedure>
+``Default:`` 0
 
-<procedure title="getTabTooltip" id="getTabTooltip">
-<code-block lang="java">String getTabTooltip()</code-block>
-<p>Used by the framework to get the text to display as a tooltip on <code>JTabbedPane</code> tabs.</p>
-<p>Default value is <code>null</code></p>
-</procedure>
+Provides an int to Modern Docking. This represents a unique type category for the dockable. Modern Docking will use this value when docking to determine which dockables to dock to.
+
+.. code-block::
+    String getTitleText()
+
+``Default:`` value of ``getTabText``
+
+Provides the text that Modern Docking should display on the header. This string can be different than ``getTabText``
+
+.. code-block::
+    String getTabTooltip()
+
+``Default::`` ``null``
+Used by the framework to get the text to display as a tooltip on <code>JTabbedPane</code> tabs.
 
 <procedure title="getIcon" id="getIcon">
 <code-block lang="java">Icon getIcon()</code-block>
