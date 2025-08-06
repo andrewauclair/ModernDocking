@@ -10,7 +10,7 @@ The ``Dockable`` interface has a minimum subset of methods that must be implemen
 These optional methods provide extra customization points for the application per dockable.
 
 .. warning::
-    The return values for the <code>Dockable</code> interface methods should be constant after the creation of the dockable component.
+    The return values for the ``Dockable`` interface methods should be constant after the creation of the dockable component.
     Certain methods can be dynamic and the framework provides methods to update their values within the framework. Any method that doesn't specify such
     a method can lead to unexpected behavior if changed after the dockable component is created.
 
@@ -59,32 +59,39 @@ Provides the text that Modern Docking should display on the header. This string 
 .. code-block::
     String getTabTooltip()
 
-``Default::`` ``null``
+``Default:`` ``null``
+
 Used by the framework to get the text to display as a tooltip on <code>JTabbedPane</code> tabs.
 
-<procedure title="getIcon" id="getIcon">
-<code-block lang="java">Icon getIcon()</code-block>
-<p>Used by the framework to get the icon for the dockable to use in a <code>JTabbedPane</code> tab.</p>
-<p>Default value is <code>null</code></p>
-</procedure>
+.. code-block::
+    Icon getIcon()
 
-<procedure title="isFloatingAllowed" id="isFloatingAllowed">
-<code-block lang="java">boolean isFloatingAllowed()</code-block>
-<p>Tells Modern Docking if the dockable is allowed to be opened in its own window</p>
-<p>Default value is <code>true</code></p>
-</procedure>
+``Default:`` ``null``
 
-<procedure title="isLimitedToWindow" id="isLimitedToWindow">
-<code-block lang="java">boolean isLimitedToWindow()</code-block>
-   <p>Allows the application to limit the dockable to the window it was initially docked in.</p>
-   <p>Default value is <code>false</code></p>
-</procedure>
+Used by the framework to get the icon for the dockable to use in a ``JTabbedPane`` tab.
 
-<procedure title="getStyle" id="getStyle">
-<code-block lang="java">DockableStyle getStyle()</code-block>
-<p>The docking style of the dockable which can be <code>DockableStyle.VERTICAL</code>, <code>DockableStyle.HORIZONTAL</code>, <code>DockableStyle.BOTH</code> or <code>DockableStyle.CENTER_ONLY</code>. Modern Docking will use this to determine which docking regions to allow when docking this dockable. Docking handles that do not match this style will be hidden.</p>
-<p>Default value is <code>DockableStyle.BOTH</code></p>
-</procedure>
+.. code-block::
+    boolean isFloatingAllowed()
+
+``Default:`` ``true``
+
+Tells Modern Docking if the dockable is allowed to be opened in its own window
+
+.. code-block::
+    boolean isLimitedToWindow()
+
+``Default:`` ``false``
+Allows the application to limit the dockable to the window it was initially docked in.
+
+.. code-block::
+    DockableStyle getStyle()
+
+``Default:`` ``DockableStyle.BOTH``
+
+The docking style of the dockable which can be <code>DockableStyle.VERTICAL</code>, <code>DockableStyle.HORIZONTAL</code>, <code>DockableStyle.BOTH</code> or <code>DockableStyle.CENTER_ONLY</code>. Modern Docking will use this to determine which docking regions to allow when docking this dockable. Docking handles that do not match this style will be hidden.
+
+.. code-block::
+    DockableStyle getAutoHideStyle()
 
 <procedure title="getAutoHideStyle" id="getAutoHideStyle">
 <code-block lang="java">DockableStyle getAutoHideStyle()</code-block>
@@ -92,11 +99,17 @@ Used by the framework to get the text to display as a tooltip on <code>JTabbedPa
 <p>Default value is <code>DockableStyle.BOTH</code></p>
 </procedure>
 
+.. code-block::
+    boolean isClosable()
+
 <procedure title="isClosable" id="isClosable">
 <code-block lang="java">boolean isClosable()</code-block>
 <p>Indicates to the docking framework whether the Dockable component can be closed and undocked.</p>
 <p>Default value is <code>true</code></p>
 </procedure>
+
+.. code-block::
+    boolean requestClose()
 
 <procedure title="requestClose" id="requestClose">
 <code-block lang="java">boolean requestClose()</code-block>
@@ -104,11 +117,17 @@ Used by the framework to get the text to display as a tooltip on <code>JTabbedPa
 <p>Default value is <code>true</code></p>
 </procedure>
 
+.. code-block::
+    boolean isAutoHideAllowed()
+
 <procedure title="isAutoHideAllowed" id="isAutoHideAllowed">
 <code-block lang="java">boolean isAutoHideAllowed()</code-block>
 <p>Determines if the dockable can be set to the auto hide toolbars.</p>
 <p>Default value is <code>false</code></p>
 </procedure>
+
+.. code-block::
+    boolean isMinMaxAllowed()
 
 <procedure title="isMinMaxAllowed" id="isMinMaxAllowed">
 <code-block lang="java">boolean isMinMaxAllowed()</code-block>
@@ -116,11 +135,17 @@ Used by the framework to get the text to display as a tooltip on <code>JTabbedPa
 <p>Default value is <code>false</code></p>
 </procedure>
 
+.. code-block::
+    boolean isWrappableInScrollpane()
+
 <procedure title="isWrappableInScrollpane" id="isWrappableInScrollpane">
 <code-block lang="java">boolean isWrappableInScrollpane()</code-block>
 <p>Allows the application to specify whether the docking framework should automatically wrap the Dockable component in a <code>JScrollPane</code>.</p>
 <p>Default value is <code>false</code></p>
 </procedure>
+
+.. code-block::
+    boolean getHasMoreOptions()
 
 <procedure title="getHasMoreOptions" id="getHasMoreOptions">
 <code-block lang="java">boolean getHasMoreOptions()</code-block>
@@ -128,22 +153,34 @@ Used by the framework to get the text to display as a tooltip on <code>JTabbedPa
 <p>Default value is <code>false</code></p>
 </procedure>
 
+.. code-block::
+    DockableTabPreference getTabPreference()
+
 <procedure title="getTabPreference" id="getTabPreference">
 <code-block lang="java">DockableTabPreference getTabPreference()</code-block>
 <p>Gives the dockables preferred tab location when in a <code>JTabbedPane</code></p>
 <p>Default value is <code>DockableTabPreference.NONE</code></p>
 </procedure>
 
+.. code-block::
+    void addMoreOptions(JPopupMenu menu)
+
 <procedure title="addMoreOptions" id="addMoreOptions">
 <code-block lang="java">void addMoreOptions(JPopupMenu menu)</code-block>
 <p>Adds this dockables menu items to the context menu</p>
 </procedure>
+
+.. code-block::
+    DockingHeaderUI createHeaderUI(HeaderController headerController, HeaderModel headerModel)
 
 <procedure title="createHeaderUI" id="createHeaderUI">
 <code-block lang="java">DockingHeaderUI createHeaderUI(HeaderController headerController, HeaderModel headerModel)</code-block>
 <p>Creates the header UI for this dockable. The default implementation will create the default Modern Docking header.</p>
 <p>Default value is <code>DockingInternal.createDefaultHeaderUI(headerController, headerModel);</code></p>
 </procedure>
+
+.. code-block::
+    void updateProperties()
 
 <procedure title="updateProperties" id="updateProperties">
 <code-block lang="java">void updateProperties()</code-block>
