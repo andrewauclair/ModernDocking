@@ -18,7 +18,7 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          java-version: '11'
+          java-version: '21'
           distribution: 'temurin'
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v4
