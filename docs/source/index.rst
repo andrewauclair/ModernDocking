@@ -1,5 +1,6 @@
+#########################
 Welcome to Modern Docking
-============================
+#########################
 
 Welcome! This documentation explains the user facing features of Modern Docking, its API, and some of the internals.
 
@@ -14,3 +15,5 @@ Java 11 and newer are supported.
    User-Facing-Features
    Packaging
    Modern-Docking-API
+   Modern-Docking-UI
+   Internal-Workings

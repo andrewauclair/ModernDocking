@@ -1,6 +1,6 @@
-====================
+#####################
 User Facing Features
-====================
+#####################
 
 
 Users of your application will interact with several UI components provided by Modern Docking.

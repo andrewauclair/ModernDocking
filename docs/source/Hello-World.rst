@@ -1,12 +1,14 @@
+#############
 Hello World
-============================
+#############
 
 This page will demonstrate a hello world application with Modern Docking.
 
 At the end of this page you'll know how to:
+
 * create and register dockables
 * create and register root panels
-* dock programmatically (covered more in depth [here](Docking-Programatically.md))
+* dock programmatically (covered more in depth :doc:`Docking-Programmatically`
 
 First we will create ``HelloWorld`` and ``MainFrame`` classes. ``HelloWorld`` will contain our ``main`` method and ``MainFrame`` will extend ``JFrame`` to provide the main frame for our application.
 
@@ -24,9 +26,10 @@ First we will create ``HelloWorld`` and ``MainFrame`` classes. ``HelloWorld`` wi
 That will give us a very basic application to start working from.
 
 Now we need to create a constructor that does the following:
+
 * sets a size
 * initializes Modern Docking
-* adds a ``RootDockingPanel`
+* adds a ``RootDockingPanel``
 * creates, registers and docks some dockables
 
 First we set a size so that our ``JFrame`` shows up on screen in a reasonable way
@@ -43,14 +46,14 @@ Next step is to initialize the docking framework.
 
 This will initialize the docking framework with our ``MainFrame`` class as the Main Frame of the application. This also initializes internal components in the framework that are needed later.
 
-Next, we create and add a ``RootDockingPanel`. This can be further customized if you want to use a different layout or have other custom components surrounding the dockable area. For now, we're going to simple use a ``BorderLayout`` (the default ``JFrame`` layout manager) and let the root consume all the space.
+Next, we create and add a ``RootDockingPanel``. This can be further customized if you want to use a different layout or have other custom components surrounding the dockable area. For now, we're going to simple use a ``BorderLayout`` (the default ``JFrame`` layout manager) and let the root consume all the space.
 
 .. code-block:: java
 
     RootDockingPanel root = new RootDockingPanel(this);
     add(root, BorderLayout.CENTER);
 
-This creates a new root and adds it to the ``JFrame`. ``this`` is passed to tell the ``RootDockingPanel`` what ``Window`` it belongs to. This is used to register the panel with the docking framework and to create any toolbars required for pinning.
+This creates a new root and adds it to the ``JFrame``. ``this`` is passed to tell the ``RootDockingPanel`` what ``Window`` it belongs to. This is used to register the panel with the docking framework and to create any toolbars required for pinning.
 
 Next, we will create a dockable. This will involve creating a new ``JPanel`` that extends the ``Dockable`` interface. Most of the methods in the ``Dockable`` interface have default implementations and are not required to be implemented.
 
@@ -107,7 +110,7 @@ or, we can use the persistentID value:
 
     Docking.dock("Hello World", this);
 
-In both cases ``this`` again refers to our ``MainFrame`, requesting that the framework dock our panel to this frame.
+In both cases ``this`` again refers to our ``MainFrame``, requesting that the framework dock our panel to this frame.
 
 Now we have a complete sample that will create a ``JFrame`` with a dockable with the display text of "Hello World". Full sample is shown below:
 
