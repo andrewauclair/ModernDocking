@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package io.github.andrewauclair.moderndocking.floating;
+package io.github.andrewauclair.moderndocking.internal.floating;
 
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableStyle;
@@ -34,7 +34,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
-import static io.github.andrewauclair.moderndocking.floating.DockingHandle.HANDLE_ICON_SIZE;
+import static io.github.andrewauclair.moderndocking.internal.floating.DockingHandle.HANDLE_ICON_SIZE;
 
 /**
  * Collection of the handles for the root of a window

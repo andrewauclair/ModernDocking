@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package io.github.andrewauclair.moderndocking.util;
+package io.github.andrewauclair.moderndocking.internal.util;
 
 import java.awt.Component;
 import java.awt.Graphics;

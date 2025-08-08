@@ -29,7 +29,7 @@ import io.github.andrewauclair.moderndocking.event.MaximizeListener;
 import io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener;
 import io.github.andrewauclair.moderndocking.exception.NotDockedException;
 import io.github.andrewauclair.moderndocking.exception.RootDockingPanelNotFoundException;
-import io.github.andrewauclair.moderndocking.floating.Floating;
+import io.github.andrewauclair.moderndocking.internal.floating.Floating;
 import io.github.andrewauclair.moderndocking.internal.ActiveDockableHighlighter;
 import io.github.andrewauclair.moderndocking.internal.DisplayPanel;
 import io.github.andrewauclair.moderndocking.internal.DockableWrapper;
