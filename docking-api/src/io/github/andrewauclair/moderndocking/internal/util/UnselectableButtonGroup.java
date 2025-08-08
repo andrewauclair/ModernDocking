@@ -1,4 +1,4 @@
-package io.github.andrewauclair.moderndocking.util;
+package io.github.andrewauclair.moderndocking.internal.util;
 
 import java.util.Enumeration;
 import java.util.Vector;

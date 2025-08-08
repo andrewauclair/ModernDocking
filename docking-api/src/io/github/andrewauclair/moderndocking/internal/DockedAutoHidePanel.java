@@ -25,7 +25,7 @@ import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
-import io.github.andrewauclair.moderndocking.util.SlideBorder;
+import io.github.andrewauclair.moderndocking.internal.util.SlideBorder;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
