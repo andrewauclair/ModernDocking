@@ -86,8 +86,6 @@ public class DockingAPI {
         }
     };
 
-    private boolean deregistering = false;
-
     public AppStateAPI getAppState() {
         return appState;
     }
@@ -178,7 +176,7 @@ public class DockingAPI {
      * @param dockable Dockable to deregister
      */
     public void deregisterDockable(Dockable dockable) {
-        deregistering = true;
+        internals.setDeregistering(this, true);
 
         try {
             // make sure we undock the dockable from the UI before deregistering
@@ -187,7 +185,7 @@ public class DockingAPI {
             internals.deregisterDockable(dockable);
         }
         finally {
-            deregistering = false;
+            internals.setDeregistering(this, false);
         }
     }
 
@@ -195,7 +193,7 @@ public class DockingAPI {
      * Deregister all dockables that have been registered. This action will also undock all dockables.
      */
     public void deregisterAllDockables() {
-        deregistering = true;
+        internals.setDeregistering(this, true);
 
         try {
             Set<Window> windows = new HashSet<>(getRootPanels().keySet());
@@ -214,7 +212,7 @@ public class DockingAPI {
             }
         }
         finally {
-            deregistering = false;
+            internals.setDeregistering(this, false);
         }
     }
 
@@ -418,7 +416,7 @@ public class DockingAPI {
 
             // fire an undock event if the dockable is changing windows
             if (wrapper.getWindow() != window) {
-                DockingListeners.fireUndockedEvent(dockable);
+                DockingListeners.fireUndockedEvent(dockable, false);
             }
         }
 
@@ -517,7 +515,7 @@ public class DockingAPI {
 
             // fire an undock event if the dockable is changing windows
             if (wrapper.getWindow() != internals.getWrapper(source).getWindow()) {
-                DockingListeners.fireUndockedEvent(source);
+                DockingListeners.fireUndockedEvent(source, false);
             }
         }
 
@@ -651,48 +649,7 @@ public class DockingAPI {
      * @param dockable The dockable to undock
      */
     public void undock(Dockable dockable) {
-        if (!isDocked(dockable)) {
-            // nothing to undock
-            return;
-        }
-
-        Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
-
-        // TODO something about DockingStateAPI.restoreAnchor is causing a null here
-        Objects.requireNonNull(window);
-
-        InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);
-
-        Objects.requireNonNull(root);
-
-        DockableWrapper wrapper = internals.getWrapper(dockable);
-
-        wrapper.setRoot(root);
-
-        if (isHidden(dockable)) {
-            root.undock(dockable);
-            wrapper.setParent(null);
-            wrapper.setHidden(false);
-        }
-        else {
-            wrapper.getParent().undock(dockable);
-        }
-        wrapper.setWindow(null);
-
-        DockingListeners.fireUndockedEvent(dockable);
-
-        // make sure that can dispose this window, and we're not floating the last dockable in it
-        if (canDisposeWindow(window) && root.isEmpty() && !Floating.isFloating()) {
-            deregisterDockingPanel(window);
-            window.dispose();
-        }
-
-        appState.persist();
-
-        // force this dockable to dock again if we're not floating it
-        if (!dockable.isClosable() && !Floating.isFloating() && !deregistering) {
-            dock(dockable, mainWindow);
-        }
+        internals.undock(dockable, false);
     }
 
     /**

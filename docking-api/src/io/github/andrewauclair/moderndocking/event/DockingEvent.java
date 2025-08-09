@@ -61,6 +61,7 @@ public class DockingEvent {
 
     private final ID id;
     private final Dockable dockable;
+    private final boolean temporary;
 
     /**
      * Create a new docking event
@@ -68,9 +69,10 @@ public class DockingEvent {
      * @param id The ID of the event
      * @param dockable The dockable which has been effected
      */
-    public DockingEvent(ID id, Dockable dockable) {
+    public DockingEvent(ID id, Dockable dockable, boolean temporary) {
         this.id = id;
         this.dockable = dockable;
+        this.temporary = temporary;
     }
 
     /**
@@ -89,5 +91,14 @@ public class DockingEvent {
      */
     public Dockable getDockable() {
         return dockable;
+    }
+
+    /**
+     * Check if this docking event is temporary. for example: the dockable has been undocked because of a user floating the dockable
+     *
+     * @return Whether this event is a temporary docking event
+     */
+    public boolean isTemporary() {
+        return temporary;
     }
 }
