@@ -332,7 +332,7 @@ public class DockingComponentUtils {
 				Dockable dockable = wrapper.getDockable();
 				wrapper.getParent().undock(dockable);
 
-				DockingListeners.fireUndockedEvent(dockable);
+				DockingListeners.fireUndockedEvent(dockable, false);
 			}
 			else if (component instanceof Container) {
 				undockIllegalFloats((Container) component);

@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -62,6 +63,8 @@ public class DockingInternal {
 	private static final Map<DockingAPI, DockingInternal> internals = new HashMap<>();
 
 	private final AppStatePersister appStatePersister;
+
+	private boolean deregistering = false;
 
 	/**
 	 * Create a new instance of our internal helper for the docking instance
@@ -310,6 +313,51 @@ public class DockingInternal {
 		throw new DockableNotFoundException(persistentID);
 	}
 
+	public void undock(Dockable dockable, boolean isTemporary) {
+		if (!docking.isDocked(dockable)) {
+			// nothing to undock
+			return;
+		}
+
+		Window window = DockingComponentUtils.findWindowForDockable(docking, dockable);
+
+		// TODO something about DockingStateAPI.restoreAnchor is causing a null here
+		Objects.requireNonNull(window);
+
+		InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(docking, window);
+
+		Objects.requireNonNull(root);
+
+		DockableWrapper wrapper = getWrapper(dockable);
+
+		wrapper.setRoot(root);
+
+		if (docking.isHidden(dockable)) {
+			root.undock(dockable);
+			wrapper.setParent(null);
+			wrapper.setHidden(false);
+		}
+		else {
+			wrapper.getParent().undock(dockable);
+		}
+		wrapper.setWindow(null);
+
+		DockingListeners.fireUndockedEvent(dockable, isTemporary);
+
+		// make sure that can dispose this window, and we're not floating the last dockable in it
+		if (docking.canDisposeWindow(window) && root.isEmpty() && !Floating.isFloating()) {
+			deregisterDockingPanel(window);
+			window.dispose();
+		}
+
+		docking.getAppState().persist();
+
+		// force this dockable to dock again if we're not floating it
+		if (!dockable.isClosable() && !Floating.isFloating() && !isDeregistering(docking)) {
+			docking.dock(dockable, docking.getMainWindow());
+		}
+	}
+
 	public void fireDockedEventForFrame(Window window) {
 		// everything has been restored, go through the list of dockables and fire docked events for the ones that are docked
 		List<DockableWrapper> wrappers = dockables.values().stream()
@@ -427,4 +475,12 @@ public class DockingInternal {
 			docking.dock(dockable, biggest.get(), DockingRegion.CENTER);
 		}
 	}
+
+    public static boolean isDeregistering(DockingAPI docking) {
+        return internals.get(docking).deregistering;
+    }
+
+    public static void setDeregistering(DockingAPI docking, boolean deregistering) {
+		internals.get(docking).deregistering = deregistering;
+    }
 }
