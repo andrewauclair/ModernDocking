@@ -24,7 +24,7 @@ package io.github.andrewauclair.moderndocking.internal;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
-import io.github.andrewauclair.moderndocking.floating.TempFloatingFrame;
+import io.github.andrewauclair.moderndocking.internal.floating.TempFloatingFrame;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;

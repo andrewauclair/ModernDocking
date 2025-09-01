@@ -1,4 +1,4 @@
-package io.github.andrewauclair.moderndocking.util;
+package io.github.andrewauclair.moderndocking.internal.util;
 
 import java.awt.Color;
 import java.awt.Component;
