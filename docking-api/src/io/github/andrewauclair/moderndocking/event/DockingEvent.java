@@ -69,6 +69,19 @@ public class DockingEvent {
      * @param id The ID of the event
      * @param dockable The dockable which has been effected
      */
+    public DockingEvent(ID id, Dockable dockable) {
+        this.id = id;
+        this.dockable = dockable;
+        this.temporary = false;
+    }
+
+    /**
+     * Create a new docking event
+     *
+     * @param id The ID of the event
+     * @param dockable The dockable which has been effected
+     * @param temporary Is this a temporary event which will be followed by another, permanent, event?
+     */
     public DockingEvent(ID id, Dockable dockable, boolean temporary) {
         this.id = id;
         this.dockable = dockable;
