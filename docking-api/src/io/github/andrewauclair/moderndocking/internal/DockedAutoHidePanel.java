@@ -49,6 +49,7 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 	 * The toolbar that contains the dockable in this auto hide panel
 	 */
 	private final DockableToolbar toolbar;
+	private final SlideBorder slideBorder;
 
 	/**
 	 * Flag indicating if the panel has been configured. Configuration doesn't occur until the panel is setVisible(true)
@@ -78,7 +79,7 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 
 		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 		DockedSimplePanel panel = new DockedSimplePanel(docking, wrapper, "", wrapper.getDisplayPanel(), false);
-		SlideBorder slideBorder = new SlideBorder(toolbar.getDockedLocation());
+		slideBorder = new SlideBorder(toolbar.getDockedLocation());
 
 		if (toolbar.getDockedLocation() == ToolbarLocation.SOUTH) {
 			gbc.weightx = 1.0;
@@ -111,8 +112,20 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 			gbc.gridx++;
 			add(slideBorder, gbc);
 		}
+	}
+
+	@Override
+	public void addNotify() {
+		super.addNotify();
 
 		slideBorder.addMouseMotionListener(this);
+	}
+
+	@Override
+	public void removeNotify() {
+		slideBorder.removeMouseMotionListener(this);
+
+		super.removeNotify();
 	}
 
 	@Override
@@ -124,6 +137,13 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 		if (!configured) {
 			configured = true;
 		}
+	}
+
+	public int getSlidePosition() {
+		if (toolbar.getDockedLocation() == ToolbarLocation.SOUTH) {
+			return getHeight();
+		}
+		return getWidth();
 	}
 
 	private void setLocationAndSize(int widthDifference) {

@@ -42,9 +42,11 @@ import io.github.andrewauclair.moderndocking.app.LayoutPersistence;
 import io.github.andrewauclair.moderndocking.app.LayoutsMenu;
 import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
 import io.github.andrewauclair.moderndocking.app.WindowLayoutBuilder;
+import io.github.andrewauclair.moderndocking.event.DockingEvent;
 import io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener;
 import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
 import io.github.andrewauclair.moderndocking.ext.ui.DockingUI;
+import io.github.andrewauclair.moderndocking.internal.DockingListeners;
 import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
 import io.github.andrewauclair.moderndocking.layouts.DockingLayouts;
 import io.github.andrewauclair.moderndocking.settings.Settings;
@@ -112,7 +114,6 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
 		Docking.initialize(this);
 		DockingUI.initialize();
-
 
 		Docking.addNewFloatingFrameListener(new NewFloatingFrameListener() {
 			@Override
