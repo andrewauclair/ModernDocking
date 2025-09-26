@@ -305,6 +305,22 @@ public class InternalRootDockingPanel extends DockingPanel {
         return Collections.emptyList();
     }
 
+    public int getSlidePosition(Dockable dockable) {
+        if (southToolbar.hasDockable(dockable)) {
+            return southToolbar.getSlidePosition(dockable);
+        }
+        else if (westToolbar.hasDockable(dockable)) {
+            return westToolbar.getSlidePosition(dockable);
+        }
+        return eastToolbar.getSlidePosition(dockable);
+    }
+
+    public void setSlidePosition(Dockable dockable, int position) {
+        if (southToolbar.hasDockable(dockable)) {
+            southToolbar.setSlidePosition(dockable, position);
+        }
+    }
+
     private void createContents() {
         removeAll();
 

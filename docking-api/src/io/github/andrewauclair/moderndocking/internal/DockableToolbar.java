@@ -326,6 +326,22 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 				.collect(Collectors.toList());
 	}
 
+	public int getSlidePosition(Dockable dockable) {
+		for (Entry entry : dockables) {
+			if (entry.dockable == dockable) {
+				return entry.panel.getSlidePosition();
+			}
+		}
+		return 0;
+	}
+
+	public void setSlidePosition(Dockable dockable, int position) {
+		for (Entry entry : dockables) {
+			if (entry.dockable == dockable) {
+				entry.panel.setSize(entry.panel.getWidth(), position);
+			}
+		}
+	}
 	@Override
 	public void componentResized(ComponentEvent e) {
 	}
