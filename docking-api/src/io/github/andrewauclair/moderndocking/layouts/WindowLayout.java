@@ -27,7 +27,9 @@ import java.awt.Frame;
 import java.awt.Point;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
@@ -49,7 +51,9 @@ public class WindowLayout {
 	private final List<String> westAutoHideToolbarIDs = new ArrayList<>();
 	private final List<String> eastAutoHideToolbarIDs = new ArrayList<>();
 	private final List<String> southAutoHideToolbarIDs = new ArrayList<>();
-  
+
+	private final Map<String, Double> toolbarSlidePositions = new HashMap<>();
+
 	/**
 	 * Create a new WindowLayout from an existing root node
 	 *
@@ -257,6 +261,14 @@ public class WindowLayout {
 	 */
 	public List<String> getSouthAutoHideToolbarIDs() {
 		return southAutoHideToolbarIDs;
+	}
+
+	public void setSlidePosition(String id, double slidePosition) {
+		toolbarSlidePositions.put(id, slidePosition);
+	}
+
+	public double slidePosition(String id) {
+		return toolbarSlidePositions.getOrDefault(id, 0.0);
 	}
 
 	/**

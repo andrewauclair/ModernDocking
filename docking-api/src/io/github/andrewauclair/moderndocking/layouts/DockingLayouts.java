@@ -36,6 +36,7 @@ import io.github.andrewauclair.moderndocking.internal.DockingComponentUtils;
 import io.github.andrewauclair.moderndocking.internal.DockingInternal;
 import io.github.andrewauclair.moderndocking.internal.DockingPanel;
 import io.github.andrewauclair.moderndocking.internal.InternalRootDockingPanel;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -157,6 +158,21 @@ public class DockingLayouts {
 		layout.setEastAutoHideToolbarIDs(internalRoot.getEastAutoHideToolbarIDs());
 		layout.setSouthAutoHideToolbarIDs(internalRoot.getSouthAutoHideToolbarIDs());
 
+		DockingInternal internal = DockingInternal.get(docking);
+
+		Dimension size = root.getSize();
+
+		for (String id : internalRoot.getWestAutoHideToolbarIDs()) {
+			layout.setSlidePosition(id, internalRoot.getSlidePosition(internal.getDockable(id)) / (double) size.width);
+		}
+
+		for (String id : internalRoot.getEastAutoHideToolbarIDs()) {
+			layout.setSlidePosition(id, internalRoot.getSlidePosition(internal.getDockable(id)) / (double) size.width);
+		}
+
+		for (String id : internalRoot.getSouthAutoHideToolbarIDs()) {
+			layout.setSlidePosition(id, internalRoot.getSlidePosition(internal.getDockable(id)) / (double) size.height);
+		}
 		return layout;
 	}
 
