@@ -41,7 +41,8 @@ import javax.swing.SwingUtilities;
  * Special JPanel used to contain a dockable within a docking toolbar
  */
 public class DockedAutoHidePanel extends JPanel implements ComponentListener, MouseMotionListener {
-	/**
+    private final DockingAPI docking;
+    /**
 	 * The root that this auto hide panel belongs to
 	 */
 	private final RootDockingPanelAPI root;
@@ -65,7 +66,8 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 	 * @param toolbar The toolbar this panel is in
 	 */
 	public DockedAutoHidePanel(DockingAPI docking, Dockable dockable, RootDockingPanelAPI root, DockableToolbar toolbar) {
-		this.root = root;
+        this.docking = docking;
+        this.root = root;
 		this.toolbar = toolbar;
 
 		root.addComponentListener(this);
@@ -234,6 +236,8 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 		else {
 			setLocationAndSize(-e.getX());
 		}
+
+		docking.getAppState().persist();
 	}
 
 	@Override
