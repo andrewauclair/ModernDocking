@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -67,6 +68,11 @@ public class LayoutPersistenceAPI {
 
     private final XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
     private final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+
+    private class ToolbarDockable {
+        String id;
+        double slidePosition;
+    };
 
     /**
      * Create a new instance of the layout persistence API
@@ -134,6 +140,11 @@ public class LayoutPersistenceAPI {
             if (!docking.isDocked(dockable)) {
                 DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 
+                if (wrapper.getRoot() != null) {
+                    int slidePosition = wrapper.getRoot().getSlidePosition(dockable);
+//                    layout.getMainFrameLayout().siz
+                    System.out.println("slidePosition = " + slidePosition);
+                }
                 writeSimpleNodeToFile(writer, new DockingSimplePanelNode(docking, dockable.getPersistentID(), dockable.getClass().getTypeName(), "", dockable.getTitleText(), dockable.getTabText(), DockableProperties.saveProperties(wrapper)));
             }
         }
@@ -309,6 +320,7 @@ public class LayoutPersistenceAPI {
         for (String id : layout.getSouthAutoHideToolbarIDs()) {
             writer.writeStartElement("dockable");
             writer.writeAttribute("id", id);
+            writer.writeAttribute("slidePosition", String.valueOf(layout.slidePosition(id)));
             writer.writeEndElement();
             writer.writeCharacters(NL);
         }
@@ -512,37 +524,56 @@ public class LayoutPersistenceAPI {
         Point location = new Point(Integer.parseInt(locStr.substring(0, locStr.indexOf(","))), Integer.parseInt(locStr.substring(locStr.indexOf(",") + 1)));
         Dimension size = new Dimension(Integer.parseInt(sizeStr.substring(0, sizeStr.indexOf(","))), Integer.parseInt(sizeStr.substring(sizeStr.indexOf(",") + 1)));
 
-        java.util.List<String> westToolbar = readToolbarFromFile(reader, "westToolbar");
-        java.util.List<String> eastToolbar = readToolbarFromFile(reader, "eastToolbar");
-        java.util.List<String> southToolbar = readToolbarFromFile(reader, "southToolbar");
+        java.util.List<ToolbarDockable> westToolbar = readToolbarFromFile(reader, "westToolbar");
+        java.util.List<ToolbarDockable> eastToolbar = readToolbarFromFile(reader, "eastToolbar");
+        java.util.List<ToolbarDockable> southToolbar = readToolbarFromFile(reader, "southToolbar");
 
         WindowLayout layout = new WindowLayout(isMainFrame, location, size, state, readNodeFromFile(reader, "layout"));
 
-        layout.setWestAutoHideToolbarIDs(westToolbar);
-        layout.setEastAutoHideToolbarIDs(eastToolbar);
-        layout.setSouthAutoHideToolbarIDs(southToolbar);
+        layout.setWestAutoHideToolbarIDs(westToolbar.stream().map(toolbarDockable -> toolbarDockable.id).collect(Collectors.toList()));
+        layout.setEastAutoHideToolbarIDs(eastToolbar.stream().map(toolbarDockable -> toolbarDockable.id).collect(Collectors.toList()));
+        layout.setSouthAutoHideToolbarIDs(southToolbar.stream().map(toolbarDockable -> toolbarDockable.id).collect(Collectors.toList()));
+
+        for (ToolbarDockable dockable : westToolbar) {
+            layout.setSlidePosition(dockable.id, dockable.slidePosition);
+        }
+
+        for (ToolbarDockable dockable : eastToolbar) {
+            layout.setSlidePosition(dockable.id, dockable.slidePosition);
+        }
+
+        for (ToolbarDockable dockable : southToolbar) {
+            layout.setSlidePosition(dockable.id, dockable.slidePosition);
+        }
 
         layout.setMaximizedDockable(maximizedDockable);
 
         return layout;
     }
 
-    private java.util.List<String> readToolbarFromFile(XMLStreamReader reader, String name) throws XMLStreamException {
-        List<String> ids = new ArrayList<>();
+    private java.util.List<ToolbarDockable> readToolbarFromFile(XMLStreamReader reader, String name) throws XMLStreamException {
+        List<ToolbarDockable> dockables = new ArrayList<>();
 
         while (reader.hasNext()) {
             int next = reader.nextTag();
 
             if (next == XMLStreamConstants.START_ELEMENT) {
                 if (reader.getLocalName().equals("dockable")) {
-                    ids.add(reader.getAttributeValue(null, "id"));
+                    ToolbarDockable dockable = new ToolbarDockable();
+                    dockable.id = reader.getAttributeValue(null, "id");
+                    String slidePosition = reader.getAttributeValue(null, "slidePosition");
+
+                    if (slidePosition != null) {
+                        dockable.slidePosition = Double.parseDouble(slidePosition);
+                    }
+                    dockables.add(dockable);
                 }
             }
             else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals(name)) {
                 break;
             }
         }
-        return ids;
+        return dockables;
     }
 
     private DockingLayoutNode readNodeFromFile(XMLStreamReader reader, String name) throws XMLStreamException {

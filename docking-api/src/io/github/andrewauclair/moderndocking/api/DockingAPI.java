@@ -524,6 +524,7 @@ public class DockingAPI {
         wrapper.getParent().dock(source, region, dividerProportion);
 
         internals.getWrapper(source).setWindow(wrapper.getWindow());
+        internals.getWrapper(source).setRoot(internals.getRootPanels().get(wrapper.getWindow()));
 
         DockingListeners.fireDockedEvent(source);
 
@@ -875,6 +876,7 @@ public class DockingAPI {
 
         // reset the window, undocking the dockable sets it to null
         internals.getWrapper(dockable).setWindow(window);
+        internals.getWrapper(dockable).setRoot(root);
         internals.getWrapper(dockable).setHidden(true);
 
         internalRoot.setDockableHidden(dockable, location);
