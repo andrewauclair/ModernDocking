@@ -29,6 +29,7 @@ import io.github.andrewauclair.moderndocking.internal.DisplayPanel;
 import io.github.andrewauclair.moderndocking.internal.DockableWrapper;
 import io.github.andrewauclair.moderndocking.internal.DockedTabbedPanel;
 import io.github.andrewauclair.moderndocking.internal.DockingComponentUtils;
+import io.github.andrewauclair.moderndocking.internal.DockingInternal;
 import io.github.andrewauclair.moderndocking.internal.DockingListeners;
 import io.github.andrewauclair.moderndocking.internal.FloatingFrame;
 import io.github.andrewauclair.moderndocking.internal.InternalRootDockingPanel;
@@ -94,7 +95,7 @@ public class DisplayPanelFloatListener extends FloatListener {
 
     @Override
     protected void undock() {
-        docking.undock(panel.getWrapper().getDockable());
+        DockingInternal.get(docking).undock(panel.getWrapper().getDockable(), true);
     }
 
     @Override

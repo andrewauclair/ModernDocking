@@ -27,6 +27,7 @@ import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.internal.DockableWrapper;
 import io.github.andrewauclair.moderndocking.internal.DockedTabbedPanel;
 import io.github.andrewauclair.moderndocking.internal.DockingComponentUtils;
+import io.github.andrewauclair.moderndocking.internal.DockingInternal;
 import io.github.andrewauclair.moderndocking.internal.DockingListeners;
 import io.github.andrewauclair.moderndocking.internal.FloatingFrame;
 import java.awt.Point;
@@ -83,7 +84,7 @@ public class DockedTabbedPanelFloatListener extends FloatListener {
         List<DockableWrapper> wrappers = new ArrayList<>(tabs.getDockables());
 
         for (DockableWrapper wrapper : wrappers) {
-            docking.undock(wrapper.getDockable());
+            DockingInternal.get(docking).undock(wrapper.getDockable(), true);
         }
     }
 
