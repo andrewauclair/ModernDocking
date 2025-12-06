@@ -624,11 +624,11 @@ public class DockingAPI {
 
         if (window instanceof JFrame && ((JFrame) window).getState() == JFrame.ICONIFIED) {
             ((JFrame)window).setState(JFrame.NORMAL);
+
+            window.setAlwaysOnTop(true);
+            window.setAlwaysOnTop(false);
+
         }
-
-        window.setAlwaysOnTop(true);
-        window.setAlwaysOnTop(false);
-
         if (internals.getWrapper(dockable).getParent() instanceof DockedTabbedPanel) {
             DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) internals.getWrapper(dockable).getParent();
             tabbedPanel.bringToFront(dockable);
