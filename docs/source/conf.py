@@ -9,7 +9,7 @@
 project = 'Modern Docking'
 copyright = '2025, Andrew Auclair'
 author = 'Andrew Auclair'
-release = '1.3.1'
+release = '1.4'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
