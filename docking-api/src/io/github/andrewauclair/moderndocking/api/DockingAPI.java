@@ -40,6 +40,7 @@ import io.github.andrewauclair.moderndocking.internal.DockingListeners;
 import io.github.andrewauclair.moderndocking.internal.DockingPanel;
 import io.github.andrewauclair.moderndocking.internal.FloatingFrame;
 import io.github.andrewauclair.moderndocking.internal.InternalRootDockingPanel;
+import io.github.andrewauclair.moderndocking.layouts.DynamicDockableCreationListener;
 import io.github.andrewauclair.moderndocking.layouts.WindowLayout;
 import io.github.andrewauclair.moderndocking.settings.Settings;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
@@ -1008,5 +1009,14 @@ public class DockingAPI {
      */
     public void removeNewFloatingFrameListener(NewFloatingFrameListener listener) {
         DockingListeners.removeNewFloatingFrameListener(listener);
+    }
+
+    /**
+     * Set the listener used to create dynamic dockables
+     *
+     * @param listener User defined listener
+     */
+    public void setUserDynamicDockableCreationListener(DynamicDockableCreationListener listener) {
+        dockingState.setUserDynamicDockableCreationListener(listener);
     }
 }
