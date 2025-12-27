@@ -30,6 +30,7 @@ import io.github.andrewauclair.moderndocking.event.MaximizeListener;
 import io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener;
 import io.github.andrewauclair.moderndocking.internal.DockingInternal;
 import io.github.andrewauclair.moderndocking.internal.DockingListeners;
+import io.github.andrewauclair.moderndocking.layouts.DynamicDockableCreationListener;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -618,6 +619,10 @@ public class Docking {
      */
     public static void removeNewFloatingFrameListener(NewFloatingFrameListener listener) {
         DockingListeners.removeNewFloatingFrameListener(listener);
+    }
+
+    public static void setUserDynamicDockableCreationListener(DynamicDockableCreationListener listener) {
+        instance.setUserDynamicDockableCreationListener(listener);
     }
 
     public static DockingAPI getSingleInstance() {
