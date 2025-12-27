@@ -2,13 +2,14 @@ package io.github.andrewauclair.moderndocking.layouts;
 
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DynamicDockableParameters;
+import io.github.andrewauclair.moderndocking.Property;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
-import io.github.andrewauclair.moderndocking.api.DockingStateAPI;
 import io.github.andrewauclair.moderndocking.exception.DockableNotFoundException;
 import io.github.andrewauclair.moderndocking.internal.DockingInternal;
 import io.github.andrewauclair.moderndocking.internal.FailedDockable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,7 +23,7 @@ public class DefaultDynamicDockableCreationListener implements DynamicDockableCr
     }
 
     @Override
-    public Dockable createDockable(String persistentID, String className, String titleText, String tabText) {
+    public Dockable createDockable(String persistentID, String className, String titleText, String tabText, Map<String, Property> properties) {
         boolean foundNewConstructor = false;
 
         try {

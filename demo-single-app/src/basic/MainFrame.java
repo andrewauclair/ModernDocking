@@ -31,6 +31,7 @@ import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableStyle;
 import io.github.andrewauclair.moderndocking.DockableTabPreference;
 import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.Property;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.api.WindowLayoutBuilderAPI;
 import io.github.andrewauclair.moderndocking.app.AppState;
@@ -54,6 +55,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.Callable;
@@ -126,7 +128,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
         Docking.setUserDynamicDockableCreationListener(new DynamicDockableCreationListener() {
             @Override
-            public Dockable createDockable(String persistentID, String className, String titleText, String tabText) {
+            public Dockable createDockable(String persistentID, String className, String titleText, String tabText, Map<String, Property> properties) {
                 SimplePanel test = new SimplePanel("this was custom", "user dynamic dockable creation", persistentID);
                 return test;
             }

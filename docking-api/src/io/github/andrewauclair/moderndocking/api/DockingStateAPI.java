@@ -24,6 +24,7 @@ package io.github.andrewauclair.moderndocking.api;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableTabPreference;
 import io.github.andrewauclair.moderndocking.DynamicDockableParameters;
+import io.github.andrewauclair.moderndocking.Property;
 import io.github.andrewauclair.moderndocking.exception.DockableNotFoundException;
 import io.github.andrewauclair.moderndocking.exception.RootDockingPanelNotFoundException;
 import io.github.andrewauclair.moderndocking.internal.DockableProperties;
@@ -60,6 +61,7 @@ import java.awt.event.HierarchyListener;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -332,7 +334,7 @@ public class DockingStateAPI {
             Dockable dockable = getDockable(docking, simpleNode.getPersistentID());
 
             if (dockable instanceof FailedDockable) {
-                dockable = createDynamicDockable(dockable, simpleNode.getPersistentID(), simpleNode.getClassName(), simpleNode.getTitleText(), simpleNode.getTabText());
+                dockable = createDynamicDockable(dockable, simpleNode.getPersistentID(), simpleNode.getClassName(), simpleNode.getTitleText(), simpleNode.getTabText(), simpleNode.getProperties());
             }
 
             if (dockable == null) {
@@ -369,7 +371,7 @@ public class DockingStateAPI {
         Dockable dockable = getDockable(docking, node.getPersistentID());
 
         if (dockable instanceof FailedDockable) {
-            dockable = createDynamicDockable(dockable, node.getPersistentID(), node.getClassName(), "", "");
+            dockable = createDynamicDockable(dockable, node.getPersistentID(), node.getClassName(), "", "", Collections.emptyMap());
         }
 
         if (dockable == null) {
@@ -390,7 +392,7 @@ public class DockingStateAPI {
         Dockable dockable = getDockable(docking, node.getPersistentID());
 
         if (dockable instanceof FailedDockable) {
-            dockable = createDynamicDockable(dockable, node.getPersistentID(), node.getClassName(), node.getTitleText(), node.getTabText());
+            dockable = createDynamicDockable(dockable, node.getPersistentID(), node.getClassName(), node.getTitleText(), node.getTabText(), node.getProperties());
         }
 
         if (dockable == null) {
@@ -416,18 +418,18 @@ public class DockingStateAPI {
         return new DockedSimplePanel(docking, wrapper, node.getAnchor());
     }
 
-    private Dockable createDynamicDockable(Dockable dockable, String persistentID, String className, String titleText, String tabText) {
+    private Dockable createDynamicDockable(Dockable dockable, String persistentID, String className, String titleText, String tabText, Map<String, Property> properties) {
         // the failed dockable is registered with the persistentID we want to use
         docking.deregisterDockable(dockable);
 
         dockable = null;
 
         if (userDynamicDockableCreation != null) {
-            dockable = userDynamicDockableCreation.createDockable(persistentID, className, titleText, tabText);
+            dockable = userDynamicDockableCreation.createDockable(persistentID, className, titleText, tabText, properties);
         }
 
         if (dockable == null) {
-            dockable = defaultDynamicDockableCreation.createDockable(persistentID, className, titleText, tabText);
+            dockable = defaultDynamicDockableCreation.createDockable(persistentID, className, titleText, tabText, properties);
         }
 
         return dockable;
