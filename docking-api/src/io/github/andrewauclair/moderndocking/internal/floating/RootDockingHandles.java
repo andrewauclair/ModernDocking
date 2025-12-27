@@ -74,9 +74,6 @@ public class RootDockingHandles {
         setupHandle(frame, pinWest);
         setupHandle(frame, pinEast);
         setupHandle(frame, pinSouth);
-
-        // invoke later to wait for the root panel to have a parent
-        SwingUtilities.invokeLater(this::setRootHandleLocations);
     }
 
     /**
