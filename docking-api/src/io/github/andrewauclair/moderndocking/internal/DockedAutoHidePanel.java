@@ -70,9 +70,6 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
         this.root = root;
 		this.toolbar = toolbar;
 
-		root.addComponentListener(this);
-		addComponentListener(this);
-
 		setLayout(new GridBagLayout());
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -121,11 +118,17 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 		super.addNotify();
 
 		slideBorder.addMouseMotionListener(this);
+
+		root.addComponentListener(this);
+		addComponentListener(this);
 	}
 
 	@Override
 	public void removeNotify() {
 		slideBorder.removeMouseMotionListener(this);
+
+		root.removeComponentListener(this);
+		removeComponentListener(this);
 
 		super.removeNotify();
 	}
