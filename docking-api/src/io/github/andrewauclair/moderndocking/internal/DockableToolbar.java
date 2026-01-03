@@ -224,7 +224,12 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 					button.setIcon(rotatedIcon);
 				}
 
-				Insets insets = UIManager.getInsets("Button.margin");
+                Insets insets = UIManager.getInsets("Button.margin");
+
+                if (insets == null) {
+                    insets = new Insets(0, 0, 0, 0);
+                }
+
 				// purposefully putting them in this order to set the margins of a vertical button
 				//noinspection SuspiciousNameCombination
 				Insets margin = new Insets(insets.left, insets.top, insets.left, insets.top);
@@ -303,7 +308,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	 * @return True if there are 1 or more dockables in the toolbar
 	 */
 	public boolean shouldDisplay() {
-		return dockables.size() > 0;
+		return !dockables.isEmpty();
 	}
 
 	/**

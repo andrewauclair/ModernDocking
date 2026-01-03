@@ -14,9 +14,7 @@ import io.github.andrewauclair.moderndocking.event.DockingEvent;
 import io.github.andrewauclair.moderndocking.event.DockingListener;
 import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
 
-import io.github.andrewauclair.moderndocking.ui.DefaultDockingPanel;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 import javax.swing.*;
@@ -254,6 +252,7 @@ public class EditorExample {
             JFrame mainFrame = new JFrame();
             RootDockingPanel root = new RootDockingPanel();
             mainFrame.add(root);
+            mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             mainFrame.setSize(300, 300);
             mainFrame.setVisible(true);
 
