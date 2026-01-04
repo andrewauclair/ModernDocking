@@ -24,6 +24,7 @@ package io.github.andrewauclair.moderndocking.internal.floating;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableStyle;
 import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.internal.InternalRootDockingPanel;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
 import java.awt.Component;
@@ -97,10 +98,16 @@ public class RootDockingHandles {
         }
 
         rootCenter.setVisible(rootPanel.isEmpty());
+        RootDockingPanelAPI root = rootPanel.getRootPanel();
 
-        pinWest.setVisible(dockable.isAutoHideAllowed() && (dockable.getAutoHideStyle() == DockableStyle.BOTH || dockable.getAutoHideStyle() == DockableStyle.VERTICAL));
-        pinEast.setVisible(dockable.isAutoHideAllowed() && (dockable.getAutoHideStyle() == DockableStyle.BOTH || dockable.getAutoHideStyle() == DockableStyle.VERTICAL));
-        pinSouth.setVisible(dockable.isAutoHideAllowed() && (dockable.getAutoHideStyle() == DockableStyle.BOTH || dockable.getAutoHideStyle() == DockableStyle.HORIZONTAL));
+        if (dockable.isAutoHideAllowed()) {
+            boolean verticalAllowed = dockable.getAutoHideStyle() == DockableStyle.BOTH || dockable.getAutoHideStyle() == DockableStyle.VERTICAL;
+            boolean southAllowed = dockable.getAutoHideStyle() == DockableStyle.BOTH || dockable.getAutoHideStyle() == DockableStyle.HORIZONTAL;
+
+            pinWest.setVisible(verticalAllowed && root.isLocationSupported(ToolbarLocation.WEST));
+            pinEast.setVisible(verticalAllowed && root.isLocationSupported(ToolbarLocation.EAST));
+            pinSouth.setVisible(southAllowed && root.isLocationSupported(ToolbarLocation.SOUTH));
+        }
     }
 
     /**
