@@ -47,8 +47,13 @@ import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
 
 import java.awt.*;
 import java.beans.PropertyChangeListener;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -825,8 +830,6 @@ public class DockingAPI {
         if (minSideOpt.isPresent()) {
             ToolbarLocation location = minSideOpt.get().getKey();
             autoHideDockable(dockable, location);
-        } else {
-            throw new UnsupportedOperationException("No toolbar available");
         }
     }
 
