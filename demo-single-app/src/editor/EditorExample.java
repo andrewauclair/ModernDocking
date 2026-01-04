@@ -14,9 +14,7 @@ import io.github.andrewauclair.moderndocking.event.DockingEvent;
 import io.github.andrewauclair.moderndocking.event.DockingListener;
 import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
 
-import io.github.andrewauclair.moderndocking.ui.DefaultDockingPanel;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 import javax.swing.*;
@@ -133,7 +131,7 @@ public class EditorExample {
     }
 
     public static class FolderPanel extends JPanel implements Dockable {
-        private DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+        private final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
 
         public FolderPanel(File folder) {
             Docking.registerDockable(this);
@@ -251,8 +249,10 @@ public class EditorExample {
         SwingUtilities.invokeLater(() -> {
             FlatLaf.setup(new FlatLightLaf());
 
-            JFrame mainFrame = new JFrame();
             RootDockingPanel root = new RootDockingPanel();
+            
+            JFrame mainFrame = new JFrame();
+            mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             mainFrame.add(root);
             mainFrame.setSize(300, 300);
             mainFrame.setVisible(true);
