@@ -804,28 +804,33 @@ public class DockingAPI {
         posInFrame.x += component.getWidth() / 2;
         posInFrame.y += component.getHeight() / 2;
 
-        boolean allowedSouth = dockable.getAutoHideStyle() == DockableStyle.BOTH || dockable.getAutoHideStyle() == DockableStyle.HORIZONTAL;
+        DockableStyle autoHideStyle = dockable.getAutoHideStyle();
+        RootDockingPanelAPI rootPanel = root.getRootPanel();
 
-        int westDist = posInFrame.x;
-        int eastDist = window.getWidth() - posInFrame.x;
-        int southDist = window.getHeight() - posInFrame.y;
+        // location availability
+        Map<ToolbarLocation, Boolean> sideMap = Map.of(
+                ToolbarLocation.WEST, rootPanel.isLocationSupported(ToolbarLocation.WEST),
+                ToolbarLocation.EAST, rootPanel.isLocationSupported(ToolbarLocation.EAST),
+                ToolbarLocation.SOUTH, rootPanel.isLocationSupported(ToolbarLocation.SOUTH) &&
+                        (autoHideStyle == DockableStyle.BOTH || autoHideStyle == DockableStyle.HORIZONTAL)
+        );
 
-        boolean east = eastDist <= westDist;
-        boolean south = southDist < westDist && southDist < eastDist;
+        // distances from each side
+        Map<ToolbarLocation, Integer> distanceMap = Map.of(
+                ToolbarLocation.WEST, posInFrame.x,
+                ToolbarLocation.EAST, window.getWidth() - posInFrame.x,
+                ToolbarLocation.SOUTH, window.getHeight() - posInFrame.y
+        );
 
-        ToolbarLocation location;
+        var minSideOpt = distanceMap.entrySet()
+                .stream()
+                .filter(e -> sideMap.get(e.getKey()))  // keep the supported ones
+                .min(Map.Entry.comparingByValue()); // choose the shortest distance
 
-        if (south && allowedSouth) {
-            location = ToolbarLocation.SOUTH;
+        if (minSideOpt.isPresent()) {
+            ToolbarLocation location = minSideOpt.get().getKey();
+            autoHideDockable(dockable, location);
         }
-        else if (east) {
-            location = ToolbarLocation.EAST;
-        }
-        else {
-            location = ToolbarLocation.WEST;
-        }
-
-        autoHideDockable(dockable, location);
     }
 
     public void autoHideDockable(String persistentID) {
