@@ -249,10 +249,11 @@ public class EditorExample {
         SwingUtilities.invokeLater(() -> {
             FlatLaf.setup(new FlatLightLaf());
 
-            JFrame mainFrame = new JFrame();
             RootDockingPanel root = new RootDockingPanel();
-            mainFrame.add(root);
+
+            JFrame mainFrame = new JFrame();
             mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            mainFrame.add(root);
             mainFrame.setSize(300, 300);
             mainFrame.setVisible(true);
 
