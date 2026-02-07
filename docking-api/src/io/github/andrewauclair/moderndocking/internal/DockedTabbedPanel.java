@@ -460,9 +460,13 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			if (panel.getDockable() == dockable) {
 				if (tabs.getSelectedIndex() != i) {
 					if (tabs.getSelectedIndex() != -1) {
-						DockingListeners.fireHiddenEvent(panels.get(tabs.getSelectedIndex()).getDockable());
+						DockableWrapper wrapper = panels.get(tabs.getSelectedIndex());
+						wrapper.setHidden(true);
+						DockingListeners.fireHiddenEvent(wrapper.getDockable());
 					}
-					DockingListeners.fireShownEvent(panels.get(i).getDockable());
+					DockableWrapper wrapper = panels.get(i);
+					wrapper.setHidden(false);
+					DockingListeners.fireShownEvent(wrapper.getDockable());
 				}
 				tabs.setSelectedIndex(i);
 				selectedTab = tabs.getSelectedIndex();
@@ -491,13 +495,17 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			return;
 		}
 
+		DockableWrapper panel = panels.get(selectedTab);
+
 		if (selectedTab != -1 && !Floating.isFloating()) {
-			DockingListeners.fireHiddenEvent(panels.get(selectedTab).getDockable());
+			panel.setHidden(true);
+			DockingListeners.fireHiddenEvent(panel.getDockable());
 		}
 		selectedTab = tabs.getSelectedIndex();
 
 		if (selectedTab != -1) {
-			DockingListeners.fireShownEvent(panels.get(selectedTab).getDockable());
+			panel.setHidden(false);
+			DockingListeners.fireShownEvent(panel.getDockable());
 		}
 	}
 

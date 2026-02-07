@@ -73,11 +73,11 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	private final ToolbarLocation location;
 
 	private static class Entry {
-		private final Dockable dockable;
+		private final DockableWrapper dockable;
 		private final JToggleButton button;
 		private final DockedAutoHidePanel panel;
 
-		private Entry(Dockable dockable, JToggleButton button, DockedAutoHidePanel panel) {
+		private Entry(DockableWrapper dockable, JToggleButton button, DockedAutoHidePanel panel) {
 			this.dockable = dockable;
 			this.button = button;
 			this.panel = panel;
@@ -183,13 +183,16 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 			boolean isSelected = buttonGroup.getSelection() == entry.button.getModel();
 
 			if (entry.panel.isVisible() && !isSelected) {
-				DockingListeners.fireHiddenEvent(entry.dockable);
+				entry.dockable.setHidden(true);
+				DockingListeners.fireHiddenEvent(entry.dockable.getDockable());
 			}
 			else if (!entry.panel.isVisible() && isSelected) {
-				DockingListeners.fireShownEvent(entry.dockable);
+				entry.dockable.setHidden(false);
+				DockingListeners.fireShownEvent(entry.dockable.getDockable());
 			}
 			else if (isSelected) {
-				DockingListeners.fireShownEvent(entry.dockable);
+				entry.dockable.setHidden(false);
+				DockingListeners.fireShownEvent(entry.dockable.getDockable());
 			}
 
 			// set only a single panel visible
@@ -225,11 +228,11 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 				}
 
 				Insets insets = UIManager.getInsets("Button.margin");
-				
+
 				if (insets == null) {
 					insets = new Insets(0, 0, 0, 0);
 				}
-				
+
 				// purposefully putting them in this order to set the margins of a vertical button
 				//noinspection SuspiciousNameCombination
 				Insets margin = new Insets(insets.left, insets.top, insets.left, insets.top);
@@ -241,14 +244,15 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 
 			DockedAutoHidePanel panel = new DockedAutoHidePanel(docking, dockable, root, this);
 
-			DockingInternal.get(docking).getWrapper(dockable).setWindow(window);
+			DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+			wrapper.setWindow(window);
 
 			// update all the buttons and panels
 			button.addActionListener(e -> updateButtons());
 
 			buttonGroup.add(button);
 
-			dockables.add(new Entry(dockable, button, panel));
+			dockables.add(new Entry(wrapper, button, panel));
 
 			JLayeredPane layeredPane;
 
@@ -327,7 +331,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	 */
 	public List<String> getPersistentIDs() {
 		return dockables.stream()
-				.map(entry -> entry.dockable.getPersistentID())
+				.map(entry -> entry.dockable.getDockable().getPersistentID())
 				.collect(Collectors.toList());
 	}
 
