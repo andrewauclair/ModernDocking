@@ -621,15 +621,6 @@ public class DockingAPI {
             throw new NotDockedException("Unable to bring dockable to the front ", dockable);
         }
 
-        Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
-
-        if (window instanceof JFrame && ((JFrame) window).getState() == JFrame.ICONIFIED) {
-            ((JFrame)window).setState(JFrame.NORMAL);
-
-            window.setAlwaysOnTop(true);
-            window.setAlwaysOnTop(false);
-
-        }
         if (internals.getWrapper(dockable).getParent() instanceof DockedTabbedPanel) {
             DockedTabbedPanel tabbedPanel = (DockedTabbedPanel) internals.getWrapper(dockable).getParent();
             tabbedPanel.bringToFront(dockable);
