@@ -354,7 +354,7 @@ public class DockingInternal {
 
 		// force this dockable to dock again if we're not floating it
 		if (!dockable.isClosable() && !Floating.isFloating() && !isDeregistering(docking)) {
-			docking.dock(dockable, docking.getMainWindow());
+			docking.dock(dockable, docking.getMainWindow(), DockingRegion.SOUTH);
 		}
 	}
 
