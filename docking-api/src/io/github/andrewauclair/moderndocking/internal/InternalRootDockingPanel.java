@@ -38,7 +38,7 @@ import javax.swing.SwingUtilities;
 /**
  * Internal wrapper panel for the applications root docking panel. This is used to add the auto-hide toolbars
  */
-public class InternalRootDockingPanel extends DockingPanel {
+public class InternalRootDockingPanel extends DockingPanel implements DockableToolbarController {
     /**
      * The docking instance this internal root docking panel belongs to
      */
@@ -87,9 +87,9 @@ public class InternalRootDockingPanel extends DockingPanel {
 
         rootPanel.add(this, gbc);
 
-        southToolbar = new DockableToolbar(docking, rootPanel.getWindow(), rootPanel, ToolbarLocation.SOUTH);
-        westToolbar = new DockableToolbar(docking, rootPanel.getWindow(), rootPanel, ToolbarLocation.WEST);
-        eastToolbar = new DockableToolbar(docking, rootPanel.getWindow(), rootPanel, ToolbarLocation.EAST);
+        southToolbar = new DockableToolbar(docking, rootPanel.getWindow(), rootPanel, this, ToolbarLocation.SOUTH);
+        westToolbar = new DockableToolbar(docking, rootPanel.getWindow(), rootPanel, this, ToolbarLocation.WEST);
+        eastToolbar = new DockableToolbar(docking, rootPanel.getWindow(), rootPanel, this, ToolbarLocation.EAST);
     }
 
     /**
@@ -313,18 +313,24 @@ public class InternalRootDockingPanel extends DockingPanel {
         DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 
         if (southToolbar.hasDockable(wrapper)) {
-            return southToolbar.getSlidePosition(dockable);
+            return southToolbar.getSlidePosition(wrapper);
         }
         else if (westToolbar.hasDockable(wrapper)) {
-            return westToolbar.getSlidePosition(dockable);
+            return westToolbar.getSlidePosition(wrapper);
         }
-        return eastToolbar.getSlidePosition(dockable);
+        return eastToolbar.getSlidePosition(wrapper);
     }
 
-    public void setSlidePosition(DockableWrapper dockable, int position) {
-        if (southToolbar.hasDockable(dockable)) {
-            southToolbar.setSlidePosition(dockable, position);
+    public void setSlidePosition(Dockable dockable, int position) {
+        DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
+        if (southToolbar.hasDockable(wrapper)) {
+            southToolbar.setSlidePosition(wrapper, position);
         }
+        else if (westToolbar.hasDockable(wrapper)) {
+            westToolbar.setSlidePosition(wrapper, position);
+        }
+        eastToolbar.setSlidePosition(wrapper, position);
     }
 
     private void createContents() {
@@ -443,6 +449,19 @@ public class InternalRootDockingPanel extends DockingPanel {
         }
         if (rootPanel.getEmptyPanel() != null) {
             SwingUtilities.updateComponentTreeUI(rootPanel.getEmptyPanel());
+        }
+    }
+
+    @Override
+    public void dockableDisplayed(DockableToolbar toolbar) {
+        if (toolbar != southToolbar) {
+            southToolbar.hideAll();
+        }
+        if (toolbar != westToolbar) {
+            westToolbar.hideAll();
+        }
+        if (toolbar != eastToolbar) {
+            eastToolbar.hideAll();
         }
     }
 }

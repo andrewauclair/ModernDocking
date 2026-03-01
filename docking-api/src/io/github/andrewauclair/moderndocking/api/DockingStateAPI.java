@@ -240,7 +240,7 @@ public class DockingStateAPI {
             root.hideHiddenPanels();
             wrapper.setHidden(true);
 
-            root.setSlidePosition(wrapper, (int) (layout.slidePosition(id) * window.getWidth()));
+            root.setSlidePosition(wrapper.getDockable(), (int) (layout.slidePosition(id) * window.getWidth()));
         }
 
         for (String id : layout.getEastAutoHideToolbarIDs()) {
@@ -249,7 +249,7 @@ public class DockingStateAPI {
             root.hideHiddenPanels();
             wrapper.setHidden(true);
 
-            root.setSlidePosition(wrapper, (int) (layout.slidePosition(id) * window.getHeight()));
+            root.setSlidePosition(wrapper.getDockable(), (int) (layout.slidePosition(id) * window.getWidth()));
         }
 
         for (String id : layout.getSouthAutoHideToolbarIDs()) {
@@ -258,7 +258,7 @@ public class DockingStateAPI {
             root.hideHiddenPanels();
             wrapper.setHidden(true);
 
-            root.setSlidePosition(wrapper, (int) (layout.slidePosition(id) * window.getHeight()));
+            root.setSlidePosition(wrapper.getDockable(), (int) (layout.slidePosition(id) * window.getHeight()));
         }
 
         if (layout.getMaximizedDockable() != null) {

@@ -60,6 +60,11 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	 */
 	private final DockingAPI docking;
 	/**
+	 * The toolbar controller. used to signal when a panel is opened
+	 */
+    private final DockableToolbarController controller;
+
+    /**
 	 * The window this toolbar is in
 	 */
 	private final Window window;
@@ -119,11 +124,12 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	 * @param root The root of the attached window
 	 * @param location The location of this toolbar within the window
 	 */
-	public DockableToolbar(DockingAPI docking, Window window, RootDockingPanelAPI root, ToolbarLocation location) {
+	public DockableToolbar(DockingAPI docking, Window window, RootDockingPanelAPI root, DockableToolbarController controller, ToolbarLocation location) {
 		super(new GridBagLayout());
 		this.docking = docking;
+        this.controller = controller;
 
-		// the window must be a JFrame or a JDialog to support pinning (we need a JLayeredPane)
+        // the window must be a JFrame or a JDialog to support pinning (we need a JLayeredPane)
 		assert window instanceof JFrame || window instanceof JDialog;
 
 		this.window = window;
@@ -201,6 +207,8 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 			if (isSelected) {
 				Color color = DockingSettings.getHighlighterSelectedBorder();
 				entry.panel.setBorder(BorderFactory.createLineBorder(color, 2));
+
+				controller.dockableDisplayed(this);
 			}
 		}
 	}
@@ -334,7 +342,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 				.collect(Collectors.toList());
 	}
 
-	public int getSlidePosition(Dockable dockable) {
+	public int getSlidePosition(DockableWrapper dockable) {
 		for (Entry entry : dockables) {
 			if (entry.dockable == dockable) {
 				return entry.panel.getSlidePosition();
@@ -346,10 +354,11 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	public void setSlidePosition(DockableWrapper dockable, int position) {
 		for (Entry entry : dockables) {
 			if (entry.dockable == dockable) {
-				entry.panel.setSize(entry.panel.getWidth(), position);
+				entry.panel.setSlidePosition(position);
 			}
 		}
 	}
+
 	@Override
 	public void componentResized(ComponentEvent e) {
 	}
