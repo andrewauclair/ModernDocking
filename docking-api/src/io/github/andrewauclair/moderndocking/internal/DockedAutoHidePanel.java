@@ -81,7 +81,6 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 		slideBorder = new SlideBorder(toolbar.getDockedLocation());
 
 		if (toolbar.getDockedLocation() == ToolbarLocation.SOUTH) {
-			System.out.println("Create south toolbar");
 			gbc.weightx = 1.0;
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 
@@ -95,7 +94,6 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 			add(panel, gbc);
 		}
 		else if (toolbar.getDockedLocation() == ToolbarLocation.EAST) {
-			System.out.println("Create east toolbar");
 			gbc.weighty = 1.0;
 			gbc.fill = GridBagConstraints.VERTICAL;
 
@@ -109,7 +107,6 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 			add(panel, gbc);
 		}
 		else { // west
-			System.out.println("Create west toolbar");
 			gbc.weightx = 1.0;
 			gbc.weighty = 1.0;
 			gbc.fill = GridBagConstraints.BOTH;
@@ -164,7 +161,6 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 	}
 
 	public void setSlidePosition(int position) {
-		System.out.println("setSlidePosition, position = " + position + ", location: " + toolbar.getDockedLocation());
 		if (toolbar.getDockedLocation() == ToolbarLocation.SOUTH) {
 			setSize(getWidth(), position);
 		}
@@ -187,18 +183,8 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 
 			if (configured)
 			{
-				System.out.println("Already configured. width: " + getWidth() + ", location: " + toolbar.getDockedLocation());
 				width = getWidth() + widthDifference;
 			}
-			else {
-				System.out.println("First time configuring " + toolbar.getDockedLocation());
-			}
-
-			if (root.isVisible()) {
-
-			}
-
-			System.out.println("width = " + width + ", location: " + toolbar.getDockedLocation());
 
 			Point location = new Point(toolbarLocation.x + toolbarSize.width, toolbarLocation.y);
 			Dimension size = new Dimension(width, height);
@@ -218,15 +204,8 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 
 			if (configured)
 			{
-				System.out.println("Already configured. height: " + getHeight() + ", location: " + toolbar.getDockedLocation());
 				height = getHeight() + widthDifference;
 			}
-			else {
-				System.out.println("First time configuring " + toolbar.getDockedLocation());
-			}
-
-
-			System.out.println("height = " + height + ", location: " + toolbar.getDockedLocation());
 
 			Point location = new Point(toolbarLocation.x, toolbarLocation.y - height);
 			Dimension size = new Dimension(width, height);
