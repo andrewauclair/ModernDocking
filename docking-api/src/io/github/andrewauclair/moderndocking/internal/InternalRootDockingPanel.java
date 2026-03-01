@@ -38,7 +38,7 @@ import javax.swing.SwingUtilities;
 /**
  * Internal wrapper panel for the applications root docking panel. This is used to add the auto-hide toolbars
  */
-public class InternalRootDockingPanel extends DockingPanel {
+public class InternalRootDockingPanel extends DockingPanel implements DockableToolbarController {
     /**
      * The docking instance this internal root docking panel belongs to
      */
@@ -87,9 +87,9 @@ public class InternalRootDockingPanel extends DockingPanel {
 
         rootPanel.add(this, gbc);
 
-        southToolbar = new DockableToolbar(docking, rootPanel.getWindow(), rootPanel, ToolbarLocation.SOUTH);
-        westToolbar = new DockableToolbar(docking, rootPanel.getWindow(), rootPanel, ToolbarLocation.WEST);
-        eastToolbar = new DockableToolbar(docking, rootPanel.getWindow(), rootPanel, ToolbarLocation.EAST);
+        southToolbar = new DockableToolbar(docking, rootPanel.getWindow(), rootPanel, this, ToolbarLocation.SOUTH);
+        westToolbar = new DockableToolbar(docking, rootPanel.getWindow(), rootPanel, this, ToolbarLocation.WEST);
+        eastToolbar = new DockableToolbar(docking, rootPanel.getWindow(), rootPanel, this, ToolbarLocation.EAST);
     }
 
     /**
@@ -196,14 +196,16 @@ public class InternalRootDockingPanel extends DockingPanel {
 
     @Override
     public void undock(Dockable dockable) {
-        if (rootPanel.isLocationSupported(ToolbarLocation.WEST) && westToolbar.hasDockable(dockable)) {
-            westToolbar.removeDockable(dockable);
+        DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
+        if (rootPanel.isLocationSupported(ToolbarLocation.WEST) && westToolbar.hasDockable(wrapper)) {
+            westToolbar.removeDockable(wrapper);
         }
-        else if (rootPanel.isLocationSupported(ToolbarLocation.EAST) && eastToolbar.hasDockable(dockable)) {
-            eastToolbar.removeDockable(dockable);
+        else if (rootPanel.isLocationSupported(ToolbarLocation.EAST) && eastToolbar.hasDockable(wrapper)) {
+            eastToolbar.removeDockable(wrapper);
         }
-        else if (rootPanel.isLocationSupported(ToolbarLocation.SOUTH) && southToolbar.hasDockable(dockable)) {
-            southToolbar.removeDockable(dockable);
+        else if (rootPanel.isLocationSupported(ToolbarLocation.SOUTH) && southToolbar.hasDockable(wrapper)) {
+            southToolbar.removeDockable(wrapper);
         }
 
         createContents();
@@ -235,19 +237,21 @@ public class InternalRootDockingPanel extends DockingPanel {
      * @param dockable Dockable to pin
      */
     public void setDockableShown(Dockable dockable) {
+        DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
         // if the dockable is currently unpinned, remove it from the toolbar, then adjust the toolbars
-        if (rootPanel.isLocationSupported(ToolbarLocation.WEST) && westToolbar.hasDockable(dockable)) {
-            westToolbar.removeDockable(dockable);
+        if (rootPanel.isLocationSupported(ToolbarLocation.WEST) && westToolbar.hasDockable(wrapper)) {
+            westToolbar.removeDockable(wrapper);
 
             dock(dockable, DockingRegion.WEST, 0.25f);
         }
-        else if (rootPanel.isLocationSupported(ToolbarLocation.EAST) && eastToolbar.hasDockable(dockable)) {
-            eastToolbar.removeDockable(dockable);
+        else if (rootPanel.isLocationSupported(ToolbarLocation.EAST) && eastToolbar.hasDockable(wrapper)) {
+            eastToolbar.removeDockable(wrapper);
 
             dock(dockable, DockingRegion.EAST, 0.25f);
         }
-        else if (rootPanel.isLocationSupported(ToolbarLocation.SOUTH) && southToolbar.hasDockable(dockable)) {
-            southToolbar.removeDockable(dockable);
+        else if (rootPanel.isLocationSupported(ToolbarLocation.SOUTH) && southToolbar.hasDockable(wrapper)) {
+            southToolbar.removeDockable(wrapper);
 
             dock(dockable, DockingRegion.SOUTH, 0.25f);
         }
@@ -261,7 +265,7 @@ public class InternalRootDockingPanel extends DockingPanel {
      * @param dockable Dockable to unpin
      * @param location Toolbar to unpin to
      */
-    public void setDockableHidden(Dockable dockable, ToolbarLocation location) {
+    public void setDockableHidden(DockableWrapper dockable, ToolbarLocation location) {
         if (!rootPanel.isAutoHideSupported()) {
             return;
         }
@@ -306,19 +310,27 @@ public class InternalRootDockingPanel extends DockingPanel {
     }
 
     public int getSlidePosition(Dockable dockable) {
-        if (southToolbar.hasDockable(dockable)) {
-            return southToolbar.getSlidePosition(dockable);
+        DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
+        if (southToolbar.hasDockable(wrapper)) {
+            return southToolbar.getSlidePosition(wrapper);
         }
-        else if (westToolbar.hasDockable(dockable)) {
-            return westToolbar.getSlidePosition(dockable);
+        else if (westToolbar.hasDockable(wrapper)) {
+            return westToolbar.getSlidePosition(wrapper);
         }
-        return eastToolbar.getSlidePosition(dockable);
+        return eastToolbar.getSlidePosition(wrapper);
     }
 
     public void setSlidePosition(Dockable dockable, int position) {
-        if (southToolbar.hasDockable(dockable)) {
-            southToolbar.setSlidePosition(dockable, position);
+        DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
+        if (southToolbar.hasDockable(wrapper)) {
+            southToolbar.setSlidePosition(wrapper, position);
         }
+        else if (westToolbar.hasDockable(wrapper)) {
+            westToolbar.setSlidePosition(wrapper, position);
+        }
+        eastToolbar.setSlidePosition(wrapper, position);
     }
 
     private void createContents() {
@@ -437,6 +449,19 @@ public class InternalRootDockingPanel extends DockingPanel {
         }
         if (rootPanel.getEmptyPanel() != null) {
             SwingUtilities.updateComponentTreeUI(rootPanel.getEmptyPanel());
+        }
+    }
+
+    @Override
+    public void dockableDisplayed(DockableToolbar toolbar) {
+        if (toolbar != southToolbar) {
+            southToolbar.hideAll();
+        }
+        if (toolbar != westToolbar) {
+            westToolbar.hideAll();
+        }
+        if (toolbar != eastToolbar) {
+            eastToolbar.hideAll();
         }
     }
 }

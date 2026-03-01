@@ -140,11 +140,6 @@ public class LayoutPersistenceAPI {
             if (!docking.isDocked(dockable)) {
                 DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 
-                if (wrapper.getRoot() != null) {
-                    int slidePosition = wrapper.getRoot().getSlidePosition(dockable);
-//                    layout.getMainFrameLayout().siz
-                    System.out.println("slidePosition = " + slidePosition);
-                }
                 writeSimpleNodeToFile(writer, new DockingSimplePanelNode(docking, dockable.getPersistentID(), dockable.getClass().getTypeName(), "", dockable.getTitleText(), dockable.getTabText(), DockableProperties.saveProperties(wrapper)));
             }
         }
@@ -296,6 +291,7 @@ public class LayoutPersistenceAPI {
         for (String id : layout.getWestAutoHideToolbarIDs()) {
             writer.writeStartElement("dockable");
             writer.writeAttribute("id", id);
+            writer.writeAttribute("slidePosition", String.valueOf(layout.slidePosition(id)));
             writer.writeEndElement();
             writer.writeCharacters(NL);
         }
@@ -308,6 +304,7 @@ public class LayoutPersistenceAPI {
         for (String id : layout.getEastAutoHideToolbarIDs()) {
             writer.writeStartElement("dockable");
             writer.writeAttribute("id", id);
+            writer.writeAttribute("slidePosition", String.valueOf(layout.slidePosition(id)));
             writer.writeEndElement();
             writer.writeCharacters(NL);
         }

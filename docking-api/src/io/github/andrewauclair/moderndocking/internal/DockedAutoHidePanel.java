@@ -83,32 +83,41 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 		if (toolbar.getDockedLocation() == ToolbarLocation.SOUTH) {
 			gbc.weightx = 1.0;
 			gbc.fill = GridBagConstraints.HORIZONTAL;
+
 			add(slideBorder, gbc);
+
 			gbc.weightx = 1.0;
 			gbc.weighty = 1.0;
 			gbc.fill = GridBagConstraints.BOTH;
 			gbc.gridy++;
+
 			add(panel, gbc);
 		}
 		else if (toolbar.getDockedLocation() == ToolbarLocation.EAST) {
 			gbc.weighty = 1.0;
 			gbc.fill = GridBagConstraints.VERTICAL;
+
 			add(slideBorder, gbc);
+
 			gbc.weightx = 1.0;
 			gbc.weighty = 1.0;
 			gbc.fill = GridBagConstraints.BOTH;
 			gbc.gridx++;
+
 			add(panel, gbc);
 		}
-		else {
+		else { // west
 			gbc.weightx = 1.0;
 			gbc.weighty = 1.0;
 			gbc.fill = GridBagConstraints.BOTH;
+
 			add(panel, gbc);
+
 			gbc.weightx = 0.0;
 			gbc.weighty = 1.0;
 			gbc.fill = GridBagConstraints.VERTICAL;
 			gbc.gridx++;
+
 			add(slideBorder, gbc);
 		}
 	}
@@ -151,6 +160,15 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 		return getWidth();
 	}
 
+	public void setSlidePosition(int position) {
+		if (toolbar.getDockedLocation() == ToolbarLocation.SOUTH) {
+			setSize(getWidth(), position);
+		}
+		else {
+			setSize(position, getHeight());
+		}
+	}
+
 	private void setLocationAndSize(int widthDifference) {
 		Point toolbarLocation = toolbar.getLocation();
 		SwingUtilities.convertPointToScreen(toolbarLocation, toolbar.getParent());
@@ -160,15 +178,13 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 		// this panel will be in a layered pane without a layout manager
 		// we must configure the size and position ourselves
 		if (toolbar.isVertical()) {
-			int width = (int) (root.getWidth() / 4.0);
-			int height = toolbarSize.height;
+			int width = (int) (root.getWidth() / 4.0); // default width, 1/4 of root width
+			int height = toolbarSize.height; // match height of toolbar
 
-			if (configured) {
+			if (configured)
+			{
 				width = getWidth() + widthDifference;
 			}
-
-			width = Math.max(100, width);
-			width = Math.min(width, getParent().getWidth() - 100);
 
 			Point location = new Point(toolbarLocation.x + toolbarSize.width, toolbarLocation.y);
 			Dimension size = new Dimension(width, height);
@@ -183,15 +199,13 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 			setSize(size);
 		}
 		else {
-			int width = toolbarSize.width;
-			int height = (int) (root.getHeight() / 4.0);
+			int width = toolbarSize.width; // match width of toolbar
+			int height = (int) (root.getHeight() / 4.0); // default height, 1/4 of root height
 
-			if (configured) {
+			if (configured)
+			{
 				height = getHeight() + widthDifference;
 			}
-
-			height = Math.max(100, height);
-			height = Math.min(height, getParent().getHeight() - 100);
 
 			Point location = new Point(toolbarLocation.x, toolbarLocation.y - height);
 			Dimension size = new Dimension(width, height);
@@ -220,7 +234,22 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 
 	@Override
 	public void componentShown(ComponentEvent e) {
+		if (e.getComponent() == root) {
+			int width = getWidth();
+			int height = getHeight();
 
+			if (toolbar.isVertical()) {
+				width = Math.max(100, width); // minimum width is 100
+				width = Math.min(width, root.getWidth() - 100); // max width is root - 100
+			}
+			else {
+				height = Math.max(100, height); // minimum height is 100
+				height = Math.min(height, root.getHeight() - 100); // max height is root - 100
+
+			}
+
+			setSize(width, height);
+		}
 	}
 
 	@Override
@@ -236,7 +265,7 @@ public class DockedAutoHidePanel extends JPanel implements ComponentListener, Mo
 		else if (toolbar.getDockedLocation() == ToolbarLocation.WEST) {
 			setLocationAndSize(e.getX());
 		}
-		else {
+		else { // east
 			setLocationAndSize(-e.getX());
 		}
 

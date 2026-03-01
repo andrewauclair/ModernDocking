@@ -33,6 +33,7 @@ import java.awt.Window;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * internal wrapper around the Dockable implemented by the application.
