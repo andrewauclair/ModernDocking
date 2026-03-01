@@ -504,6 +504,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		selectedTab = tabs.getSelectedIndex();
 
 		if (selectedTab != -1) {
+			panel = panels.get(selectedTab);
 			panel.setHidden(false);
 			DockingListeners.fireShownEvent(panel.getDockable());
 		}

@@ -43,6 +43,8 @@ import io.github.andrewauclair.moderndocking.app.LayoutPersistence;
 import io.github.andrewauclair.moderndocking.app.LayoutsMenu;
 import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
 import io.github.andrewauclair.moderndocking.app.WindowLayoutBuilder;
+import io.github.andrewauclair.moderndocking.event.DockingEvent;
+import io.github.andrewauclair.moderndocking.event.DockingListener;
 import io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener;
 import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
 import io.github.andrewauclair.moderndocking.ext.ui.DockingUI;
@@ -54,6 +56,10 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.util.Map;
 import java.util.Objects;
@@ -205,7 +211,7 @@ public class MainFrame extends JFrame implements Callable<Integer> {
 
         menuBar.add(window);
 
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         SimplePanel one = new SimplePanel("one", "Panel One", "one");
         SimplePanel two = new SimplePanel("two", "Panel Two", "two");
@@ -346,7 +352,13 @@ public class MainFrame extends JFrame implements Callable<Integer> {
         ApplicationLayout defaultLayout = layoutBuilder.buildApplicationLayout();
 
         DockingLayouts.addLayout("default", defaultLayout);
-//		AppState.setDefaultApplicationLayout(defaultLayout);
+
+        Docking.addDockingListener(new DockingListener() {
+            @Override
+            public void dockingChange(DockingEvent e) {
+                System.out.println("DockingEvent " + e.getID() + " " + e.getDockable().getPersistentID() + " " + e.isTemporary());
+            }
+        });
     }
 
     static Random rng = new Random();
