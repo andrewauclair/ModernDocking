@@ -21,7 +21,7 @@ subprojects {
 		maven { url = "https://central.sonatype.com/repository/maven-snapshots/" }
 	}
 
-	version = "1.4.2"
+	version = "1.4.3"
 
 	ext {
 		flatLafVersion = "3.7"
