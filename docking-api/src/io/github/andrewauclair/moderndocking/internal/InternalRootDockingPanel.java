@@ -196,14 +196,16 @@ public class InternalRootDockingPanel extends DockingPanel {
 
     @Override
     public void undock(Dockable dockable) {
-        if (rootPanel.isLocationSupported(ToolbarLocation.WEST) && westToolbar.hasDockable(dockable)) {
-            westToolbar.removeDockable(dockable);
+        DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
+        if (rootPanel.isLocationSupported(ToolbarLocation.WEST) && westToolbar.hasDockable(wrapper)) {
+            westToolbar.removeDockable(wrapper);
         }
-        else if (rootPanel.isLocationSupported(ToolbarLocation.EAST) && eastToolbar.hasDockable(dockable)) {
-            eastToolbar.removeDockable(dockable);
+        else if (rootPanel.isLocationSupported(ToolbarLocation.EAST) && eastToolbar.hasDockable(wrapper)) {
+            eastToolbar.removeDockable(wrapper);
         }
-        else if (rootPanel.isLocationSupported(ToolbarLocation.SOUTH) && southToolbar.hasDockable(dockable)) {
-            southToolbar.removeDockable(dockable);
+        else if (rootPanel.isLocationSupported(ToolbarLocation.SOUTH) && southToolbar.hasDockable(wrapper)) {
+            southToolbar.removeDockable(wrapper);
         }
 
         createContents();
@@ -235,19 +237,21 @@ public class InternalRootDockingPanel extends DockingPanel {
      * @param dockable Dockable to pin
      */
     public void setDockableShown(Dockable dockable) {
+        DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
         // if the dockable is currently unpinned, remove it from the toolbar, then adjust the toolbars
-        if (rootPanel.isLocationSupported(ToolbarLocation.WEST) && westToolbar.hasDockable(dockable)) {
-            westToolbar.removeDockable(dockable);
+        if (rootPanel.isLocationSupported(ToolbarLocation.WEST) && westToolbar.hasDockable(wrapper)) {
+            westToolbar.removeDockable(wrapper);
 
             dock(dockable, DockingRegion.WEST, 0.25f);
         }
-        else if (rootPanel.isLocationSupported(ToolbarLocation.EAST) && eastToolbar.hasDockable(dockable)) {
-            eastToolbar.removeDockable(dockable);
+        else if (rootPanel.isLocationSupported(ToolbarLocation.EAST) && eastToolbar.hasDockable(wrapper)) {
+            eastToolbar.removeDockable(wrapper);
 
             dock(dockable, DockingRegion.EAST, 0.25f);
         }
-        else if (rootPanel.isLocationSupported(ToolbarLocation.SOUTH) && southToolbar.hasDockable(dockable)) {
-            southToolbar.removeDockable(dockable);
+        else if (rootPanel.isLocationSupported(ToolbarLocation.SOUTH) && southToolbar.hasDockable(wrapper)) {
+            southToolbar.removeDockable(wrapper);
 
             dock(dockable, DockingRegion.SOUTH, 0.25f);
         }
@@ -261,7 +265,7 @@ public class InternalRootDockingPanel extends DockingPanel {
      * @param dockable Dockable to unpin
      * @param location Toolbar to unpin to
      */
-    public void setDockableHidden(Dockable dockable, ToolbarLocation location) {
+    public void setDockableHidden(DockableWrapper dockable, ToolbarLocation location) {
         if (!rootPanel.isAutoHideSupported()) {
             return;
         }
@@ -306,16 +310,18 @@ public class InternalRootDockingPanel extends DockingPanel {
     }
 
     public int getSlidePosition(Dockable dockable) {
-        if (southToolbar.hasDockable(dockable)) {
+        DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
+        if (southToolbar.hasDockable(wrapper)) {
             return southToolbar.getSlidePosition(dockable);
         }
-        else if (westToolbar.hasDockable(dockable)) {
+        else if (westToolbar.hasDockable(wrapper)) {
             return westToolbar.getSlidePosition(dockable);
         }
         return eastToolbar.getSlidePosition(dockable);
     }
 
-    public void setSlidePosition(Dockable dockable, int position) {
+    public void setSlidePosition(DockableWrapper dockable, int position) {
         if (southToolbar.hasDockable(dockable)) {
             southToolbar.setSlidePosition(dockable, position);
         }

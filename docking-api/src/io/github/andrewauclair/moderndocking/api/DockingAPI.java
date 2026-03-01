@@ -872,11 +872,13 @@ public class DockingAPI {
         }
 
         // reset the window, undocking the dockable sets it to null
-        internals.getWrapper(dockable).setWindow(window);
-        internals.getWrapper(dockable).setRoot(root);
-        internals.getWrapper(dockable).setHidden(true);
+        DockableWrapper wrapper = internals.getWrapper(dockable);
 
-        internalRoot.setDockableHidden(dockable, location);
+        wrapper.setWindow(window);
+        wrapper.setRoot(root);
+        wrapper.setHidden(true);
+
+        internalRoot.setDockableHidden(wrapper, location);
 
         DockingListeners.fireAutoHiddenEvent(dockable);
         DockingListeners.fireHiddenEvent(dockable);

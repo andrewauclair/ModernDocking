@@ -125,7 +125,7 @@ public class Example extends JFrame {
 
 		@Override
 		public boolean isFloatingAllowed() {
-			return false;
+			return true;
 		}
 
 		@Override
@@ -145,7 +145,7 @@ public class Example extends JFrame {
 
 		@Override
 		public boolean isAutoHideAllowed() {
-			return false;
+			return true;
 		}
 
 		@Override

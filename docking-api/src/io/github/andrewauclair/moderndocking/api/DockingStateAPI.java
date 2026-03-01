@@ -235,30 +235,30 @@ public class DockingStateAPI {
         restoreProperSplitLocations(root.getRootPanel());
 
         for (String id : layout.getWestAutoHideToolbarIDs()) {
-            Dockable dockable = getDockable(docking, id);
-            root.setDockableHidden(dockable, ToolbarLocation.WEST);
+            DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(getDockable(docking, id));
+            root.setDockableHidden(wrapper, ToolbarLocation.WEST);
             root.hideHiddenPanels();
-            getWrapper(dockable).setHidden(true);
+            wrapper.setHidden(true);
 
-            root.setSlidePosition(dockable, (int) (layout.slidePosition(id) * window.getWidth()));
+            root.setSlidePosition(wrapper, (int) (layout.slidePosition(id) * window.getWidth()));
         }
 
         for (String id : layout.getEastAutoHideToolbarIDs()) {
-            Dockable dockable = getDockable(docking, id);
-            root.setDockableHidden(dockable, ToolbarLocation.EAST);
+            DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(getDockable(docking, id));
+            root.setDockableHidden(wrapper, ToolbarLocation.EAST);
             root.hideHiddenPanels();
-            getWrapper(dockable).setHidden(true);
+            wrapper.setHidden(true);
 
-            root.setSlidePosition(dockable, (int) (layout.slidePosition(id) * window.getHeight()));
+            root.setSlidePosition(wrapper, (int) (layout.slidePosition(id) * window.getHeight()));
         }
 
         for (String id : layout.getSouthAutoHideToolbarIDs()) {
-            Dockable dockable = getDockable(docking, id);
-            root.setDockableHidden(dockable, ToolbarLocation.SOUTH);
+            DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(getDockable(docking, id));
+            root.setDockableHidden(wrapper, ToolbarLocation.SOUTH);
             root.hideHiddenPanels();
-            getWrapper(dockable).setHidden(true);
+            wrapper.setHidden(true);
 
-            root.setSlidePosition(dockable, (int) (layout.slidePosition(id) * window.getHeight()));
+            root.setSlidePosition(wrapper, (int) (layout.slidePosition(id) * window.getHeight()));
         }
 
         if (layout.getMaximizedDockable() != null) {

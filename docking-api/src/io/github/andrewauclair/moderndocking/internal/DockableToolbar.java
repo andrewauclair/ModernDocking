@@ -183,15 +183,15 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 			boolean isSelected = buttonGroup.getSelection() == entry.button.getModel();
 
 			if (entry.panel.isVisible() && !isSelected) {
-				entry.dockable.setHidden(true);
+//				entry.dockable.setHidden(true);
 				DockingListeners.fireHiddenEvent(entry.dockable.getDockable());
 			}
 			else if (!entry.panel.isVisible() && isSelected) {
-				entry.dockable.setHidden(false);
+//				entry.dockable.setHidden(false);
 				DockingListeners.fireShownEvent(entry.dockable.getDockable());
 			}
 			else if (isSelected) {
-				entry.dockable.setHidden(false);
+//				entry.dockable.setHidden(false);
 				DockingListeners.fireShownEvent(entry.dockable.getDockable());
 			}
 
@@ -210,18 +210,18 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	 *
 	 * @param dockable Dockable to add
 	 */
-	public void addDockable(Dockable dockable) {
+	public void addDockable(DockableWrapper dockable) {
 		if (!hasDockable(dockable)) {
 			JToggleButton button = new JToggleButton();
 
-			button.setIcon(dockable.getIcon());
+			button.setIcon(dockable.getDockable().getIcon());
 
 			if (isVertical()) {
-				TextIcon textIcon = new TextIcon(button, dockable.getTabText(), TextIcon.Layout.HORIZONTAL);
+				TextIcon textIcon = new TextIcon(button, dockable.getDockable().getTabText(), TextIcon.Layout.HORIZONTAL);
 				RotatedIcon rotatedIcon = new RotatedIcon(textIcon, location == ToolbarLocation.WEST ? RotatedIcon.Rotate.UP : RotatedIcon.Rotate.DOWN);
 
-				if (dockable.getIcon() != null) {
-					button.setIcon(new CombinedIcon(dockable.getIcon(), rotatedIcon));
+				if (dockable.getDockable().getIcon() != null) {
+					button.setIcon(new CombinedIcon(dockable.getDockable().getIcon(), rotatedIcon));
 				}
 				else {
 					button.setIcon(rotatedIcon);
@@ -239,20 +239,19 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 				button.setMargin(margin);
 			}
 			else {
-				button.setText(dockable.getTabText());
+				button.setText(dockable.getDockable().getTabText());
 			}
 
-			DockedAutoHidePanel panel = new DockedAutoHidePanel(docking, dockable, root, this);
+			DockedAutoHidePanel panel = new DockedAutoHidePanel(docking, dockable.getDockable(), root, this);
 
-			DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
-			wrapper.setWindow(window);
+			dockable.setWindow(window);
 
 			// update all the buttons and panels
 			button.addActionListener(e -> updateButtons());
 
 			buttonGroup.add(button);
 
-			dockables.add(new Entry(wrapper, button, panel));
+			dockables.add(new Entry(dockable, button, panel));
 
 			JLayeredPane layeredPane;
 
@@ -274,7 +273,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	 *
 	 * @param dockable Dockable to remove
 	 */
-	public void removeDockable(Dockable dockable) {
+	public void removeDockable(DockableWrapper dockable) {
 		for (Entry entry : dockables) {
 			if (entry.dockable == dockable) {
 				JLayeredPane layeredPane;
@@ -301,7 +300,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 	 * @param dockable Dockable to search for
 	 * @return Is dockable contained in this toolbar?
 	 */
-	public boolean hasDockable(Dockable dockable) {
+	public boolean hasDockable(DockableWrapper dockable) {
 		return dockables.stream()
 				.anyMatch(panel -> panel.dockable.equals(dockable));
 	}
@@ -344,7 +343,7 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 		return 0;
 	}
 
-	public void setSlidePosition(Dockable dockable, int position) {
+	public void setSlidePosition(DockableWrapper dockable, int position) {
 		for (Entry entry : dockables) {
 			if (entry.dockable == dockable) {
 				entry.panel.setSize(entry.panel.getWidth(), position);
