@@ -28,7 +28,10 @@ import io.github.andrewauclair.moderndocking.app.AppState;
 import io.github.andrewauclair.moderndocking.app.Docking;
 import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
 import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
-import java.awt.BorderLayout;
+
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import javax.swing.Icon;
 import javax.swing.JFrame;
@@ -40,10 +43,17 @@ public class Example extends JFrame {
 		// common Java Swing setup
 		setTitle("Basic Modern Docking basic.Example");
 		setSize(300, 300);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		// create the single Docking instance for the life of the program
 		Docking.initialize(this);
+
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				Docking.uninitialize();
+			}
+		});
 
 		// set the auto persist file
 		// auto persist is off by default and we will leave it that way until we're done configuring the default layout
@@ -125,7 +135,7 @@ public class Example extends JFrame {
 
 		@Override
 		public boolean isFloatingAllowed() {
-			return false;
+			return true;
 		}
 
 		@Override
@@ -140,7 +150,7 @@ public class Example extends JFrame {
 
 		@Override
 		public boolean isClosable() {
-			return false;
+			return true;
 		}
 
 		@Override

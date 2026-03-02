@@ -166,6 +166,8 @@ public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener,
                 // this exception indicates that the platform doesn't support changing the opacity
             }
         }
+
+        docking.addDockingAPIClosedListener(d -> dispose());
     }
 
     /**
