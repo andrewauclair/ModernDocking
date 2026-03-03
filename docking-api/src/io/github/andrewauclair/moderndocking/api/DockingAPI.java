@@ -47,8 +47,13 @@ import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
 
 import java.awt.*;
 import java.beans.PropertyChangeListener;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -74,8 +79,6 @@ public class DockingAPI {
     private final DockingStateAPI dockingState = new DockingStateAPI(this);
 
     private final LayoutPersistenceAPI layoutPersistence = new LayoutPersistenceAPI(this);
-
-    private final List<DockingAPIClosedListener> closedListeners = new ArrayList<>();
 
     // listen for L&F changes so that we can update dockable panels properly when not displayed
     private final PropertyChangeListener propertyChangeListener = e -> {
@@ -115,8 +118,6 @@ public class DockingAPI {
      * Uninitialize the docking framework so that it can be initialized again with a new window
      */
     public void uninitialize() {
-        fireDockingAPIClosedListeners();
-
         // deregister all dockables and panels
         deregisterAllDockables();
         deregisterAllDockingPanels();
@@ -1015,24 +1016,5 @@ public class DockingAPI {
      */
     public void setUserDynamicDockableCreationListener(DynamicDockableCreationListener listener) {
         dockingState.setUserDynamicDockableCreationListener(listener);
-    }
-
-    /**
-     * Add a docking API closed listener
-     *
-     * @param listener the listener to add
-     */
-    public void addDockingAPIClosedListener(DockingAPIClosedListener listener) {
-        closedListeners.add(listener);
-    }
-
-    private void fireDockingAPIClosedListeners() {
-        for(DockingAPIClosedListener listener : closedListeners) {
-            listener.closed(this);
-        }
-    }
-
-    public interface DockingAPIClosedListener {
-        void closed(DockingAPI docking);
     }
 }
