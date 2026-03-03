@@ -59,7 +59,10 @@ public class Floating {
      * @param window The window to deregister
      */
     public static void deregisterDockingWindow(Window window) {
-        utilFrames.remove(window);
+        FloatUtilsFrame frame = utilFrames.remove(window);
+        if (frame != null) {
+            frame.dispose();
+        }
     }
 
     /**
