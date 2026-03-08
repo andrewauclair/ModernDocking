@@ -116,8 +116,8 @@ public class DisplayPanelFloatListener extends FloatListener {
 
             Dockable dockableAtPos = DockingComponentUtils.findDockableAtScreenPos(mousePosOnScreen, targetWindow);
 
-            // don't allow dockables that can't be closed or are limited to their window to move to another window
-            if (targetWindow != originalWindow && (floatingDockable.getDockable().isLimitedToWindow() || !floatingDockable.getDockable().isClosable())) {
+            // don't allow dockables that are limited to their window to move to another window
+            if (targetWindow != originalWindow && floatingDockable.getDockable().isLimitedToWindow()) {
                 return false;
             }
 

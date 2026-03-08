@@ -123,10 +123,6 @@ public class Example extends JFrame {
 			return null;
 		}
 
-		@Override
-		public boolean isFloatingAllowed() {
-			return false;
-		}
 
 		@Override
 		public boolean isLimitedToWindow() {
