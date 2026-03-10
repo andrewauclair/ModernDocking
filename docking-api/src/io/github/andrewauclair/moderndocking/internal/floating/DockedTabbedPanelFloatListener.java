@@ -112,8 +112,8 @@ public class DockedTabbedPanelFloatListener extends FloatListener {
 
         if (utilsFrame == null) {
             for (DockableWrapper dockable : dockables) {
-                // don't allow dockables that can't be closed or are limited to their window to move to another window
-                if (dockable.getDockable().isLimitedToWindow() || !dockable.getDockable().isClosable()) {
+                // don't allow dockables that are limited to their window to move to another window
+                if (dockable.getDockable().isLimitedToWindow()) {
                     return false;
                 }
             }
@@ -161,8 +161,8 @@ public class DockedTabbedPanelFloatListener extends FloatListener {
         }
 
         for (DockableWrapper dockable : dockables) {
-            // don't allow dockables that can't be closed or are limited to their window to move to another window
-            if (targetWindow != originalWindow && (dockable.getDockable().isLimitedToWindow() || !dockable.getDockable().isClosable())) {
+            // don't allow dockables that are limited to their window to move to another window
+            if (targetWindow != originalWindow) {
                 return false;
             }
 
