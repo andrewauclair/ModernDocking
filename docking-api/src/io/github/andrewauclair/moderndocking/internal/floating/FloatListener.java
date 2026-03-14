@@ -259,7 +259,7 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 		InternalRootDockingPanel currentRoot = DockingComponentUtils.rootForWindow(docking, originalWindow);
 
 		if (currentRoot.isEmpty() && docking.canDisposeWindow(originalWindow)) {
-			originalWindow.dispose();
+			SwingUtilities.invokeLater(() -> originalWindow.dispose());
 		}
 
 		Floating.setFloating(false);
@@ -280,8 +280,10 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 			docking.getDockingState().restoreWindowLayout(originalWindow, originalWindowLayout);
 		}
 
-		floatingFrame.dispose();
-		floatingFrame = null;
+		SwingUtilities.invokeLater(() -> {
+            floatingFrame.dispose();
+			floatingFrame = null;
+        });
 	}
 
 	/**
