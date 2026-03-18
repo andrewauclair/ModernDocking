@@ -96,11 +96,6 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 */
 	private DockingPanel parent;
 
-	/**
-	 * The selected tab index. default to -1 and set properly when state changes
-	 */
-	private int selectedTab = -1;
-
 	private static Icon settingsIcon = new ImageIcon(Objects.requireNonNull(DockedTabbedPanel.class.getResource("/api_icons/settings.png")));
 
 	/**
@@ -271,7 +266,6 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		tabs.setToolTipTextAt(tabs.getTabCount() - 1, dockable.getDockable().getTabTooltip());
 		tabs.setIconAt(tabs.getTabCount() - 1, dockable.getDockable().getIcon());
 		tabs.setSelectedIndex(tabs.getTabCount() - 1);
-		selectedTab = tabs.getSelectedIndex();
 
 		if (Settings.alwaysDisplayTabsMode() && dockable.getDockable().isClosable()) {
 			dockable.getDisplayPanel().putClientProperty("JTabbedPane.tabClosable", true);
@@ -293,8 +287,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			dockable.getFloatListener().removeAlternateDragSource(listeners.get(index));
 			listeners.remove(index);
 
-			tabs.remove(dockable.getDisplayPanel());
 			panels.remove(dockable);
+			tabs.remove(dockable.getDisplayPanel());
 
 			dockable.setParent(null);
 		}
@@ -469,7 +463,6 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 					DockingListeners.fireShownEvent(wrapper.getDockable());
 				}
 				tabs.setSelectedIndex(i);
-				selectedTab = tabs.getSelectedIndex();
 			}
 		}
 	}
@@ -495,12 +488,14 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			return;
 		}
 
+		int selectedTab = tabs.getSelectedIndex();
 		DockableWrapper panel = panels.get(selectedTab);
 
-		if (selectedTab != -1 && !Floating.isFloating()) {
+		if (!Floating.isFloating()) {
 			panel.setHidden(true);
 			DockingListeners.fireHiddenEvent(panel.getDockable());
 		}
+
 		selectedTab = tabs.getSelectedIndex();
 
 		if (selectedTab != -1) {

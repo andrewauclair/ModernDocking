@@ -332,7 +332,9 @@ public class DockingInternal {
 
 		wrapper.setRoot(root);
 
-		if (docking.isHidden(dockable)) {
+		boolean inTabbedPane = wrapper.getParent() != null && wrapper.getParent() instanceof DockedTabbedPanel;
+
+		if (!inTabbedPane && docking.isHidden(dockable)) {
 			root.undock(dockable);
 			wrapper.setParent(null);
 			wrapper.setHidden(false);
