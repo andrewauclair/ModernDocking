@@ -40,8 +40,7 @@ docs).
 ## Modern Docking UI Extension
 - Requires FlatLaf L&F
 
-<!-- todo: we should limit this to the version Modern Docking actually uses, if we can -->
-[![Maven Central](https://img.shields.io/maven-central/v/com.formdev/flatlaf)](https://mvnrepository.com/artifact/com.formdev/flatlaf)
+[![Maven Central](https://img.shields.io/maven-central/v/com.formdev/flatlaf/3.7.1)](https://mvnrepository.com/artifact/com.formdev/flatlaf/3.7.1)
 
 # Building
 
