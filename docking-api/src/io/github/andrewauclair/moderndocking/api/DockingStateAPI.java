@@ -202,16 +202,26 @@ public class DockingStateAPI {
                 GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
                 GraphicsDevice[] devices = env.getScreenDevices();
 
+                Point center = new Point(layout.getLocation().x + layout.getSize().width / 2, layout.getLocation().y + layout.getSize().height / 2);
+
                 boolean locationOnScreen = false;
 
+                // check if the center position is on an existing screen
                 for (GraphicsDevice device : devices) {
-                    if (device.getDefaultConfiguration().getBounds().contains(layout.getLocation())) {
+                    if (device.getDefaultConfiguration().getBounds().contains(center)) {
                         locationOnScreen = true;
+                        break;
                     }
                 }
 
+                // if the center position is not on an existing screen, and we have screens, then reset our position to that first screen
                 if (!locationOnScreen && devices.length > 0) {
-                    layout.setLocation(devices[0].getDefaultConfiguration().getBounds().getLocation());
+                    Rectangle bounds = devices[0].getDefaultConfiguration().getBounds();
+
+                    Point screenCenter = new Point(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+                    Point newPosition = new Point(screenCenter.x - layout.getSize().width / 2, screenCenter.y - layout.getSize().height / 2);
+
+                    layout.setLocation(newPosition);
                 }
             }
 
