@@ -241,9 +241,6 @@ public class DockedSimplePanel extends DockingPanel {
 	}
 
 	private void setNotSelectedBorder() {
-		if (!Settings.isActiveHighlighterEnabled()) {
-			return;
-		}
 		Color color = UIManager.getColor("Component.borderColor");
 
 		setBorder(
