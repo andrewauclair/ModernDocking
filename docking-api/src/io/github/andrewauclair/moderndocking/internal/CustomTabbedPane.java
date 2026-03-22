@@ -91,6 +91,9 @@ public class CustomTabbedPane extends JTabbedPane {
                     }
                 }
         );
+
+        // when using FlatLaf, show a popup with additional dockables instead of rows of tabs
+        putClientProperty("JTabbedPane.tabsPopupPolicy", "asNeeded");
     }
 
     /**
