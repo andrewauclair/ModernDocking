@@ -27,11 +27,11 @@ import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.ui.DockingSettings;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -47,47 +47,47 @@ public class DockableHandles {
     private final DockingHandle dockableNorth = new DockingHandle(DockingRegion.NORTH, false);
     private final DockingHandle dockableEast = new DockingHandle(DockingRegion.EAST, false);
     private final DockingHandle dockableSouth = new DockingHandle(DockingRegion.SOUTH, false);
-    private final JFrame frame;
+    private final Container coordinateRoot;
     private final Dockable targetDockable;
     private final Dockable floatingDockable;
 
     /**
-     * Create a new instance for the frame and target dockable
+     * Create a new instance for the coordinate root and target dockable
      *
-     * @param frame The frame to display these handles on
+     * @param coordinateRoot The container that handles are added to and coordinates are relative to
      * @param targetDockable The target dockable the mouse is over
      */
-    public DockableHandles(JFrame frame, Dockable targetDockable) {
-        this.frame = frame;
+    public DockableHandles(Container coordinateRoot, Dockable targetDockable) {
+        this.coordinateRoot = coordinateRoot;
         this.targetDockable = targetDockable;
         this.floatingDockable = null;
 
-        setupHandle(frame, dockableCenter);
-        setupHandle(frame, dockableWest);
-        setupHandle(frame, dockableNorth);
-        setupHandle(frame, dockableEast);
-        setupHandle(frame, dockableSouth);
+        setupHandle(coordinateRoot, dockableCenter);
+        setupHandle(coordinateRoot, dockableWest);
+        setupHandle(coordinateRoot, dockableNorth);
+        setupHandle(coordinateRoot, dockableEast);
+        setupHandle(coordinateRoot, dockableSouth);
 
         setDockableHandleLocations();
     }
 
     /**
-     * Create a new instance for the frame and target dockable
+     * Create a new instance for the coordinate root and target dockable
      *
-     * @param frame The frame to display these handles on
-     * @param targetDockable The target dockable the mouse is over
-     * @param floatingDockable The dockable is floating
+     * @param coordinateRoot   The container that handles are added to and coordinates are relative to
+     * @param targetDockable   The target dockable the mouse is over
+     * @param floatingDockable The dockable being floated
      */
-    public DockableHandles(JFrame frame, Dockable targetDockable, Dockable floatingDockable) {
-        this.frame = frame;
+    public DockableHandles(Container coordinateRoot, Dockable targetDockable, Dockable floatingDockable) {
+        this.coordinateRoot = coordinateRoot;
         this.targetDockable = targetDockable;
         this.floatingDockable = floatingDockable;
 
-        setupHandle(frame, dockableCenter);
-        setupHandle(frame, dockableWest);
-        setupHandle(frame, dockableNorth);
-        setupHandle(frame, dockableEast);
-        setupHandle(frame, dockableSouth);
+        setupHandle(coordinateRoot, dockableCenter);
+        setupHandle(coordinateRoot, dockableWest);
+        setupHandle(coordinateRoot, dockableNorth);
+        setupHandle(coordinateRoot, dockableEast);
+        setupHandle(coordinateRoot, dockableSouth);
 
         setDockableHandleLocations();
     }
@@ -99,7 +99,7 @@ public class DockableHandles {
      */
     public void mouseMoved(Point mousePosOnScreen) {
         Point framePoint = new Point(mousePosOnScreen);
-        SwingUtilities.convertPointFromScreen(framePoint, frame);
+        SwingUtilities.convertPointFromScreen(framePoint, coordinateRoot);
 
         dockableCenter.mouseMoved(framePoint);
         dockableWest.mouseMoved(framePoint);
@@ -108,9 +108,9 @@ public class DockableHandles {
         dockableSouth.mouseMoved(framePoint);
     }
 
-    private void setupHandle(JFrame frame, DockingHandle label) {
+    private void setupHandle(Container coordinateRoot, DockingHandle label) {
         label.setVisible(false);
-        frame.add(label);
+        coordinateRoot.add(label);
     }
 
     private void setDockableHandleLocations() {
@@ -162,7 +162,7 @@ public class DockableHandles {
             location.y -= (int) (HANDLE_ICON_SIZE * (1.75/2));
 
             SwingUtilities.convertPointToScreen(location, ((Component) targetDockable).getParent());
-            SwingUtilities.convertPointFromScreen(location, frame);
+            SwingUtilities.convertPointFromScreen(location, coordinateRoot);
 
             setLocation(dockableCenter, location.x, location.y);
             setLocation(dockableWest, location.x - handleSpacing(dockableWest), location.y);

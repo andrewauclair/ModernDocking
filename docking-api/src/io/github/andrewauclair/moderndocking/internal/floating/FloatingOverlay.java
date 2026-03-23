@@ -35,7 +35,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 /**
@@ -61,20 +60,20 @@ public class FloatingOverlay {
     private Rectangle targetTab = null;
 
     private final DockingAPI docking;
-    private final JFrame utilFrame;
+    private final Component coordinateRoot;
 
     private Point prevLocation = location;
     private Dimension prevSize = size;
 
     /**
-     * Create a new overlay, attached to a utility frame
+     * Create a new overlay.
      *
-     * @param docking The docking instance this overlay belongs to
-     * @param utilFrame The utility frame this overlay is tied to
+     * @param docking        The docking instance this overlay belongs to
+     * @param coordinateRoot The component that overlay coordinates are relative to
      */
-    public FloatingOverlay(DockingAPI docking, JFrame utilFrame) {
+    public FloatingOverlay(DockingAPI docking, Component coordinateRoot) {
         this.docking = docking;
-        this.utilFrame = utilFrame;
+        this.coordinateRoot = coordinateRoot;
     }
 
     /**
@@ -109,7 +108,7 @@ public class FloatingOverlay {
         Point point = rootPanel.getLocation();
         Dimension size = rootPanel.getSize();
 
-        point = SwingUtilities.convertPoint(rootPanel.getParent(), point, utilFrame);
+        point = SwingUtilities.convertPoint(rootPanel.getParent(), point, coordinateRoot);
 
         final double DROP_SIZE = 4;
 
@@ -166,7 +165,7 @@ public class FloatingOverlay {
         Point point = component.getLocation();
         Dimension size = component.getSize();
 
-        point = SwingUtilities.convertPoint(component.getParent(), point, utilFrame);
+        point = SwingUtilities.convertPoint(component.getParent(), point, coordinateRoot);
 
         final double DROP_SIZE = 2;
 
@@ -211,7 +210,7 @@ public class FloatingOverlay {
 
         location = componentAt.getLocation();
         SwingUtilities.convertPointToScreen(location, tabbedPane);
-        SwingUtilities.convertPointFromScreen(location, utilFrame);
+        SwingUtilities.convertPointFromScreen(location, coordinateRoot);
 
         size = componentAt.getSize();
 
@@ -222,7 +221,7 @@ public class FloatingOverlay {
 
             Point p = new Point(targetTab.x, targetTab.y);
             SwingUtilities.convertPointToScreen(p, tabbedPane);
-            SwingUtilities.convertPointFromScreen(p, utilFrame);
+            SwingUtilities.convertPointFromScreen(p, coordinateRoot);
 
             targetTab.x = p.x;
             targetTab.y = p.y;
@@ -244,7 +243,7 @@ public class FloatingOverlay {
                 targetTab.width = Math.abs((tabPoint.x + tabbedPane.getWidth()) - (boundsPoint.x + targetTab.width));
             }
 
-            SwingUtilities.convertPointFromScreen(boundsPoint, utilFrame);
+            SwingUtilities.convertPointFromScreen(boundsPoint, coordinateRoot);
 
             targetTab.x = boundsPoint.x + widthToAdd;
             targetTab.y = boundsPoint.y;
@@ -273,12 +272,12 @@ public class FloatingOverlay {
         JComponent component = DockingInternal.get(docking).getWrapper(targetDockable).getDisplayPanel();
 
         Point framePoint = new Point(mousePosOnScreen);
-        SwingUtilities.convertPointFromScreen(framePoint, utilFrame);
+        SwingUtilities.convertPointFromScreen(framePoint, coordinateRoot);
 
         Point point = (component).getLocation();
         Dimension size = component.getSize();
 
-        point = SwingUtilities.convertPoint(component.getParent(), point, utilFrame);
+        point = SwingUtilities.convertPoint(component.getParent(), point, coordinateRoot);
 
         double horizontalPct = (framePoint.x - point.x) / (double) size.width;
         double verticalPct = (framePoint.y - point.y) / (double) size.height;

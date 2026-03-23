@@ -107,7 +107,7 @@ public class DisplayPanelFloatListener extends FloatListener {
     }
 
     @Override
-    protected boolean dropPanel(FloatUtilsFrame utilsFrame, JFrame floatingFrame, Point mousePosOnScreen) {
+    protected boolean dropPanel(FloatUtils utilsFrame, JFrame floatingFrame, Point mousePosOnScreen) {
         DockableWrapper floatingDockable = panel.getWrapper();
 
         if (utilsFrame != null) {

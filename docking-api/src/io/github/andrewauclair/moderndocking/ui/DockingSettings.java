@@ -71,6 +71,8 @@ public class DockingSettings {
     private static final Color defaultHeaderBackground = Color.white;
     private static final Color defaultHeaderForeground = Color.black;
 
+    private static boolean useLayeredPaneOverlay = false;
+
     private static String currentHandleBackground = themeHandleBackground;
     private static String currentHandleForeground = themeHandleForeground;
     private static String currentHighlightSelectedBorder = themeHighlighterSelectedBorder;
@@ -83,6 +85,29 @@ public class DockingSettings {
      * Unused. All methods are static
      */
     private DockingSettings() {
+    }
+
+    /**
+     * Override the automatic transparency detection and force use of the JLayeredPane-based
+     * overlay. Set this before registering any docking windows.
+     * <p>
+     * When {@code true}, the layered-pane overlay is always used regardless of what the
+     * {@code TransparencyProbe} reports. When {@code false} (the default), the overlay
+     * strategy is chosen automatically based on platform transparency support.
+     *
+     * @param use true to force the layered-pane overlay
+     */
+    public static void setUseLayeredPaneOverlay(boolean use) {
+        useLayeredPaneOverlay = use;
+    }
+
+    /**
+     * Returns whether the JLayeredPane-based overlay has been explicitly requested.
+     *
+     * @return true if the layered-pane overlay is forced on
+     */
+    public static boolean isUseLayeredPaneOverlay() {
+        return useLayeredPaneOverlay;
     }
 
     /**

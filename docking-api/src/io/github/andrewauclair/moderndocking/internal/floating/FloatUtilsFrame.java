@@ -48,7 +48,7 @@ import javax.swing.SwingUtilities;
 /**
  * A special invisible frame that's used to provide docking handles and overlays
  */
-public class FloatUtilsFrame extends JFrame implements DragSourceMotionListener, ComponentListener, WindowListener {
+public class FloatUtilsFrame extends JFrame implements FloatUtils, DragSourceMotionListener, ComponentListener, WindowListener {
     /**
      * The window this utility frame is tied to
      */
