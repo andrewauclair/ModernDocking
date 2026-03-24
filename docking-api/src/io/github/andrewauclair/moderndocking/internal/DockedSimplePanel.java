@@ -149,10 +149,6 @@ public class DockedSimplePanel extends DockingPanel {
 
 			tabbedPanel.addPanel(wrapper);
 
-			wrapper.setHidden(true);
-
-			DockingListeners.fireHiddenEvent(this.dockable.getDockable());
-
 			parent.replaceChild(this, tabbedPanel);
 		}
 		else {
