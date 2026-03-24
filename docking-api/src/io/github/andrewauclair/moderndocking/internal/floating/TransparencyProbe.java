@@ -21,9 +21,18 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.internal.floating;
 
-import java.awt.*;
+import java.awt.AWTException;
+import java.awt.Color;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.IllegalComponentStateException;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Window;
 import java.lang.reflect.InvocationTargetException;
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 /**
  * Probes at startup whether the platform supports per-pixel window translucency.

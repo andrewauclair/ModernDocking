@@ -49,9 +49,9 @@ import javax.swing.SwingUtilities;
  * A {@link FloatUtils} implementation that renders docking handles and the drop overlay on a
  * transparent {@link JPanel} added to the host window's {@link JLayeredPane}.
  * <p>
- * This approach is used on platforms that do not support per-pixel window translucency (e.g.,
- * some Linux/Wayland compositors), where {@link FloatUtilsFrame} cannot make its background
- * transparent.  Because the panel lives inside the host window there is no separate overlay
+ * This approach is used on platforms that do not support per-pixel window translucency,
+ * where {@link FloatUtilsFrame} cannot make its background transparent.
+ * Because the panel lives inside the host window there is no separate overlay
  * window and no need for z-order management.
  */
 class FloatUtilsLayer implements FloatUtils, DragSourceMotionListener, ComponentListener {
