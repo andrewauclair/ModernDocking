@@ -68,6 +68,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	 */
 	private final List<DockableWrapper> panels = new ArrayList<>();
 
+	private int previousSelectedIndex = -1;
+
 	/**
 	 * The listener using this tabbed panel
 	 */
@@ -201,6 +203,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 		tabs.addChangeListener(this);
 
+		previousSelectedIndex = tabs.getSelectedIndex();
+
 		floatListener = new DockedTabbedPanelFloatListener(docking, this, tabs);
 	}
 
@@ -287,10 +291,19 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			dockable.getFloatListener().removeAlternateDragSource(listeners.get(index));
 			listeners.remove(index);
 
+			// adjust our previously selected tab value based on the index we're about to remove
+			if (index < previousSelectedIndex) {
+				previousSelectedIndex--;
+			}
+			else if (index == previousSelectedIndex) {
+				previousSelectedIndex = -1;
+			}
+
 			panels.remove(dockable);
 			tabs.remove(dockable.getDisplayPanel());
 
 			dockable.setParent(null);
+			dockable.setHidden(false);
 		}
 	}
 
@@ -397,7 +410,14 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		removePanel(DockingInternal.get(docking).getWrapper(dockable));
 
 		if (!Floating.isFloatingTabbedPane() && !Settings.alwaysDisplayTabsMode() && panels.size() == 1 && parent != null && panels.get(0).getDockable().getTabPreference() != DockableTabPreference.TOP) {
-			parent.replaceChild(this, new DockedSimplePanel(docking, panels.get(0), anchor));
+			DockableWrapper remaining = panels.get(0);
+
+			if (remaining.isHidden()) {
+				remaining.setHidden(false);
+				DockingListeners.fireShownEvent(remaining.getDockable());
+			}
+
+			parent.replaceChild(this, new DockedSimplePanel(docking, remaining, anchor));
 		}
 
 		// protect against bad instances when failing to restore a layout
@@ -484,25 +504,25 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	public void stateChanged(ChangeEvent e) {
 		docking.getAppState().persist();
 
-		if (tabs.getSelectedIndex() == -1) {
+		int selectedTab = tabs.getSelectedIndex();
+
+		if (selectedTab == -1) {
 			return;
 		}
 
-		int selectedTab = tabs.getSelectedIndex();
-		DockableWrapper panel = panels.get(selectedTab);
-
 		if (!Floating.isFloating()) {
-			panel.setHidden(true);
-			DockingListeners.fireHiddenEvent(panel.getDockable());
-		}
+			if (previousSelectedIndex != -1 && previousSelectedIndex < panels.size() && previousSelectedIndex != selectedTab) {
+				DockableWrapper previous = panels.get(previousSelectedIndex);
+				previous.setHidden(true);
+				DockingListeners.fireHiddenEvent(previous.getDockable());
+			}
 
-		selectedTab = tabs.getSelectedIndex();
-
-		if (selectedTab != -1) {
-			panel = panels.get(selectedTab);
+			DockableWrapper panel = panels.get(selectedTab);
 			panel.setHidden(false);
 			DockingListeners.fireShownEvent(panel.getDockable());
 		}
+
+		previousSelectedIndex = selectedTab;
 	}
 
 	/**
