@@ -108,6 +108,11 @@ public class RootDockingHandles {
             pinEast.setVisible(verticalAllowed && root.isLocationSupported(ToolbarLocation.EAST));
             pinSouth.setVisible(southAllowed && root.isLocationSupported(ToolbarLocation.SOUTH));
         }
+        else {
+            pinWest.setVisible(false);
+            pinEast.setVisible(false);
+            pinSouth.setVisible(false);
+        }
     }
 
     /**
