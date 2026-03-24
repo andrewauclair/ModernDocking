@@ -231,7 +231,12 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 	}
 
 	private void checkForFrameSwitch(Point mousePosOnScreen) {
-		// find the frame at our current position
+        if (currentUtilWindow != null && currentUtilWindow.getBounds().contains(mousePosOnScreen)) {
+            // still in the same window, don't check for a root at screen position
+            return;
+        }
+
+        // find the frame at our current position
 		Window frame = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
 
 		if (frame != currentUtilWindow) {
