@@ -37,7 +37,7 @@ import javax.swing.JFrame;
  * the host window's {@code JLayeredPane}, which works on platforms that do not support per-pixel
  * window translucency.
  */
-interface FloatUtils {
+public interface FloatUtils {
 
     /**
      * Activate the overlay for a new drag operation.

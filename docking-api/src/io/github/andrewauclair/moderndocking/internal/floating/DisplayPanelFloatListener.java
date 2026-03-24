@@ -107,10 +107,10 @@ public class DisplayPanelFloatListener extends FloatListener {
     }
 
     @Override
-    protected boolean dropPanel(FloatUtils utilsFrame, JFrame floatingFrame, Point mousePosOnScreen) {
+    protected boolean dropPanel(FloatUtils utils, JFrame floatingFrame, Point mousePosOnScreen) {
         DockableWrapper floatingDockable = panel.getWrapper();
 
-        if (utilsFrame != null) {
+        if (utils != null) {
             Window targetWindow = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
             InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(docking, targetWindow);
 
@@ -121,16 +121,16 @@ public class DisplayPanelFloatListener extends FloatListener {
                 return false;
             }
 
-            if (utilsFrame.isOverRootHandle()) {
-                docking.dock(floatingDockable.getDockable(), targetWindow, utilsFrame.rootHandleRegion());
+            if (utils.isOverRootHandle()) {
+                docking.dock(floatingDockable.getDockable(), targetWindow, utils.rootHandleRegion());
             }
-            else if (utilsFrame.isOverDockableHandle()) {
-                docking.dock(floatingDockable.getDockable(), dockableAtPos, utilsFrame.dockableHandle());
+            else if (utils.isOverDockableHandle()) {
+                docking.dock(floatingDockable.getDockable(), dockableAtPos, utils.dockableHandle());
             }
-            else if (utilsFrame.isOverPinHandle()) {
-                docking.autoHideDockable(floatingDockable.getDockable(), utilsFrame.pinRegion(), targetWindow);
+            else if (utils.isOverPinHandle()) {
+                docking.autoHideDockable(floatingDockable.getDockable(), utils.pinRegion(), targetWindow);
             }
-            else if (utilsFrame.isOverTab()) {
+            else if (utils.isOverTab()) {
                 CustomTabbedPane tabbedPane = DockingComponentUtils.findTabbedPaneAtPos(mousePosOnScreen, targetWindow);
 
                 DockedTabbedPanel dockingTabPanel = (DockedTabbedPanel) DockingComponentUtils.findDockingPanelAtScreenPos(mousePosOnScreen, targetWindow);
@@ -152,7 +152,7 @@ public class DisplayPanelFloatListener extends FloatListener {
             }
             else if (dockableAtPos != null) {
                 // docking to a dockable region
-                DockingRegion region = utilsFrame.getDockableRegion(dockableAtPos, panel.getWrapper().getDockable(), mousePosOnScreen);
+                DockingRegion region = utils.getDockableRegion(dockableAtPos, panel.getWrapper().getDockable(), mousePosOnScreen);
 
                 docking.dock(floatingDockable.getDockable(), dockableAtPos, region);
             }
