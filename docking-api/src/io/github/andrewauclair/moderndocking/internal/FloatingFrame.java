@@ -187,6 +187,8 @@ public class FloatingFrame extends JFrame {
 
 	private void finalizeSize(Dockable dockable, Point onScreenPoint, Dimension onScreenSize) {
 		SwingUtilities.invokeLater(() -> {
+			validate();
+
 			// adjust the floating frame such that the dockable is in the correct location
 			DisplayPanel displayPanel = DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel();
 
