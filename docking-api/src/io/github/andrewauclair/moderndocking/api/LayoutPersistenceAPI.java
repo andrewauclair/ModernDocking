@@ -381,22 +381,28 @@ public class LayoutPersistenceAPI {
     }
 
     private void writeSplitNodeToFile(XMLStreamWriter writer, DockingSplitPanelNode node) throws XMLStreamException {
+        double[] positions = node.getDividerPositions();
+        java.util.List<DockingLayoutNode> nodeChildren = node.getChildren();
+
         writer.writeStartElement("split");
         writer.writeAttribute("orientation", String.valueOf(node.getOrientation()));
-        writer.writeAttribute("divider-proportion", String.valueOf(node.getDividerProportion()));
+        writer.writeAttribute("child-count", String.valueOf(nodeChildren.size()));
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < positions.length; i++) {
+            if (i > 0) sb.append(',');
+            sb.append(positions[i]);
+        }
+        writer.writeAttribute("divider-positions", sb.toString());
         writer.writeCharacters(NL);
 
-        writer.writeStartElement("left");
-        writer.writeCharacters(NL);
-        writeNodeToFile(writer, node.getLeft());
-        writer.writeEndElement();
-        writer.writeCharacters(NL);
-
-        writer.writeStartElement("right");
-        writer.writeCharacters(NL);
-        writeNodeToFile(writer, node.getRight());
-        writer.writeEndElement();
-        writer.writeCharacters(NL);
+        for (int i = 0; i < nodeChildren.size(); i++) {
+            writer.writeStartElement("child-" + i);
+            writer.writeCharacters(NL);
+            writeNodeToFile(writer, nodeChildren.get(i));
+            writer.writeEndElement();
+            writer.writeCharacters(NL);
+        }
 
         writer.writeEndElement();
         writer.writeCharacters(NL);
@@ -688,37 +694,59 @@ public class LayoutPersistenceAPI {
     }
 
     private DockingSplitPanelNode readSplitNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
+        int orientation = Integer.parseInt(reader.getAttributeValue(null, "orientation"));
+        String anchor = reader.getAttributeValue(null, "anchor");
+        if (anchor == null) anchor = "";
+
+        // New format: child-count + divider-positions
+        String childCountStr = reader.getAttributeValue(null, "child-count");
+        String dividerPositionsStr = reader.getAttributeValue(null, "divider-positions");
+
+        if (childCountStr != null && dividerPositionsStr != null) {
+            int childCount = Integer.parseInt(childCountStr);
+            String[] posTokens = dividerPositionsStr.split(",");
+            double[] positions = new double[posTokens.length];
+            for (int i = 0; i < posTokens.length; i++) {
+                positions[i] = Math.max(0.0, Math.min(1.0, Double.parseDouble(posTokens[i].trim())));
+            }
+
+            java.util.Map<Integer, DockingLayoutNode> childMap = new java.util.TreeMap<>();
+            while (reader.hasNext()) {
+                int next = reader.nextTag();
+                if (next == XMLStreamConstants.START_ELEMENT) {
+                    String name = reader.getLocalName();
+                    if (name.startsWith("child-")) {
+                        int idx = Integer.parseInt(name.substring(6));
+                        childMap.put(idx, readNodeFromFile(reader, name));
+                    }
+                } else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("split")) {
+                    break;
+                }
+            }
+
+            java.util.List<DockingLayoutNode> children = new java.util.ArrayList<>();
+            for (int i = 0; i < childCount; i++) {
+                children.add(childMap.get(i));
+            }
+            return new DockingSplitPanelNode(docking, children, orientation, positions, anchor);
+        }
+
+        // Legacy format: left/right + divider-proportion
+        String divPropStr = reader.getAttributeValue(null, "divider-proportion");
+        double dividerProportion = divPropStr != null ? Double.parseDouble(divPropStr) : 0.5;
+        dividerProportion = Math.max(0.0, Math.min(1.0, dividerProportion));
+
         DockingLayoutNode left = null;
         DockingLayoutNode right = null;
-
-        int orientation = Integer.parseInt(reader.getAttributeValue(null, "orientation"));
-        double dividerProportion = Double.parseDouble(reader.getAttributeValue(null, "divider-proportion"));
-        String anchor = reader.getAttributeValue(null, "anchor");
-
-        // anchor didn't always exist, set it to an empty string if it's null
-        if (anchor == null) {
-            anchor = "";
-        }
-
-        if (dividerProportion < 0.0) {
-            dividerProportion = 0.0;
-        }
-        else if (dividerProportion > 1.0) {
-            dividerProportion = 1.0;
-        }
-
         while (reader.hasNext()) {
             int next = reader.nextTag();
-
             if (next == XMLStreamConstants.START_ELEMENT) {
                 if (reader.getLocalName().equals("left")) {
                     left = readNodeFromFile(reader, "left");
-                }
-                else if (reader.getLocalName().equals("right")) {
+                } else if (reader.getLocalName().equals("right")) {
                     right = readNodeFromFile(reader, "right");
                 }
-            }
-            else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("split")) {
+            } else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("split")) {
                 break;
             }
         }
