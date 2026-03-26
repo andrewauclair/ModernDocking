@@ -286,6 +286,8 @@ public class DockedSplitPanel extends DockingPanel {
                 }
             }
         }
+        revalidate();
+        repaint();
     }
 
     private static int clamp(int v, int lo, int hi) {
@@ -470,7 +472,7 @@ public class DockedSplitPanel extends DockingPanel {
             Point p = e.getLocationOnScreen();
             int current = isHoriz() ? p.x : p.y;
             int delta = current - dragStartScreen;
-            int total = isHoriz() ? getWidth() : getHeight();
+            int total = isHoriz() ? DockedSplitPanel.this.getWidth() : DockedSplitPanel.this.getHeight();
             if (total <= 0) return;
 
             double newPos = dragStartPosition + (double) delta / total;
