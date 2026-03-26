@@ -30,8 +30,6 @@ import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -86,17 +84,10 @@ public class DockedSplitPanel extends DockingPanel {
         this.window = window;
         this.anchor = anchor;
         setLayout(null);
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                layoutChildren();
-            }
-        });
     }
 
     @Override
-    public void addNotify() {
-        super.addNotify();
+    public void doLayout() {
         layoutChildren();
     }
 
@@ -286,8 +277,10 @@ public class DockedSplitPanel extends DockingPanel {
                 }
             }
         }
-        revalidate();
-        repaint();
+        if (!docking.getAppState().isPaused()) {
+            revalidate();
+            repaint();
+        }
     }
 
     private static int clamp(int v, int lo, int hi) {

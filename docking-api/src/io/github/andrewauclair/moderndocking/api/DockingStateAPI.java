@@ -142,6 +142,8 @@ public class DockingStateAPI {
      * @param layout Application layout to restore
      */
     public void restoreApplicationLayout(ApplicationLayout layout) {
+        docking.getAppState().setPaused(true);
+
         // get rid of all existing windows and undock all dockables
         Set<Window> windows = new HashSet<>(docking.getRootPanels().keySet());
         for (Window window : windows) {
@@ -154,8 +156,6 @@ public class DockingStateAPI {
                 window.dispose();
             }
         }
-
-        docking.getAppState().setPaused(true);
 
         // setup main frame
         restoreWindowLayout(docking.getMainWindow(), layout.getMainFrameLayout());
@@ -499,14 +499,14 @@ public class DockingStateAPI {
     }
 
     private void restoreProperSplitLocations(RootDockingPanelAPI root) {
-        // DockedSplitPanel drives its own layout via ComponentListener and addNotify(),
-        // so no deferred JSplitPane-style restoration is needed here.
-        SwingUtilities.invokeLater(() -> {
-            if (root instanceof Container) {
-                ((Container) root).revalidate();
-                ((Container) root).repaint();
-            }
-        });
+        // Use validate() (synchronous) rather than revalidate() (deferred) so that
+        // the full layout tree is computed before the EDT task returns.  This ensures
+        // that when Swing processes the accumulated dirty regions it paints the final
+        // correct state instead of an intermediate blank/unsized state.
+        if (root instanceof Container) {
+            ((Container) root).validate();
+            ((Container) root).repaint();
+        }
     }
 
     public void setUserDynamicDockableCreationListener(DynamicDockableCreationListener userDynamicDockableCreation) {
