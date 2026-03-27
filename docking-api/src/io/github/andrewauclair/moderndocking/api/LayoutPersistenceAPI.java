@@ -476,6 +476,9 @@ public class LayoutPersistenceAPI {
      */
     public WindowLayout loadWindowLayoutFromFile(File file) {
         XMLInputFactory factory = XMLInputFactory.newInstance();
+        factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+        factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+
         XMLStreamReader reader;
         try {
             reader = factory.createXMLStreamReader(Files.newInputStream(file.toPath()));
