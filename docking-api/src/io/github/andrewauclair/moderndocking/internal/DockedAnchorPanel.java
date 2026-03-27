@@ -45,7 +45,7 @@ public class DockedAnchorPanel extends DockingPanel {
     /**
      * Parent panel of this simple panel
      */
-    private DockingPanel parent;
+    private DockingPanel dockingParent;
 
     /**
      * Create a new anchor panel to wrap the application anchor
@@ -71,7 +71,7 @@ public class DockedAnchorPanel extends DockingPanel {
 
     @Override
     public void setParent(DockingPanel parent) {
-        this.parent = parent;
+        this.dockingParent = parent;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class DockedAnchorPanel extends DockingPanel {
         // when docking to an anchor we replace the anchor with the new dockable always
         DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 
-        if (parent.getChildren().contains(this)) {
+        if (dockingParent.getChildren().contains(this)) {
             DockingPanel newPanel;
 
             if (Settings.alwaysDisplayTabsMode()) {
@@ -88,7 +88,7 @@ public class DockedAnchorPanel extends DockingPanel {
             else {
                 newPanel = new DockedSimplePanel(docking, wrapper, anchor.getDockable().getPersistentID());
             }
-            parent.replaceChild(this, newPanel);
+            dockingParent.replaceChild(this, newPanel);
         }
         else {
             // find the largest dockable on screen that references this anchor
@@ -98,7 +98,7 @@ public class DockedAnchorPanel extends DockingPanel {
 
     @Override
     public void undock(Dockable dockable) {
-        parent.removeChild(this);
+        dockingParent.removeChild(this);
     }
 
     @Override

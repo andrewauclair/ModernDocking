@@ -72,9 +72,6 @@ public class DockingAPI {
     // this may look unused, but we need to create an instance of it to make it work
     private final ActiveDockableHighlighter activeDockableHighlighter = new ActiveDockableHighlighter(this);
 
-    // map of all the root panels in the application
-//    private  final Map<Window, InternalRootDockingPanel> rootPanels = new HashMap<>();
-
     private final AppStateAPI appState = new AppStateAPI(this);
     private final DockingStateAPI dockingState = new DockingStateAPI(this);
 
@@ -177,7 +174,7 @@ public class DockingAPI {
      * @param dockable Dockable to deregister
      */
     public void deregisterDockable(Dockable dockable) {
-        internals.setDeregistering(this, true);
+        internals.setDeregistering(true);
 
         try {
             // make sure we undock the dockable from the UI before deregistering
@@ -186,7 +183,7 @@ public class DockingAPI {
             internals.deregisterDockable(dockable);
         }
         finally {
-            internals.setDeregistering(this, false);
+            internals.setDeregistering(false);
         }
     }
 
@@ -194,7 +191,7 @@ public class DockingAPI {
      * Deregister all dockables that have been registered. This action will also undock all dockables.
      */
     public void deregisterAllDockables() {
-        internals.setDeregistering(this, true);
+        internals.setDeregistering(true);
 
         try {
             Set<Window> windows = new HashSet<>(getRootPanels().keySet());
@@ -213,7 +210,7 @@ public class DockingAPI {
             }
         }
         finally {
-            internals.setDeregistering(this, false);
+            internals.setDeregistering(false);
         }
     }
 
@@ -590,7 +587,7 @@ public class DockingAPI {
      * @param size The size of the new frame
      */
     public void newWindow(Dockable dockable, Point location, Dimension size) {
-        FloatingFrame frame = new FloatingFrame(this, dockable, location, size, JFrame.NORMAL);
+        FloatingFrame frame = new FloatingFrame(this, dockable, location, size, Frame.NORMAL);
 
         undock(dockable);
         dock(dockable, frame);

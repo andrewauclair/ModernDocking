@@ -24,6 +24,7 @@ package io.github.andrewauclair.moderndocking.internal;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -35,6 +36,9 @@ import javax.swing.SwingUtilities;
  * Custom JTabbedPane to be used by Modern Docking in order to add keyboard shortcuts for moving between tabs
  */
 public class CustomTabbedPane extends JTabbedPane {
+    private static final String PRESS_LEFT = "press-left";
+    private static final String PRESS_RIGHT = "press-right";
+
     /**
      * Create a new instance and configure the keyboard shortcuts
      */
@@ -42,27 +46,27 @@ public class CustomTabbedPane extends JTabbedPane {
         setFocusable(false);
 
         getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK),
-                "press-left"
+                KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.ALT_DOWN_MASK),
+                PRESS_LEFT
         );
 
 
         getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK),
-                "press-right"
+                KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.ALT_DOWN_MASK),
+                PRESS_RIGHT
         );
 
         getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK | KeyEvent.ALT_GRAPH_DOWN_MASK),
-                "press-left"
+                KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.ALT_DOWN_MASK | InputEvent.ALT_GRAPH_DOWN_MASK),
+                PRESS_LEFT
         );
 
         getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK | KeyEvent.ALT_GRAPH_DOWN_MASK),
-                "press-right"
+                KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.ALT_DOWN_MASK | InputEvent.ALT_GRAPH_DOWN_MASK),
+                PRESS_RIGHT
         );
 
-        getActionMap().put("press-left",
+        getActionMap().put(PRESS_LEFT,
                 new AbstractAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -77,7 +81,7 @@ public class CustomTabbedPane extends JTabbedPane {
                 }
         );
 
-        getActionMap().put("press-right",
+        getActionMap().put(PRESS_RIGHT,
                 new AbstractAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -105,8 +109,6 @@ public class CustomTabbedPane extends JTabbedPane {
         // convert the screen mouse position to a position on the tabbed pane
         Point newPoint = new Point(mousePosOnScreen);
         SwingUtilities.convertPointFromScreen(newPoint, this);
-
-        Point d = isTopBottomTabPlacement(getTabPlacement()) ? new Point(1, 0) : new Point(0, 1);
 
         for (int i = 0; i < getTabCount(); i++) {
             Rectangle tab = getBoundsAt(i);

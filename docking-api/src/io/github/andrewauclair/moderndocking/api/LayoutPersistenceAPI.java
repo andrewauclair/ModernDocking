@@ -64,6 +64,25 @@ public class LayoutPersistenceAPI {
     private static final Logger logger = Logger.getLogger(LayoutPersistenceAPI.class.getPackageName());
 
     private static final String NL = "\n";
+
+    private static final String TAG_LAYOUT = "layout";
+    private static final String TAG_UNDOCKED = "undocked";
+    private static final String TAG_APP_LAYOUT = "app-layout";
+    private static final String TAG_SIMPLE = "simple";
+    private static final String TAG_DOCKABLE = "dockable";
+    private static final String TAG_SLIDE_POSITION = "slidePosition";
+    private static final String TAG_PERSISTENT_ID = "persistentID";
+    private static final String TAG_CLASS_NAME = "class-name";
+    private static final String TAG_ANCHOR = "anchor";
+    private static final String TAG_TITLE_TEXT = "title-text";
+    private static final String TAG_TAB_TEXT = "tab-text";
+    private static final String TAG_PROPERTIES = "properties";
+    private static final String TAG_PROPERTY = "property";
+    private static final String TAG_VALUE = "value";
+    private static final String TAG_SPLIT = "split";
+    private static final String TAG_RIGHT = "right";
+    private static final String TAG_LEFT = "left";
+
     private final DockingAPI docking;
 
     private final XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
@@ -91,19 +110,10 @@ public class LayoutPersistenceAPI {
      * @throws DockingLayoutException Thrown if we failed to save the layout to the file
      */
     public void saveLayoutToFile(File file, ApplicationLayout layout) throws DockingLayoutException {
-        // create the file if it doens't exist
-        try {
-            // make sure all the required directories exist
-            if (file.getParentFile() != null) {
-                //noinspection ResultOfMethodCallIgnored
-                file.getParentFile().mkdirs();
-            }
-
+        // make sure all the required directories exist
+        if (file.getParentFile() != null) {
             //noinspection ResultOfMethodCallIgnored
-            file.createNewFile();
-        }
-        catch (IOException e) {
-            throw new DockingLayoutException(file, DockingLayoutException.FailureType.SAVE, e);
+            file.getParentFile().mkdirs();
         }
 
         try (OutputStream out = Files.newOutputStream(file.toPath())) {
@@ -125,7 +135,7 @@ public class LayoutPersistenceAPI {
 
         writer.writeStartDocument();
         writer.writeCharacters(NL);
-        writer.writeStartElement("app-layout");
+        writer.writeStartElement(TAG_APP_LAYOUT);
 
         saveLayoutToFile(writer, layout.getMainFrameLayout(), true);
 
@@ -133,7 +143,7 @@ public class LayoutPersistenceAPI {
             saveLayoutToFile(writer, frameLayout, false);
         }
 
-        writer.writeStartElement("undocked");
+        writer.writeStartElement(TAG_UNDOCKED);
         writer.writeCharacters(NL);
 
         for (Dockable dockable : DockingInternal.get(docking).getDockables()) {
@@ -184,13 +194,13 @@ public class LayoutPersistenceAPI {
             while (reader.hasNext()) {
                 int next = reader.nextTag();
 
-                if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("layout")) {
+                if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals(TAG_LAYOUT)) {
                     layout.addFrame(readLayoutFromReader(reader));
                 }
-                else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("undocked")) {
+                else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals(TAG_UNDOCKED)) {
                     readUndocked(reader);
                 }
-                else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("app-layout")) {
+                else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals(TAG_APP_LAYOUT)) {
                     break;
                 }
             }
@@ -208,7 +218,7 @@ public class LayoutPersistenceAPI {
             int next = reader.nextTag();
 
             if (next == XMLStreamConstants.START_ELEMENT) {
-                if (reader.getLocalName().equals("simple")) {
+                if (reader.getLocalName().equals(TAG_SIMPLE)) {
 
                     DockingSimplePanelNode node = readSimpleNodeFromFile(reader);
 
@@ -221,7 +231,7 @@ public class LayoutPersistenceAPI {
                     }
                 }
             }
-            else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("undocked")) {
+            else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals(TAG_UNDOCKED)) {
                 break;
             }
         }
@@ -274,7 +284,7 @@ public class LayoutPersistenceAPI {
 
     private void saveLayoutToFile(XMLStreamWriter writer, WindowLayout layout, boolean isMainFrame) throws XMLStreamException {
         writer.writeCharacters(NL);
-        writer.writeStartElement("layout");
+        writer.writeStartElement(TAG_LAYOUT);
         writer.writeAttribute("main-frame", String.valueOf(isMainFrame));
         writer.writeAttribute("location", layout.getLocation().x + "," + layout.getLocation().y);
         writer.writeAttribute("size", layout.getSize().width + "," + layout.getSize().height);
@@ -289,9 +299,9 @@ public class LayoutPersistenceAPI {
         writer.writeCharacters(NL);
 
         for (String id : layout.getWestAutoHideToolbarIDs()) {
-            writer.writeStartElement("dockable");
+            writer.writeStartElement(TAG_DOCKABLE);
             writer.writeAttribute("id", id);
-            writer.writeAttribute("slidePosition", String.valueOf(layout.slidePosition(id)));
+            writer.writeAttribute(TAG_SLIDE_POSITION, String.valueOf(layout.slidePosition(id)));
             writer.writeEndElement();
             writer.writeCharacters(NL);
         }
@@ -302,9 +312,9 @@ public class LayoutPersistenceAPI {
         writer.writeCharacters(NL);
 
         for (String id : layout.getEastAutoHideToolbarIDs()) {
-            writer.writeStartElement("dockable");
+            writer.writeStartElement(TAG_DOCKABLE);
             writer.writeAttribute("id", id);
-            writer.writeAttribute("slidePosition", String.valueOf(layout.slidePosition(id)));
+            writer.writeAttribute(TAG_SLIDE_POSITION, String.valueOf(layout.slidePosition(id)));
             writer.writeEndElement();
             writer.writeCharacters(NL);
         }
@@ -315,9 +325,9 @@ public class LayoutPersistenceAPI {
         writer.writeCharacters(NL);
 
         for (String id : layout.getSouthAutoHideToolbarIDs()) {
-            writer.writeStartElement("dockable");
+            writer.writeStartElement(TAG_DOCKABLE);
             writer.writeAttribute("id", id);
-            writer.writeAttribute("slidePosition", String.valueOf(layout.slidePosition(id)));
+            writer.writeAttribute(TAG_SLIDE_POSITION, String.valueOf(layout.slidePosition(id)));
             writer.writeEndElement();
             writer.writeCharacters(NL);
         }
@@ -348,27 +358,25 @@ public class LayoutPersistenceAPI {
 
     private void writeSimpleNodeToFile(XMLStreamWriter writer, DockingSimplePanelNode node) throws XMLStreamException {
         writer.writeStartElement("simple");
-        writer.writeAttribute("persistentID", node.getPersistentID());
-        writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(node.getPersistentID()).getClass().getTypeName());
+        writer.writeAttribute(TAG_PERSISTENT_ID, node.getPersistentID());
+        writer.writeAttribute(TAG_CLASS_NAME, DockingInternal.get(docking).getDockable(node.getPersistentID()).getClass().getTypeName());
         if (node.getAnchor() != null) {
-            writer.writeAttribute("anchor", node.getAnchor());
+            writer.writeAttribute(TAG_ANCHOR, node.getAnchor());
         }
-        writer.writeAttribute("title-text", node.getTitleText());
-        writer.writeAttribute("tab-text", node.getTabText());
+        writer.writeAttribute(TAG_TITLE_TEXT, node.getTitleText());
+        writer.writeAttribute(TAG_TAB_TEXT, node.getTabText());
         writer.writeCharacters(NL);
 
-        writer.writeStartElement("properties");
+        writer.writeStartElement(TAG_PROPERTIES);
 
         Map<String, Property> properties = node.getProperties();
 
-        for (String key : properties.keySet()) {
-            Property value = properties.get(key);
-
+        for (Property value : properties.values()) {
             if (value != null && !value.isNull()) {
-                writer.writeStartElement("property");
+                writer.writeStartElement(TAG_PROPERTY);
                 writer.writeAttribute("name", value.getName());
                 writer.writeAttribute("type", value.getType().getSimpleName());
-                writer.writeAttribute("value", value.toString());
+                writer.writeAttribute(TAG_VALUE, value.toString());
                 writer.writeEndElement();
             }
         }
@@ -381,18 +389,18 @@ public class LayoutPersistenceAPI {
     }
 
     private void writeSplitNodeToFile(XMLStreamWriter writer, DockingSplitPanelNode node) throws XMLStreamException {
-        writer.writeStartElement("split");
+        writer.writeStartElement(TAG_SPLIT);
         writer.writeAttribute("orientation", String.valueOf(node.getOrientation()));
         writer.writeAttribute("divider-proportion", String.valueOf(node.getDividerProportion()));
         writer.writeCharacters(NL);
 
-        writer.writeStartElement("left");
+        writer.writeStartElement(TAG_LEFT);
         writer.writeCharacters(NL);
         writeNodeToFile(writer, node.getLeft());
         writer.writeEndElement();
         writer.writeCharacters(NL);
 
-        writer.writeStartElement("right");
+        writer.writeStartElement(TAG_RIGHT);
         writer.writeCharacters(NL);
         writeNodeToFile(writer, node.getRight());
         writer.writeEndElement();
@@ -408,40 +416,38 @@ public class LayoutPersistenceAPI {
 
         writer.writeStartElement("selectedTab");
         Dockable selectedTab = DockingInternal.get(docking).getDockable(node.getSelectedTabID());
-        writer.writeAttribute("class-name", selectedTab.getClass().getTypeName());
-        writer.writeAttribute("persistentID", node.getSelectedTabID());
-        writer.writeAttribute("anchor", node.getAnchor());
-        writer.writeAttribute("title-text", selectedTab.getTitleText());
-        writer.writeAttribute("tab-text", selectedTab.getTabText());
+        writer.writeAttribute(TAG_CLASS_NAME, selectedTab.getClass().getTypeName());
+        writer.writeAttribute(TAG_PERSISTENT_ID, node.getSelectedTabID());
+        writer.writeAttribute(TAG_ANCHOR, node.getAnchor());
+        writer.writeAttribute(TAG_TITLE_TEXT, selectedTab.getTitleText());
+        writer.writeAttribute(TAG_TAB_TEXT, selectedTab.getTabText());
         writer.writeCharacters(NL);
         writer.writeEndElement();
         writer.writeCharacters(NL);
 
         for (DockingSimplePanelNode simpleNode : node.getPersistentIDs()) {
             writer.writeStartElement("tab");
-            writer.writeAttribute("persistentID", simpleNode.getPersistentID());
-            writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(simpleNode.getPersistentID()).getClass().getTypeName());
-            writer.writeAttribute("anchor", simpleNode.getAnchor());
-            writer.writeAttribute("title-text", simpleNode.getTitleText());
-            writer.writeAttribute("tab-text", simpleNode.getTabText());
+            writer.writeAttribute(TAG_PERSISTENT_ID, simpleNode.getPersistentID());
+            writer.writeAttribute(TAG_CLASS_NAME, DockingInternal.get(docking).getDockable(simpleNode.getPersistentID()).getClass().getTypeName());
+            writer.writeAttribute(TAG_ANCHOR, simpleNode.getAnchor());
+            writer.writeAttribute(TAG_TITLE_TEXT, simpleNode.getTitleText());
+            writer.writeAttribute(TAG_TAB_TEXT, simpleNode.getTabText());
             writer.writeCharacters(NL);
 
-            writer.writeStartElement("properties");
+            writer.writeStartElement(TAG_PROPERTIES);
 
             Map<String, Property> properties = simpleNode.getProperties();
 
-            for (String key : properties.keySet()) {
-                Property value = properties.get(key);
-
-                if (value != null) {
-                    writer.writeStartElement("property");
+            for (Property value : properties.values()) {
+                if (value != null && !value.isNull()) {
+                    writer.writeStartElement(TAG_PROPERTY);
                     writer.writeAttribute("name", value.getName());
                     writer.writeAttribute("type", value.getType().getSimpleName());
                     if (value.toString() == null) {
-                        writer.writeAttribute("value", "");
+                        writer.writeAttribute(TAG_VALUE, "");
                     }
                     else {
-                        writer.writeAttribute("value", value.toString());
+                        writer.writeAttribute(TAG_VALUE, value.toString());
                     }
                     writer.writeEndElement();
                 }
@@ -459,9 +465,9 @@ public class LayoutPersistenceAPI {
     }
 
     private void writeAnchorNodeToFile(XMLStreamWriter writer, DockingAnchorPanelNode node) throws XMLStreamException {
-        writer.writeStartElement("anchor");
-        writer.writeAttribute("persistentID", node.getPersistentID());
-        writer.writeAttribute("class-name", DockingInternal.get(docking).getDockable(node.getPersistentID()).getClass().getTypeName());
+        writer.writeStartElement(TAG_ANCHOR);
+        writer.writeAttribute(TAG_PERSISTENT_ID, node.getPersistentID());
+        writer.writeAttribute(TAG_CLASS_NAME, DockingInternal.get(docking).getDockable(node.getPersistentID()).getClass().getTypeName());
         writer.writeCharacters(NL);
 
         writer.writeEndElement();
@@ -558,10 +564,10 @@ public class LayoutPersistenceAPI {
             int next = reader.nextTag();
 
             if (next == XMLStreamConstants.START_ELEMENT) {
-                if (reader.getLocalName().equals("dockable")) {
+                if (reader.getLocalName().equals(TAG_DOCKABLE)) {
                     ToolbarDockable dockable = new ToolbarDockable();
                     dockable.id = reader.getAttributeValue(null, "id");
-                    String slidePosition = reader.getAttributeValue(null, "slidePosition");
+                    String slidePosition = reader.getAttributeValue(null, TAG_SLIDE_POSITION);
 
                     if (slidePosition != null) {
                         dockable.slidePosition = Double.parseDouble(slidePosition);
@@ -585,13 +591,13 @@ public class LayoutPersistenceAPI {
                 if (reader.getLocalName().equals("simple")) {
                     node = readSimpleNodeFromFile(reader);
                 }
-                else if (reader.getLocalName().equals("split")) {
+                else if (reader.getLocalName().equals(TAG_SPLIT)) {
                     node = readSplitNodeFromFile(reader);
                 }
                 else if (reader.getLocalName().equals("tabbed")) {
                     node = readTabNodeFromFile(reader);
                 }
-                else if (reader.getLocalName().equals("anchor")) {
+                else if (reader.getLocalName().equals(TAG_ANCHOR)) {
                     node = readAnchorNodeFromFile(reader);
                 }
             }
@@ -603,11 +609,11 @@ public class LayoutPersistenceAPI {
     }
 
     private DockingSimplePanelNode readSimpleNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
-        String persistentID = reader.getAttributeValue(null, "persistentID");
-        String className = reader.getAttributeValue(null, "class-name");
-        String anchor = reader.getAttributeValue(null, "anchor");
-        String titleText = reader.getAttributeValue(null, "title-text");
-        String tabText = reader.getAttributeValue(null, "tab-text");
+        String persistentID = reader.getAttributeValue(null, TAG_PERSISTENT_ID);
+        String className = reader.getAttributeValue(null, TAG_CLASS_NAME);
+        String anchor = reader.getAttributeValue(null, TAG_ANCHOR);
+        String titleText = reader.getAttributeValue(null, TAG_TITLE_TEXT);
+        String tabText = reader.getAttributeValue(null, TAG_TAB_TEXT);
 
         // class name didn't always exist, set it to an empty string if it's null
         if (className == null) {
@@ -635,7 +641,7 @@ public class LayoutPersistenceAPI {
             int next = reader.nextTag();
 
             if (next == XMLStreamConstants.START_ELEMENT) {
-                if (reader.getLocalName().equals("properties")) {
+                if (reader.getLocalName().equals(TAG_PROPERTIES)) {
                     // old style of properties from before 0.12.0
                     if (reader.getAttributeCount() != 0) {
                         DockableProperties.setLoadingLegacyFile(true);
@@ -651,7 +657,7 @@ public class LayoutPersistenceAPI {
                         while (reader.hasNext()) {
                             next = reader.nextTag();
 
-                            if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("property")) {
+                            if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals(TAG_PROPERTY)) {
                                 String property = null;
                                 String type = null;
                                 String value = null;
@@ -666,7 +672,7 @@ public class LayoutPersistenceAPI {
                                         case "type":
                                             type = reader.getAttributeValue(i);
                                             break;
-                                        case "value":
+                                        case TAG_VALUE:
                                             value = reader.getAttributeValue(i);
                                             break;
                                     }
@@ -676,14 +682,14 @@ public class LayoutPersistenceAPI {
                                     properties.put(parsedProperty.getName(), parsedProperty);
                                 }
                             }
-                            else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("properties")) {
+                            else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals(TAG_PROPERTIES)) {
                                 break;
                             }
                         }
                     }
                 }
             }
-            if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("properties")) {
+            if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals(TAG_PROPERTIES)) {
                 break;
             }
         }
@@ -696,7 +702,7 @@ public class LayoutPersistenceAPI {
 
         int orientation = Integer.parseInt(reader.getAttributeValue(null, "orientation"));
         double dividerProportion = Double.parseDouble(reader.getAttributeValue(null, "divider-proportion"));
-        String anchor = reader.getAttributeValue(null, "anchor");
+        String anchor = reader.getAttributeValue(null, TAG_ANCHOR);
 
         // anchor didn't always exist, set it to an empty string if it's null
         if (anchor == null) {
@@ -714,14 +720,14 @@ public class LayoutPersistenceAPI {
             int next = reader.nextTag();
 
             if (next == XMLStreamConstants.START_ELEMENT) {
-                if (reader.getLocalName().equals("left")) {
-                    left = readNodeFromFile(reader, "left");
+                if (reader.getLocalName().equals(TAG_LEFT)) {
+                    left = readNodeFromFile(reader, TAG_LEFT);
                 }
-                else if (reader.getLocalName().equals("right")) {
-                    right = readNodeFromFile(reader, "right");
+                else if (reader.getLocalName().equals(TAG_RIGHT)) {
+                    right = readNodeFromFile(reader, TAG_RIGHT);
                 }
             }
-            else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("split")) {
+            else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals(TAG_SPLIT)) {
                 break;
             }
         }
@@ -738,12 +744,12 @@ public class LayoutPersistenceAPI {
             int next = reader.nextTag();
 
             if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("selectedTab")) {
-                String persistentID = reader.getAttributeValue(null, "persistentID");
-                String className = reader.getAttributeValue(null, "class-name");
-                anchor = reader.getAttributeValue(null, "anchor");
+                String persistentID = reader.getAttributeValue(null, TAG_PERSISTENT_ID);
+                String className = reader.getAttributeValue(null, TAG_CLASS_NAME);
+                anchor = reader.getAttributeValue(null, TAG_ANCHOR);
 
-                String titleText = reader.getAttributeValue(null, "title-text");
-                String tabText = reader.getAttributeValue(null, "tab-text");
+                String titleText = reader.getAttributeValue(null, TAG_TITLE_TEXT);
+                String tabText = reader.getAttributeValue(null, TAG_TAB_TEXT);
 
                 // class name didn't always exist, set it to an empty string if it's null
                 if (className == null) {
@@ -761,12 +767,12 @@ public class LayoutPersistenceAPI {
                 node = new DockingTabPanelNode(docking, persistentID, className, anchor, titleText, tabText);
             }
             else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("tab")) {
-                currentPersistentID = reader.getAttributeValue(null, "persistentID");
-                String className = reader.getAttributeValue(null, "class-name");
-                anchor = reader.getAttributeValue(null, "anchor");
+                currentPersistentID = reader.getAttributeValue(null, TAG_PERSISTENT_ID);
+                String className = reader.getAttributeValue(null, TAG_CLASS_NAME);
+                anchor = reader.getAttributeValue(null, TAG_ANCHOR);
 
-                String titleText = reader.getAttributeValue(null, "title-text");
-                String tabText = reader.getAttributeValue(null, "tab-text");
+                String titleText = reader.getAttributeValue(null, TAG_TITLE_TEXT);
+                String tabText = reader.getAttributeValue(null, TAG_TAB_TEXT);
 
                 // class name didn't always exist, set it to an empty string if it's null
                 if (className == null) {
@@ -786,7 +792,7 @@ public class LayoutPersistenceAPI {
                     node.addTab(currentPersistentID, className, anchor, titleText, tabText);
                 }
             }
-            else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("properties")) {
+            else if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals(TAG_PROPERTIES)) {
                 Map<String, Property> properties = new HashMap<>();
 
                 // old style of properties from before 0.12.0
@@ -804,7 +810,7 @@ public class LayoutPersistenceAPI {
                     while (reader.hasNext()) {
                         next = reader.nextTag();
 
-                        if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("property")) {
+                        if (next == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals(TAG_PROPERTY)) {
                             String property = null;
                             String type = null;
                             String value = null;
@@ -819,7 +825,7 @@ public class LayoutPersistenceAPI {
                                     case "type":
                                         type = reader.getAttributeValue(i);
                                         break;
-                                    case "value":
+                                    case TAG_VALUE:
                                         value = reader.getAttributeValue(i);
                                         break;
                                 }
@@ -829,7 +835,7 @@ public class LayoutPersistenceAPI {
                                 properties.put(parsedProperty.getName(), parsedProperty);
                             }
                         }
-                        else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("properties")) {
+                        else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals(TAG_PROPERTIES)) {
                             break;
                         }
                     }
@@ -847,8 +853,8 @@ public class LayoutPersistenceAPI {
     }
 
     private DockingAnchorPanelNode readAnchorNodeFromFile(XMLStreamReader reader) {
-        String persistentID = reader.getAttributeValue(null, "persistentID");
-        String className = reader.getAttributeValue(null, "class-name");
+        String persistentID = reader.getAttributeValue(null, TAG_PERSISTENT_ID);
+        String className = reader.getAttributeValue(null, TAG_CLASS_NAME);
 
         return new DockingAnchorPanelNode(docking, persistentID, className);
     }
