@@ -3,6 +3,7 @@ name: SonarCloud Analysis (main)
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   sonar:
