@@ -351,7 +351,7 @@ public class DockingInternal {
 			deregisterDockingPanel(window);
 			window.dispose();
 		} else {
-			DockingComponentUtils.updateWindowMinimumSize(window);
+			DockingComponentUtils.updateWindowMinimumSize(docking, window);
 		}
 
 		docking.getAppState().persist();

@@ -27,6 +27,8 @@ import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.settings.Settings;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -118,6 +120,15 @@ public class DockedSimplePanel extends DockingPanel {
 	 */
 	public DockableWrapper getWrapper() {
 		return dockable;
+	}
+
+	@Override
+	public Dimension getMinimumSize() {
+		Insets in = getInsets();
+		Dimension d = dockable.getDisplayPanel().getMinimumSize();
+		int w = Math.max(d.width, 50);
+		int h = Math.max(d.height, 50);
+		return new Dimension(w + in.left + in.right, h + in.top + in.bottom);
 	}
 
 	@Override

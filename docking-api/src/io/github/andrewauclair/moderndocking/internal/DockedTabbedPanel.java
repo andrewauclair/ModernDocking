@@ -33,8 +33,10 @@ import io.github.andrewauclair.moderndocking.ui.DockingSettings;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.dnd.DragGestureListener;
@@ -215,6 +217,32 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		floatListener = null;
 
 		super.removeNotify();
+	}
+
+	@Override
+	public Dimension getMinimumSize() {
+		Insets in = getInsets();
+		int w = 0, h = 0;
+		for (DockableWrapper wrapper : panels) {
+			Dimension dm = wrapper.getDisplayPanel().getMinimumSize();
+			w = Math.max(w, dm.width);
+			h = Math.max(h, dm.height);
+		}
+		// Add room for the tab strip itself
+		boolean topOrBottom = (tabs.getTabPlacement() == JTabbedPane.TOP || tabs.getTabPlacement() == JTabbedPane.BOTTOM);
+		Dimension tabsMin = tabs.getMinimumSize();
+		if (topOrBottom) {
+			w = Math.max(w, tabsMin.width);
+			h += tabsMin.height;
+		}
+		else {
+			w += tabsMin.width;
+			h = Math.max(h, tabsMin.height);
+		}
+		// Floor at a practical minimum so panels with scroll-pane content (min=0) can't be squished to nothing
+		w = Math.max(w, 50);
+		h = Math.max(h, 50);
+		return new Dimension(w + in.left + in.right, h + in.top + in.bottom);
 	}
 
 	/**

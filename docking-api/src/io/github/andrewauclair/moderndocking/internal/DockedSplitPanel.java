@@ -85,6 +85,17 @@ public class DockedSplitPanel extends DockingPanel {
     private final Window window;
     private String anchor;
 
+    /** Guards against re-entrant layoutChildren calls triggered by validate(). */
+    private boolean inLayout = false;
+
+    /**
+     * Set to true while a divider drag is in progress.  During drag, layout uses
+     * absolute pixel positions so that only the two adjacent children resize and
+     * all other panels stay stationary.  Outside of a drag (e.g. window resize),
+     * layout uses stored fractions so that all children resize proportionally.
+     */
+    private static boolean isDragging = false;
+
     /**
      * Create a new DockedSplitPanel.  Children and orientation must be
      * configured before the panel is displayed.
@@ -98,6 +109,12 @@ public class DockedSplitPanel extends DockingPanel {
 
     @Override
     public void doLayout() {
+        layoutChildren();
+    }
+
+    @Override
+    public void setBounds(int x, int y, int width, int height) {
+        super.setBounds(x, y, width, height);
         layoutChildren();
     }
 
@@ -301,6 +318,16 @@ public class DockedSplitPanel extends DockingPanel {
     // ----------------------------------------------------------------
 
     void layoutChildren() {
+        if (inLayout) return;
+        inLayout = true;
+        try {
+            layoutChildrenImpl();
+        } finally {
+            inLayout = false;
+        }
+    }
+
+    private void layoutChildrenImpl() {
         if (children.isEmpty()) return;
         boolean horiz = (orientation == JSplitPane.HORIZONTAL_SPLIT);
         int total = horiz ? getWidth() : getHeight();
@@ -312,18 +339,27 @@ public class DockedSplitPanel extends DockingPanel {
             if (child == null) continue;
 
             if (i < dividerPositions.size()) {
-                // Use the stored absolute pixel position, initialising it from the
-                // fraction the first time (or after a restore/setDividerLocation call).
-                // Keeping pixels fixed means only the last child absorbs parent resizes;
-                // dragging a divider updates only that divider's pixel, leaving the rest.
-                int px = dividerPixels.get(i);
-                if (px < 0) {
+                // During a drag: use stored pixels so that only the two children adjacent
+                // to the dragged divider resize; all others stay stationary.
+                // Outside a drag (window resize, restore, etc.): use fractions so that
+                // all children resize proportionally.
+                int px;
+                if (isDragging) {
+                    px = dividerPixels.get(i);
+                    if (px < 0) {
+                        px = (int) Math.round(dividerPositions.get(i) * total);
+                    }
+                } else {
                     px = (int) Math.round(dividerPositions.get(i) * total);
                 }
-                int divStart = clamp(px, prev, total - DIVIDER_THICKNESS - minPxAfter(i));
-                // Keep both stores in sync with the actual rendered position.
+                // Lower bound: leave at least children[i]'s minimum space before the divider.
+                // Upper bound: leave enough space for all children after the divider.
+                Dimension minI = children.get(i).getMinimumSize();
+                int lo = prev + (horiz ? minI.width : minI.height);
+                int divStart = clamp(px, lo, total - DIVIDER_THICKNESS - minPxAfter(i));
+                // Update pixel cache so drag has an accurate starting point.
+                // Fractions are only updated by onDrag / syncFractionsFromPixels.
                 dividerPixels.set(i, divStart);
-                dividerPositions.set(i, (double) divStart / total);
 
                 int childSize = divStart - prev;
                 if (horiz) {
@@ -348,8 +384,35 @@ public class DockedSplitPanel extends DockingPanel {
             }
         }
         if (!docking.getAppState().isPaused()) {
-            revalidate();
+            // validate() is synchronous: it calls doLayout() on this (guarded by inLayout
+            // to prevent re-entry) then recursively validates all children, running their
+            // layout managers immediately rather than deferring to the EDT queue.
+            validate();
             repaint();
+        }
+    }
+
+    /**
+     * Walk this split and all descendant splits, updating every stored fraction
+     * to match the current pixel position relative to the current panel size.
+     * Called after a drag ends so that subsequent window resizes proportion from
+     * the new post-drag layout rather than from stale pre-drag fractions.
+     */
+    private void syncFractionsFromPixels() {
+        boolean horiz = (orientation == JSplitPane.HORIZONTAL_SPLIT);
+        int total = horiz ? getWidth() : getHeight();
+        if (total > 0) {
+            for (int i = 0; i < dividerPixels.size() && i < dividerPositions.size(); i++) {
+                int px = dividerPixels.get(i);
+                if (px >= 0) {
+                    dividerPositions.set(i, (double) px / total);
+                }
+            }
+        }
+        for (DockingPanel child : children) {
+            if (child instanceof DockedSplitPanel) {
+                ((DockedSplitPanel) child).syncFractionsFromPixels();
+            }
         }
     }
 
@@ -494,9 +557,16 @@ public class DockedSplitPanel extends DockingPanel {
             MouseAdapter ma = new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
+                    isDragging = true;
                     Point p = e.getLocationOnScreen();
                     dragStartScreen = isHoriz() ? p.x : p.y;
-                    dragStartPixel = dividerPixels.get(index);
+                    int px = dividerPixels.get(index);
+                    if (px < 0) {
+                        int total = isHoriz() ? DockedSplitPanel.this.getWidth() : DockedSplitPanel.this.getHeight();
+                        px = (int) Math.round(dividerPositions.get(index) * total);
+                        dividerPixels.set(index, px);
+                    }
+                    dragStartPixel = px;
                 }
 
                 @Override
@@ -506,6 +576,10 @@ public class DockedSplitPanel extends DockingPanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
+                    isDragging = false;
+                    // Sync all fractions from current pixel positions so that the next
+                    // window resize proportions from the new post-drag layout.
+                    syncFractionsFromPixels();
                     docking.getAppState().persist();
                 }
 

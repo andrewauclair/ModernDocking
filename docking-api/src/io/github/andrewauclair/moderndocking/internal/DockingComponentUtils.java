@@ -27,14 +27,11 @@ import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.exception.RootDockingPanelNotFoundException;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
 import java.util.Optional;
 import javax.swing.JDialog;
-import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 
 /**
@@ -50,18 +47,18 @@ public class DockingComponentUtils {
 	//
 	//
 	/**
-	 * Recomputes and sets the minimum size of {@code window} from its JRootPane's minimum size
-	 * (which includes the menu bar via RootPaneLayout) plus the window's decoration insets.
-	 * Should be called after any dock/undock operation that changes the panel hierarchy.
+	 * Recomputes and sets the minimum size of {@code window} by delegating to the
+	 * {@link InternalRootDockingPanel} for that window.  This bypasses the
+	 * intermediate GridBagLayout / RootPaneLayout chain and computes directly from
+	 * the docking panel hierarchy.
 	 */
-	public static void updateWindowMinimumSize(Window window) {
-		if (!window.isDisplayable() || !(window instanceof RootPaneContainer)) return;
-		Insets insets = window.getInsets();
-		Dimension rootPaneMin = ((RootPaneContainer) window).getRootPane().getMinimumSize();
-		window.setMinimumSize(new Dimension(
-				rootPaneMin.width + insets.left + insets.right,
-				rootPaneMin.height + insets.top + insets.bottom
-		));
+	public static void updateWindowMinimumSize(DockingAPI docking, Window window) {
+		try {
+			rootForWindow(docking, window).updateWindowMinimumSize();
+		}
+		catch (io.github.andrewauclair.moderndocking.exception.RootDockingPanelNotFoundException ignored) {
+			// Window has no root panel yet — nothing to update.
+		}
 	}
 
 	/**
