@@ -61,7 +61,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	/**
 	 * The parent panel of this split panel
 	 */
-	private DockingPanel parent;
+	private DockingPanel dockedParent;
 	/**
 	 * The docking instance this panel belongs to
 	 */
@@ -302,7 +302,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 
 	@Override
 	public void setParent(DockingPanel parent) {
-		this.parent = parent;
+		this.dockedParent = parent;
 	}
 
 	@Override
@@ -318,7 +318,7 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 		wrapper.setWindow(window);
 
 		DockedSplitPanel split = new DockedSplitPanel(docking, window, anchor);
-		parent.replaceChild(this, split);
+		dockedParent.replaceChild(this, split);
 
 		DockingPanel newPanel;
 
@@ -366,15 +366,15 @@ public class DockedSplitPanel extends DockingPanel implements MouseListener, Pro
 	@Override
 	public void removeChild(DockingPanel child) {
 		// safety against partially configured layout restorations
-		if (parent == null) {
+		if (dockedParent == null) {
 			return;
 		}
 
 		if (left == child) {
-			parent.replaceChild(this, right);
+			dockedParent.replaceChild(this, right);
 		}
 		else if (right == child) {
-			parent.replaceChild(this, left);
+			dockedParent.replaceChild(this, left);
 		}
 	}
 

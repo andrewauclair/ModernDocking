@@ -17,7 +17,7 @@ public abstract class Property {
      *
      * @param name The name of the property
      */
-    public Property(String name) {
+    protected Property(String name) {
         this.name = name;
     }
 

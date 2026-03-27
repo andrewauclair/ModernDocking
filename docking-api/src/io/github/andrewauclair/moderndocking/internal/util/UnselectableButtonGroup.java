@@ -15,12 +15,12 @@ public class UnselectableButtonGroup extends ButtonGroup {
 	/**
 	 * the list of buttons participating in this group
 	 */
-	protected final Vector<AbstractButton> buttons = new Vector<>();
+	private final Vector<AbstractButton> buttonOptions = new Vector<>();
 
 	/**
 	 * The current selection.
 	 */
-	ButtonModel selection = null;
+	private ButtonModel selectionModel = null;
 
 	/**
 	 * Creates a new <code>ButtonGroup</code>.
@@ -37,11 +37,11 @@ public class UnselectableButtonGroup extends ButtonGroup {
 		if (b == null) {
 			return;
 		}
-		buttons.addElement(b);
+		buttonOptions.addElement(b);
 
 		if (b.isSelected()) {
-			if (selection == null) {
-				selection = b.getModel();
+			if (selectionModel == null) {
+				selectionModel = b.getModel();
 			} else {
 				b.setSelected(false);
 			}
@@ -59,9 +59,9 @@ public class UnselectableButtonGroup extends ButtonGroup {
 		if (b == null) {
 			return;
 		}
-		buttons.removeElement(b);
-		if (b.getModel() == selection) {
-			selection = null;
+		buttonOptions.removeElement(b);
+		if (b.getModel() == selectionModel) {
+			selectionModel = null;
 		}
 		b.getModel().setGroup(null);
 	}
@@ -73,9 +73,9 @@ public class UnselectableButtonGroup extends ButtonGroup {
 	 * @since 1.6
 	 */
 	public void clearSelection() {
-		if (selection != null) {
-			ButtonModel oldSelection = selection;
-			selection = null;
+		if (selectionModel != null) {
+			ButtonModel oldSelection = selectionModel;
+			selectionModel = null;
 			oldSelection.setSelected(false);
 		}
 	}
@@ -86,7 +86,7 @@ public class UnselectableButtonGroup extends ButtonGroup {
 	 * @return an <code>Enumeration</code> of the buttons in this group
 	 */
 	public Enumeration<AbstractButton> getElements() {
-		return buttons.elements();
+		return buttonOptions.elements();
 	}
 	/**
 	 * Returns the model of the selected button.
@@ -94,7 +94,7 @@ public class UnselectableButtonGroup extends ButtonGroup {
 	 * @return the selected button model
 	 */
 	public ButtonModel getSelection() {
-		return selection;
+		return selectionModel;
 	}
 
 	/**
@@ -107,18 +107,18 @@ public class UnselectableButtonGroup extends ButtonGroup {
 	 */
 	public void setSelected(ButtonModel model, boolean selected) {
 		if (selected) {
-			if (model != selection) {
-				ButtonModel oldSelection = selection;
-				selection = model;
+			if (model != selectionModel) {
+				ButtonModel oldSelection = selectionModel;
+				selectionModel = model;
 				if (oldSelection != null) {
 					oldSelection.setSelected(false);
 				}
 				model.setSelected(true);
 			}
 		}
-		else if (selection != null) {
-			ButtonModel oldSelection = selection;
-			selection = null;
+		else if (selectionModel != null) {
+			ButtonModel oldSelection = selectionModel;
+			selectionModel = null;
 			oldSelection.setSelected(false);
 		}
 	}
@@ -130,7 +130,7 @@ public class UnselectableButtonGroup extends ButtonGroup {
 	 * returns <code>false</code>
 	 */
 	public boolean isSelected(ButtonModel model) {
-		return model == selection;
+		return model == selectionModel;
 	}
 
 	/**
@@ -140,6 +140,6 @@ public class UnselectableButtonGroup extends ButtonGroup {
 	 * @since 1.3
 	 */
 	public int getButtonCount() {
-		return buttons.size();
+		return buttonOptions.size();
 	}
 }

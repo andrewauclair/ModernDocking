@@ -24,7 +24,6 @@ package io.github.andrewauclair.moderndocking.internal;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockingProperty;
 import io.github.andrewauclair.moderndocking.Property;
-import io.github.andrewauclair.moderndocking.api.LayoutPersistenceAPI;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -37,7 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -104,7 +102,7 @@ public class DockableProperties {
                     try {
                         if (loadingLegacyFile) {
                             Property.StringProperty legacyProp = (Property.StringProperty) properties.get(property.name());
-                            prop = parseProperty(prop.getName(), field.getType().getSimpleName().toString(), legacyProp.getValue());
+                            prop = parseProperty(prop.getName(), field.getType().getSimpleName(), legacyProp.getValue());
                         }
                         DockableProperties.validateProperty(field, prop);
                     }

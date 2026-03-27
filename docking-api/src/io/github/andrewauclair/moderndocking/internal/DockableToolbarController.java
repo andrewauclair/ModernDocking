@@ -21,8 +21,6 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.internal;
 
-import io.github.andrewauclair.moderndocking.Dockable;
-
 public interface DockableToolbarController {
     void dockableDisplayed(DockableToolbar toolbar);
 }
