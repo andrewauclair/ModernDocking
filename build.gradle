@@ -45,5 +45,6 @@ sonar {
 		property "sonar.projectKey", "andrewauclair_ModernDocking"
 		property "sonar.organization", "andrewauclair"
 		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.sources", "src"
 	}
 }
