@@ -350,6 +350,8 @@ public class DockingInternal {
 		if (docking.canDisposeWindow(window) && root.isEmpty() && !Floating.isFloating()) {
 			deregisterDockingPanel(window);
 			window.dispose();
+		} else {
+			DockingComponentUtils.updateWindowMinimumSize(window);
 		}
 
 		docking.getAppState().persist();

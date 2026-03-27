@@ -386,7 +386,6 @@ public class LayoutPersistenceAPI {
 
         writer.writeStartElement("split");
         writer.writeAttribute("orientation", String.valueOf(node.getOrientation()));
-        writer.writeAttribute("child-count", String.valueOf(nodeChildren.size()));
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < positions.length; i++) {
@@ -396,12 +395,8 @@ public class LayoutPersistenceAPI {
         writer.writeAttribute("divider-positions", sb.toString());
         writer.writeCharacters(NL);
 
-        for (int i = 0; i < nodeChildren.size(); i++) {
-            writer.writeStartElement("child-" + i);
-            writer.writeCharacters(NL);
-            writeNodeToFile(writer, nodeChildren.get(i));
-            writer.writeEndElement();
-            writer.writeCharacters(NL);
+        for (DockingLayoutNode child : nodeChildren) {
+            writeNodeToFile(writer, child);
         }
 
         writer.writeEndElement();
@@ -698,35 +693,33 @@ public class LayoutPersistenceAPI {
         String anchor = reader.getAttributeValue(null, "anchor");
         if (anchor == null) anchor = "";
 
-        // New format: child-count + divider-positions
-        String childCountStr = reader.getAttributeValue(null, "child-count");
+        // New format: divider-positions with direct child elements
         String dividerPositionsStr = reader.getAttributeValue(null, "divider-positions");
 
-        if (childCountStr != null && dividerPositionsStr != null) {
-            int childCount = Integer.parseInt(childCountStr);
+        if (dividerPositionsStr != null) {
             String[] posTokens = dividerPositionsStr.split(",");
             double[] positions = new double[posTokens.length];
             for (int i = 0; i < posTokens.length; i++) {
                 positions[i] = Math.max(0.0, Math.min(1.0, Double.parseDouble(posTokens[i].trim())));
             }
 
-            java.util.Map<Integer, DockingLayoutNode> childMap = new java.util.TreeMap<>();
+            java.util.List<DockingLayoutNode> children = new java.util.ArrayList<>();
             while (reader.hasNext()) {
                 int next = reader.nextTag();
                 if (next == XMLStreamConstants.START_ELEMENT) {
                     String name = reader.getLocalName();
-                    if (name.startsWith("child-")) {
-                        int idx = Integer.parseInt(name.substring(6));
-                        childMap.put(idx, readNodeFromFile(reader, name));
+                    if (name.equals("simple")) {
+                        children.add(readSimpleNodeFromFile(reader));
+                    } else if (name.equals("split")) {
+                        children.add(readSplitNodeFromFile(reader));
+                    } else if (name.equals("tabbed")) {
+                        children.add(readTabNodeFromFile(reader));
+                    } else if (name.equals("anchor")) {
+                        children.add(readAnchorNodeFromFile(reader));
                     }
                 } else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("split")) {
                     break;
                 }
-            }
-
-            java.util.List<DockingLayoutNode> children = new java.util.ArrayList<>();
-            for (int i = 0; i < childCount; i++) {
-                children.add(childMap.get(i));
             }
             return new DockingSplitPanelNode(docking, children, orientation, positions, anchor);
         }

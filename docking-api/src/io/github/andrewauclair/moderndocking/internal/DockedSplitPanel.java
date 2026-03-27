@@ -27,6 +27,8 @@ import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.settings.Settings;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
@@ -52,7 +54,6 @@ import javax.swing.UIManager;
 public class DockedSplitPanel extends DockingPanel {
 
     static final int DIVIDER_THICKNESS = 5;
-    private static final int MIN_CHILD_PX = 20;
 
     /** Ordered child panels. */
     private final List<DockingPanel> children = new ArrayList<>();
@@ -60,9 +61,18 @@ public class DockedSplitPanel extends DockingPanel {
     /**
      * dividerPositions[i] is the position of the divider between children[i] and
      * children[i+1], as a fraction [0,1] of this panel's axis dimension.
-     * Length is always children.size() - 1 (once fully constructed).
+     * Used for persistence (save/restore). Length equals children.size() - 1.
      */
     private final List<Double> dividerPositions = new ArrayList<>();
+
+    /**
+     * dividerPixels[i] is the absolute pixel position of divider[i] along the
+     * split axis, measured from the leading edge of this panel.
+     * A value of -1 means "not yet initialised; compute from dividerPositions on
+     * the next layout pass".  Once set, this value is kept fixed across parent
+     * resizes so that only the last child absorbs the extra space.
+     */
+    private final List<Integer> dividerPixels = new ArrayList<>();
 
     /** One DividerBar per divider, parallel to dividerPositions. */
     private final List<DividerBar> dividerBars = new ArrayList<>();
@@ -89,6 +99,46 @@ public class DockedSplitPanel extends DockingPanel {
     @Override
     public void doLayout() {
         layoutChildren();
+    }
+
+    @Override
+    public Dimension getMinimumSize() {
+        boolean horiz = (orientation == JSplitPane.HORIZONTAL_SPLIT);
+        // Split axis: sum of children + dividers between them.
+        // Perpendicular axis: max of children (they all share the same cross-dimension).
+        int axisMin = DIVIDER_THICKNESS * Math.max(0, children.size() - 1);
+        int perpMin = 0;
+        for (DockingPanel child : children) {
+            if (child == null) continue;
+            Dimension min = child.getMinimumSize();
+            axisMin += horiz ? min.width : min.height;
+            perpMin = Math.max(perpMin, horiz ? min.height : min.width);
+        }
+        return horiz ? new Dimension(axisMin, perpMin) : new Dimension(perpMin, axisMin);
+    }
+
+    /** Minimum pixels needed for children[0..divIndex] plus the dividers between them. */
+    private int minPxBefore(int divIndex) {
+        boolean horiz = (orientation == JSplitPane.HORIZONTAL_SPLIT);
+        int px = 0;
+        for (int i = 0; i <= divIndex; i++) {
+            Dimension min = children.get(i).getMinimumSize();
+            px += horiz ? min.width : min.height;
+            if (i < divIndex) px += DIVIDER_THICKNESS;
+        }
+        return px;
+    }
+
+    /** Minimum pixels needed for children[divIndex+1..n-1] plus the dividers between them. */
+    private int minPxAfter(int divIndex) {
+        boolean horiz = (orientation == JSplitPane.HORIZONTAL_SPLIT);
+        int px = 0;
+        for (int i = divIndex + 1; i < children.size(); i++) {
+            Dimension min = children.get(i).getMinimumSize();
+            px += horiz ? min.width : min.height;
+            if (i < children.size() - 1) px += DIVIDER_THICKNESS;
+        }
+        return px;
     }
 
     // ----------------------------------------------------------------
@@ -137,6 +187,7 @@ public class DockedSplitPanel extends DockingPanel {
         }
         // In both cases the new divider sits at the original index of existingChild.
         dividerPositions.add(idx, dividerPos);
+        dividerPixels.add(idx, -1);
 
         panel.setParent(this);
         add(panel);
@@ -190,8 +241,10 @@ public class DockedSplitPanel extends DockingPanel {
     public void setDividerLocation(double proportion) {
         if (dividerPositions.isEmpty()) {
             dividerPositions.add(proportion);
+            dividerPixels.add(-1);
         } else {
             dividerPositions.set(0, proportion);
+            dividerPixels.set(0, -1);
         }
         rebuildDividerBarsIfNeeded();
         layoutChildren();
@@ -213,7 +266,11 @@ public class DockedSplitPanel extends DockingPanel {
      */
     public void setDividerPositions(double[] positions) {
         dividerPositions.clear();
-        for (double p : positions) dividerPositions.add(p);
+        dividerPixels.clear();
+        for (double p : positions) {
+            dividerPositions.add(p);
+            dividerPixels.add(-1);
+        }
         rebuildDividerBars();
         layoutChildren();
     }
@@ -247,6 +304,7 @@ public class DockedSplitPanel extends DockingPanel {
         if (children.isEmpty()) return;
         boolean horiz = (orientation == JSplitPane.HORIZONTAL_SPLIT);
         int total = horiz ? getWidth() : getHeight();
+        if (total <= 0) return;
         int prev = 0;
 
         for (int i = 0; i < children.size(); i++) {
@@ -254,7 +312,19 @@ public class DockedSplitPanel extends DockingPanel {
             if (child == null) continue;
 
             if (i < dividerPositions.size()) {
-                int divStart = clamp((int) Math.round(dividerPositions.get(i) * total), prev, total);
+                // Use the stored absolute pixel position, initialising it from the
+                // fraction the first time (or after a restore/setDividerLocation call).
+                // Keeping pixels fixed means only the last child absorbs parent resizes;
+                // dragging a divider updates only that divider's pixel, leaving the rest.
+                int px = dividerPixels.get(i);
+                if (px < 0) {
+                    px = (int) Math.round(dividerPositions.get(i) * total);
+                }
+                int divStart = clamp(px, prev, total - DIVIDER_THICKNESS - minPxAfter(i));
+                // Keep both stores in sync with the actual rendered position.
+                dividerPixels.set(i, divStart);
+                dividerPositions.set(i, (double) divStart / total);
+
                 int childSize = divStart - prev;
                 if (horiz) {
                     child.setBounds(prev, 0, Math.max(0, childSize), getHeight());
@@ -387,6 +457,7 @@ public class DockedSplitPanel extends DockingPanel {
         children.remove(idx);
         if (divIdx >= 0 && divIdx < dividerPositions.size()) {
             dividerPositions.remove(divIdx);
+            dividerPixels.remove(divIdx);
         }
 
         if (children.size() == 1) {
@@ -411,7 +482,7 @@ public class DockedSplitPanel extends DockingPanel {
 
         private final int index;
         private int dragStartScreen;
-        private double dragStartPosition;
+        private int dragStartPixel;
 
         DividerBar(int index) {
             this.index = index;
@@ -425,7 +496,7 @@ public class DockedSplitPanel extends DockingPanel {
                 public void mousePressed(MouseEvent e) {
                     Point p = e.getLocationOnScreen();
                     dragStartScreen = isHoriz() ? p.x : p.y;
-                    dragStartPosition = dividerPositions.get(index);
+                    dragStartPixel = dividerPixels.get(index);
                 }
 
                 @Override
@@ -442,7 +513,11 @@ public class DockedSplitPanel extends DockingPanel {
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() >= 2) {
                         // Double-click: reset to equal split
-                        dividerPositions.set(index, equalPosition());
+                        int total = isHoriz() ? DockedSplitPanel.this.getWidth() : DockedSplitPanel.this.getHeight();
+                        int n = children.size();
+                        int equalPx = (int) Math.round((double) (index + 1) / n * total);
+                        dividerPixels.set(index, equalPx);
+                        dividerPositions.set(index, (double) equalPx / total);
                         layoutChildren();
                         docking.getAppState().persist();
                     }
@@ -468,25 +543,27 @@ public class DockedSplitPanel extends DockingPanel {
             int total = isHoriz() ? DockedSplitPanel.this.getWidth() : DockedSplitPanel.this.getHeight();
             if (total <= 0) return;
 
-            double newPos = dragStartPosition + (double) delta / total;
+            int newPx = dragStartPixel + delta;
 
-            // Clamp: at least MIN_CHILD_PX away from the neighbouring dividers or edges.
-            double lo = (index > 0)
-                    ? dividerPositions.get(index - 1) + (double) (MIN_CHILD_PX + DIVIDER_THICKNESS) / total
-                    : (double) MIN_CHILD_PX / total;
-            double hi = (index < dividerPositions.size() - 1)
-                    ? dividerPositions.get(index + 1) - (double) (MIN_CHILD_PX + DIVIDER_THICKNESS) / total
-                    : 1.0 - (double) MIN_CHILD_PX / total;
+            // Clamp to the range that keeps both adjacent children above their minimum
+            // size.  Neighbouring dividers' pixel positions (unchanged by this drag)
+            // define the outer boundaries; only child[index] and child[index+1] resize.
+            int prevEdge = (index > 0)
+                    ? (isHoriz() ? dividerBars.get(index - 1).getX() : dividerBars.get(index - 1).getY()) + DIVIDER_THICKNESS
+                    : 0;
+            Dimension minI = children.get(index).getMinimumSize();
+            int lo = prevEdge + (isHoriz() ? minI.width : minI.height);
 
-            dividerPositions.set(index, Math.max(lo, Math.min(hi, newPos)));
+            int nextEdge = (index < dividerBars.size() - 1)
+                    ? (isHoriz() ? dividerBars.get(index + 1).getX() : dividerBars.get(index + 1).getY())
+                    : total;
+            Dimension minNext = children.get(index + 1).getMinimumSize();
+            int hi = nextEdge - DIVIDER_THICKNESS - (isHoriz() ? minNext.width : minNext.height);
+
+            int clampedPx = Math.max(lo, Math.min(hi, newPx));
+            dividerPixels.set(index, clampedPx);
+            dividerPositions.set(index, (double) clampedPx / total);
             layoutChildren();
-        }
-
-        /** Target position when resetting to equal distribution. */
-        private double equalPosition() {
-            int n = children.size();
-            // Position that puts this divider at its "equal share" slot.
-            return (double) (index + 1) / n;
         }
     }
 

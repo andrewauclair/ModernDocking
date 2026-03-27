@@ -155,6 +155,18 @@ public class InternalRootDockingPanel extends DockingPanel implements DockableTo
     }
 
     @Override
+    public void addNotify() {
+        super.addNotify();
+        // Defer so the window's insets and layout are fully established before computing the minimum.
+        SwingUtilities.invokeLater(() -> {
+            Window w = SwingUtilities.getWindowAncestor(this);
+            if (w != null) {
+                DockingComponentUtils.updateWindowMinimumSize(w);
+            }
+        });
+    }
+
+    @Override
     public void removeNotify() {
         // this class has a default constructor which could be called and docking would be null
         if (docking != null) {

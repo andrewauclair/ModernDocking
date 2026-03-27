@@ -176,6 +176,10 @@ public class DockingStateAPI {
 
         DockingInternal.fireDockedEventForAll(docking);
 
+        for (Window window : docking.getRootPanels().keySet()) {
+            DockingComponentUtils.updateWindowMinimumSize(window);
+        }
+
         DockingLayouts.layoutRestored(layout);
     }
 
