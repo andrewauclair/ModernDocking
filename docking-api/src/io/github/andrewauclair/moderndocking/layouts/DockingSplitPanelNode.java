@@ -148,30 +148,41 @@ public class DockingSplitPanelNode implements DockingLayoutNode {
             return;
         }
 
-        int newOrientation = (region == DockingRegion.EAST || region == DockingRegion.WEST)
-                ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
+        int newOrientation;
+
+        if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
+            newOrientation = JSplitPane.HORIZONTAL_SPLIT;
+        }
+        else {
+            newOrientation = JSplitPane.VERTICAL_SPLIT;
+        }
 
         Dockable dockable = DockingInternal.get(docking).getDockable(persistentID);
         String className = dockable.getClass().getTypeName();
+        DockingLayoutNode newNode;
 
-        DockingLayoutNode newNode = Settings.alwaysDisplayTabsMode()
-                ? new DockingTabPanelNode(docking, persistentID, className, anchor,
-                        dockable.getTitleText(), dockable.getTabText())
-                : new DockingSimplePanelNode(docking, persistentID, className, anchor,
-                        dockable.getTitleText(), dockable.getTabText());
+        if (Settings.alwaysDisplayTabsMode()) {
+            newNode = new DockingTabPanelNode(docking, persistentID, className, anchor, dockable.getTitleText(), dockable.getTabText());
+        }
+        else {
+            newNode = new DockingSimplePanelNode(docking, persistentID, className, anchor, dockable.getTitleText(), dockable.getTabText());
+        }
 
-        if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
+        DockingLayoutNode left;
+        DockingLayoutNode right;
+
+        if (region == DockingRegion.NORTH || region == DockingRegion.WEST) {
+            left = newNode;
+            right = this;
+        }
+        else {
+            left = this;
+            right = newNode;
             dividerProportion = 1.0 - dividerProportion;
         }
 
-        DockingLayoutNode left  = (region == DockingRegion.NORTH || region == DockingRegion.WEST)
-                ? newNode : this;
-        DockingLayoutNode right = (region == DockingRegion.NORTH || region == DockingRegion.WEST)
-                ? this : newNode;
-
         DockingLayoutNode oldParent = parent;
-        DockingSplitPanelNode split = new DockingSplitPanelNode(
-                docking, left, right, newOrientation, dividerProportion, anchor);
+        DockingSplitPanelNode split = new DockingSplitPanelNode(docking, left, right, newOrientation, dividerProportion, anchor);
         oldParent.replaceChild(this, split);
     }
 

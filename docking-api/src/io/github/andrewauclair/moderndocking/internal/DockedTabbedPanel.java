@@ -53,7 +53,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -372,55 +371,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			addPanel(wrapper);
 		}
 		else {
-			int newOrientation = (region == DockingRegion.EAST || region == DockingRegion.WEST)
-					? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
-
-			DockingPanel newPanel;
-
-			if (wrapper.isAnchor()) {
-				newPanel = new DockedAnchorPanel(docking, wrapper);
-			}
-			else if (Settings.alwaysDisplayTabsMode()) {
-				newPanel = new DockedTabbedPanel(docking, wrapper, anchor);
-			}
-			else {
-				newPanel = new DockedSimplePanel(docking, wrapper, anchor);
-			}
-
-			if (parent instanceof DockedSplitPanel
-					&& ((DockedSplitPanel) parent).getOrientation() == newOrientation) {
-				// Insert inline into the parent split.
-				DockedSplitPanel parentSplit = (DockedSplitPanel) parent;
-				int myIndex = parentSplit.indexOfChild(this);
-				double[] positions = parentSplit.getDividerPositions();
-
-				double childStart = (myIndex > 0) ? positions[myIndex - 1] : 0.0;
-				double childEnd = (myIndex < positions.length) ? positions[myIndex] : 1.0;
-				double childSpace = childEnd - childStart;
-
-				boolean after = (region == DockingRegion.EAST || region == DockingRegion.SOUTH);
-				double newDivPos = after
-						? childStart + childSpace * (1.0 - dividerProportion)
-						: childStart + childSpace * dividerProportion;
-
-				parentSplit.insertChildBeside(this, newPanel, after, newDivPos);
-			}
-			else {
-				DockedSplitPanel split = new DockedSplitPanel(docking, panels.get(0).getWindow(), anchor);
-				parent.replaceChild(this, split);
-
-				if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
-					split.setLeft(this);
-					split.setRight(newPanel);
-					dividerProportion = 1.0 - dividerProportion;
-				}
-				else {
-					split.setLeft(newPanel);
-					split.setRight(this);
-				}
-				split.setOrientation(newOrientation);
-				split.setDividerLocation(dividerProportion);
-			}
+			DockingPanel newPanel = DockedSplitPanel.createLeafPanel(docking, wrapper, anchor);
+			DockedSplitPanel.dockPanelBeside(this, parent, newPanel, region, dividerProportion, docking, panels.get(0).getWindow(), anchor);
 		}
 
 		revalidate();

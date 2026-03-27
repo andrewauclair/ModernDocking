@@ -500,48 +500,39 @@ public class DockedSplitPanel extends DockingPanel {
         DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
         wrapper.setWindow(window);
 
+        // CENTER has no meaning for a split — redirect to the nearer edge
         if (region == DockingRegion.CENTER) {
-            // Docking to the center of a split — redirect to an edge
-            region = (orientation == JSplitPane.HORIZONTAL_SPLIT)
-                    ? DockingRegion.WEST : DockingRegion.NORTH;
+            region = (orientation == JSplitPane.HORIZONTAL_SPLIT) ? DockingRegion.WEST : DockingRegion.NORTH;
         }
 
-        int newOrientation = (region == DockingRegion.EAST || region == DockingRegion.WEST)
-                ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
-
+        boolean after = (region == DockingRegion.EAST || region == DockingRegion.SOUTH);
+        int newOrientation = orientationForRegion(region);
         DockingPanel newPanel = createLeafPanel(docking, wrapper, anchor);
 
         if (newOrientation == orientation) {
-            // Same axis: insert at the start or end of this split.
-            if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
-                double lastDivEnd = dividerPositions.isEmpty() ? 0.0
-                        : dividerPositions.get(dividerPositions.size() - 1);
-                double newDivPos = lastDivEnd + (1.0 - lastDivEnd) * (1.0 - dividerProportion);
-                insertChildBeside(children.get(children.size() - 1), newPanel, true, newDivPos);
-            }
-            else {
-                double firstDivEnd = dividerPositions.isEmpty() ? 1.0 : dividerPositions.get(0);
-                double newDivPos = firstDivEnd * dividerProportion;
-                insertChildBeside(children.get(0), newPanel, false, newDivPos);
-            }
+            // Same axis: append to the near end of this split.
+            double newDivPos = appendDividerPosition(after, dividerProportion);
+            insertChildBeside(children.get(after ? children.size() - 1 : 0), newPanel, after, newDivPos);
         }
         else {
             // Different axis: wrap this split in a new outer split.
-            DockedSplitPanel outerSplit = new DockedSplitPanel(docking, window, anchor);
-            parent.replaceChild(this, outerSplit);
-
-            if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
-                outerSplit.setLeft(this);
-                outerSplit.setRight(newPanel);
-                dividerProportion = 1.0 - dividerProportion;
-            }
-            else {
-                outerSplit.setLeft(newPanel);
-                outerSplit.setRight(this);
-            }
-            outerSplit.setOrientation(newOrientation);
-            outerSplit.setDividerLocation(dividerProportion);
+            dockPanelBeside(this, parent, newPanel, region, dividerProportion, docking, window, anchor);
         }
+    }
+
+    /**
+     * Computes the position for a new divider appended to the near end of this split.
+     * When docking after (EAST/SOUTH) the new divider sits inside the space after the
+     * last existing divider.  When docking before (NORTH/WEST) it sits inside the space
+     * before the first existing divider.
+     */
+    private double appendDividerPosition(boolean after, double proportion) {
+        if (after) {
+            double lastEnd = dividerPositions.isEmpty() ? 0.0 : dividerPositions.get(dividerPositions.size() - 1);
+            return lastEnd + (1.0 - lastEnd) * (1.0 - proportion);
+        }
+        double firstEnd = dividerPositions.isEmpty() ? 1.0 : dividerPositions.get(0);
+        return firstEnd * proportion;
     }
 
     @Override
@@ -711,10 +702,13 @@ public class DockedSplitPanel extends DockingPanel {
     }
 
     // ----------------------------------------------------------------
-    // Helpers
+    // Helpers shared with DockedSimplePanel / DockedTabbedPanel
     // ----------------------------------------------------------------
 
-    private static DockingPanel createLeafPanel(DockingAPI docking, DockableWrapper wrapper, String anchor) {
+    /**
+     * Creates the appropriate leaf panel for {@code wrapper}: anchor, tabbed, or simple.
+     */
+    static DockingPanel createLeafPanel(DockingAPI docking, DockableWrapper wrapper, String anchor) {
         if (wrapper.isAnchor()) {
             return new DockedAnchorPanel(docking, wrapper);
         }
@@ -722,5 +716,74 @@ public class DockedSplitPanel extends DockingPanel {
             return new DockedTabbedPanel(docking, wrapper, anchor);
         }
         return new DockedSimplePanel(docking, wrapper, anchor);
+    }
+
+    /**
+     * Returns the JSplitPane orientation constant that corresponds to {@code region}.
+     */
+    static int orientationForRegion(DockingRegion region) {
+        if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
+            return JSplitPane.HORIZONTAL_SPLIT;
+        }
+        return JSplitPane.VERTICAL_SPLIT;
+    }
+
+    /**
+     * Docks {@code newPanel} beside {@code thisPanel} in the direction indicated by
+     * {@code region}.  If the parent split already runs along the same axis the new
+     * panel is inserted inline (no extra nesting).  Otherwise a new 2-child split is
+     * created to wrap {@code thisPanel}.
+     */
+    static void dockPanelBeside(DockingPanel thisPanel, DockingPanel parentPanel,
+                                 DockingPanel newPanel, DockingRegion region,
+                                 double proportion, DockingAPI docking,
+                                 Window window, String anchor) {
+        boolean after = (region == DockingRegion.EAST || region == DockingRegion.SOUTH);
+        int newOrientation = orientationForRegion(region);
+
+        if (parentPanel instanceof DockedSplitPanel) {
+            DockedSplitPanel parentSplit = (DockedSplitPanel) parentPanel;
+
+            if (parentSplit.getOrientation() == newOrientation) {
+                // Insert inline — avoids nesting two splits of the same axis.
+                double newDivPos = inlineDividerPosition(parentSplit, thisPanel, after, proportion);
+                parentSplit.insertChildBeside(thisPanel, newPanel, after, newDivPos);
+                return;
+            }
+        }
+
+        // Wrap thisPanel in a new 2-child split.
+        DockedSplitPanel split = new DockedSplitPanel(docking, window, anchor);
+        split.setOrientation(newOrientation);
+        parentPanel.replaceChild(thisPanel, split);
+
+        if (after) {
+            split.setLeft(thisPanel);
+            split.setRight(newPanel);
+            split.setDividerLocation(1.0 - proportion);
+        }
+        else {
+            split.setLeft(newPanel);
+            split.setRight(thisPanel);
+            split.setDividerLocation(proportion);
+        }
+    }
+
+    /**
+     * Computes the fraction position for a new divider when inserting inline into
+     * {@code parentSplit} beside {@code child}.
+     */
+    private static double inlineDividerPosition(DockedSplitPanel parentSplit, DockingPanel child,
+                                                 boolean after, double proportion) {
+        int myIndex = parentSplit.indexOfChild(child);
+        double[] positions = parentSplit.getDividerPositions();
+        double childStart = (myIndex > 0) ? positions[myIndex - 1] : 0.0;
+        double childEnd = (myIndex < positions.length) ? positions[myIndex] : 1.0;
+        double childSpace = childEnd - childStart;
+
+        if (after) {
+            return childStart + childSpace * (1.0 - proportion);
+        }
+        return childStart + childSpace * proportion;
     }
 }
