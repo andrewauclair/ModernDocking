@@ -46,5 +46,7 @@ sonar {
 		property "sonar.organization", "andrewauclair"
 		property "sonar.host.url", "https://sonarcloud.io"
 		property "sonar.sources", "src"
+		property "sonar.inclusions", "**/*.java"
+		property "sonar.exclusions", "**/demo-single-app/**,**/demo-multi-app/**"
 	}
 }
