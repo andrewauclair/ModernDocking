@@ -28,9 +28,7 @@ import io.github.andrewauclair.moderndocking.settings.Settings;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Insets;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -55,7 +53,9 @@ public class DockedSplitPanel extends DockingPanel {
 
     static final int DIVIDER_THICKNESS = 5;
 
-    /** Ordered child panels. */
+    /**
+     * Ordered child panels.
+     */
     private final List<DockingPanel> children = new ArrayList<>();
 
     /**
@@ -74,10 +74,14 @@ public class DockedSplitPanel extends DockingPanel {
      */
     private final List<Integer> dividerPixels = new ArrayList<>();
 
-    /** One DividerBar per divider, parallel to dividerPositions. */
+    /**
+     * One DividerBar per divider, parallel to dividerPositions.
+     */
     private final List<DividerBar> dividerBars = new ArrayList<>();
 
-    /** JSplitPane.HORIZONTAL_SPLIT or VERTICAL_SPLIT. */
+    /**
+     * JSplitPane.HORIZONTAL_SPLIT or VERTICAL_SPLIT.
+     */
     private int orientation = JSplitPane.HORIZONTAL_SPLIT;
 
     private DockingPanel parent;
@@ -85,7 +89,9 @@ public class DockedSplitPanel extends DockingPanel {
     private final Window window;
     private String anchor;
 
-    /** Guards against re-entrant layoutChildren calls triggered by validate(). */
+    /**
+     * Guards against re-entrant layoutChildren calls triggered by validate().
+     */
     private boolean inLayout = false;
 
     /**
@@ -125,8 +131,11 @@ public class DockedSplitPanel extends DockingPanel {
         // Perpendicular axis: max of children (they all share the same cross-dimension).
         int axisMin = DIVIDER_THICKNESS * Math.max(0, children.size() - 1);
         int perpMin = 0;
+
         for (DockingPanel child : children) {
-            if (child == null) continue;
+            if (child == null) {
+                continue;
+            }
             Dimension min = child.getMinimumSize();
             axisMin += horiz ? min.width : min.height;
             perpMin = Math.max(perpMin, horiz ? min.height : min.width);
@@ -134,26 +143,38 @@ public class DockedSplitPanel extends DockingPanel {
         return horiz ? new Dimension(axisMin, perpMin) : new Dimension(perpMin, axisMin);
     }
 
-    /** Minimum pixels needed for children[0..divIndex] plus the dividers between them. */
+    /**
+     * Minimum pixels needed for children[0..divIndex] plus the dividers between them.
+     */
     private int minPxBefore(int divIndex) {
         boolean horiz = (orientation == JSplitPane.HORIZONTAL_SPLIT);
         int px = 0;
+
         for (int i = 0; i <= divIndex; i++) {
             Dimension min = children.get(i).getMinimumSize();
             px += horiz ? min.width : min.height;
-            if (i < divIndex) px += DIVIDER_THICKNESS;
+
+            if (i < divIndex) {
+                px += DIVIDER_THICKNESS;
+            }
         }
         return px;
     }
 
-    /** Minimum pixels needed for children[divIndex+1..n-1] plus the dividers between them. */
+    /**
+     * Minimum pixels needed for children[divIndex+1..n-1] plus the dividers between them.
+     */
     private int minPxAfter(int divIndex) {
         boolean horiz = (orientation == JSplitPane.HORIZONTAL_SPLIT);
         int px = 0;
+
         for (int i = divIndex + 1; i < children.size(); i++) {
             Dimension min = children.get(i).getMinimumSize();
             px += horiz ? min.width : min.height;
-            if (i < children.size() - 1) px += DIVIDER_THICKNESS;
+
+            if (i < children.size() - 1) {
+                px += DIVIDER_THICKNESS;
+            }
         }
         return px;
     }
@@ -162,12 +183,16 @@ public class DockedSplitPanel extends DockingPanel {
     // Child management (called during construction and dock operations)
     // ----------------------------------------------------------------
 
-    /** Set the left/top child (index 0). */
+    /**
+     * Set the left/top child (index 0).
+     */
     public void setLeft(DockingPanel panel) {
         setChildAt(0, panel);
     }
 
-    /** Set the right/bottom child (index 1). */
+    /**
+     * Set the right/bottom child (index 1).
+     */
     public void setRight(DockingPanel panel) {
         setChildAt(1, panel);
     }
@@ -176,7 +201,8 @@ public class DockedSplitPanel extends DockingPanel {
         if (index < children.size()) {
             remove(children.get(index));
             children.set(index, panel);
-        } else {
+        }
+        else {
             children.add(panel);
         }
         panel.setParent(this);
@@ -199,7 +225,8 @@ public class DockedSplitPanel extends DockingPanel {
 
         if (after) {
             children.add(idx + 1, panel);
-        } else {
+        }
+        else {
             children.add(idx, panel);
         }
         // In both cases the new divider sits at the original index of existingChild.
@@ -242,7 +269,9 @@ public class DockedSplitPanel extends DockingPanel {
         }
     }
 
-    /** Return the index of {@code child} within this panel, or -1. */
+    /**
+     * Return the index of {@code child} within this panel, or -1.
+     */
     public int indexOfChild(DockingPanel child) {
         return children.indexOf(child);
     }
@@ -259,7 +288,8 @@ public class DockedSplitPanel extends DockingPanel {
         if (dividerPositions.isEmpty()) {
             dividerPositions.add(proportion);
             dividerPixels.add(-1);
-        } else {
+        }
+        else {
             dividerPositions.set(0, proportion);
             dividerPixels.set(0, -1);
         }
@@ -273,7 +303,10 @@ public class DockedSplitPanel extends DockingPanel {
      */
     public double[] getDividerPositions() {
         double[] out = new double[dividerPositions.size()];
-        for (int i = 0; i < out.length; i++) out[i] = dividerPositions.get(i);
+
+        for (int i = 0; i < out.length; i++) {
+            out[i] = dividerPositions.get(i);
+        }
         return out;
     }
 
@@ -318,25 +351,36 @@ public class DockedSplitPanel extends DockingPanel {
     // ----------------------------------------------------------------
 
     void layoutChildren() {
-        if (inLayout) return;
+        if (inLayout) {
+            return;
+        }
         inLayout = true;
         try {
             layoutChildrenImpl();
-        } finally {
+        }
+        finally {
             inLayout = false;
         }
     }
 
     private void layoutChildrenImpl() {
-        if (children.isEmpty()) return;
+        if (children.isEmpty()) {
+            return;
+        }
         boolean horiz = (orientation == JSplitPane.HORIZONTAL_SPLIT);
         int total = horiz ? getWidth() : getHeight();
-        if (total <= 0) return;
+
+        if (total <= 0) {
+            return;
+        }
         int prev = 0;
 
         for (int i = 0; i < children.size(); i++) {
             DockingPanel child = children.get(i);
-            if (child == null) continue;
+
+            if (child == null) {
+                continue;
+            }
 
             if (i < dividerPositions.size()) {
                 // During a drag: use stored pixels so that only the two children adjacent
@@ -344,12 +388,15 @@ public class DockedSplitPanel extends DockingPanel {
                 // Outside a drag (window resize, restore, etc.): use fractions so that
                 // all children resize proportionally.
                 int px;
+
                 if (isDragging) {
                     px = dividerPixels.get(i);
+
                     if (px < 0) {
                         px = (int) Math.round(dividerPositions.get(i) * total);
                     }
-                } else {
+                }
+                else {
                     px = (int) Math.round(dividerPositions.get(i) * total);
                 }
                 // Lower bound: leave at least children[i]'s minimum space before the divider.
@@ -364,21 +411,27 @@ public class DockedSplitPanel extends DockingPanel {
                 int childSize = divStart - prev;
                 if (horiz) {
                     child.setBounds(prev, 0, Math.max(0, childSize), getHeight());
+
                     if (i < dividerBars.size()) {
                         dividerBars.get(i).setBounds(divStart, 0, DIVIDER_THICKNESS, getHeight());
                     }
-                } else {
+                }
+                else {
                     child.setBounds(0, prev, getWidth(), Math.max(0, childSize));
+
                     if (i < dividerBars.size()) {
                         dividerBars.get(i).setBounds(0, divStart, getWidth(), DIVIDER_THICKNESS);
                     }
                 }
                 prev = divStart + DIVIDER_THICKNESS;
-            } else {
+            }
+            else {
                 int childSize = Math.max(0, total - prev);
+
                 if (horiz) {
                     child.setBounds(prev, 0, childSize, getHeight());
-                } else {
+                }
+                else {
                     child.setBounds(0, prev, getWidth(), childSize);
                 }
             }
@@ -401,14 +454,17 @@ public class DockedSplitPanel extends DockingPanel {
     private void syncFractionsFromPixels() {
         boolean horiz = (orientation == JSplitPane.HORIZONTAL_SPLIT);
         int total = horiz ? getWidth() : getHeight();
+
         if (total > 0) {
             for (int i = 0; i < dividerPixels.size() && i < dividerPositions.size(); i++) {
                 int px = dividerPixels.get(i);
+
                 if (px >= 0) {
                     dividerPositions.set(i, (double) px / total);
                 }
             }
         }
+
         for (DockingPanel child : children) {
             if (child instanceof DockedSplitPanel) {
                 ((DockedSplitPanel) child).syncFractionsFromPixels();
@@ -462,12 +518,14 @@ public class DockedSplitPanel extends DockingPanel {
                         : dividerPositions.get(dividerPositions.size() - 1);
                 double newDivPos = lastDivEnd + (1.0 - lastDivEnd) * (1.0 - dividerProportion);
                 insertChildBeside(children.get(children.size() - 1), newPanel, true, newDivPos);
-            } else {
+            }
+            else {
                 double firstDivEnd = dividerPositions.isEmpty() ? 1.0 : dividerPositions.get(0);
                 double newDivPos = firstDivEnd * dividerProportion;
                 insertChildBeside(children.get(0), newPanel, false, newDivPos);
             }
-        } else {
+        }
+        else {
             // Different axis: wrap this split in a new outer split.
             DockedSplitPanel outerSplit = new DockedSplitPanel(docking, window, anchor);
             parent.replaceChild(this, outerSplit);
@@ -476,7 +534,8 @@ public class DockedSplitPanel extends DockingPanel {
                 outerSplit.setLeft(this);
                 outerSplit.setRight(newPanel);
                 dividerProportion = 1.0 - dividerProportion;
-            } else {
+            }
+            else {
                 outerSplit.setLeft(newPanel);
                 outerSplit.setRight(this);
             }
@@ -493,6 +552,7 @@ public class DockedSplitPanel extends DockingPanel {
     @Override
     public void replaceChild(DockingPanel child, DockingPanel newChild) {
         int idx = children.indexOf(child);
+
         if (idx >= 0) {
             remove(child);
             children.set(idx, newChild);
@@ -504,10 +564,15 @@ public class DockedSplitPanel extends DockingPanel {
 
     @Override
     public void removeChild(DockingPanel child) {
-        if (parent == null) return;
+        if (parent == null) {
+            return;
+        }
 
         int idx = children.indexOf(child);
-        if (idx < 0) return;
+
+        if (idx < 0) {
+            return;
+        }
 
         remove(child);
 
@@ -526,7 +591,8 @@ public class DockedSplitPanel extends DockingPanel {
         if (children.size() == 1) {
             // Only one child left — collapse this split by promoting the survivor.
             parent.replaceChild(this, children.get(0));
-        } else {
+        }
+        else {
             rebuildDividerBars();
             layoutChildren();
         }
@@ -561,6 +627,7 @@ public class DockedSplitPanel extends DockingPanel {
                     Point p = e.getLocationOnScreen();
                     dragStartScreen = isHoriz() ? p.x : p.y;
                     int px = dividerPixels.get(index);
+
                     if (px < 0) {
                         int total = isHoriz() ? DockedSplitPanel.this.getWidth() : DockedSplitPanel.this.getHeight();
                         px = (int) Math.round(dividerPositions.get(index) * total);
@@ -615,7 +682,9 @@ public class DockedSplitPanel extends DockingPanel {
             int current = isHoriz() ? p.x : p.y;
             int delta = current - dragStartScreen;
             int total = isHoriz() ? DockedSplitPanel.this.getWidth() : DockedSplitPanel.this.getHeight();
-            if (total <= 0) return;
+            if (total <= 0) {
+                return;
+            }
 
             int newPx = dragStartPixel + delta;
 
@@ -646,8 +715,12 @@ public class DockedSplitPanel extends DockingPanel {
     // ----------------------------------------------------------------
 
     private static DockingPanel createLeafPanel(DockingAPI docking, DockableWrapper wrapper, String anchor) {
-        if (wrapper.isAnchor()) return new DockedAnchorPanel(docking, wrapper);
-        if (Settings.alwaysDisplayTabsMode()) return new DockedTabbedPanel(docking, wrapper, anchor);
+        if (wrapper.isAnchor()) {
+            return new DockedAnchorPanel(docking, wrapper);
+        }
+        if (Settings.alwaysDisplayTabsMode()) {
+            return new DockedTabbedPanel(docking, wrapper, anchor);
+        }
         return new DockedSimplePanel(docking, wrapper, anchor);
     }
 }

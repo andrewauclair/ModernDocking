@@ -382,7 +382,7 @@ public class LayoutPersistenceAPI {
 
     private void writeSplitNodeToFile(XMLStreamWriter writer, DockingSplitPanelNode node) throws XMLStreamException {
         double[] positions = node.getDividerPositions();
-        java.util.List<DockingLayoutNode> nodeChildren = node.getChildren();
+        List<DockingLayoutNode> nodeChildren = node.getChildren();
 
         writer.writeStartElement("split");
         writer.writeAttribute("orientation", String.valueOf(node.getOrientation()));
@@ -691,7 +691,10 @@ public class LayoutPersistenceAPI {
     private DockingSplitPanelNode readSplitNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
         int orientation = Integer.parseInt(reader.getAttributeValue(null, "orientation"));
         String anchor = reader.getAttributeValue(null, "anchor");
-        if (anchor == null) anchor = "";
+
+        if (anchor == null) {
+            anchor = "";
+        }
 
         // New format: divider-positions with direct child elements
         String dividerPositionsStr = reader.getAttributeValue(null, "divider-positions");
@@ -703,21 +706,28 @@ public class LayoutPersistenceAPI {
                 positions[i] = Math.max(0.0, Math.min(1.0, Double.parseDouble(posTokens[i].trim())));
             }
 
-            java.util.List<DockingLayoutNode> children = new java.util.ArrayList<>();
+            List<DockingLayoutNode> children = new ArrayList<>();
+
             while (reader.hasNext()) {
                 int next = reader.nextTag();
+
                 if (next == XMLStreamConstants.START_ELEMENT) {
                     String name = reader.getLocalName();
+
                     if (name.equals("simple")) {
                         children.add(readSimpleNodeFromFile(reader));
-                    } else if (name.equals("split")) {
+                    }
+                    else if (name.equals("split")) {
                         children.add(readSplitNodeFromFile(reader));
-                    } else if (name.equals("tabbed")) {
+                    }
+                    else if (name.equals("tabbed")) {
                         children.add(readTabNodeFromFile(reader));
-                    } else if (name.equals("anchor")) {
+                    }
+                    else if (name.equals("anchor")) {
                         children.add(readAnchorNodeFromFile(reader));
                     }
-                } else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("split")) {
+                }
+                else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("split")) {
                     break;
                 }
             }
@@ -733,13 +743,16 @@ public class LayoutPersistenceAPI {
         DockingLayoutNode right = null;
         while (reader.hasNext()) {
             int next = reader.nextTag();
+
             if (next == XMLStreamConstants.START_ELEMENT) {
                 if (reader.getLocalName().equals("left")) {
                     left = readNodeFromFile(reader, "left");
-                } else if (reader.getLocalName().equals("right")) {
+                }
+                else if (reader.getLocalName().equals("right")) {
                     right = readNodeFromFile(reader, "right");
                 }
-            } else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("split")) {
+            }
+            else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("split")) {
                 break;
             }
         }

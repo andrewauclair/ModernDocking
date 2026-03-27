@@ -167,7 +167,10 @@ public class InternalRootDockingPanel extends DockingPanel implements DockableTo
      */
     public void updateWindowMinimumSize() {
         Window w = SwingUtilities.getWindowAncestor(this);
-        if (w == null || !w.isDisplayable() || !(w instanceof RootPaneContainer)) return;
+
+        if (w == null || !w.isDisplayable() || !(w instanceof RootPaneContainer)) {
+            return;
+        }
 
         Dimension panelMin = (panel != null) ? panel.getMinimumSize() : new Dimension(0, 0);
 
@@ -176,8 +179,8 @@ public class InternalRootDockingPanel extends DockingPanel implements DockableTo
 
         Insets wi = w.getInsets();
         w.setMinimumSize(new Dimension(
-                panelMin.width  + wi.left + wi.right,
-                panelMin.height + menuH   + wi.top  + wi.bottom
+                panelMin.width + wi.left + wi.right,
+                panelMin.height + menuH + wi.top + wi.bottom
         ));
     }
 
@@ -185,7 +188,9 @@ public class InternalRootDockingPanel extends DockingPanel implements DockableTo
     public Dimension getMinimumSize() {
         // Return the panel's minimum directly so that any caller (GridBagLayout,
         // RootPaneLayout, …) gets an accurate value without going through extra layers.
-        if (panel == null) return new Dimension(0, 0);
+        if (panel == null) {
+            return new Dimension(0, 0);
+        }
         return panel.getMinimumSize();
     }
 

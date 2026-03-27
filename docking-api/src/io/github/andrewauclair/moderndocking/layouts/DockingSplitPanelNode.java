@@ -1,4 +1,4 @@
- /*
+/*
 Copyright (c) 2022-2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -62,7 +62,9 @@ public class DockingSplitPanelNode implements DockingLayoutNode {
         this.dividerPositions = dividerPositions.clone();
         this.anchor = anchor;
         for (DockingLayoutNode child : this.children) {
-            if (child != null) child.setParent(this);
+            if (child != null) {
+                child.setParent(this);
+            }
         }
     }
 
@@ -131,7 +133,10 @@ public class DockingSplitPanelNode implements DockingLayoutNode {
         for (DockingLayoutNode child : children) {
             if (child != null) {
                 DockingLayoutNode found = child.findNode(persistentID);
-                if (found != null) return found;
+
+                if (found != null) {
+                    return found;
+                }
             }
         }
         return null;
@@ -139,7 +144,9 @@ public class DockingSplitPanelNode implements DockingLayoutNode {
 
     @Override
     public void dock(String persistentID, DockingRegion region, double dividerProportion) {
-        if (region == DockingRegion.CENTER) return;
+        if (region == DockingRegion.CENTER) {
+            return;
+        }
 
         int newOrientation = (region == DockingRegion.EAST || region == DockingRegion.WEST)
                 ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;

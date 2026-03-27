@@ -275,7 +275,6 @@ public class DockingStateAPI {
         }
     }
 
-
     /**
      * Restore the layout of a single window, preserving the current size and position of the window
      *

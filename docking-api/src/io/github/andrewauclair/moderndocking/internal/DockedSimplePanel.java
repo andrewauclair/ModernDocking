@@ -168,6 +168,7 @@ public class DockedSimplePanel extends DockingPanel {
 					? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
 
 			DockingPanel newPanel;
+
 			if (wrapper.isAnchor()) {
 				newPanel = new DockedAnchorPanel(docking, wrapper);
 			}
@@ -186,7 +187,7 @@ public class DockedSimplePanel extends DockingPanel {
 				double[] positions = parentSplit.getDividerPositions();
 
 				double childStart = (myIndex > 0) ? positions[myIndex - 1] : 0.0;
-				double childEnd   = (myIndex < positions.length) ? positions[myIndex] : 1.0;
+				double childEnd = (myIndex < positions.length) ? positions[myIndex] : 1.0;
 				double childSpace = childEnd - childStart;
 
 				boolean after = (region == DockingRegion.EAST || region == DockingRegion.SOUTH);

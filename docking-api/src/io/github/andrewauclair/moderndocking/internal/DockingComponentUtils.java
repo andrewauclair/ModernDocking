@@ -44,8 +44,6 @@ public class DockingComponentUtils {
 	private DockingComponentUtils() {
 	}
 
-	//
-	//
 	/**
 	 * Recomputes and sets the minimum size of {@code window} by delegating to the
 	 * {@link InternalRootDockingPanel} for that window.  This bypasses the
@@ -56,7 +54,7 @@ public class DockingComponentUtils {
 		try {
 			rootForWindow(docking, window).updateWindowMinimumSize();
 		}
-		catch (io.github.andrewauclair.moderndocking.exception.RootDockingPanelNotFoundException ignored) {
+		catch (RootDockingPanelNotFoundException ignored) {
 			// Window has no root panel yet — nothing to update.
 		}
 	}

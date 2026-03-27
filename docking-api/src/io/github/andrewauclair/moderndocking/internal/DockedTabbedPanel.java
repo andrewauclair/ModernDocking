@@ -223,14 +223,17 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	public Dimension getMinimumSize() {
 		Insets in = getInsets();
 		int w = 0, h = 0;
+
 		for (DockableWrapper wrapper : panels) {
 			Dimension dm = wrapper.getDisplayPanel().getMinimumSize();
 			w = Math.max(w, dm.width);
 			h = Math.max(h, dm.height);
 		}
+
 		// Add room for the tab strip itself
 		boolean topOrBottom = (tabs.getTabPlacement() == JTabbedPane.TOP || tabs.getTabPlacement() == JTabbedPane.BOTTOM);
 		Dimension tabsMin = tabs.getMinimumSize();
+
 		if (topOrBottom) {
 			w = Math.max(w, tabsMin.width);
 			h += tabsMin.height;
@@ -239,6 +242,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			w += tabsMin.width;
 			h = Math.max(h, tabsMin.height);
 		}
+
 		// Floor at a practical minimum so panels with scroll-pane content (min=0) can't be squished to nothing
 		w = Math.max(w, 50);
 		h = Math.max(h, 50);
@@ -372,6 +376,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 					? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
 
 			DockingPanel newPanel;
+
 			if (wrapper.isAnchor()) {
 				newPanel = new DockedAnchorPanel(docking, wrapper);
 			}
@@ -390,7 +395,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 				double[] positions = parentSplit.getDividerPositions();
 
 				double childStart = (myIndex > 0) ? positions[myIndex - 1] : 0.0;
-				double childEnd   = (myIndex < positions.length) ? positions[myIndex] : 1.0;
+				double childEnd = (myIndex < positions.length) ? positions[myIndex] : 1.0;
 				double childSpace = childEnd - childStart;
 
 				boolean after = (region == DockingRegion.EAST || region == DockingRegion.SOUTH);
