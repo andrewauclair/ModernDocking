@@ -32,9 +32,10 @@ import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableTabPreference;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
+import io.github.andrewauclair.moderndocking.api.WindowLayoutBuilderAPI;
 import io.github.andrewauclair.moderndocking.app.ApplicationLayoutMenuItem;
-import io.github.andrewauclair.moderndocking.app.Docking;
 import io.github.andrewauclair.moderndocking.app.DockableMenuItem;
+import io.github.andrewauclair.moderndocking.app.Docking;
 import io.github.andrewauclair.moderndocking.app.LayoutsMenu;
 import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
 import io.github.andrewauclair.moderndocking.app.WindowLayoutBuilder;
@@ -42,18 +43,29 @@ import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
 import io.github.andrewauclair.moderndocking.ext.ui.DockingUI;
 import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
 import io.github.andrewauclair.moderndocking.layouts.DockingLayouts;
-import io.github.andrewauclair.moderndocking.api.WindowLayoutBuilderAPI;
 import io.github.andrewauclair.moderndocking.settings.Settings;
 import io.github.andrewauclair.moderndocking.ui.DockingSettings;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 
 /**
  * Multi-app comprehensive demo. Opens two independent frames, each with its own
@@ -87,19 +99,19 @@ public class ComprehensiveDemo {
     static class ComprehensiveDemoFrame extends JFrame {
 
         private final DockingAPI docking;
-        private final String     prefix;
+        private final String prefix;
 
-        private final EditorPanel      editor1;
-        private final EditorPanel      editor2;
-        private final ProjectPanel     projectTree;
-        private final PropertiesPanel  propertiesPanel;
-        private final OutputPanel      outputPanel;
-        private final EventLogPanel    eventLogPanel;
-        private final ScrollablePanel  scrollablePanel;
-        private final FixedPanel       fixedPanel;
-        private final VetoClosePanel   vetoPanel;
+        private final EditorPanel editor1;
+        private final EditorPanel editor2;
+        private final ProjectPanel projectTree;
+        private final PropertiesPanel propertiesPanel;
+        private final OutputPanel outputPanel;
+        private final EventLogPanel eventLogPanel;
+        private final ScrollablePanel scrollablePanel;
+        private final FixedPanel fixedPanel;
+        private final VetoClosePanel vetoPanel;
         private final MoreOptionsPanel moreOptionsPanel;
-        private final NoTabGroupPanel  noTabGroupPanel;
+        private final NoTabGroupPanel noTabGroupPanel;
         private final TestHarnessPanel testHarnessPanel;
 
         ComprehensiveDemoFrame(String title, File persistFile, String prefix, int defaultX, int defaultY) {
@@ -121,7 +133,9 @@ public class ComprehensiveDemo {
                             break;
                         }
                     }
-                    if (!anyVisible) System.exit(0);
+                    if (!anyVisible) {
+                        System.exit(0);
+                    }
                 }
             });
 
@@ -129,17 +143,17 @@ public class ComprehensiveDemo {
             docking = new Docking(this);
 
             // Create all panels (after docking is initialized)
-            editor1          = new EditorPanel(docking, prefix + "-editor-1", "Editor 1");
-            editor2          = new EditorPanel(docking, prefix + "-editor-2", "Editor 2");
-            projectTree      = new ProjectPanel(docking, prefix + "-project-tree");
-            propertiesPanel  = new PropertiesPanel(docking, prefix + "-properties-panel");
-            outputPanel      = new OutputPanel(docking, prefix + "-output-panel");
-            eventLogPanel    = new EventLogPanel(docking, prefix + "-event-log");
-            scrollablePanel  = new ScrollablePanel(docking, prefix + "-scrollable-panel");
-            fixedPanel       = new FixedPanel(docking, prefix + "-fixed-panel");
-            vetoPanel        = new VetoClosePanel(docking, prefix + "-veto-close-panel");
+            editor1 = new EditorPanel(docking, prefix + "-editor-1", "Editor 1");
+            editor2 = new EditorPanel(docking, prefix + "-editor-2", "Editor 2");
+            projectTree = new ProjectPanel(docking, prefix + "-project-tree");
+            propertiesPanel = new PropertiesPanel(docking, prefix + "-properties-panel");
+            outputPanel = new OutputPanel(docking, prefix + "-output-panel");
+            eventLogPanel = new EventLogPanel(docking, prefix + "-event-log");
+            scrollablePanel = new ScrollablePanel(docking, prefix + "-scrollable-panel");
+            fixedPanel = new FixedPanel(docking, prefix + "-fixed-panel");
+            vetoPanel = new VetoClosePanel(docking, prefix + "-veto-close-panel");
             moreOptionsPanel = new MoreOptionsPanel(docking, prefix + "-more-options-panel");
-            noTabGroupPanel  = new NoTabGroupPanel(docking, prefix + "-no-tab-group-panel");
+            noTabGroupPanel = new NoTabGroupPanel(docking, prefix + "-no-tab-group-panel");
 
             List<Dockable> allDockables = new ArrayList<>();
             allDockables.add(editor1);
@@ -162,7 +176,9 @@ public class ComprehensiveDemo {
             // Wire floating frame listener
             docking.addNewFloatingFrameListener(new io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener() {
                 @Override
-                public void newFrameCreated(javax.swing.JFrame frame, io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI root) {}
+                public void newFrameCreated(javax.swing.JFrame frame, io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI root) {
+                }
+
                 @Override
                 public void newFrameCreated(javax.swing.JFrame frame, io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI root, Dockable dockable) {
                     frame.setTitle("Floating — " + dockable.getTitleText());
@@ -190,7 +206,8 @@ public class ComprehensiveDemo {
             boolean restored = false;
             try {
                 restored = docking.getAppState().restore();
-            } catch (DockingLayoutException ex) {
+            }
+            catch (DockingLayoutException ex) {
                 // fallback to default
             }
 
@@ -224,7 +241,8 @@ public class ComprehensiveDemo {
                         docking.getLayoutPersistence().saveLayoutToFile(
                                 fc.getSelectedFile(),
                                 docking.getDockingState().getApplicationLayout());
-                    } catch (DockingLayoutException ex) {
+                    }
+                    catch (DockingLayoutException ex) {
                         JOptionPane.showMessageDialog(this, "Save failed: " + ex.getMessage());
                     }
                 }
@@ -239,7 +257,8 @@ public class ComprehensiveDemo {
                         ApplicationLayout layout = docking.getLayoutPersistence()
                                 .loadApplicationLayoutFromFile(fc.getSelectedFile());
                         docking.getDockingState().restoreApplicationLayout(layout);
-                    } catch (DockingLayoutException ex) {
+                    }
+                    catch (DockingLayoutException ex) {
                         JOptionPane.showMessageDialog(this, "Load failed: " + ex.getMessage());
                     }
                 }
@@ -263,19 +282,19 @@ public class ComprehensiveDemo {
         private JMenu buildViewMenu() {
             JMenu menu = new JMenu("View");
 
-            menu.add(new DockableMenuItem(docking, editor1.getPersistentID(),         editor1.getTabText()));
-            menu.add(new DockableMenuItem(docking, editor2.getPersistentID(),         editor2.getTabText()));
+            menu.add(new DockableMenuItem(docking, editor1.getPersistentID(), editor1.getTabText()));
+            menu.add(new DockableMenuItem(docking, editor2.getPersistentID(), editor2.getTabText()));
             menu.addSeparator();
-            menu.add(new DockableMenuItem(docking, projectTree.getPersistentID(),     projectTree.getTabText()));
+            menu.add(new DockableMenuItem(docking, projectTree.getPersistentID(), projectTree.getTabText()));
             menu.add(new DockableMenuItem(docking, propertiesPanel.getPersistentID(), propertiesPanel.getTabText()));
-            menu.add(new DockableMenuItem(docking, outputPanel.getPersistentID(),     outputPanel.getTabText()));
-            menu.add(new DockableMenuItem(docking, eventLogPanel.getPersistentID(),   eventLogPanel.getTabText()));
+            menu.add(new DockableMenuItem(docking, outputPanel.getPersistentID(), outputPanel.getTabText()));
+            menu.add(new DockableMenuItem(docking, eventLogPanel.getPersistentID(), eventLogPanel.getTabText()));
             menu.addSeparator();
-            menu.add(new DockableMenuItem(docking, scrollablePanel.getPersistentID(),  scrollablePanel.getTabText()));
-            menu.add(new DockableMenuItem(docking, fixedPanel.getPersistentID(),       fixedPanel.getTabText()));
-            menu.add(new DockableMenuItem(docking, vetoPanel.getPersistentID(),        vetoPanel.getTabText()));
+            menu.add(new DockableMenuItem(docking, scrollablePanel.getPersistentID(), scrollablePanel.getTabText()));
+            menu.add(new DockableMenuItem(docking, fixedPanel.getPersistentID(), fixedPanel.getTabText()));
+            menu.add(new DockableMenuItem(docking, vetoPanel.getPersistentID(), vetoPanel.getTabText()));
             menu.add(new DockableMenuItem(docking, moreOptionsPanel.getPersistentID(), moreOptionsPanel.getTabText()));
-            menu.add(new DockableMenuItem(docking, noTabGroupPanel.getPersistentID(),  noTabGroupPanel.getTabText()));
+            menu.add(new DockableMenuItem(docking, noTabGroupPanel.getPersistentID(), noTabGroupPanel.getTabText()));
             menu.addSeparator();
             menu.add(new DockableMenuItem(docking, testHarnessPanel.getPersistentID(), testHarnessPanel.getTabText()));
 
@@ -338,8 +357,8 @@ public class ComprehensiveDemo {
 
             // --- Auto-hide shortcuts ---
             JMenu autoHideMenu = new JMenu("Auto-Hide to Toolbar");
-            addAutoHideItem(autoHideMenu, editor1,        ToolbarLocation.WEST);
-            addAutoHideItem(autoHideMenu, outputPanel,    ToolbarLocation.SOUTH);
+            addAutoHideItem(autoHideMenu, editor1, ToolbarLocation.WEST);
+            addAutoHideItem(autoHideMenu, outputPanel, ToolbarLocation.SOUTH);
             addAutoHideItem(autoHideMenu, propertiesPanel, ToolbarLocation.EAST);
             menu.add(autoHideMenu);
 
@@ -387,7 +406,8 @@ public class ComprehensiveDemo {
             item.addActionListener(e -> {
                 if (docking.isDocked(d)) {
                     docking.newWindow(d);
-                } else {
+                }
+                else {
                     JOptionPane.showMessageDialog(this, d.getTabText() + " is not currently docked.");
                 }
             });
@@ -405,7 +425,8 @@ public class ComprehensiveDemo {
             item.addActionListener(e -> {
                 if (docking.isDocked(d)) {
                     docking.autoHideDockable(d, loc, this);
-                } else {
+                }
+                else {
                     JOptionPane.showMessageDialog(this, d.getTabText() + " is not currently docked.");
                 }
             });
@@ -484,9 +505,9 @@ public class ComprehensiveDemo {
         private ApplicationLayout buildDefaultLayout() {
             WindowLayoutBuilderAPI builder = new WindowLayoutBuilder(docking, editor1.getPersistentID())
                     .dock(editor2.getPersistentID(), editor1.getPersistentID(), DockingRegion.CENTER)
-                    .dockToRoot(projectTree.getPersistentID(),     DockingRegion.WEST,  0.20)
-                    .dockToRoot(outputPanel.getPersistentID(),     DockingRegion.SOUTH, 0.25)
-                    .dockToRoot(propertiesPanel.getPersistentID(), DockingRegion.EAST,  0.22)
+                    .dockToRoot(projectTree.getPersistentID(), DockingRegion.WEST, 0.20)
+                    .dockToRoot(outputPanel.getPersistentID(), DockingRegion.SOUTH, 0.25)
+                    .dockToRoot(propertiesPanel.getPersistentID(), DockingRegion.EAST, 0.22)
                     .dock(eventLogPanel.getPersistentID(), propertiesPanel.getPersistentID(), DockingRegion.CENTER)
                     .display(editor1.getPersistentID());
 

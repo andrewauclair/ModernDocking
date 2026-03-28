@@ -3,9 +3,15 @@ package demo;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockingProperty;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 
 public class PropertiesPanel extends JPanel implements Dockable {
 
@@ -32,10 +38,10 @@ public class PropertiesPanel extends JPanel implements Dockable {
         controls.add(inherited);
 
         Object[][] rows = {
-            {"background", "Color",   "#1a2b3c"},
-            {"fontSize",   "Integer", "13"},
-            {"visible",    "Boolean", "true"},
-            {"label",      "String",  "Hello"},
+                {"background", "Color", "#1a2b3c"},
+                {"fontSize", "Integer", "13"},
+                {"visible", "Boolean", "true"},
+                {"label", "String", "Hello"},
         };
         JTable table = new JTable(rows, new String[]{"Key", "Type", "Value"});
 
@@ -48,9 +54,22 @@ public class PropertiesPanel extends JPanel implements Dockable {
         docking.registerDockable(this);
     }
 
-    @Override public void updateProperties() {}
+    @Override
+    public void updateProperties() {
+    }
 
-    @Override public String getPersistentID()        { return id; }
-    @Override public String getTabText()             { return "Properties"; }
-    @Override public boolean isAutoHideAllowed()     { return true; }
+    @Override
+    public String getPersistentID() {
+        return id;
+    }
+
+    @Override
+    public String getTabText() {
+        return "Properties";
+    }
+
+    @Override
+    public boolean isAutoHideAllowed() {
+        return true;
+    }
 }

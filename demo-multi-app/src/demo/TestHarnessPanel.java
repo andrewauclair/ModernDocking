@@ -2,21 +2,35 @@ package demo;
 
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
-
-import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.Timer;
+import javax.swing.UIManager;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class TestHarnessPanel extends JPanel implements Dockable {
 
     private final String id;
     private final DockingAPI docking;
     private final StateTableModel stateModel;
-    private final Timer           refreshTimer;
+    private final Timer refreshTimer;
 
     public TestHarnessPanel(DockingAPI docking, String id, List<Dockable> dockables) {
         this.docking = docking;
@@ -42,9 +56,11 @@ public class TestHarnessPanel extends JPanel implements Dockable {
                         lbl.setHorizontalAlignment(JLabel.CENTER);
                         if ("\u2705".equals(value)) {
                             lbl.setForeground(new Color(0, 150, 0));
-                        } else if ("\u274c".equals(value)) {
+                        }
+                        else if ("\u274c".equals(value)) {
                             lbl.setForeground(new Color(200, 0, 0));
-                        } else {
+                        }
+                        else {
                             lbl.setForeground(UIManager.getColor("Label.foreground"));
                         }
                         return lbl;
@@ -85,7 +101,9 @@ public class TestHarnessPanel extends JPanel implements Dockable {
         stateWrapper.add(stateButtons, BorderLayout.SOUTH);
 
         refreshTimer = new Timer(500, e -> {
-            if (autoRefreshCb.isSelected()) stateModel.refresh();
+            if (autoRefreshCb.isSelected()) {
+                stateModel.refresh();
+            }
         });
         refreshTimer.start();
 
@@ -96,7 +114,9 @@ public class TestHarnessPanel extends JPanel implements Dockable {
         JButton uncheckAll = new JButton("Uncheck All");
         uncheckAll.addActionListener(e -> {
             for (Component c : checklistPanel.getComponents()) {
-                if (c instanceof JCheckBox) ((JCheckBox) c).setSelected(false);
+                if (c instanceof JCheckBox) {
+                    ((JCheckBox) c).setSelected(false);
+                }
             }
         });
 
@@ -165,18 +185,25 @@ public class TestHarnessPanel extends JPanel implements Dockable {
         panel.add(cb);
     }
 
-    @Override public String getPersistentID() { return id; }
-    @Override public String getTabText()      { return "Test Harness"; }
+    @Override
+    public String getPersistentID() {
+        return id;
+    }
+
+    @Override
+    public String getTabText() {
+        return "Test Harness";
+    }
 
     static class StateTableModel extends AbstractTableModel {
 
         private static final String[] COLS = {"Query", "Live Value", "Expected (true = pass)", "Pass?"};
 
-        private final List<String>            labels    = new ArrayList<>();
-        private final List<Supplier<Boolean>> queries   = new ArrayList<>();
-        private final List<Boolean>           expected  = new ArrayList<>();
-        private final List<Boolean>           live      = new ArrayList<>();
-        private final List<String>            passState = new ArrayList<>();
+        private final List<String> labels = new ArrayList<>();
+        private final List<Supplier<Boolean>> queries = new ArrayList<>();
+        private final List<Boolean> expected = new ArrayList<>();
+        private final List<Boolean> live = new ArrayList<>();
+        private final List<String> passState = new ArrayList<>();
 
         StateTableModel(DockingAPI docking, List<Dockable> dockables) {
             for (Dockable d : dockables) {
@@ -210,22 +237,40 @@ public class TestHarnessPanel extends JPanel implements Dockable {
         }
 
         void resetExpected() {
-            for (int i = 0; i < expected.size(); i++) expected.set(i, Boolean.FALSE);
+            for (int i = 0; i < expected.size(); i++) {
+                expected.set(i, Boolean.FALSE);
+            }
             refresh();
         }
 
-        @Override public int    getRowCount()    { return labels.size(); }
-        @Override public int    getColumnCount() { return COLS.length; }
-        @Override public String getColumnName(int col) { return COLS[col]; }
+        @Override
+        public int getRowCount() {
+            return labels.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return COLS.length;
+        }
+
+        @Override
+        public String getColumnName(int col) {
+            return COLS[col];
+        }
 
         @Override
         public Object getValueAt(int row, int col) {
             switch (col) {
-                case 0: return labels.get(row);
-                case 1: return live.get(row).toString();
-                case 2: return expected.get(row);
-                case 3: return passState.get(row);
-                default: return null;
+                case 0:
+                    return labels.get(row);
+                case 1:
+                    return live.get(row).toString();
+                case 2:
+                    return expected.get(row);
+                case 3:
+                    return passState.get(row);
+                default:
+                    return null;
             }
         }
 
@@ -239,7 +284,10 @@ public class TestHarnessPanel extends JPanel implements Dockable {
             }
         }
 
-        @Override public boolean isCellEditable(int row, int col) { return col == 2; }
+        @Override
+        public boolean isCellEditable(int row, int col) {
+            return col == 2;
+        }
 
         @Override
         public Class<?> getColumnClass(int col) {

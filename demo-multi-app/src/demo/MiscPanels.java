@@ -2,9 +2,15 @@ package demo;
 
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 
 public class MiscPanels {
 
@@ -27,9 +33,20 @@ public class MiscPanels {
             docking.registerDockable(this);
         }
 
-        @Override public String getPersistentID()           { return id; }
-        @Override public String getTabText()                { return "Scrollable"; }
-        @Override public boolean isWrappableInScrollpane()  { return true; }
+        @Override
+        public String getPersistentID() {
+            return id;
+        }
+
+        @Override
+        public String getTabText() {
+            return "Scrollable";
+        }
+
+        @Override
+        public boolean isWrappableInScrollpane() {
+            return true;
+        }
     }
 
     public static class FixedPanel extends JPanel implements Dockable {
@@ -41,14 +58,25 @@ public class MiscPanels {
             this.id = id;
             setLayout(new BorderLayout());
             add(centered("<html><center><b>Non-closable Panel</b><br><br>" +
-                    "isClosable() = false<br>No × button is rendered.</center></html>"),
+                            "isClosable() = false<br>No × button is rendered.</center></html>"),
                     BorderLayout.CENTER);
             docking.registerDockable(this);
         }
 
-        @Override public String getPersistentID() { return id; }
-        @Override public String getTabText()      { return "Non-Closable"; }
-        @Override public boolean isClosable()     { return false; }
+        @Override
+        public String getPersistentID() {
+            return id;
+        }
+
+        @Override
+        public String getTabText() {
+            return "Non-Closable";
+        }
+
+        @Override
+        public boolean isClosable() {
+            return false;
+        }
     }
 
     public static class VetoClosePanel extends JPanel implements Dockable {
@@ -60,14 +88,21 @@ public class MiscPanels {
             this.id = id;
             setLayout(new BorderLayout());
             add(centered("<html><center><b>Veto Close Panel</b><br><br>" +
-                    "requestClose() shows a confirm dialog.<br>" +
-                    "Click No to veto the close.</center></html>"),
+                            "requestClose() shows a confirm dialog.<br>" +
+                            "Click No to veto the close.</center></html>"),
                     BorderLayout.CENTER);
             docking.registerDockable(this);
         }
 
-        @Override public String getPersistentID() { return id; }
-        @Override public String getTabText()      { return "Veto Close"; }
+        @Override
+        public String getPersistentID() {
+            return id;
+        }
+
+        @Override
+        public String getTabText() {
+            return "Veto Close";
+        }
 
         @Override
         public boolean requestClose() {
@@ -87,13 +122,20 @@ public class MiscPanels {
             this.id = id;
             setLayout(new BorderLayout());
             add(centered("<html><center><b>More Options Panel</b><br><br>" +
-                    "Open the header ⚙ menu to see<br>custom entries added via addMoreOptions().</center></html>"),
+                            "Open the header ⚙ menu to see<br>custom entries added via addMoreOptions().</center></html>"),
                     BorderLayout.CENTER);
             docking.registerDockable(this);
         }
 
-        @Override public String getPersistentID()  { return id; }
-        @Override public String getTabText()       { return "More Options"; }
+        @Override
+        public String getPersistentID() {
+            return id;
+        }
+
+        @Override
+        public String getTabText() {
+            return "More Options";
+        }
 
         @Override
         public void addMoreOptions(JPopupMenu menu) {
@@ -116,15 +158,22 @@ public class MiscPanels {
             this.id = id;
             setLayout(new BorderLayout());
             add(centered("<html><center><b>No Tab Group Panel</b><br><br>" +
-                    "isTabGroupAllowed() = false (1.5.0)<br><br>" +
-                    "Drag another panel over this one — the<br>" +
-                    "CENTER handle should not appear.</center></html>"),
+                            "isTabGroupAllowed() = false (1.5.0)<br><br>" +
+                            "Drag another panel over this one — the<br>" +
+                            "CENTER handle should not appear.</center></html>"),
                     BorderLayout.CENTER);
             docking.registerDockable(this);
         }
 
-        @Override public String getPersistentID() { return id; }
-        @Override public String getTabText()      { return "No Tab Group"; }
+        @Override
+        public String getPersistentID() {
+            return id;
+        }
+
+        @Override
+        public String getTabText() {
+            return "No Tab Group";
+        }
         // TODO 1.5.0 — isTabGroupAllowed() not yet in Dockable interface
         // @Override public boolean isTabGroupAllowed() { return false; }
     }

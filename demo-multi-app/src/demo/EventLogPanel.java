@@ -4,22 +4,30 @@ import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.event.DockingEvent;
 import io.github.andrewauclair.moderndocking.event.DockingListener;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 public class EventLogPanel extends JPanel implements Dockable, DockingListener {
 
     private final String id;
     private final DockingAPI docking;
     private final JTextArea log = new JTextArea();
-    final Map<DockingEvent.ID, AtomicInteger> counters    = new LinkedHashMap<>();
-    final Map<DockingEvent.ID, JLabel>        countLabels = new LinkedHashMap<>();
+    final Map<DockingEvent.ID, AtomicInteger> counters = new LinkedHashMap<>();
+    final Map<DockingEvent.ID, JLabel> countLabels = new LinkedHashMap<>();
 
     public EventLogPanel(DockingAPI docking, String id) {
         this.docking = docking;
@@ -68,7 +76,7 @@ public class EventLogPanel extends JPanel implements Dockable, DockingListener {
     @Override
     public void dockingChange(DockingEvent e) {
         SwingUtilities.invokeLater(() -> {
-            String ts    = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date());
+            String ts = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date());
             String entry = String.format("[%s] %-30s %s%s%n",
                     ts,
                     e.getID().name(),
@@ -82,6 +90,13 @@ public class EventLogPanel extends JPanel implements Dockable, DockingListener {
         });
     }
 
-    @Override public String getPersistentID() { return id; }
-    @Override public String getTabText()      { return "Event Log"; }
+    @Override
+    public String getPersistentID() {
+        return id;
+    }
+
+    @Override
+    public String getTabText() {
+        return "Event Log";
+    }
 }

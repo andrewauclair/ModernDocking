@@ -3,10 +3,12 @@ package demo;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableStyle;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
-
-import javax.swing.*;
+import java.awt.BorderLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
-import java.awt.*;
 
 public class ProjectPanel extends JPanel implements Dockable {
 
@@ -18,7 +20,7 @@ public class ProjectPanel extends JPanel implements Dockable {
         this.id = id;
         setLayout(new BorderLayout());
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Project");
-        DefaultMutableTreeNode src  = new DefaultMutableTreeNode("src/main/java");
+        DefaultMutableTreeNode src = new DefaultMutableTreeNode("src/main/java");
         src.add(new DefaultMutableTreeNode("Main.java"));
         src.add(new DefaultMutableTreeNode("Utils.java"));
         src.add(new DefaultMutableTreeNode("Config.java"));
@@ -35,7 +37,18 @@ public class ProjectPanel extends JPanel implements Dockable {
         docking.registerDockable(this);
     }
 
-    @Override public String getPersistentID()  { return id; }
-    @Override public String getTabText()       { return "Project"; }
-    @Override public DockableStyle getStyle()  { return DockableStyle.VERTICAL; }
+    @Override
+    public String getPersistentID() {
+        return id;
+    }
+
+    @Override
+    public String getTabText() {
+        return "Project";
+    }
+
+    @Override
+    public DockableStyle getStyle() {
+        return DockableStyle.VERTICAL;
+    }
 }
