@@ -1,0 +1,41 @@
+package demo;
+
+import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.api.DockingAPI;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.*;
+
+public class ProjectPanel extends JPanel implements Dockable {
+
+    private final String id;
+    private final DockingAPI docking;
+
+    public ProjectPanel(DockingAPI docking, String id) {
+        this.docking = docking;
+        this.id = id;
+        setLayout(new BorderLayout());
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Project");
+        DefaultMutableTreeNode src  = new DefaultMutableTreeNode("src/main/java");
+        src.add(new DefaultMutableTreeNode("Main.java"));
+        src.add(new DefaultMutableTreeNode("Utils.java"));
+        src.add(new DefaultMutableTreeNode("Config.java"));
+        DefaultMutableTreeNode test = new DefaultMutableTreeNode("src/test/java");
+        test.add(new DefaultMutableTreeNode("MainTest.java"));
+        root.add(src);
+        root.add(test);
+        root.add(new DefaultMutableTreeNode("build.gradle"));
+        JTree tree = new JTree(root);
+        tree.setRootVisible(true);
+        JScrollPane scroll = new JScrollPane(tree);
+        scroll.setBorder(BorderFactory.createEmptyBorder());
+        add(scroll, BorderLayout.CENTER);
+        docking.registerDockable(this);
+    }
+
+    @Override public String getPersistentID()  { return id; }
+    @Override public String getTabText()       { return "Project"; }
+    @Override public DockableStyle getStyle()  { return DockableStyle.VERTICAL; }
+}

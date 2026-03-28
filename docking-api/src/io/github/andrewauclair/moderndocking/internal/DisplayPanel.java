@@ -25,6 +25,7 @@ import io.github.andrewauclair.moderndocking.settings.Settings;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -79,7 +80,9 @@ public class DisplayPanel extends JPanel {
 		gbc.fill = GridBagConstraints.BOTH;
 
 		if (wrapper.getDockable().isWrappableInScrollpane()) {
-			add(new JScrollPane((Component) wrapper.getDockable()), gbc);
+			JScrollPane scrollpane = new JScrollPane((Component) wrapper.getDockable());
+			scrollpane.setBorder(BorderFactory.createEmptyBorder());
+			add(scrollpane, gbc);
 		}
 		else {
 			add((Component) wrapper.getDockable(), gbc);
