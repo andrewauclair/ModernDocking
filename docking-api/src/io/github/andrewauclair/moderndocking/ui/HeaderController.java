@@ -121,7 +121,7 @@ public class HeaderController implements MaximizeListener, DockingListener {
 	/**
 	 * @deprecated Use {@link #exitFocusedMode()} instead. Will be removed in 2.0.
 	 */
-	@Deprecated
+	@Deprecated(since = "1.5.0", forRemoval = true)
 	public void minimize() {
 		exitFocusedMode();
 	}
@@ -129,7 +129,7 @@ public class HeaderController implements MaximizeListener, DockingListener {
 	/**
 	 * @deprecated Use {@link #enterFocusedMode()} instead. Will be removed in 2.0.
 	 */
-	@Deprecated
+	@Deprecated(since = "1.5.0", forRemoval = true)
 	public void maximize() {
 		enterFocusedMode();
 	}
@@ -149,7 +149,7 @@ public class HeaderController implements MaximizeListener, DockingListener {
 	 *             {@link DockingEvent.ID#FOCUSED_MODE_EXITED}. This override is retained for binary compatibility.
 	 *             Will be removed in 2.0.
 	 */
-	@Deprecated
+	@Deprecated(since = "1.5.0", forRemoval = true)
 	@Override
 	public void maximized(Dockable dockable, boolean maximized) {
 		// handled via dockingChange — no-op here to avoid double update

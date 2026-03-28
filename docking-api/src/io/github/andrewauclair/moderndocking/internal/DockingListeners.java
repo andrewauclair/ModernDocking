@@ -49,7 +49,7 @@ public class DockingListeners {
 	 *             {@link DockingEvent.ID#FOCUSED_MODE_ENTERED} / {@link DockingEvent.ID#FOCUSED_MODE_EXITED} instead.
 	 *             Will be removed in 2.0.
 	 */
-	@Deprecated
+	@Deprecated(since = "1.5.0", forRemoval = true)
 	public void addMaximizeListener(MaximizeListener listener) {
 		if (!maximizeListeners.contains(listener)) {
 			maximizeListeners.add(listener);
@@ -62,7 +62,7 @@ public class DockingListeners {
 	 * @param listener Listener to remove
 	 * @deprecated Will be removed in 2.0.
 	 */
-	@Deprecated
+	@Deprecated(since = "1.5.0", forRemoval = true)
 	public void removeMaximizeListener(MaximizeListener listener) {
 		maximizeListeners.remove(listener);
 	}
@@ -101,7 +101,7 @@ public class DockingListeners {
 	 * @deprecated Use {@link #fireFocusedModeEnteredEvent(Dockable)} / {@link #fireFocusedModeExitedEvent(Dockable)}.
 	 *             Will be removed in 2.0.
 	 */
-	@Deprecated
+	@Deprecated(since = "1.5.0", forRemoval = true)
 	public void fireMaximizeEvent(Dockable dockable, boolean maximized) {
 		if (maximized) {
 			fireFocusedModeEnteredEvent(dockable);

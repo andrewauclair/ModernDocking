@@ -209,7 +209,7 @@ public class WindowLayout {
 	/**
 	 * @deprecated Use {@link #setFocusedModeDockable(String)} instead. Will be removed in 2.0.
 	 */
-	@Deprecated
+	@Deprecated(since = "1.5.0", forRemoval = true)
 	public void setMaximizedDockable(String persistentID) {
 		setFocusedModeDockable(persistentID);
 	}
@@ -217,7 +217,7 @@ public class WindowLayout {
 	/**
 	 * @deprecated Use {@link #getFocusedModeDockable()} instead. Will be removed in 2.0.
 	 */
-	@Deprecated
+	@Deprecated(since = "1.5.0", forRemoval = true)
 	public String getMaximizedDockable() {
 		return getFocusedModeDockable();
 	}

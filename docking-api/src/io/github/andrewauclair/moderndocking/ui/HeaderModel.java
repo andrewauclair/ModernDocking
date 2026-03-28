@@ -108,7 +108,7 @@ public class HeaderModel {
 	/**
 	 * @deprecated Use {@link #isInFocusedMode()} instead. Will be removed in 2.0.
 	 */
-	@Deprecated
+	@Deprecated(since = "1.5.0", forRemoval = true)
 	public boolean isMaximized() {
 		return isInFocusedMode();
 	}

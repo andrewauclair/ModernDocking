@@ -771,7 +771,7 @@ public class DockingAPI {
     /**
      * @deprecated Use {@link #inFocusedMode(Dockable)} instead. Will be removed in 2.0.
      */
-    @Deprecated
+    @Deprecated(since = "1.5.0", forRemoval = true)
     public boolean isMaximized(Dockable dockable) {
         return inFocusedMode(dockable);
     }
@@ -779,7 +779,7 @@ public class DockingAPI {
     /**
      * @deprecated Use {@link #enterFocusedMode(Dockable)} instead. Will be removed in 2.0.
      */
-    @Deprecated
+    @Deprecated(since = "1.5.0", forRemoval = true)
     public void maximize(Dockable dockable) {
         enterFocusedMode(dockable);
     }
@@ -787,7 +787,7 @@ public class DockingAPI {
     /**
      * @deprecated Use {@link #exitFocusedMode(Dockable)} instead. Will be removed in 2.0.
      */
-    @Deprecated
+    @Deprecated(since = "1.5.0", forRemoval = true)
     public void minimize(Dockable dockable) {
         exitFocusedMode(dockable);
     }
@@ -994,7 +994,7 @@ public class DockingAPI {
      *             {@link DockingEvent.ID#FOCUSED_MODE_ENTERED} / {@link DockingEvent.ID#FOCUSED_MODE_EXITED} instead.
      *             Will be removed in 2.0.
      */
-    @Deprecated
+    @Deprecated(since = "1.5.0", forRemoval = true)
     public void addMaximizeListener(MaximizeListener listener) {
         listeners.addMaximizeListener(listener);
     }
@@ -1005,7 +1005,7 @@ public class DockingAPI {
      * @param listener Listener to remove
      * @deprecated Will be removed in 2.0.
      */
-    @Deprecated
+    @Deprecated(since = "1.5.0", forRemoval = true)
     public void removeMaximizeListener(MaximizeListener listener) {
         listeners.removeMaximizeListener(listener);
     }
