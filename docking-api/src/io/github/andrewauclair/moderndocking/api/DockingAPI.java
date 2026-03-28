@@ -425,6 +425,7 @@ public class DockingAPI {
         // fire a docked event when the component is actually added
         DockingListeners.fireDockedEvent(dockable);
 
+        DockingComponentUtils.updateWindowMinimumSize(this, window);
         appState.persist();
     }
 
@@ -526,6 +527,7 @@ public class DockingAPI {
 
         DockingListeners.fireDockedEvent(source);
 
+        DockingComponentUtils.updateWindowMinimumSize(this, wrapper.getWindow());
         appState.persist();
     }
 

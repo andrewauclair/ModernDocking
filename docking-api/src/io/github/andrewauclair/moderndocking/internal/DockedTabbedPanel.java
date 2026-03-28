@@ -33,8 +33,10 @@ import io.github.andrewauclair.moderndocking.ui.DockingSettings;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.dnd.DragGestureListener;
@@ -51,7 +53,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -217,6 +218,36 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		super.removeNotify();
 	}
 
+	@Override
+	public Dimension getMinimumSize() {
+		Insets in = getInsets();
+		int w = 0, h = 0;
+
+		for (DockableWrapper wrapper : panels) {
+			Dimension dm = wrapper.getDisplayPanel().getMinimumSize();
+			w = Math.max(w, dm.width);
+			h = Math.max(h, dm.height);
+		}
+
+		// Add room for the tab strip itself
+		boolean topOrBottom = (tabs.getTabPlacement() == JTabbedPane.TOP || tabs.getTabPlacement() == JTabbedPane.BOTTOM);
+		Dimension tabsMin = tabs.getMinimumSize();
+
+		if (topOrBottom) {
+			w = Math.max(w, tabsMin.width);
+			h += tabsMin.height;
+		}
+		else {
+			w += tabsMin.width;
+			h = Math.max(h, tabsMin.height);
+		}
+
+		// Floor at a practical minimum so panels with scroll-pane content (min=0) can't be squished to nothing
+		w = Math.max(w, 50);
+		h = Math.max(h, 50);
+		return new Dimension(w + in.left + in.right, h + in.top + in.bottom);
+	}
+
 	/**
 	 * Add a new panel to this tabbed panel.
 	 *
@@ -340,39 +371,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			addPanel(wrapper);
 		}
 		else {
-			DockedSplitPanel split = new DockedSplitPanel(docking, panels.get(0).getWindow(), anchor);
-			dockedParent.replaceChild(this, split);
-
-			DockingPanel newPanel;
-
-			if (wrapper.isAnchor()) {
-				newPanel = new DockedAnchorPanel(docking, wrapper);
-			}
-			else if (Settings.alwaysDisplayTabsMode()) {
-				newPanel = new DockedTabbedPanel(docking, wrapper, anchor);
-			}
-			else {
-				newPanel = new DockedSimplePanel(docking, wrapper, anchor);
-			}
-
-			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
-				split.setLeft(this);
-				split.setRight(newPanel);
-				dividerProportion = 1.0 - dividerProportion;
-			}
-			else {
-				split.setLeft(newPanel);
-				split.setRight(this);
-			}
-
-			if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
-				split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-			}
-			else {
-				split.setOrientation(JSplitPane.VERTICAL_SPLIT);
-			}
-
-			split.setDividerLocation(dividerProportion);
+			DockingPanel newPanel = DockedSplitPanel.createLeafPanel(docking, wrapper, anchor);
+			DockedSplitPanel.dockPanelBeside(this, parent, newPanel, region, dividerProportion, docking, panels.get(0).getWindow(), anchor);
 		}
 
 		revalidate();

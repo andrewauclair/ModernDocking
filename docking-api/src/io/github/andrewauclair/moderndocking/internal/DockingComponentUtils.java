@@ -44,8 +44,21 @@ public class DockingComponentUtils {
 	private DockingComponentUtils() {
 	}
 
-	//
-	//
+	/**
+	 * Recomputes and sets the minimum size of {@code window} by delegating to the
+	 * {@link InternalRootDockingPanel} for that window.  This bypasses the
+	 * intermediate GridBagLayout / RootPaneLayout chain and computes directly from
+	 * the docking panel hierarchy.
+	 */
+	public static void updateWindowMinimumSize(DockingAPI docking, Window window) {
+		try {
+			rootForWindow(docking, window).updateWindowMinimumSize();
+		}
+		catch (RootDockingPanelNotFoundException ignored) {
+			// Window has no root panel yet — nothing to update.
+		}
+	}
+
 	/**
 	 * used to clear all anchors before we undock components. This is done to prevent the anchor from being readded
 	 *
