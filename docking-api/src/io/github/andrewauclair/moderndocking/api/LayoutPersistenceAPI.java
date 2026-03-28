@@ -392,7 +392,7 @@ public class LayoutPersistenceAPI {
         double[] positions = node.getDividerPositions();
         List<DockingLayoutNode> nodeChildren = node.getChildren();
 
-        writer.writeStartElement("split");
+        writer.writeStartElement(TAG_SPLIT);
         writer.writeAttribute("orientation", String.valueOf(node.getOrientation()));
 
         StringBuilder sb = new StringBuilder();
@@ -699,7 +699,7 @@ public class LayoutPersistenceAPI {
 
     private DockingSplitPanelNode readSplitNodeFromFile(XMLStreamReader reader) throws XMLStreamException {
         int orientation = Integer.parseInt(reader.getAttributeValue(null, "orientation"));
-        String anchor = reader.getAttributeValue(null, "anchor");
+        String anchor = reader.getAttributeValue(null, TAG_ANCHOR);
         String dividerPositionsStr = reader.getAttributeValue(null, "divider-positions");
 
         if (anchor == null) {
@@ -733,17 +733,17 @@ public class LayoutPersistenceAPI {
                 if (name.equals("simple")) {
                     children.add(readSimpleNodeFromFile(reader));
                 }
-                else if (name.equals("split")) {
+                else if (name.equals(TAG_SPLIT)) {
                     children.add(readSplitNodeFromFile(reader));
                 }
                 else if (name.equals("tabbed")) {
                     children.add(readTabNodeFromFile(reader));
                 }
-                else if (name.equals("anchor")) {
+                else if (name.equals(TAG_ANCHOR)) {
                     children.add(readAnchorNodeFromFile(reader));
                 }
             }
-            else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("split")) {
+            else if (next == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals(TAG_SPLIT)) {
                 break;
             }
         }

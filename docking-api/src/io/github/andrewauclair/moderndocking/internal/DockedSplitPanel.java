@@ -84,7 +84,7 @@ public class DockedSplitPanel extends DockingPanel {
      */
     private int orientation = JSplitPane.HORIZONTAL_SPLIT;
 
-    private DockingPanel parent;
+    private DockingPanel dockedParent;
     private final DockingAPI docking;
     private final Window window;
     private String anchor;
@@ -492,7 +492,7 @@ public class DockedSplitPanel extends DockingPanel {
 
     @Override
     public void setParent(DockingPanel parent) {
-        this.parent = parent;
+        this.dockedParent = parent;
     }
 
     @Override
@@ -516,7 +516,7 @@ public class DockedSplitPanel extends DockingPanel {
         }
         else {
             // Different axis: wrap this split in a new outer split.
-            dockPanelBeside(this, parent, newPanel, region, dividerProportion, docking, window, anchor);
+            dockPanelBeside(this, dockedParent, newPanel, region, dividerProportion, docking, window, anchor);
         }
     }
 
@@ -555,7 +555,7 @@ public class DockedSplitPanel extends DockingPanel {
 
     @Override
     public void removeChild(DockingPanel child) {
-        if (parent == null) {
+        if (dockedParent == null) {
             return;
         }
 
@@ -581,7 +581,7 @@ public class DockedSplitPanel extends DockingPanel {
 
         if (children.size() == 1) {
             // Only one child left — collapse this split by promoting the survivor.
-            parent.replaceChild(this, children.get(0));
+            dockedParent.replaceChild(this, children.get(0));
         }
         else {
             rebuildDividerBars();

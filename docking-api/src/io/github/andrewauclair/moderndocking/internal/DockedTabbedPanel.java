@@ -120,10 +120,10 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		boolean usingFlatLaf = tabs.getUI().getClass().getPackageName().startsWith("com.formdev.flatlaf");
 
 		if (Settings.alwaysDisplayTabsMode() && usingFlatLaf) {
-			tabs.setTabPlacement(JTabbedPane.TOP);
+			tabs.setTabPlacement(SwingConstants.TOP);
 		}
 		else {
-			tabs.setTabPlacement(JTabbedPane.BOTTOM);
+			tabs.setTabPlacement(SwingConstants.BOTTOM);
 		}
 
 		tabs.setTabLayoutPolicy(Settings.getTabLayoutPolicy());
@@ -230,7 +230,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		}
 
 		// Add room for the tab strip itself
-		boolean topOrBottom = (tabs.getTabPlacement() == JTabbedPane.TOP || tabs.getTabPlacement() == JTabbedPane.BOTTOM);
+		boolean topOrBottom = (tabs.getTabPlacement() == SwingConstants.TOP || tabs.getTabPlacement() == SwingConstants.BOTTOM);
 		Dimension tabsMin = tabs.getMinimumSize();
 
 		if (topOrBottom) {

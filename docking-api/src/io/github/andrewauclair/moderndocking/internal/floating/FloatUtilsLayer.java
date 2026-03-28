@@ -325,10 +325,12 @@ class FloatUtilsLayer implements FloatUtils, DragSourceMotionListener, Component
 
     @Override
     public void componentShown(ComponentEvent e) {
+        // Panel position is relative to the layered pane; it doesn't need updating on window shown
     }
 
     @Override
     public void componentHidden(ComponentEvent e) {
+        // Panel position is relative to the layered pane; it doesn't need updating on window hidden
     }
 
     private void updatePanelBounds() {
