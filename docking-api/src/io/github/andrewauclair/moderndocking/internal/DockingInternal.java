@@ -230,7 +230,7 @@ public class DockingInternal {
 				.filter(field -> field.getAnnotation(DockingProperty.class) != null)
 				.collect(Collectors.toList());
 
-		if (dockingPropFields.size() > 0) {
+		if (!dockingPropFields.isEmpty()) {
 			try {
 				Method updateProperties = dockable.getClass().getMethod("updateProperties");
 				if (updateProperties.getDeclaringClass() == Dockable.class) {
@@ -332,7 +332,7 @@ public class DockingInternal {
 
 		wrapper.setRoot(root);
 
-		boolean inTabbedPane = wrapper.getParent() != null && wrapper.getParent() instanceof DockedTabbedPanel;
+		boolean inTabbedPane = wrapper.getParent() instanceof DockedTabbedPanel;
 
 		if (!inTabbedPane && docking.isHidden(dockable)) {
 			root.undock(dockable);
@@ -466,7 +466,7 @@ public class DockingInternal {
 	public void dockToLargestAnchorPanel(Dockable dockable, String anchor) {
 		Optional<Dockable> biggest = docking.getDockables().stream()
 				.filter(d -> docking.isDocked(d))
-				.filter(d -> getWrapper(d).getAnchor() == anchor)
+				.filter(d -> Objects.equals(getWrapper(d).getAnchor(), anchor))
 				.sorted((o1, o2) -> {
                     Dimension sizeA = getWrapper(o1).getParent().getSize();
                     Dimension sizeB = getWrapper(o2).getParent().getSize();
@@ -484,7 +484,7 @@ public class DockingInternal {
         return internals.get(docking).deregistering;
     }
 
-    public static void setDeregistering(DockingAPI docking, boolean deregistering) {
-		internals.get(docking).deregistering = deregistering;
+    public void setDeregistering(boolean deregistering) {
+		this.deregistering = deregistering;
     }
 }

@@ -97,7 +97,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	/**
 	 * The parent of this DockedTabbedPanel
 	 */
-	private DockingPanel parent;
+	private DockingPanel dockedParent;
 
 	private static Icon settingsIcon = new ImageIcon(Objects.requireNonNull(DockedTabbedPanel.class.getResource("/api_icons/settings.png")));
 
@@ -359,7 +359,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 	@Override
 	public void setParent(DockingPanel parent) {
-		this.parent = parent;
+		this.dockedParent = parent;
 	}
 
 	@Override
@@ -409,7 +409,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 	public void undock(Dockable dockable) {
 		removePanel(DockingInternal.get(docking).getWrapper(dockable));
 
-		if (!Floating.isFloatingTabbedPane() && !Settings.alwaysDisplayTabsMode() && panels.size() == 1 && parent != null && panels.get(0).getDockable().getTabPreference() != DockableTabPreference.TOP) {
+		if (!Floating.isFloatingTabbedPane() && !Settings.alwaysDisplayTabsMode() && panels.size() == 1 && dockedParent != null && panels.get(0).getDockable().getTabPreference() != DockableTabPreference.TOP) {
 			DockableWrapper remaining = panels.get(0);
 
 			if (remaining.isHidden()) {
@@ -417,21 +417,21 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 				DockingListeners.fireShownEvent(remaining.getDockable());
 			}
 
-			parent.replaceChild(this, new DockedSimplePanel(docking, remaining, anchor));
+			dockedParent.replaceChild(this, new DockedSimplePanel(docking, remaining, anchor));
 		}
 
 		// protect against bad instances when failing to restore a layout
-		if (parent != null && panels.isEmpty()) {
+		if (dockedParent != null && panels.isEmpty()) {
 			DockableWrapper anchorWrapper = DockingInternal.get(docking).getAnchor(anchor);
 
 			anchor = "";
 
 			if (anchorWrapper == null || !DockingComponentUtils.isAnchorEmpty(docking, anchorWrapper.getDockable())) {
-				parent.removeChild(this);
+				dockedParent.removeChild(this);
 			}
 			else {
 				anchor = "";
-				parent.replaceChild(this, new DockedAnchorPanel(docking, anchorWrapper));
+				dockedParent.replaceChild(this, new DockedAnchorPanel(docking, anchorWrapper));
 				anchorWrapper.setWindow(DockingInternal.get(docking).getWrapper(dockable).getWindow());
 			}
 		}

@@ -27,6 +27,7 @@ import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.app.Docking;
 import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
 import javax.swing.JDialog;
+import javax.swing.WindowConstants;
 
 public class DialogWithDocking extends JDialog {
 
@@ -58,7 +59,7 @@ public class DialogWithDocking extends JDialog {
 		setSize(500, 500);
 		pack();
 
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	}
 
 	@Override

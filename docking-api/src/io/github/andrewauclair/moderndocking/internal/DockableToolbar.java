@@ -21,7 +21,6 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.internal;
 
-import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.ui.DockingSettings;

@@ -103,3 +103,9 @@ javadoc {
 		options.addBooleanOption('html5', true)
 	}
 }
+
+sonar {
+	properties {
+		property "sonar.sources", "src"
+	}
+}

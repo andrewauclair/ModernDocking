@@ -32,6 +32,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
 /**
  * This class is used when a floating dockable is dropped outside any existing frames
@@ -56,7 +57,7 @@ public class FloatingFrame extends JFrame {
 		setLayout(new BorderLayout());
 		setIconImages(docking.getMainWindow().getIconImages());
 
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 		// create and add the root
 		root = new RootDockingPanelAPI(docking, this){};
@@ -88,7 +89,7 @@ public class FloatingFrame extends JFrame {
 
 		setLayout(new BorderLayout());
 
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 		// create and add the root
 		RootDockingPanelAPI root = new RootDockingPanelAPI(docking, this){};
@@ -129,7 +130,7 @@ public class FloatingFrame extends JFrame {
 
 		setLayout(new BorderLayout());
 
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 		// create and add the root
 		RootDockingPanelAPI root = new RootDockingPanelAPI(docking, this){};
@@ -162,7 +163,7 @@ public class FloatingFrame extends JFrame {
 		setSize(size);
 
 		// dispose this frame when it closes
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 		// set the location of this frame to the floating frame location
 		setLocation(floatingFrame.getLocation());
@@ -187,6 +188,8 @@ public class FloatingFrame extends JFrame {
 
 	private void finalizeSize(Dockable dockable, Point onScreenPoint, Dimension onScreenSize) {
 		SwingUtilities.invokeLater(() -> {
+			validate();
+
 			// adjust the floating frame such that the dockable is in the correct location
 			DisplayPanel displayPanel = DockingInternal.get(docking).getWrapper(dockable).getDisplayPanel();
 

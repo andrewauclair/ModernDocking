@@ -54,7 +54,7 @@ public class DockedSimplePanel extends DockingPanel {
 	/**
 	 * Parent panel of this simple panel
 	 */
-	private DockingPanel parent;
+	private DockingPanel dockedParent;
 	/**
 	 * Should we add the 1 pixel empty border used by the active dockable highlighter?
 	 */
@@ -140,7 +140,7 @@ public class DockedSimplePanel extends DockingPanel {
 
 	@Override
 	public void setParent(DockingPanel parent) {
-		this.parent = parent;
+		this.dockedParent = parent;
 	}
 
 	@Override
@@ -151,14 +151,14 @@ public class DockedSimplePanel extends DockingPanel {
 		wrapper.setWindow(this.dockable.getWindow());
 
 		if (getParent() instanceof DockedTabbedPanel) {
-			((DockedTabbedPanel) parent).addPanel(wrapper);
+			((DockedTabbedPanel) dockedParent).addPanel(wrapper);
 		}
 		else if (region == DockingRegion.CENTER) {
 			DockedTabbedPanel tabbedPanel = new DockedTabbedPanel(docking, this.dockable, anchor);
 
 			tabbedPanel.addPanel(wrapper);
 
-			parent.replaceChild(this, tabbedPanel);
+			dockedParent.replaceChild(this, tabbedPanel);
 		}
 		else {
 			DockingPanel newPanel = DockedSplitPanel.createLeafPanel(docking, wrapper, anchor);
@@ -179,11 +179,11 @@ public class DockedSimplePanel extends DockingPanel {
 			anchor = "";
 
 			if (anchorWrapper == null || !DockingComponentUtils.isAnchorEmpty(docking, anchorWrapper.getDockable())) {
-				parent.removeChild(this);
+				dockedParent.removeChild(this);
 			}
 			else {
 				anchor = "";
-				parent.replaceChild(this, new DockedAnchorPanel(docking, anchorWrapper));
+				dockedParent.replaceChild(this, new DockedAnchorPanel(docking, anchorWrapper));
 				anchorWrapper.setWindow(DockingInternal.get(docking).getWrapper(dockable).getWindow());
 			}
 

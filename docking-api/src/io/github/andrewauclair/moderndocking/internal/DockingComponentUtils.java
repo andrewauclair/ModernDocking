@@ -433,7 +433,7 @@ public class DockingComponentUtils {
 	}
 
 	private static boolean isAnchorNotEmpty(DockingPanel child) {
-		if (child.getAnchor() != "") {
+		if (!child.getAnchor().isEmpty()) {
 			return true;
 		}
 		for (DockingPanel childChild : child.getChildren()) {
