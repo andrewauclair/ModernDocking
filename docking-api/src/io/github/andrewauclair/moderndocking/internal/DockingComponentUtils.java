@@ -310,7 +310,7 @@ public class DockingComponentUtils {
 
 		if (docking.canDisposeWindow(window) && root != null) {
 			if (shouldUndock(root)) {
-				undockIllegalFloats(root);
+				undockIllegalFloats(docking, root);
 			}
 		}
 
@@ -336,7 +336,7 @@ public class DockingComponentUtils {
 		return true;
 	}
 
-	private static void undockIllegalFloats(Container container) {
+	private static void undockIllegalFloats(DockingAPI docking, Container container) {
 		for (Component component : container.getComponents()) {
 			if (component instanceof DisplayPanel) {
 				DisplayPanel panel = (DisplayPanel) component;
@@ -345,10 +345,10 @@ public class DockingComponentUtils {
 				Dockable dockable = wrapper.getDockable();
 				wrapper.getParent().undock(dockable);
 
-				DockingListeners.fireUndockedEvent(dockable, false);
+				docking.getDockingListeners().fireUndockedEvent(dockable, false);
 			}
 			else if (component instanceof Container) {
-				undockIllegalFloats((Container) component);
+				undockIllegalFloats(docking, (Container) component);
 			}
 		}
 	}

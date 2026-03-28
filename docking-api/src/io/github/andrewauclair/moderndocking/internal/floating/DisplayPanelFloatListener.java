@@ -164,7 +164,7 @@ public class DisplayPanelFloatListener extends FloatListener {
                 SwingUtilities.invokeLater(() -> {
                     docking.bringToFront(floatingDockable.getDockable());
 
-                    DockingListeners.fireNewFloatingFrameEvent(newFloatingFrame, newFloatingFrame.getRoot(), floatingDockable.getDockable());
+                    docking.getDockingListeners().fireNewFloatingFrameEvent(newFloatingFrame, newFloatingFrame.getRoot(), floatingDockable.getDockable());
                 });
             }
             else {
@@ -180,7 +180,7 @@ public class DisplayPanelFloatListener extends FloatListener {
             SwingUtilities.invokeLater(() -> {
                 docking.bringToFront(floatingDockable.getDockable());
 
-                DockingListeners.fireNewFloatingFrameEvent(newFloatingFrame, newFloatingFrame.getRoot(), floatingDockable.getDockable());
+                docking.getDockingListeners().fireNewFloatingFrameEvent(newFloatingFrame, newFloatingFrame.getRoot(), floatingDockable.getDockable());
             });
         }
         else {

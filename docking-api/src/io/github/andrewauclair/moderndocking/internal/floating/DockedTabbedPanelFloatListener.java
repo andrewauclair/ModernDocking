@@ -141,7 +141,7 @@ public class DockedTabbedPanelFloatListener extends FloatListener {
                 final FloatingFrame frame = newFrame;
 
                 SwingUtilities.invokeLater(() -> {
-                    DockingListeners.fireNewFloatingFrameEvent(frame, frame.getRoot());
+                    docking.getDockingListeners().fireNewFloatingFrameEvent(frame, frame.getRoot());
                 });
             }
 

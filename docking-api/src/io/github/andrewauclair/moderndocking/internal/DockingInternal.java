@@ -345,7 +345,7 @@ public class DockingInternal {
 		}
 		wrapper.setWindow(null);
 
-		DockingListeners.fireUndockedEvent(dockable, isTemporary);
+		docking.getDockingListeners().fireUndockedEvent(dockable, isTemporary);
 
 		// make sure that can dispose this window, and we're not floating the last dockable in it
 		if (docking.canDisposeWindow(window) && root.isEmpty() && !Floating.isFloating()) {
@@ -370,7 +370,7 @@ public class DockingInternal {
 				.collect(Collectors.toList());
 
 		for (DockableWrapper wrapper : wrappers) {
-			DockingListeners.fireDockedEvent(wrapper.getDockable());
+			docking.getDockingListeners().fireDockedEvent(wrapper.getDockable());
 		}
 	}
 
@@ -382,7 +382,7 @@ public class DockingInternal {
 	public static void fireDockedEventForAll(DockingAPI docking) {
 		for (Dockable dockable : DockingInternal.get(docking).getDockables()) {
 			if (docking.isDocked(dockable)) {
-				DockingListeners.fireDockedEvent(dockable);
+				docking.getDockingListeners().fireDockedEvent(dockable);
 			}
 		}
 	}

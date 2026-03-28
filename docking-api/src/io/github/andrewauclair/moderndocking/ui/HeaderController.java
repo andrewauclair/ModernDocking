@@ -64,8 +64,8 @@ public class HeaderController implements MaximizeListener, DockingListener {
 		this.docking = docking;
 		this.model = model;
 
-		DockingListeners.addMaximizeListener(this);
-		DockingListeners.addDockingListener(this);
+		docking.getDockingListeners().addMaximizeListener(this);
+		docking.getDockingListeners().addDockingListener(this);
 	}
 
 	/**
@@ -81,8 +81,8 @@ public class HeaderController implements MaximizeListener, DockingListener {
 	 * Remove the docking listeners that we've added
 	 */
 	public void removeListeners() {
-		DockingListeners.removeMaximizeListener(this);
-		DockingListeners.removeDockingListener(this);
+		docking.getDockingListeners().removeMaximizeListener(this);
+		docking.getDockingListeners().removeDockingListener(this);
 	}
 
 	/**

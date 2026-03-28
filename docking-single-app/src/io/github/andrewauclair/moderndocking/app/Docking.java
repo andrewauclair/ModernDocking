@@ -640,7 +640,7 @@ public class Docking {
      * @param listener Listener to add
      */
     public static void addNewFloatingFrameListener(NewFloatingFrameListener listener) {
-        DockingListeners.addNewFloatingFrameListener(listener);
+        instance.getDockingListeners().addNewFloatingFrameListener(listener);
     }
 
     /**
@@ -649,7 +649,7 @@ public class Docking {
      * @param listener Listener to remove
      */
     public static void removeNewFloatingFrameListener(NewFloatingFrameListener listener) {
-        DockingListeners.removeNewFloatingFrameListener(listener);
+        instance.getDockingListeners().removeNewFloatingFrameListener(listener);
     }
 
     public static void setUserDynamicDockableCreationListener(DynamicDockableCreationListener listener) {

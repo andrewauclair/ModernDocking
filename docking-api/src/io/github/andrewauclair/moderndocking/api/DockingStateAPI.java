@@ -167,7 +167,7 @@ public class DockingStateAPI {
             restoreWindowLayout(frame, frameLayout);
 
             SwingUtilities.invokeLater(() -> {
-                DockingListeners.fireNewFloatingFrameEvent(frame, frame.getRoot());
+                docking.getDockingListeners().fireNewFloatingFrameEvent(frame, frame.getRoot());
             });
         }
 

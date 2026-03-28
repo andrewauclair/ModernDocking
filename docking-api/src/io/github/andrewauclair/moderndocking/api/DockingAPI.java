@@ -66,6 +66,7 @@ import javax.swing.UIManager;
  */
 public class DockingAPI {
     private final DockingInternal internals = new DockingInternal(this);
+    private final DockingListeners listeners = new DockingListeners();
 
     // the applications main frame
     private Window mainWindow;
@@ -95,6 +96,10 @@ public class DockingAPI {
 
     public LayoutPersistenceAPI getLayoutPersistence() {
         return layoutPersistence;
+    }
+
+    public DockingListeners getDockingListeners() {
+        return listeners;
     }
 
     /**
@@ -415,7 +420,7 @@ public class DockingAPI {
 
             // fire an undock event if the dockable is changing windows
             if (wrapper.getWindow() != window) {
-                DockingListeners.fireUndockedEvent(dockable, false);
+                listeners.fireUndockedEvent(dockable, false);
             }
         }
 
@@ -424,7 +429,7 @@ public class DockingAPI {
         internals.getWrapper(dockable).setWindow(window);
 
         // fire a docked event when the component is actually added
-        DockingListeners.fireDockedEvent(dockable);
+        listeners.fireDockedEvent(dockable);
 
         DockingComponentUtils.updateWindowMinimumSize(this, window);
         appState.persist();
@@ -515,7 +520,7 @@ public class DockingAPI {
 
             // fire an undock event if the dockable is changing windows
             if (wrapper.getWindow() != internals.getWrapper(source).getWindow()) {
-                DockingListeners.fireUndockedEvent(source, false);
+                listeners.fireUndockedEvent(source, false);
             }
         }
 
@@ -526,7 +531,7 @@ public class DockingAPI {
         internals.getWrapper(source).setWindow(wrapper.getWindow());
         internals.getWrapper(source).setRoot(internals.getRootPanels().get(wrapper.getWindow()));
 
-        DockingListeners.fireDockedEvent(source);
+        listeners.fireDockedEvent(source);
 
         DockingComponentUtils.updateWindowMinimumSize(this, wrapper.getWindow());
         appState.persist();
@@ -566,7 +571,7 @@ public class DockingAPI {
             SwingUtilities.invokeLater(() -> {
                 bringToFront(dockable);
 
-                DockingListeners.fireNewFloatingFrameEvent(frame, frame.getRoot(), dockable);
+                listeners.fireNewFloatingFrameEvent(frame, frame.getRoot(), dockable);
             });
         }
     }
@@ -598,7 +603,7 @@ public class DockingAPI {
         SwingUtilities.invokeLater(() -> {
             bringToFront(dockable);
 
-            DockingListeners.fireNewFloatingFrameEvent(frame, frame.getRoot(), dockable);
+            listeners.fireNewFloatingFrameEvent(frame, frame.getRoot(), dockable);
         });
     }
 
@@ -727,7 +732,7 @@ public class DockingAPI {
         // can only enter focused mode once per root
         if (!dockingState.maximizeRestoreLayout.containsKey(window) && root != null) {
             internals.getWrapper(dockable).setInFocusedMode(true);
-            DockingListeners.fireFocusedModeEnteredEvent(dockable);
+            listeners.fireFocusedModeEnteredEvent(dockable);
 
             WindowLayout layout = dockingState.getWindowLayout(window);
             layout.setFocusedModeDockable(dockable.getPersistentID());
@@ -753,7 +758,7 @@ public class DockingAPI {
         // can only exit if in focused mode
         if (dockingState.maximizeRestoreLayout.containsKey(window)) {
             internals.getWrapper(dockable).setInFocusedMode(false);
-            DockingListeners.fireFocusedModeExitedEvent(dockable);
+            listeners.fireFocusedModeExitedEvent(dockable);
 
             dockingState.restoreWindowLayout(window, dockingState.maximizeRestoreLayout.get(window));
 
@@ -796,7 +801,7 @@ public class DockingAPI {
 
             internals.getWrapper(dockable).setHidden(false);
 
-            DockingListeners.fireAutoShownEvent(dockable);
+            listeners.fireAutoShownEvent(dockable);
         }
     }
 
@@ -906,8 +911,8 @@ public class DockingAPI {
 
         internalRoot.setDockableHidden(wrapper, location);
 
-        DockingListeners.fireAutoHiddenEvent(dockable);
-        DockingListeners.fireHiddenEvent(dockable);
+        listeners.fireAutoHiddenEvent(dockable);
+        listeners.fireHiddenEvent(dockable);
     }
 
     public void autoHideDockable(String persistentID, ToolbarLocation location, Window window) {
@@ -991,7 +996,7 @@ public class DockingAPI {
      */
     @Deprecated
     public void addMaximizeListener(MaximizeListener listener) {
-        DockingListeners.addMaximizeListener(listener);
+        listeners.addMaximizeListener(listener);
     }
 
     /**
@@ -1002,7 +1007,7 @@ public class DockingAPI {
      */
     @Deprecated
     public void removeMaximizeListener(MaximizeListener listener) {
-        DockingListeners.removeMaximizeListener(listener);
+        listeners.removeMaximizeListener(listener);
     }
 
     /**
@@ -1011,7 +1016,7 @@ public class DockingAPI {
      * @param listener Listener to add
      */
     public void addDockingListener(DockingListener listener) {
-        DockingListeners.addDockingListener(listener);
+        listeners.addDockingListener(listener);
     }
 
     /**
@@ -1020,7 +1025,7 @@ public class DockingAPI {
      * @param listener Listener to remove
      */
     public void removeDockingListener(DockingListener listener) {
-        DockingListeners.removeDockingListener(listener);
+        listeners.removeDockingListener(listener);
     }
 
     /**
@@ -1029,7 +1034,7 @@ public class DockingAPI {
      * @param listener Listener to add
      */
     public void addNewFloatingFrameListener(NewFloatingFrameListener listener) {
-        DockingListeners.addNewFloatingFrameListener(listener);
+        listeners.addNewFloatingFrameListener(listener);
     }
 
     /**
@@ -1038,7 +1043,7 @@ public class DockingAPI {
      * @param listener Listener to remove
      */
     public void removeNewFloatingFrameListener(NewFloatingFrameListener listener) {
-        DockingListeners.removeNewFloatingFrameListener(listener);
+        listeners.removeNewFloatingFrameListener(listener);
     }
 
     /**

@@ -32,21 +32,17 @@ import java.util.List;
 import javax.swing.JFrame;
 
 /**
- * Manager class for docking and maximize listeners
+ * Per-instance listener manager. Each DockingAPI instance owns one of these,
+ * so events fired by one instance are never delivered to listeners registered
+ * with a different instance.
  */
 public class DockingListeners {
-	private static final List<MaximizeListener> maximizeListeners = new ArrayList<>();
-	private static final List<DockingListener> dockingListeners = new ArrayList<>();
-	private static final List<NewFloatingFrameListener> newFloatingFrameListeners = new ArrayList<>();
+	private final List<MaximizeListener> maximizeListeners = new ArrayList<>();
+	private final List<DockingListener> dockingListeners = new ArrayList<>();
+	private final List<NewFloatingFrameListener> newFloatingFrameListeners = new ArrayList<>();
 
 	/**
-	 * Unused. All methods are static
-	 */
-	private DockingListeners() {
-	}
-
-	/**
-	 * Add a new maximize listener. Will be called when a dockable enters or exits focused mode.
+	 * Add a new maximize listener.
 	 *
 	 * @param listener Listener to add
 	 * @deprecated Use {@link #addDockingListener(DockingListener)} and handle
@@ -54,20 +50,20 @@ public class DockingListeners {
 	 *             Will be removed in 2.0.
 	 */
 	@Deprecated
-	public static void addMaximizeListener(MaximizeListener listener) {
+	public void addMaximizeListener(MaximizeListener listener) {
 		if (!maximizeListeners.contains(listener)) {
 			maximizeListeners.add(listener);
 		}
 	}
 
 	/**
-	 * Remove a previously added maximize listener. No-op if the listener isn't in the list.
+	 * Remove a previously added maximize listener.
 	 *
 	 * @param listener Listener to remove
 	 * @deprecated Will be removed in 2.0.
 	 */
 	@Deprecated
-	public static void removeMaximizeListener(MaximizeListener listener) {
+	public void removeMaximizeListener(MaximizeListener listener) {
 		maximizeListeners.remove(listener);
 	}
 
@@ -76,7 +72,7 @@ public class DockingListeners {
 	 *
 	 * @param dockable Dockable that entered focused mode
 	 */
-	public static void fireFocusedModeEnteredEvent(Dockable dockable) {
+	public void fireFocusedModeEnteredEvent(Dockable dockable) {
 		fireDockingEvent(new DockingEvent(DockingEvent.ID.FOCUSED_MODE_ENTERED, dockable));
 
 		// fire legacy maximize event
@@ -89,24 +85,24 @@ public class DockingListeners {
 	 *
 	 * @param dockable Dockable that exited focused mode
 	 */
-	public static void fireFocusedModeExitedEvent(Dockable dockable) {
+	public void fireFocusedModeExitedEvent(Dockable dockable) {
 		fireDockingEvent(new DockingEvent(DockingEvent.ID.FOCUSED_MODE_EXITED, dockable));
 
-		// fire leagcy minimize event
+		// fire legacy minimize event
 		List<MaximizeListener> listeners = new ArrayList<>(maximizeListeners);
 		listeners.forEach(listener -> listener.maximized(dockable, false));
 	}
 
 	/**
-	 * Fire a new maximize event.
+	 * Fire a maximize event.
 	 *
-	 * @param dockable Dockable that has changed
+	 * @param dockable  Dockable that has changed
 	 * @param maximized New maximized state
 	 * @deprecated Use {@link #fireFocusedModeEnteredEvent(Dockable)} / {@link #fireFocusedModeExitedEvent(Dockable)}.
 	 *             Will be removed in 2.0.
 	 */
 	@Deprecated
-	public static void fireMaximizeEvent(Dockable dockable, boolean maximized) {
+	public void fireMaximizeEvent(Dockable dockable, boolean maximized) {
 		if (maximized) {
 			fireFocusedModeEnteredEvent(dockable);
 		} else {
@@ -115,132 +111,133 @@ public class DockingListeners {
 	}
 
 	/**
-	 * Add a new docking listener
+	 * Add a new docking listener.
 	 *
 	 * @param listener Listener to add
 	 */
-	public static void addDockingListener(DockingListener listener) {
+	public void addDockingListener(DockingListener listener) {
 		if (!dockingListeners.contains(listener)) {
 			dockingListeners.add(listener);
 		}
 	}
 
 	/**
-	 * Remove a docking listener
+	 * Remove a docking listener.
 	 *
 	 * @param listener Listener to remove
 	 */
-	public static void removeDockingListener(DockingListener listener) {
+	public void removeDockingListener(DockingListener listener) {
 		dockingListeners.remove(listener);
 	}
 
 	/**
-	 * Add a new floating frame listener
+	 * Add a new floating frame listener.
 	 *
 	 * @param listener Listener to add
 	 */
-	public static void addNewFloatingFrameListener(NewFloatingFrameListener listener) {
+	public void addNewFloatingFrameListener(NewFloatingFrameListener listener) {
 		newFloatingFrameListeners.add(listener);
 	}
 
 	/**
-	 * Remove a floating frame listener
+	 * Remove a floating frame listener.
 	 *
 	 * @param listener Listener to remove
 	 */
-	public static void removeNewFloatingFrameListener(NewFloatingFrameListener listener) {
+	public void removeNewFloatingFrameListener(NewFloatingFrameListener listener) {
 		newFloatingFrameListeners.remove(listener);
 	}
 
 	/**
-	 * Fire a new floating frame event
+	 * Fire a new floating frame event.
 	 *
 	 * @param frame The frame that was created
-	 * @param root The root of the frame
+	 * @param root  The root of the frame
 	 */
-	public static void fireNewFloatingFrameEvent(JFrame frame, RootDockingPanelAPI root) {
+	public void fireNewFloatingFrameEvent(JFrame frame, RootDockingPanelAPI root) {
 		List<NewFloatingFrameListener> listeners = new ArrayList<>(newFloatingFrameListeners);
 		listeners.forEach(listener -> listener.newFrameCreated(frame, root));
 	}
 
 	/**
-	 * Fire a new floating frame event
+	 * Fire a new floating frame event.
 	 *
-	 * @param frame The frame that was created
-	 * @param root The root of the frame
+	 * @param frame    The frame that was created
+	 * @param root     The root of the frame
 	 * @param dockable The dockable in the frame
 	 */
-	public static void fireNewFloatingFrameEvent(JFrame frame, RootDockingPanelAPI root, Dockable dockable) {
+	public void fireNewFloatingFrameEvent(JFrame frame, RootDockingPanelAPI root, Dockable dockable) {
 		List<NewFloatingFrameListener> listeners = new ArrayList<>(newFloatingFrameListeners);
 		listeners.forEach(listener -> listener.newFrameCreated(frame, root, dockable));
 	}
 
 	/**
-	 * Fire a new docked event
+	 * Fire a docked event.
 	 *
 	 * @param dockable Dockable that was docked
 	 */
-	public static void fireDockedEvent(Dockable dockable) {
+	public void fireDockedEvent(Dockable dockable) {
 		List<DockingListener> listeners = new ArrayList<>(dockingListeners);
 		listeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.DOCKED, dockable, false)));
 	}
 
 	/**
-	 * Fire a new undocked event
+	 * Fire an undocked event.
 	 *
-	 * @param dockable Dockable that was undocked
+	 * @param dockable    Dockable that was undocked
+	 * @param isTemporary Whether the undock is temporary
 	 */
-	public static void fireUndockedEvent(Dockable dockable, boolean isTemporary) {
+	public void fireUndockedEvent(Dockable dockable, boolean isTemporary) {
 		List<DockingListener> listeners = new ArrayList<>(dockingListeners);
 		listeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.UNDOCKED, dockable, isTemporary)));
 	}
 
 	/**
-	 * Fire a new auto hide enabled event
+	 * Fire an auto-hide enabled event.
 	 *
-	 * @param dockable Dockable that was auto hide enabled
+	 * @param dockable Dockable that was auto-hide enabled
 	 */
-	public static void fireAutoShownEvent(Dockable dockable) {
+	public void fireAutoShownEvent(Dockable dockable) {
 		List<DockingListener> listeners = new ArrayList<>(dockingListeners);
 		listeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.AUTO_HIDE_ENABLED, dockable, false)));
 	}
 
 	/**
-	 * Fire a new auto hide disabled event
+	 * Fire an auto-hide disabled event.
 	 *
-	 * @param dockable Dockable that was auto hide disabled
+	 * @param dockable Dockable that was auto-hide disabled
 	 */
-	public static void fireAutoHiddenEvent(Dockable dockable) {
+	public void fireAutoHiddenEvent(Dockable dockable) {
 		List<DockingListener> listeners = new ArrayList<>(dockingListeners);
 		listeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.AUTO_HIDE_DISABLED, dockable, false)));
 	}
 
 	/**
-	 * Fire a new shown event
+	 * Fire a shown event.
 	 *
 	 * @param dockable Dockable that was shown
 	 */
-	public static void fireShownEvent(Dockable dockable) {
+	public void fireShownEvent(Dockable dockable) {
 		List<DockingListener> listeners = new ArrayList<>(dockingListeners);
 		listeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.SHOWN, dockable, false)));
 	}
 
 	/**
-	 * Fire a new hidden event
+	 * Fire a hidden event.
 	 *
 	 * @param dockable Dockable that was hidden
 	 */
-	public static void fireHiddenEvent(Dockable dockable) {
+	public void fireHiddenEvent(Dockable dockable) {
 		List<DockingListener> listeners = new ArrayList<>(dockingListeners);
 		listeners.forEach(listener -> listener.dockingChange(new DockingEvent(DockingEvent.ID.HIDDEN, dockable, false)));
 	}
 
 	/**
-	 * Fire a new docking event
+	 * Fire a docking event.
 	 *
 	 * @param e Docking event to fire
 	 */
-	public static void fireDockingEvent(DockingEvent e) {
+	public void fireDockingEvent(DockingEvent e) {
 		List<DockingListener> listeners = new ArrayList<>(dockingListeners);
 		listeners.forEach(listener -> listener.dockingChange(e));
 	}
