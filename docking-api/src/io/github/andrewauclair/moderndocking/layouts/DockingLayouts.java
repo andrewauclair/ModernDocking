@@ -26,6 +26,7 @@ import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.event.DockingLayoutEvent;
 import io.github.andrewauclair.moderndocking.event.DockingLayoutListener;
+import io.github.andrewauclair.moderndocking.exception.RootDockingPanelNotFoundException;
 import io.github.andrewauclair.moderndocking.internal.DockableProperties;
 import io.github.andrewauclair.moderndocking.internal.DockableWrapper;
 import io.github.andrewauclair.moderndocking.internal.DockedAnchorPanel;
@@ -150,7 +151,7 @@ public class DockingLayouts {
 				.filter(entry -> entry.getValue().getRootPanel() == root)
 				.findFirst()
 				.map(Map.Entry::getValue)
-				.get();
+				.orElseThrow(() -> new IllegalArgumentException("Root docking panel is not registered"));
 
 		WindowLayout layout = new WindowLayout(DockingComponentUtils.windowForRoot(docking, root), panelToNode(docking, internalRoot.getPanel()));
 

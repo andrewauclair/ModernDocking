@@ -133,7 +133,7 @@ public class WindowLayoutBuilderAPI {
 	public WindowLayoutBuilderAPI display(String persistentID) {
 		DockingLayoutNode node = findNode(persistentID);
 
-		if (node.getParent() != null && node.getParent() instanceof DockingTabPanelNode) {
+		if (node.getParent() instanceof DockingTabPanelNode) {
 			((DockingTabPanelNode) node.getParent()).bringToFront(node);
 		}
 

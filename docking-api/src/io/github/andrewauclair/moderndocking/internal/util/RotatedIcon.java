@@ -263,7 +263,7 @@ public class RotatedIcon implements Icon
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g2.setClip(x, y, getIconWidth(), getIconHeight());
 			g2.translate((getIconWidth() - icon.getIconWidth()) / 2, (getIconHeight() - icon.getIconHeight()) / 2);
-			g2.rotate(Math.toRadians(degrees), x + cWidth, y + cHeight);
+			g2.rotate(Math.toRadians(degrees), x + (double) cWidth, y + (double) cHeight);
 			icon.paintIcon(c, g2, x, y);
 		}
 

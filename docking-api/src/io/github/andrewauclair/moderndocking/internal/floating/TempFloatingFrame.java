@@ -40,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 
 /**
  * this is a frame used temporarily when floating a panel
@@ -63,7 +64,7 @@ public class TempFloatingFrame extends JFrame {
 	 * @param size The desired size of the frame
 	 */
 	public TempFloatingFrame(DockableWrapper dockable, JComponent dragSrc, Dimension size) {
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Temp Floating Frame");
 		dockables = Collections.emptyList();
 		selectedIndex = 0;
@@ -80,7 +81,7 @@ public class TempFloatingFrame extends JFrame {
 	 * @param size The desired size of the frame
 	 */
 	public TempFloatingFrame(List<DockableWrapper> dockables, int selectedIndex, JComponent dragSrc, Dimension size) {
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 		setTitle("Temp Floating Frame");
 
