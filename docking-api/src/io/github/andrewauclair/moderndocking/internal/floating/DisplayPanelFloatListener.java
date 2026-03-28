@@ -124,7 +124,7 @@ public class DisplayPanelFloatListener extends FloatListener {
             if (utils.isOverRootHandle()) {
                 docking.dock(floatingDockable.getDockable(), targetWindow, utils.rootHandleRegion());
             }
-            else if (utils.isOverDockableHandle()) {
+            else if (utils.isOverDockableHandle() && dockableAtPos != null) {
                 docking.dock(floatingDockable.getDockable(), dockableAtPos, utils.dockableHandle());
             }
             else if (utils.isOverPinHandle()) {

@@ -549,7 +549,7 @@ public class DockingAPI {
     public void newWindow(Dockable dockable) {
         DisplayPanel displayPanel = internals.getWrapper(dockable).getDisplayPanel();
 
-        if (isDocked(dockable)) {
+        if (isDocked(dockable) && displayPanel.isShowing()) {
             Point location = displayPanel.getLocationOnScreen();
             Dimension size = displayPanel.getSize();
 
