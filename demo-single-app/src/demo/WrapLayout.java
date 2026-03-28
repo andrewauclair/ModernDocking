@@ -49,16 +49,20 @@ public class WrapLayout extends FlowLayout {
     private Dimension layoutSize(Container target, boolean preferred) {
         synchronized (target.getTreeLock()) {
             int targetWidth = target.getSize().width;
-            if (targetWidth == 0) targetWidth = Integer.MAX_VALUE;
+            if (targetWidth == 0) {
+                targetWidth = Integer.MAX_VALUE;
+            }
 
-            Insets insets   = target.getInsets();
-            int    maxWidth = targetWidth - insets.left - insets.right - getHgap() * 2;
-            int    height   = getVgap();
-            int    rowW     = 0;
-            int    rowH     = 0;
+            Insets insets = target.getInsets();
+            int maxWidth = targetWidth - insets.left - insets.right - getHgap() * 2;
+            int height = getVgap();
+            int rowW = 0;
+            int rowH = 0;
 
             for (Component c : target.getComponents()) {
-                if (!c.isVisible()) continue;
+                if (!c.isVisible()) {
+                    continue;
+                }
                 Dimension d = preferred ? c.getPreferredSize() : c.getMinimumSize();
                 if (rowW > 0 && rowW + d.width > maxWidth) {
                     height += rowH + getVgap();

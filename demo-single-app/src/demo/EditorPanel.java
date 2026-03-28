@@ -23,9 +23,12 @@ package demo;
 
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.app.Docking;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 /**
  * General-purpose editor panel. Demonstrates a normal, fully-featured dockable:
@@ -37,7 +40,7 @@ public class EditorPanel extends JPanel implements Dockable {
     private String tabText;
 
     public EditorPanel(String id, String tabText) {
-        this.id      = id;
+        this.id = id;
         this.tabText = tabText;
         setLayout(new BorderLayout());
         JTextArea area = new JTextArea("// " + tabText + "\n\npublic class Example {\n\n}");
@@ -52,9 +55,28 @@ public class EditorPanel extends JPanel implements Dockable {
         this.tabText = text;
     }
 
-    @Override public String getPersistentID() { return id; }
-    @Override public String getTabText()      { return tabText; }
-    @Override public String getTitleText()    { return tabText; }
-    @Override public boolean isMinMaxAllowed()    { return true; }
-    @Override public boolean isAutoHideAllowed()  { return true; }
+    @Override
+    public String getPersistentID() {
+        return id;
+    }
+
+    @Override
+    public String getTabText() {
+        return tabText;
+    }
+
+    @Override
+    public String getTitleText() {
+        return tabText;
+    }
+
+    @Override
+    public boolean isMinMaxAllowed() {
+        return true;
+    }
+
+    @Override
+    public boolean isAutoHideAllowed() {
+        return true;
+    }
 }

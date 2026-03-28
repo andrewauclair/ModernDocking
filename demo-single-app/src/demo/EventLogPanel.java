@@ -25,19 +25,28 @@ import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.app.Docking;
 import io.github.andrewauclair.moderndocking.event.DockingEvent;
 import io.github.andrewauclair.moderndocking.event.DockingListener;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 /**
  * Event log panel. Implements DockingListener — registered in the ComprehensiveDemo
  * constructor after all dockables are ready.
- *
+ * <p>
  * Displays every DockingEvent with a timestamp, the dockable's persistent ID, and
  * whether the event was temporary. Also shows per-type counters that can be reset
  * independently of clearing the log text.
@@ -45,8 +54,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class EventLogPanel extends JPanel implements Dockable, DockingListener {
 
     private final JTextArea log = new JTextArea();
-    final Map<DockingEvent.ID, AtomicInteger> counters    = new LinkedHashMap<>();
-    final Map<DockingEvent.ID, JLabel>        countLabels = new LinkedHashMap<>();
+    final Map<DockingEvent.ID, AtomicInteger> counters = new LinkedHashMap<>();
+    final Map<DockingEvent.ID, JLabel> countLabels = new LinkedHashMap<>();
 
     public EventLogPanel() {
         setLayout(new GridBagLayout());
@@ -123,7 +132,7 @@ public class EventLogPanel extends JPanel implements Dockable, DockingListener {
     @Override
     public void dockingChange(DockingEvent e) {
         SwingUtilities.invokeLater(() -> {
-            String ts    = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date());
+            String ts = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date());
             String entry = String.format("[%s] %-30s %s%s%n",
                     ts,
                     e.getID().name(),
@@ -137,8 +146,15 @@ public class EventLogPanel extends JPanel implements Dockable, DockingListener {
         });
     }
 
-    @Override public String getPersistentID() { return "event-log"; }
-    @Override public String getTabText()      { return "Event Log"; }
+    @Override
+    public String getPersistentID() {
+        return "event-log";
+    }
+
+    @Override
+    public String getTabText() {
+        return "Event Log";
+    }
 
     @Override
     public boolean isWrappableInScrollpane() {

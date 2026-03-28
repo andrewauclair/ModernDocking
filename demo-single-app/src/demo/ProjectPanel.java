@@ -24,10 +24,12 @@ package demo;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableStyle;
 import io.github.andrewauclair.moderndocking.app.Docking;
-
-import javax.swing.*;
+import java.awt.BorderLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
-import java.awt.*;
 
 /**
  * Project tree panel. DockableStyle.VERTICAL — can only dock north/south of other dockables.
@@ -37,7 +39,7 @@ public class ProjectPanel extends JPanel implements Dockable {
     public ProjectPanel() {
         setLayout(new BorderLayout());
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Project");
-        DefaultMutableTreeNode src  = new DefaultMutableTreeNode("src/main/java");
+        DefaultMutableTreeNode src = new DefaultMutableTreeNode("src/main/java");
         src.add(new DefaultMutableTreeNode("Main.java"));
         src.add(new DefaultMutableTreeNode("Utils.java"));
         src.add(new DefaultMutableTreeNode("Config.java"));
@@ -55,9 +57,20 @@ public class ProjectPanel extends JPanel implements Dockable {
         Docking.registerDockable(this);
     }
 
-    @Override public String getPersistentID()  { return "project-tree"; }
-    @Override public String getTabText()       { return "Project"; }
-    @Override public DockableStyle getStyle()  { return DockableStyle.VERTICAL; }
+    @Override
+    public String getPersistentID() {
+        return "project-tree";
+    }
+
+    @Override
+    public String getTabText() {
+        return "Project";
+    }
+
+    @Override
+    public DockableStyle getStyle() {
+        return DockableStyle.VERTICAL;
+    }
 
     @Override
     public boolean isWrappableInScrollpane() {

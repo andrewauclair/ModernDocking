@@ -13,10 +13,10 @@ public class PropertiesPanel extends JPanel implements Dockable {
     private final DockingAPI docking;
 
     @DockingProperty(name = "filter-text", defaultValue = "")
-    private String filterText = "";
+    private final String filterText = "";
 
     @DockingProperty(name = "show-inherited", defaultValue = "true")
-    private boolean showInherited = true;
+    private final boolean showInherited = true;
 
     public PropertiesPanel(DockingAPI docking, String id) {
         this.docking = docking;

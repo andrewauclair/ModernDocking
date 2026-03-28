@@ -24,9 +24,15 @@ package demo;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockingProperty;
 import io.github.andrewauclair.moderndocking.app.Docking;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 
 /**
  * Properties panel. Demonstrates {@code @DockingProperty} annotation and updateProperties().
@@ -51,10 +57,10 @@ public class PropertiesPanel extends JPanel implements Dockable {
         controls.add(inherited);
 
         Object[][] rows = {
-            {"background", "Color",   "#1a2b3c"},
-            {"fontSize",   "Integer", "13"},
-            {"visible",    "Boolean", "true"},
-            {"label",      "String",  "Hello"},
+                {"background", "Color", "#1a2b3c"},
+                {"fontSize", "Integer", "13"},
+                {"visible", "Boolean", "true"},
+                {"label", "String", "Hello"},
         };
         JTable table = new JTable(rows, new String[]{"Key", "Type", "Value"});
 
@@ -71,7 +77,18 @@ public class PropertiesPanel extends JPanel implements Dockable {
         // called by framework to push restored values back into fields
     }
 
-    @Override public String getPersistentID() { return "properties-panel"; }
-    @Override public String getTabText()      { return "Properties"; }
-    @Override public boolean isAutoHideAllowed() { return true; }
+    @Override
+    public String getPersistentID() {
+        return "properties-panel";
+    }
+
+    @Override
+    public String getTabText() {
+        return "Properties";
+    }
+
+    @Override
+    public boolean isAutoHideAllowed() {
+        return true;
+    }
 }

@@ -24,9 +24,14 @@ package demo;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableStyle;
 import io.github.andrewauclair.moderndocking.app.Docking;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 /**
  * Output panel. DockableStyle.HORIZONTAL — can only dock to north/south.
@@ -37,9 +42,9 @@ public class OutputPanel extends JPanel implements Dockable {
         setLayout(new BorderLayout());
         JTextArea out = new JTextArea(
                 "[INFO] Build started\n" +
-                "[INFO] Compiling sources...\n" +
-                "[INFO] BUILD SUCCESS\n" +
-                "[INFO] Total time: 1.234 s");
+                        "[INFO] Compiling sources...\n" +
+                        "[INFO] BUILD SUCCESS\n" +
+                        "[INFO] Total time: 1.234 s");
         out.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         out.setEditable(false);
         JButton clear = new JButton("Clear");
@@ -53,8 +58,23 @@ public class OutputPanel extends JPanel implements Dockable {
         Docking.registerDockable(this);
     }
 
-    @Override public String getPersistentID()        { return "output-panel"; }
-    @Override public String getTabText()             { return "Output"; }
-    @Override public DockableStyle getStyle()        { return DockableStyle.HORIZONTAL; }
-    @Override public boolean isAutoHideAllowed()     { return true; }
+    @Override
+    public String getPersistentID() {
+        return "output-panel";
+    }
+
+    @Override
+    public String getTabText() {
+        return "Output";
+    }
+
+    @Override
+    public DockableStyle getStyle() {
+        return DockableStyle.HORIZONTAL;
+    }
+
+    @Override
+    public boolean isAutoHideAllowed() {
+        return true;
+    }
 }

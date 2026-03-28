@@ -89,18 +89,18 @@ public class ComprehensiveDemo {
         private final DockingAPI docking;
         private final String     prefix;
 
-        private EditorPanel      editor1;
-        private EditorPanel      editor2;
-        private ProjectPanel     projectTree;
-        private PropertiesPanel  propertiesPanel;
-        private OutputPanel      outputPanel;
-        private EventLogPanel    eventLogPanel;
-        private ScrollablePanel  scrollablePanel;
-        private FixedPanel       fixedPanel;
-        private VetoClosePanel   vetoPanel;
-        private MoreOptionsPanel moreOptionsPanel;
-        private NoTabGroupPanel  noTabGroupPanel;
-        private TestHarnessPanel testHarnessPanel;
+        private final EditorPanel      editor1;
+        private final EditorPanel      editor2;
+        private final ProjectPanel     projectTree;
+        private final PropertiesPanel  propertiesPanel;
+        private final OutputPanel      outputPanel;
+        private final EventLogPanel    eventLogPanel;
+        private final ScrollablePanel  scrollablePanel;
+        private final FixedPanel       fixedPanel;
+        private final VetoClosePanel   vetoPanel;
+        private final MoreOptionsPanel moreOptionsPanel;
+        private final NoTabGroupPanel  noTabGroupPanel;
+        private final TestHarnessPanel testHarnessPanel;
 
         ComprehensiveDemoFrame(String title, File persistFile, String prefix, int defaultX, int defaultY) {
             super(title);
