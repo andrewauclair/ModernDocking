@@ -69,14 +69,11 @@ public class ComprehensiveDemo {
             ComprehensiveDemoFrame frame1 = new ComprehensiveDemoFrame(
                     "Modern Docking — Comprehensive Demo (Frame 1)",
                     new File("comprehensive_demo_layout_1.xml"),
-                    "f1");
+                    "f1", 100, 100);
             ComprehensiveDemoFrame frame2 = new ComprehensiveDemoFrame(
                     "Modern Docking — Comprehensive Demo (Frame 2)",
                     new File("comprehensive_demo_layout_2.xml"),
-                    "f2");
-
-            frame1.setLocation(100, 100);
-            frame2.setLocation(800, 100);
+                    "f2", 800, 100);
 
             frame1.setVisible(true);
             frame2.setVisible(true);
@@ -105,7 +102,7 @@ public class ComprehensiveDemo {
         private NoTabGroupPanel  noTabGroupPanel;
         private TestHarnessPanel testHarnessPanel;
 
-        ComprehensiveDemoFrame(String title, File persistFile, String prefix) {
+        ComprehensiveDemoFrame(String title, File persistFile, String prefix, int defaultX, int defaultY) {
             super(title);
             this.prefix = prefix;
 
@@ -190,13 +187,16 @@ public class ComprehensiveDemo {
             docking.getAppState().setPersistFile(persistFile);
             docking.getAppState().setDefaultApplicationLayout(defaultLayout);
 
+            boolean restored = false;
             try {
-                docking.getAppState().restore();
+                restored = docking.getAppState().restore();
             } catch (DockingLayoutException ex) {
                 // fallback to default
             }
 
-            setLocationRelativeTo(null);
+            if (!restored) {
+                setLocation(defaultX, defaultY);
+            }
         }
 
         // =====================================================================

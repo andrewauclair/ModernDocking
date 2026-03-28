@@ -185,13 +185,16 @@ public class ComprehensiveDemo extends JFrame {
         AppState.setPersistFile(PERSIST_FILE);
         AppState.setDefaultApplicationLayout(defaultLayout);
 
+        boolean restored = false;
         try {
-            AppState.restore();
+            restored = AppState.restore();
         } catch (DockingLayoutException ex) {
             // Default layout is applied automatically as fallback
         }
 
-        setLocationRelativeTo(null);
+        if (!restored) {
+            setLocationRelativeTo(null);
+        }
     }
 
     // =========================================================================

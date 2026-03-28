@@ -32,7 +32,9 @@ import java.io.File;
  * Handle persistence and restoration of Application layouts
  */
 public class AppState {
-    private static final AppStateAPI instance = new AppStateAPI(Docking.getSingleInstance()){};
+    private static AppStateAPI instance() {
+        return Docking.getSingleInstance().getAppState();
+    }
 
     /**
      * This class should not be instantiated
@@ -47,7 +49,7 @@ public class AppState {
      * @param autoPersist Should the framework auto persist the application layout to a file?
      */
     public static void setAutoPersist(boolean autoPersist) {
-        instance.setAutoPersist(autoPersist);
+        instance().setAutoPersist(autoPersist);
     }
 
     /**
@@ -56,7 +58,7 @@ public class AppState {
      * @return True - we are auto persisting, False - we are not auto persisting
      */
     public static boolean isAutoPersist() {
-        return instance.isAutoPersist();
+        return instance().isAutoPersist();
     }
 
     /**
@@ -65,7 +67,7 @@ public class AppState {
      * @param file File to persist layout to
      */
     public static void setPersistFile(File file) {
-        instance.setPersistFile(file);
+        instance().setPersistFile(file);
     }
 
     /**
@@ -74,7 +76,7 @@ public class AppState {
      * @return The file we are currently persisting to
      */
     public static File getPersistFile() {
-        return instance.getPersistFile();
+        return instance().getPersistFile();
     }
 
     /**
@@ -83,7 +85,7 @@ public class AppState {
      * @param paused Whether auto persistence should be enabled
      */
     public static void setPaused(boolean paused) {
-        instance.setPaused(paused);
+        instance().setPaused(paused);
     }
 
     /**
@@ -92,7 +94,7 @@ public class AppState {
      * @return Whether auto persistence is enabled
      */
     public static boolean isPaused() {
-        return instance.isPaused();
+        return instance().isPaused();
     }
 
     /**
@@ -100,7 +102,7 @@ public class AppState {
      * This is a no-op if auto persistence is turned off, it's paused or there is no file
      */
     public static void persist() {
-        instance.persist();
+        instance().persist();
     }
 
     /**
@@ -110,7 +112,7 @@ public class AppState {
      * @throws DockingLayoutException Thrown for any issues with the layout file.
      */
     public static boolean restore() throws DockingLayoutException {
-        return instance.restore();
+        return instance().restore();
     }
 
     /**
@@ -120,7 +122,7 @@ public class AppState {
      * @param layout Default layout
      */
     public static void setDefaultApplicationLayout(ApplicationLayout layout) {
-        instance.setDefaultApplicationLayout(layout);
+        instance().setDefaultApplicationLayout(layout);
     }
 
     /**
@@ -132,7 +134,7 @@ public class AppState {
      * @return The property instance of the dockable, or null if not found
      */
     public static Property getProperty(Dockable dockable, String propertyName) {
-        return instance.getProperty(dockable, propertyName);
+        return instance().getProperty(dockable, propertyName);
     }
 
     /**
@@ -143,7 +145,7 @@ public class AppState {
      * @param value The value of the property
      */
     public static void setProperty(Dockable dockable, String propertyName, String value) {
-        instance.setProperty(dockable, propertyName, new Property.StringProperty(propertyName, value));
+        instance().setProperty(dockable, propertyName, new Property.StringProperty(propertyName, value));
     }
 
     /**
@@ -153,6 +155,6 @@ public class AppState {
      * @param propertyName The property to remove
      */
     public static void removeProperty(Dockable dockable, String propertyName) {
-        instance.removeProperty(dockable, propertyName);
+        instance().removeProperty(dockable, propertyName);
     }
 }
