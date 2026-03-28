@@ -45,18 +45,19 @@ import javax.swing.Timer;
  * This class is used for auto persisting the application layout to a file when there are changes to the layout
  */
 public class AppStateAPI {
-	private static final Logger logger = Logger.getLogger(AppStateAPI.class.getPackageName());
-	private static final int PERSIST_TIMER_DELAY_MS = 500;
+	private final Logger logger = Logger.getLogger(AppStateAPI.class.getPackageName());
+	private final int PERSIST_TIMER_DELAY_MS = 500;
 
-	private static boolean autoPersist = false;
-	private static final Map<DockingAPI, File> autoPersistFiles = new HashMap<>();
+	private boolean autoPersist = false;
+	private final Map<DockingAPI, File> autoPersistFiles = new HashMap<>();
 
-	private static ApplicationLayout defaultAppLayout = null;
-	private static ApplicationLayout lastPersistedLayout = null;
+	private ApplicationLayout defaultAppLayout = null;
+	private ApplicationLayout lastPersistedLayout = null;
 
-	private static boolean paused = false;
+	private boolean paused = false;
 
-	private static Timer persistTimer = null;
+	private Timer persistTimer = null;
+
 	private final DockingAPI docking;
 
 	/**
@@ -75,7 +76,7 @@ public class AppStateAPI {
 	 * @param autoPersist Should the framework auto persist the application layout to a file?
 	 */
 	public void setAutoPersist(boolean autoPersist) {
-		AppStateAPI.autoPersist = autoPersist;
+		this.autoPersist = autoPersist;
 	}
 
 	/**
@@ -111,7 +112,7 @@ public class AppStateAPI {
 	 * @param paused Whether auto persistence should be enabled
 	 */
 	public void setPaused(boolean paused) {
-		AppStateAPI.paused = paused;
+		this.paused = paused;
 	}
 
 	/**
