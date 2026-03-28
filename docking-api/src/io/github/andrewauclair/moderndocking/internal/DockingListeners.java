@@ -46,10 +46,14 @@ public class DockingListeners {
 	}
 
 	/**
-	 * Add a new maximize listener. Will be called when a dockable is maximized
+	 * Add a new maximize listener. Will be called when a dockable enters or exits focused mode.
 	 *
 	 * @param listener Listener to add
+	 * @deprecated Use {@link #addDockingListener(DockingListener)} and handle
+	 *             {@link DockingEvent.ID#FOCUSED_MODE_ENTERED} / {@link DockingEvent.ID#FOCUSED_MODE_EXITED} instead.
+	 *             Will be removed in 2.0.
 	 */
+	@Deprecated
 	public static void addMaximizeListener(MaximizeListener listener) {
 		if (!maximizeListeners.contains(listener)) {
 			maximizeListeners.add(listener);
@@ -57,23 +61,57 @@ public class DockingListeners {
 	}
 
 	/**
-	 * Remove a previously added maximize listener. No-op if the listener isn't in the list
+	 * Remove a previously added maximize listener. No-op if the listener isn't in the list.
 	 *
 	 * @param listener Listener to remove
+	 * @deprecated Will be removed in 2.0.
 	 */
+	@Deprecated
 	public static void removeMaximizeListener(MaximizeListener listener) {
 		maximizeListeners.remove(listener);
 	}
 
 	/**
-	 * Fire a new maximize event
+	 * Fire a focused mode entered event. Also notifies deprecated {@link MaximizeListener} registrations.
+	 *
+	 * @param dockable Dockable that entered focused mode
+	 */
+	public static void fireFocusedModeEnteredEvent(Dockable dockable) {
+		fireDockingEvent(new DockingEvent(DockingEvent.ID.FOCUSED_MODE_ENTERED, dockable));
+
+		// fire legacy maximize event
+		List<MaximizeListener> listeners = new ArrayList<>(maximizeListeners);
+		listeners.forEach(listener -> listener.maximized(dockable, true));
+	}
+
+	/**
+	 * Fire a focused mode exited event. Also notifies deprecated {@link MaximizeListener} registrations.
+	 *
+	 * @param dockable Dockable that exited focused mode
+	 */
+	public static void fireFocusedModeExitedEvent(Dockable dockable) {
+		fireDockingEvent(new DockingEvent(DockingEvent.ID.FOCUSED_MODE_EXITED, dockable));
+
+		// fire leagcy minimize event
+		List<MaximizeListener> listeners = new ArrayList<>(maximizeListeners);
+		listeners.forEach(listener -> listener.maximized(dockable, false));
+	}
+
+	/**
+	 * Fire a new maximize event.
 	 *
 	 * @param dockable Dockable that has changed
 	 * @param maximized New maximized state
+	 * @deprecated Use {@link #fireFocusedModeEnteredEvent(Dockable)} / {@link #fireFocusedModeExitedEvent(Dockable)}.
+	 *             Will be removed in 2.0.
 	 */
+	@Deprecated
 	public static void fireMaximizeEvent(Dockable dockable, boolean maximized) {
-		List<MaximizeListener> listeners = new ArrayList<>(maximizeListeners);
-		listeners.forEach(listener -> listener.maximized(dockable, maximized));
+		if (maximized) {
+			fireFocusedModeEnteredEvent(dockable);
+		} else {
+			fireFocusedModeExitedEvent(dockable);
+		}
 	}
 
 	/**

@@ -31,6 +31,7 @@ import io.github.andrewauclair.moderndocking.internal.DockingListeners;
 /**
  * Controller for the header of dockables. Responsible for controlling the state of all buttons on the header.
  */
+@SuppressWarnings("deprecation")
 public class HeaderController implements MaximizeListener, DockingListener {
 	/**
 	 * The dockable this header controller references
@@ -104,17 +105,33 @@ public class HeaderController implements MaximizeListener, DockingListener {
 	}
 
 	/**
-	 * Minimize the dockable
+	 * Exit focused mode for the dockable
 	 */
-	public void minimize() {
-		docking.minimize(dockable);
+	public void exitFocusedMode() {
+		docking.exitFocusedMode(dockable);
 	}
 
 	/**
-	 * Maximize the dockable
+	 * Enter focused mode for the dockable
 	 */
+	public void enterFocusedMode() {
+		docking.enterFocusedMode(dockable);
+	}
+
+	/**
+	 * @deprecated Use {@link #exitFocusedMode()} instead. Will be removed in 2.0.
+	 */
+	@Deprecated
+	public void minimize() {
+		exitFocusedMode();
+	}
+
+	/**
+	 * @deprecated Use {@link #enterFocusedMode()} instead. Will be removed in 2.0.
+	 */
+	@Deprecated
 	public void maximize() {
-		docking.maximize(dockable);
+		enterFocusedMode();
 	}
 
 	/**
@@ -126,9 +143,16 @@ public class HeaderController implements MaximizeListener, DockingListener {
 		}
 	}
 
+	/**
+	 * @deprecated {@link MaximizeListener} is deprecated. Focused mode changes are now delivered via
+	 *             {@link #dockingChange(DockingEvent)} using {@link DockingEvent.ID#FOCUSED_MODE_ENTERED} /
+	 *             {@link DockingEvent.ID#FOCUSED_MODE_EXITED}. This override is retained for binary compatibility.
+	 *             Will be removed in 2.0.
+	 */
+	@Deprecated
 	@Override
 	public void maximized(Dockable dockable, boolean maximized) {
-		ui.update();
+		// handled via dockingChange — no-op here to avoid double update
 	}
 
 	@Override

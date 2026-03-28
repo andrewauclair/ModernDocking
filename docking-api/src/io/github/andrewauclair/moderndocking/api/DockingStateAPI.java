@@ -270,8 +270,8 @@ public class DockingStateAPI {
             root.setSlidePosition(wrapper.getDockable(), (int) (layout.slidePosition(id) * window.getHeight()));
         }
 
-        if (layout.getMaximizedDockable() != null) {
-            docking.maximize(getDockable(docking, layout.getMaximizedDockable()));
+        if (layout.getFocusedModeDockable() != null) {
+            docking.enterFocusedMode(getDockable(docking, layout.getFocusedModeDockable()));
         }
     }
 

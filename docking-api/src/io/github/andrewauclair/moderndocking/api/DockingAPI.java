@@ -24,6 +24,7 @@ package io.github.andrewauclair.moderndocking.api;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableStyle;
 import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.event.DockingEvent;
 import io.github.andrewauclair.moderndocking.event.DockingListener;
 import io.github.andrewauclair.moderndocking.event.MaximizeListener;
 import io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener;
@@ -705,52 +706,54 @@ public class DockingAPI {
     }
 
     /**
-     * checks if a dockable is currently maximized
+     * Checks if a dockable is currently in focused mode
      *
      * @param dockable The dockable to check
-     * @return Whether the dockable is maximized
+     * @return Whether the dockable is in focused mode
      */
-    public boolean isMaximized(Dockable dockable) {
-        return internals.getWrapper(dockable).isMaximized();
+    public boolean inFocusedMode(Dockable dockable) {
+        return internals.getWrapper(dockable).isInFocusedMode();
     }
 
     /**
-     * maximizes a dockable
+     * Enter focused mode for a dockable, undocking all others in the same root
      *
-     * @param dockable Dockable to maximize
+     * @param dockable Dockable to enter focused mode
      */
-    public void maximize(Dockable dockable) {
+    public void enterFocusedMode(Dockable dockable) {
         Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
         InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(this, window);
 
-        // can only maximize one panel per root
+        // can only enter focused mode once per root
         if (!dockingState.maximizeRestoreLayout.containsKey(window) && root != null) {
-            internals.getWrapper(dockable).setMaximized(true);
-            DockingListeners.fireMaximizeEvent(dockable, true);
+            internals.getWrapper(dockable).setInFocusedMode(true);
+            DockingListeners.fireFocusedModeEnteredEvent(dockable);
 
             WindowLayout layout = dockingState.getWindowLayout(window);
-            layout.setMaximizedDockable(dockable.getPersistentID());
+            layout.setFocusedModeDockable(dockable.getPersistentID());
 
             dockingState.maximizeRestoreLayout.put(window, layout);
 
+            internals.setInFocusedModeTransition(true);
             DockingComponentUtils.undockComponents(this, root);
+            internals.setInFocusedModeTransition(false);
 
             dock(dockable, window);
         }
     }
 
     /**
-     * minimize a dockable if it is currently maximized
+     * Exit focused mode for a dockable, restoring the previous layout
      *
-     * @param dockable Dockable to minimize
+     * @param dockable Dockable to exit focused mode
      */
-    public void minimize(Dockable dockable) {
+    public void exitFocusedMode(Dockable dockable) {
         Window window = DockingComponentUtils.findWindowForDockable(this, dockable);
 
-        // can only minimize if already maximized
+        // can only exit if in focused mode
         if (dockingState.maximizeRestoreLayout.containsKey(window)) {
-            internals.getWrapper(dockable).setMaximized(false);
-            DockingListeners.fireMaximizeEvent(dockable, false);
+            internals.getWrapper(dockable).setInFocusedMode(false);
+            DockingListeners.fireFocusedModeExitedEvent(dockable);
 
             dockingState.restoreWindowLayout(window, dockingState.maximizeRestoreLayout.get(window));
 
@@ -758,6 +761,30 @@ public class DockingAPI {
 
             internals.fireDockedEventForFrame(window);
         }
+    }
+
+    /**
+     * @deprecated Use {@link #inFocusedMode(Dockable)} instead. Will be removed in 2.0.
+     */
+    @Deprecated
+    public boolean isMaximized(Dockable dockable) {
+        return inFocusedMode(dockable);
+    }
+
+    /**
+     * @deprecated Use {@link #enterFocusedMode(Dockable)} instead. Will be removed in 2.0.
+     */
+    @Deprecated
+    public void maximize(Dockable dockable) {
+        enterFocusedMode(dockable);
+    }
+
+    /**
+     * @deprecated Use {@link #exitFocusedMode(Dockable)} instead. Will be removed in 2.0.
+     */
+    @Deprecated
+    public void minimize(Dockable dockable) {
+        exitFocusedMode(dockable);
     }
 
     public void autoShowDockable(Dockable dockable) {
@@ -955,19 +982,25 @@ public class DockingAPI {
     }
 
     /**
-     * Add a new maximize listener. Will be called when a dockable is maximized
+     * Add a new maximize listener. Will be called when a dockable enters or exits focused mode.
      *
      * @param listener Listener to add
+     * @deprecated Use {@link #addDockingListener(DockingListener)} and handle
+     *             {@link DockingEvent.ID#FOCUSED_MODE_ENTERED} / {@link DockingEvent.ID#FOCUSED_MODE_EXITED} instead.
+     *             Will be removed in 2.0.
      */
+    @Deprecated
     public void addMaximizeListener(MaximizeListener listener) {
         DockingListeners.addMaximizeListener(listener);
     }
 
     /**
-     * Remove a previously added maximize listener. No-op if the listener isn't in the list
+     * Remove a previously added maximize listener. No-op if the listener isn't in the list.
      *
      * @param listener Listener to remove
+     * @deprecated Will be removed in 2.0.
      */
+    @Deprecated
     public void removeMaximizeListener(MaximizeListener listener) {
         DockingListeners.removeMaximizeListener(listener);
     }

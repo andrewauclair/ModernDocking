@@ -71,9 +71,9 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 	 */
 	protected final JButton close = new JButton();
 	/**
-	 * Label that is displayed when the dockable is maximized
+	 * Label that is displayed when the dockable is in focused mode
 	 */
-	protected final JLabel maximizedIndicator = new JLabel("Maximized");
+	protected final JLabel maximizedIndicator = new JLabel("Focused");
 
 	/**
 	 * Popup menu that is displayed when the settings button is pressed
@@ -92,7 +92,7 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 	/**
 	 * Option to maximize the dockable
 	 */
-	private final JCheckBoxMenuItem maximizeOption = new JCheckBoxMenuItem("Maximize");
+	private final JCheckBoxMenuItem maximizeOption = new JCheckBoxMenuItem("Focused Mode");
 
 	/**
 	 * Used to ensure that the header UI is only initialized once when added to its parent
@@ -253,16 +253,16 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		settingsMenu.add(maximizeOption);
 
 		maximizeOption.addActionListener(e -> {
-			boolean maxed = headerModel.isMaximized();
+			boolean focused = headerModel.isInFocusedMode();
 
-			maximizeOption.setSelected(!maxed);
-			maximizedIndicator.setVisible(!maxed);
+			maximizeOption.setSelected(!focused);
+			maximizedIndicator.setVisible(!focused);
 
-			if (maxed) {
-				headerController.minimize();
+			if (focused) {
+				headerController.exitFocusedMode();
 			}
 			else {
-				headerController.maximize();
+				headerController.enterFocusedMode();
 			}
 		});
 	}
@@ -328,8 +328,8 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 	public void update() {
 		titleLabel.setText(headerModel.titleText());
 
-		maximizedIndicator.setVisible(headerModel.isMaximized());
-		maximizeOption.setSelected(headerModel.isMaximized());
+		maximizedIndicator.setVisible(headerModel.isInFocusedMode());
+		maximizeOption.setSelected(headerModel.isInFocusedMode());
 		maximizeOption.setEnabled(headerModel.isMaximizeAllowed());
 
 		autoHide.setEnabled(headerModel.isAutoHideAllowed());

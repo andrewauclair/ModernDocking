@@ -290,8 +290,8 @@ public class LayoutPersistenceAPI {
         writer.writeAttribute("size", layout.getSize().width + "," + layout.getSize().height);
         writer.writeAttribute("state", String.valueOf(layout.getState()));
 
-        if (layout.getMaximizedDockable() != null) {
-            writer.writeAttribute("max-dockable", layout.getMaximizedDockable());
+        if (layout.getFocusedModeDockable() != null) {
+            writer.writeAttribute("focused-dockable", layout.getFocusedModeDockable());
         }
         writer.writeCharacters(NL);
 
@@ -526,7 +526,11 @@ public class LayoutPersistenceAPI {
         String locStr = reader.getAttributeValue(null, "location");
         String sizeStr = reader.getAttributeValue(null, "size");
         int state = Integer.parseInt(reader.getAttributeValue(null, "state"));
-        String maximizedDockable = reader.getAttributeValue(null, "max-dockable");
+        // accept both "focused-dockable" (1.5+) and legacy "max-dockable" (pre-1.5)
+        String maximizedDockable = reader.getAttributeValue(null, "focused-dockable");
+        if (maximizedDockable == null) {
+            maximizedDockable = reader.getAttributeValue(null, "max-dockable");
+        }
 
         Point location = new Point(Integer.parseInt(locStr.substring(0, locStr.indexOf(","))), Integer.parseInt(locStr.substring(locStr.indexOf(",") + 1)));
         Dimension size = new Dimension(Integer.parseInt(sizeStr.substring(0, sizeStr.indexOf(","))), Integer.parseInt(sizeStr.substring(sizeStr.indexOf(",") + 1)));
@@ -553,7 +557,7 @@ public class LayoutPersistenceAPI {
             layout.setSlidePosition(dockable.id, dockable.slidePosition);
         }
 
-        layout.setMaximizedDockable(maximizedDockable);
+        layout.setFocusedModeDockable(maximizedDockable);
 
         return layout;
     }

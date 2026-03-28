@@ -65,6 +65,7 @@ public class DockingInternal {
 	private final AppStatePersister appStatePersister;
 
 	private boolean deregistering = false;
+	private boolean inFocusedModeTransition = false;
 
 	/**
 	 * Create a new instance of our internal helper for the docking instance
@@ -356,8 +357,8 @@ public class DockingInternal {
 
 		docking.getAppState().persist();
 
-		// force this dockable to dock again if we're not floating it
-		if (!dockable.isClosable() && !Floating.isFloating() && !isDeregistering(docking)) {
+		// force this dockable to dock again if we're not floating it and not in a focused mode transition
+		if (!dockable.isClosable() && !Floating.isFloating() && !isDeregistering(docking) && !inFocusedModeTransition) {
 			docking.dock(dockable, docking.getMainWindow(), DockingRegion.SOUTH);
 		}
 	}
@@ -487,4 +488,12 @@ public class DockingInternal {
     public void setDeregistering(boolean deregistering) {
 		this.deregistering = deregistering;
     }
+
+	public boolean isInFocusedModeTransition() {
+		return inFocusedModeTransition;
+	}
+
+	public void setInFocusedModeTransition(boolean inFocusedModeTransition) {
+		this.inFocusedModeTransition = inFocusedModeTransition;
+	}
 }

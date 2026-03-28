@@ -189,21 +189,37 @@ public class WindowLayout {
 	}
 
 	/**
-	 * Set the dockable that is maximized
+	 * Set the dockable that is in focused mode
 	 *
-	 * @param persistentID Persistent ID of maximized dockable or null
+	 * @param persistentID Persistent ID of focused mode dockable or null
 	 */
-	public void setMaximizedDockable(String persistentID) {
+	public void setFocusedModeDockable(String persistentID) {
 		maximizedDockable = persistentID;
 	}
 
 	/**
-	 * Get the persistent ID of the dockable which is currently maximized
+	 * Get the persistent ID of the dockable which is currently in focused mode
 	 *
-	 * @return Name of maximized dockable. Empty string if none.
+	 * @return Persistent ID of focused mode dockable, or null if none.
 	 */
-	public String getMaximizedDockable() {
+	public String getFocusedModeDockable() {
 		return maximizedDockable;
+	}
+
+	/**
+	 * @deprecated Use {@link #setFocusedModeDockable(String)} instead. Will be removed in 2.0.
+	 */
+	@Deprecated
+	public void setMaximizedDockable(String persistentID) {
+		setFocusedModeDockable(persistentID);
+	}
+
+	/**
+	 * @deprecated Use {@link #getFocusedModeDockable()} instead. Will be removed in 2.0.
+	 */
+	@Deprecated
+	public String getMaximizedDockable() {
+		return getFocusedModeDockable();
 	}
 
 	/**

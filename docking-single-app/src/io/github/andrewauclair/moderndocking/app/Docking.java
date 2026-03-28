@@ -25,6 +25,7 @@ import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
+import io.github.andrewauclair.moderndocking.event.DockingEvent;
 import io.github.andrewauclair.moderndocking.event.DockingListener;
 import io.github.andrewauclair.moderndocking.event.MaximizeListener;
 import io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener;
@@ -469,31 +470,55 @@ public class Docking {
     }
 
     /**
-     * checks if a dockable is currently maximized
+     * Checks if a dockable is currently in focused mode
      *
      * @param dockable The dockable to check
-     * @return Whether the dockable is maximized
+     * @return Whether the dockable is in focused mode
      */
+    public static boolean inFocusedMode(Dockable dockable) {
+        return instance.inFocusedMode(dockable);
+    }
+
+    /**
+     * Enter focused mode for a dockable, undocking all others in the same root
+     *
+     * @param dockable Dockable to enter focused mode
+     */
+    public static void enterFocusedMode(Dockable dockable) {
+        instance.enterFocusedMode(dockable);
+    }
+
+    /**
+     * Exit focused mode for a dockable, restoring the previous layout
+     *
+     * @param dockable Dockable to exit focused mode
+     */
+    public static void exitFocusedMode(Dockable dockable) {
+        instance.exitFocusedMode(dockable);
+    }
+
+    /**
+     * @deprecated Use {@link #inFocusedMode(Dockable)} instead. Will be removed in 2.0.
+     */
+    @Deprecated
     public static boolean isMaximized(Dockable dockable) {
-        return instance.isMaximized(dockable);
+        return instance.inFocusedMode(dockable);
     }
 
     /**
-     * maximizes a dockable
-     *
-     * @param dockable Dockable to maximize
+     * @deprecated Use {@link #enterFocusedMode(Dockable)} instead. Will be removed in 2.0.
      */
+    @Deprecated
     public static void maximize(Dockable dockable) {
-        instance.maximize(dockable);
+        instance.enterFocusedMode(dockable);
     }
 
     /**
-     * minimize a dockable if it is currently maximized
-     *
-     * @param dockable Dockable to minimize
+     * @deprecated Use {@link #exitFocusedMode(Dockable)} instead. Will be removed in 2.0.
      */
+    @Deprecated
     public static void minimize(Dockable dockable) {
-        instance.minimize(dockable);
+        instance.exitFocusedMode(dockable);
     }
 
     public void autoShowDockable(Dockable dockable) {
@@ -568,19 +593,25 @@ public class Docking {
     }
 
     /**
-     * Add a new maximize listener. Will be called when a dockable is maximized
+     * Add a new maximize listener. Will be called when a dockable enters or exits focused mode.
      *
      * @param listener Listener to add
+     * @deprecated Use {@link #addDockingListener(DockingListener)} and handle
+     *             {@link DockingEvent.ID#FOCUSED_MODE_ENTERED} / {@link DockingEvent.ID#FOCUSED_MODE_EXITED} instead.
+     *             Will be removed in 2.0.
      */
+    @Deprecated
     public static void addMaximizeListener(MaximizeListener listener) {
         instance.addMaximizeListener(listener);
     }
 
     /**
-     * Remove a previously added maximize listener. No-op if the listener isn't in the list
+     * Remove a previously added maximize listener. No-op if the listener isn't in the list.
      *
      * @param listener Listener to remove
+     * @deprecated Will be removed in 2.0.
      */
+    @Deprecated
     public static void removeMaximizeListener(MaximizeListener listener) {
         instance.removeMaximizeListener(listener);
     }
