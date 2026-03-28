@@ -372,7 +372,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		}
 		else {
 			DockingPanel newPanel = DockedSplitPanel.createLeafPanel(docking, wrapper, anchor);
-			DockedSplitPanel.dockPanelBeside(this, parent, newPanel, region, dividerProportion, docking, panels.get(0).getWindow(), anchor);
+			DockedSplitPanel.dockPanelBeside(this, dockedParent, newPanel, region, dividerProportion, docking, panels.get(0).getWindow(), anchor);
 		}
 
 		revalidate();

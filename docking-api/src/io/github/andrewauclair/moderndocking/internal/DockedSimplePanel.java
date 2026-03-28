@@ -162,7 +162,7 @@ public class DockedSimplePanel extends DockingPanel {
 		}
 		else {
 			DockingPanel newPanel = DockedSplitPanel.createLeafPanel(docking, wrapper, anchor);
-			DockedSplitPanel.dockPanelBeside(this, parent, newPanel, region, dividerProportion, docking, this.dockable.getWindow(), anchor);
+			DockedSplitPanel.dockPanelBeside(this, dockedParent, newPanel, region, dividerProportion, docking, this.dockable.getWindow(), anchor);
 		}
 
 		revalidate();
