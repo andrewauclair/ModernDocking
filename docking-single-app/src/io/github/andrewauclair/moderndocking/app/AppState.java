@@ -25,6 +25,8 @@ import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.Property;
 import io.github.andrewauclair.moderndocking.api.AppStateAPI;
 import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
+import io.github.andrewauclair.moderndocking.internal.DockableWrapper;
+import io.github.andrewauclair.moderndocking.internal.DockingInternal;
 import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
 import java.io.File;
 
@@ -146,6 +148,17 @@ public class AppState {
      */
     public static void setProperty(Dockable dockable, String propertyName, String value) {
         instance().setProperty(dockable, propertyName, new Property.StringProperty(propertyName, value));
+    }
+
+    /**
+     * Set the value of a property on the dockable. If the property does not exist, it will be created
+     *
+     * @param dockable The dockable to set a property for
+     * @param propertyName The name of the property we're setting
+     * @param value The value of the property
+     */
+    public static void setProperty(Dockable dockable, String propertyName, Property value) {
+        instance().setProperty(dockable, propertyName, value);
     }
 
     /**

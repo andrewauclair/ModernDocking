@@ -274,6 +274,19 @@ public class AppStateAPI {
 	 * @param propertyName The name of the property we're setting
 	 * @param value The value of the property
 	 */
+	public void setProperty(Dockable dockable, String propertyName, String value) {
+		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+
+		wrapper.setProperty(propertyName, new Property.StringProperty(propertyName, value));
+	}
+
+	/**
+	 * Set the value of a property on the dockable. If the property does not exist, it will be created
+	 *
+	 * @param dockable The dockable to set a property for
+	 * @param propertyName The name of the property we're setting
+	 * @param value The value of the property
+	 */
 	public void setProperty(Dockable dockable, String propertyName, Property value) {
 		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
 
