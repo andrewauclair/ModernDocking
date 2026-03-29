@@ -37,7 +37,6 @@ import javax.swing.JTextArea;
  * Output panel. DockableStyle.HORIZONTAL — can only dock to north/south.
  */
 public class OutputPanel extends JPanel implements Dockable {
-
     public OutputPanel() {
         setLayout(new BorderLayout());
         JTextArea out = new JTextArea(

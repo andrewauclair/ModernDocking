@@ -52,7 +52,6 @@ import javax.swing.SwingUtilities;
  * independently of clearing the log text.
  */
 public class EventLogPanel extends JPanel implements Dockable, DockingListener {
-
     private final JTextArea log = new JTextArea();
     final Map<DockingEvent.ID, AtomicInteger> counters = new LinkedHashMap<>();
     final Map<DockingEvent.ID, JLabel> countLabels = new LinkedHashMap<>();
@@ -84,8 +83,6 @@ public class EventLogPanel extends JPanel implements Dockable, DockingListener {
             counterPanel.add(lbl, gbc);
             gbc.gridy++;
         }
-
-//        JScrollPane counterScroll = new JScrollPane(counterPanel);
 
         JButton resetCounters = new JButton("Reset Counters");
 

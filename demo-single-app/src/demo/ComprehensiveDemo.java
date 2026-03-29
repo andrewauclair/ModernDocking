@@ -59,6 +59,7 @@ import demo.MiscPanels.VetoClosePanel;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableTabPreference;
 import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.api.WindowLayoutBuilderAPI;
 import io.github.andrewauclair.moderndocking.app.AppState;
 import io.github.andrewauclair.moderndocking.app.ApplicationLayoutMenuItem;
@@ -69,6 +70,7 @@ import io.github.andrewauclair.moderndocking.app.LayoutPersistence;
 import io.github.andrewauclair.moderndocking.app.LayoutsMenu;
 import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
 import io.github.andrewauclair.moderndocking.app.WindowLayoutBuilder;
+import io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener;
 import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
 import io.github.andrewauclair.moderndocking.ext.ui.DockingUI;
 import io.github.andrewauclair.moderndocking.layouts.ApplicationLayout;
@@ -118,7 +120,7 @@ public class ComprehensiveDemo extends JFrame {
     public ComprehensiveDemo() {
         super("Modern Docking — Comprehensive Demo");
 
-        setSize(1400, 900);
+        setSize(1200, 720);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
@@ -148,6 +150,7 @@ public class ComprehensiveDemo extends JFrame {
         noTabGroupPanel = new NoTabGroupPanel();
 
         List<Dockable> allDockables = new ArrayList<>();
+
         allDockables.add(editor1);
         allDockables.add(editor2);
         allDockables.add(editor3);
@@ -167,13 +170,13 @@ public class ComprehensiveDemo extends JFrame {
         Docking.addDockingListener(eventLogPanel);
 
         // Wire floating frame listener to stamp new frame titles
-        Docking.addNewFloatingFrameListener(new io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener() {
+        Docking.addNewFloatingFrameListener(new NewFloatingFrameListener() {
             @Override
-            public void newFrameCreated(JFrame frame, io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI root) {
+            public void newFrameCreated(JFrame frame, RootDockingPanelAPI root) {
             }
 
             @Override
-            public void newFrameCreated(JFrame frame, io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI root, Dockable dockable) {
+            public void newFrameCreated(JFrame frame, RootDockingPanelAPI root, Dockable dockable) {
                 frame.setTitle("Floating — " + dockable.getTitleText());
             }
         });
@@ -217,11 +220,13 @@ public class ComprehensiveDemo extends JFrame {
 
     private JMenuBar buildMenuBar() {
         JMenuBar bar = new JMenuBar();
+
         bar.add(buildFileMenu());
         bar.add(buildViewMenu());
         bar.add(buildActionsMenu());
         bar.add(buildSettingsMenu());
         bar.add(buildWindowMenu());
+
         return bar;
     }
 
@@ -229,6 +234,7 @@ public class ComprehensiveDemo extends JFrame {
         JMenu menu = new JMenu("File");
 
         JMenuItem save = new JMenuItem("Save Layout to File...");
+
         save.addActionListener(e -> {
             JFileChooser fc = new JFileChooser();
             if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -244,6 +250,7 @@ public class ComprehensiveDemo extends JFrame {
         menu.add(save);
 
         JMenuItem load = new JMenuItem("Load Layout from File...");
+
         load.addActionListener(e -> {
             JFileChooser fc = new JFileChooser();
             if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -262,6 +269,7 @@ public class ComprehensiveDemo extends JFrame {
         menu.addSeparator();
 
         JMenuItem storeNamed = new JMenuItem("Store Current Layout as Named...");
+
         storeNamed.addActionListener(e -> {
             String name = JOptionPane.showInputDialog(this, "Layout name:");
             if (name != null && !name.isBlank()) {
@@ -273,6 +281,7 @@ public class ComprehensiveDemo extends JFrame {
         menu.addSeparator();
 
         JMenuItem exit = new JMenuItem("Exit");
+
         exit.addActionListener(e -> {
             AppState.persist();
             dispose();
@@ -423,6 +432,7 @@ public class ComprehensiveDemo extends JFrame {
 
     private void addFloatItem(JMenu menu, Dockable d) {
         JMenuItem item = new JMenuItem(d.getTabText());
+
         item.addActionListener(e -> {
             if (Docking.isDocked(d)) {
                 Docking.newWindow(d);
@@ -442,6 +452,7 @@ public class ComprehensiveDemo extends JFrame {
 
     private void addAutoHideItem(JMenu menu, Dockable d, ToolbarLocation loc) {
         JMenuItem item = new JMenuItem(d.getTabText() + " → " + loc.name());
+
         item.addActionListener(e -> {
             if (Docking.isDocked(d)) {
                 Docking.autoHideDockable(d, loc, this);

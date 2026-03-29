@@ -56,7 +56,6 @@ import javax.swing.table.DefaultTableCellRenderer;
  * @param dockables All dockables to track in the state table.
  */
 public class TestHarnessPanel extends JPanel implements Dockable {
-
     private final StateTableModel stateModel;
     private final Timer refreshTimer;
 

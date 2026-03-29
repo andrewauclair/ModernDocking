@@ -35,7 +35,6 @@ import javax.swing.JTextArea;
  * closable, floatable, auto-hide allowed, maximize allowed.
  */
 public class EditorPanel extends JPanel implements Dockable {
-
     private final String id;
     private String tabText;
 

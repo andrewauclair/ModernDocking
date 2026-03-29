@@ -38,7 +38,6 @@ import javax.swing.JTextField;
  * Properties panel. Demonstrates {@code @DockingProperty} annotation and updateProperties().
  */
 public class PropertiesPanel extends JPanel implements Dockable {
-
     @DockingProperty(name = "filter-text", defaultValue = "")
     private String filterText = "";
 

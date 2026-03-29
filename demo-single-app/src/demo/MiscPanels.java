@@ -65,11 +65,6 @@ public class MiscPanels {
         public String getTabText() {
             return "Scrollable";
         }
-
-        @Override
-        public boolean isWrappableInScrollpane() {
-            return true;
-        }
     }
 
     /**

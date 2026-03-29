@@ -35,7 +35,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * Project tree panel. DockableStyle.VERTICAL — can only dock north/south of other dockables.
  */
 public class ProjectPanel extends JPanel implements Dockable {
-
     public ProjectPanel() {
         setLayout(new BorderLayout());
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Project");
