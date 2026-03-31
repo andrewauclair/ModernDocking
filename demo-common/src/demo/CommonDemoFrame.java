@@ -1,53 +1,4 @@
-/*
-Copyright (c) 2026 Andrew Auclair
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
- */
 package demo;
-
-/*
- * ComprehensiveDemo.java — single-app entry point
- *
- * Features demonstrated:
- *   Core:
- *     - Drag-to-dock (all regions), root handles, tab groups, floating
- *     - Programmatic dock / undock / display / bringToFront / newWindow
- *     - Auto-hide (pin) to WEST / SOUTH / EAST toolbars
- *     - isClosable, requestClose veto, DockableStyle, isWrappableInScrollpane
- *     - hasMoreOptions / addMoreOptions
- *     - DockingProperty annotation + updateProperties
- *     - DockingListener (event log with per-type counters)
- *     - NewFloatingFrameListener
- *     - AppState auto-persistence
- *     - LayoutPersistence (save/load file)
- *     - DockingLayouts named layouts + ApplicationLayoutMenuItem + LayoutsMenu
- *     - WindowLayoutBuilder programmatic default layout
- *     - Settings: tab preference, tab layout policy, active highlighter
- *     - DockingUI theme switching (FlatLaf light / dark)
- *
- *   1.5.0 additions (marked // TODO 1.5.0 at stubs, no marker where already live):
- *     - enterFocusedMode / exitFocusedMode / inFocusedMode
- *     - DockingEvent.ID.FOCUSED_MODE_ENTERED / FOCUSED_MODE_EXITED
- *     - isTabGroupAllowed() — stubbed, not yet in Dockable interface
- *     - Settings.setDefaultDisplayRegion — stubbed, not yet in Settings
- *     - DockingSettings.setUseLayeredPaneOverlay — live
- */
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -59,17 +10,9 @@ import demo.MiscPanels.VetoClosePanel;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableTabPreference;
 import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.api.WindowLayoutBuilderAPI;
-import io.github.andrewauclair.moderndocking.app.AppState;
-import io.github.andrewauclair.moderndocking.app.ApplicationLayoutMenuItem;
-import io.github.andrewauclair.moderndocking.app.DockableMenuItem;
-import io.github.andrewauclair.moderndocking.app.Docking;
-import io.github.andrewauclair.moderndocking.app.DockingState;
-import io.github.andrewauclair.moderndocking.app.LayoutPersistence;
-import io.github.andrewauclair.moderndocking.app.LayoutsMenu;
-import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
-import io.github.andrewauclair.moderndocking.app.WindowLayoutBuilder;
 import io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener;
 import io.github.andrewauclair.moderndocking.exception.DockingLayoutException;
 import io.github.andrewauclair.moderndocking.ext.ui.DockingUI;
@@ -79,6 +22,7 @@ import io.github.andrewauclair.moderndocking.settings.Settings;
 import io.github.andrewauclair.moderndocking.ui.DockingSettings;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
 import java.awt.BorderLayout;
+import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -97,60 +41,100 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
-public class ComprehensiveDemo extends JFrame {
+/**
+ * Base frame for both single-app and multi-app comprehensive demos.
+ * Subclasses supply the three framework-specific factory methods.
+ */
+public abstract class CommonDemoFrame extends JFrame {
 
-    private static final File PERSIST_FILE = new File("comprehensive_demo_layout.xml");
+    private final DockingAPI docking;
 
-    // All declared null — initialized after Docking.initialize(this)
-    private EditorPanel editor1;
-    private EditorPanel editor2;
-    private EditorPanel editor3;
-    private ProjectPanel projectTree;
-    private PropertiesPanel propertiesPanel;
-    private OutputPanel outputPanel;
-    private EventLogPanel eventLogPanel;
-    private ScrollablePanel scrollablePanel;
-    private FixedPanel fixedPanel;
-    private VetoClosePanel vetoPanel;
-    private MoreOptionsPanel moreOptionsPanel;
-    private NoTabGroupPanel noTabGroupPanel;
-    private TestHarnessPanel testHarnessPanel;
+    private final EditorPanel editor1;
+    private final EditorPanel editor2;
+    private final EditorPanel editor3;
+    private final ProjectPanel projectTree;
+    private final PropertiesPanel propertiesPanel;
+    private final OutputPanel outputPanel;
+    private final EventLogPanel eventLogPanel;
+    private final ScrollablePanel scrollablePanel;
+    private final FixedPanel fixedPanel;
+    private final VetoClosePanel vetoPanel;
+    private final MoreOptionsPanel moreOptionsPanel;
+    private final NoTabGroupPanel noTabGroupPanel;
+    private final TestHarnessPanel testHarnessPanel;
 
-    public ComprehensiveDemo() {
-        super("Modern Docking — Comprehensive Demo");
+    // =========================================================================
+    // Abstract factory methods
+    // =========================================================================
 
-        setSize(1200, 720);
+    /** Initialize and return the DockingAPI instance for this frame. */
+    protected abstract DockingAPI createDocking();
+
+    /** Create the concrete RootDockingPanel for this frame. */
+    protected abstract RootDockingPanelAPI createRoot(DockingAPI docking);
+
+    /** Create the concrete WindowLayoutBuilder for this frame. */
+    protected abstract WindowLayoutBuilderAPI createLayoutBuilder(DockingAPI docking, String firstId);
+
+    // =========================================================================
+    // Constructor
+    // =========================================================================
+
+    protected CommonDemoFrame(String title, File persistFile) {
+        super(title);
+
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            System.err.println("Uncaught exception on thread: " + t.getName());
+            e.printStackTrace();
+        });
+        SwingUtilities.invokeLater(() ->
+                Thread.currentThread().setUncaughtExceptionHandler((t, e) -> {
+                    System.err.println("Uncaught exception on EDT");
+                    e.printStackTrace();
+                })
+        );
+
+        setSize(1200, 800);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                AppState.persist();
+                docking.getAppState().persist();
                 dispose();
-                System.exit(0);
+                boolean anyVisible = false;
+                for (Frame f : Frame.getFrames()) {
+                    if (f.isVisible() && f != CommonDemoFrame.this) {
+                        anyVisible = true;
+                        break;
+                    }
+                }
+                if (!anyVisible) {
+                    System.exit(0);
+                }
             }
         });
 
-        // Must be called before any Docking.registerDockable() call
-        Docking.initialize(this);
+        docking = createDocking();
         DockingUI.initialize();
 
         // Create all panels now that the framework is ready
-        editor1 = new EditorPanel("editor-1", "Editor 1");
-        editor2 = new EditorPanel("editor-2", "Editor 2");
-        editor3 = new EditorPanel("editor-3", "Editor 3");
-        projectTree = new ProjectPanel();
-        propertiesPanel = new PropertiesPanel();
-        outputPanel = new OutputPanel();
-        eventLogPanel = new EventLogPanel();
-        scrollablePanel = new ScrollablePanel();
-        fixedPanel = new FixedPanel();
-        vetoPanel = new VetoClosePanel();
-        moreOptionsPanel = new MoreOptionsPanel();
-        noTabGroupPanel = new NoTabGroupPanel();
+        editor1 = new EditorPanel(docking, "editor-1", "Editor 1");
+        editor2 = new EditorPanel(docking, "editor-2", "Editor 2");
+        editor3 = new EditorPanel(docking, "editor-3", "Editor 3");
+        projectTree = new ProjectPanel(docking, "project-tree");
+        propertiesPanel = new PropertiesPanel(docking, "properties-panel");
+        outputPanel = new OutputPanel(docking, "output-panel");
+        eventLogPanel = new EventLogPanel(docking, "event-log");
+        scrollablePanel = new ScrollablePanel(docking, "scrollable-panel");
+        fixedPanel = new FixedPanel(docking, "fixed-panel");
+        vetoPanel = new VetoClosePanel(docking, "veto-close-panel");
+        moreOptionsPanel = new MoreOptionsPanel(docking, "more-options-panel");
+        noTabGroupPanel = new NoTabGroupPanel(docking, "no-tab-group-panel");
 
         List<Dockable> allDockables = new ArrayList<>();
-
         allDockables.add(editor1);
         allDockables.add(editor2);
         allDockables.add(editor3);
@@ -164,49 +148,44 @@ public class ComprehensiveDemo extends JFrame {
         allDockables.add(moreOptionsPanel);
         allDockables.add(noTabGroupPanel);
 
-        testHarnessPanel = new TestHarnessPanel(allDockables);
+        testHarnessPanel = new TestHarnessPanel(docking, "test-harness", allDockables);
 
-        // Wire event log as a docking listener
-        Docking.addDockingListener(eventLogPanel);
-
-        // Wire floating frame listener to stamp new frame titles
-        Docking.addNewFloatingFrameListener(new NewFloatingFrameListener() {
+        docking.addDockingListener(eventLogPanel);
+        docking.addNewFloatingFrameListener(new NewFloatingFrameListener() {
             @Override
             public void newFrameCreated(JFrame frame, RootDockingPanelAPI root) {
             }
 
             @Override
             public void newFrameCreated(JFrame frame, RootDockingPanelAPI root, Dockable dockable) {
-                frame.setTitle("Floating — " + dockable.getTitleText());
+                frame.setTitle("Floating \u2014 " + dockable.getTitleText());
             }
         });
 
         // Root panel
         setLayout(new BorderLayout());
-        RootDockingPanel root = new RootDockingPanel(this);
+        RootDockingPanelAPI root = createRoot(docking);
         JPanel rootWrapper = new JPanel(new BorderLayout());
         rootWrapper.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
         rootWrapper.add(root, BorderLayout.CENTER);
         add(rootWrapper, BorderLayout.CENTER);
 
-        // Menu bar
         setJMenuBar(buildMenuBar());
 
         // Default layout
         ApplicationLayout defaultLayout = buildDefaultLayout();
         DockingLayouts.addLayout("default", defaultLayout);
 
-        // Auto-persistence
-        AppState.setAutoPersist(true);
-        AppState.setPersistFile(PERSIST_FILE);
-        AppState.setDefaultApplicationLayout(defaultLayout);
+        docking.getAppState().setAutoPersist(true);
+        docking.getAppState().setPersistFile(persistFile);
+        docking.getAppState().setDefaultApplicationLayout(defaultLayout);
 
         boolean restored = false;
         try {
-            restored = AppState.restore();
+            restored = docking.getAppState().restore();
         }
         catch (DockingLayoutException ex) {
-            // Default layout is applied automatically as fallback
+            // fallback to default
         }
 
         if (!restored) {
@@ -215,18 +194,33 @@ public class ComprehensiveDemo extends JFrame {
     }
 
     // =========================================================================
+    // Default layout
+    // =========================================================================
+
+    private ApplicationLayout buildDefaultLayout() {
+        WindowLayoutBuilderAPI builder = createLayoutBuilder(docking, editor1.getPersistentID())
+                .dock(editor2.getPersistentID(), editor1.getPersistentID(), DockingRegion.CENTER)
+                .dock(editor3.getPersistentID(), editor1.getPersistentID(), DockingRegion.CENTER)
+                .dockToRoot(projectTree.getPersistentID(), DockingRegion.WEST, 0.20)
+                .dockToRoot(outputPanel.getPersistentID(), DockingRegion.SOUTH, 0.25)
+                .dockToRoot(propertiesPanel.getPersistentID(), DockingRegion.EAST, 0.22)
+                .dock(eventLogPanel.getPersistentID(), propertiesPanel.getPersistentID(), DockingRegion.CENTER)
+                .display(editor1.getPersistentID());
+
+        return builder.buildApplicationLayout();
+    }
+
+    // =========================================================================
     // Menu bar
     // =========================================================================
 
     private JMenuBar buildMenuBar() {
         JMenuBar bar = new JMenuBar();
-
         bar.add(buildFileMenu());
         bar.add(buildViewMenu());
         bar.add(buildActionsMenu());
         bar.add(buildSettingsMenu());
         bar.add(buildWindowMenu());
-
         return bar;
     }
 
@@ -234,13 +228,13 @@ public class ComprehensiveDemo extends JFrame {
         JMenu menu = new JMenu("File");
 
         JMenuItem save = new JMenuItem("Save Layout to File...");
-
         save.addActionListener(e -> {
             JFileChooser fc = new JFileChooser();
             if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                 try {
-                    LayoutPersistence.saveLayoutToFile(fc.getSelectedFile(),
-                            DockingState.getApplicationLayout());
+                    docking.getLayoutPersistence().saveLayoutToFile(
+                            fc.getSelectedFile(),
+                            docking.getDockingState().getApplicationLayout());
                 }
                 catch (DockingLayoutException ex) {
                     JOptionPane.showMessageDialog(this, "Save failed: " + ex.getMessage());
@@ -250,14 +244,13 @@ public class ComprehensiveDemo extends JFrame {
         menu.add(save);
 
         JMenuItem load = new JMenuItem("Load Layout from File...");
-
         load.addActionListener(e -> {
             JFileChooser fc = new JFileChooser();
             if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 try {
-                    ApplicationLayout layout =
-                            LayoutPersistence.loadApplicationLayoutFromFile(fc.getSelectedFile());
-                    DockingState.restoreApplicationLayout(layout);
+                    ApplicationLayout layout = docking.getLayoutPersistence()
+                            .loadApplicationLayoutFromFile(fc.getSelectedFile());
+                    docking.getDockingState().restoreApplicationLayout(layout);
                 }
                 catch (DockingLayoutException ex) {
                     JOptionPane.showMessageDialog(this, "Load failed: " + ex.getMessage());
@@ -269,25 +262,13 @@ public class ComprehensiveDemo extends JFrame {
         menu.addSeparator();
 
         JMenuItem storeNamed = new JMenuItem("Store Current Layout as Named...");
-
         storeNamed.addActionListener(e -> {
             String name = JOptionPane.showInputDialog(this, "Layout name:");
             if (name != null && !name.isBlank()) {
-                DockingLayouts.addLayout(name, DockingState.getApplicationLayout());
+                DockingLayouts.addLayout(name, docking.getDockingState().getApplicationLayout());
             }
         });
         menu.add(storeNamed);
-
-        menu.addSeparator();
-
-        JMenuItem exit = new JMenuItem("Exit");
-
-        exit.addActionListener(e -> {
-            AppState.persist();
-            dispose();
-            System.exit(0);
-        });
-        menu.add(exit);
 
         return menu;
     }
@@ -295,41 +276,46 @@ public class ComprehensiveDemo extends JFrame {
     private JMenu buildViewMenu() {
         JMenu menu = new JMenu("View");
 
-        menu.add(new DockableMenuItem(editor1.getPersistentID(), editor1.getTabText()));
-        menu.add(new DockableMenuItem(editor2.getPersistentID(), editor2.getTabText()));
-        menu.add(new DockableMenuItem(editor3.getPersistentID(), editor3.getTabText()));
+        addViewItem(menu, editor1);
+        addViewItem(menu, editor2);
+        addViewItem(menu, editor3);
         menu.addSeparator();
-        menu.add(new DockableMenuItem(projectTree.getPersistentID(), projectTree.getTabText()));
-        menu.add(new DockableMenuItem(propertiesPanel.getPersistentID(), propertiesPanel.getTabText()));
-        menu.add(new DockableMenuItem(outputPanel.getPersistentID(), outputPanel.getTabText()));
-        menu.add(new DockableMenuItem(eventLogPanel.getPersistentID(), eventLogPanel.getTabText()));
+        addViewItem(menu, projectTree);
+        addViewItem(menu, propertiesPanel);
+        addViewItem(menu, outputPanel);
+        addViewItem(menu, eventLogPanel);
         menu.addSeparator();
-        menu.add(new DockableMenuItem(scrollablePanel.getPersistentID(), scrollablePanel.getTabText()));
-        menu.add(new DockableMenuItem(fixedPanel.getPersistentID(), fixedPanel.getTabText()));
-        menu.add(new DockableMenuItem(vetoPanel.getPersistentID(), vetoPanel.getTabText()));
-        menu.add(new DockableMenuItem(moreOptionsPanel.getPersistentID(), moreOptionsPanel.getTabText()));
-        menu.add(new DockableMenuItem(noTabGroupPanel.getPersistentID(), noTabGroupPanel.getTabText()));
+        addViewItem(menu, scrollablePanel);
+        addViewItem(menu, fixedPanel);
+        addViewItem(menu, vetoPanel);
+        addViewItem(menu, moreOptionsPanel);
+        addViewItem(menu, noTabGroupPanel);
         menu.addSeparator();
-        menu.add(new DockableMenuItem(testHarnessPanel.getPersistentID(), testHarnessPanel.getTabText()));
+        addViewItem(menu, testHarnessPanel);
 
         return menu;
     }
 
+    private void addViewItem(JMenu menu, Dockable d) {
+        JMenuItem item = new JMenuItem(d.getTabText());
+        item.addActionListener(e -> docking.display(d));
+        menu.add(item);
+    }
+
     private JMenu buildActionsMenu() {
         JMenu menu = new JMenu("Actions");
-        JMenu focusedMode = new JMenu("Focused Mode");
-        JMenu enterFocused = new JMenu("Enter");
 
+        // --- Focused mode ---
+        JMenu focusedMode = new JMenu("Focused Mode");
+
+        JMenu enterFocused = new JMenu("Enter");
         addFocusedModeEnterItem(enterFocused, editor1);
         addFocusedModeEnterItem(enterFocused, editor2);
         addFocusedModeEnterItem(enterFocused, editor3);
-
         focusedMode.add(enterFocused);
 
         JMenuItem exitFocused = new JMenuItem("Exit (find active)");
-
         exitFocused.addActionListener(e -> exitFocusedModeForAny());
-
         focusedMode.add(exitFocused);
 
         menu.add(focusedMode);
@@ -337,34 +323,28 @@ public class ComprehensiveDemo extends JFrame {
 
         // --- Float in new window ---
         JMenu floatMenu = new JMenu("Float in New Window");
-
         addFloatItem(floatMenu, editor1);
         addFloatItem(floatMenu, editor2);
         addFloatItem(floatMenu, editor3);
         addFloatItem(floatMenu, projectTree);
         addFloatItem(floatMenu, propertiesPanel);
         addFloatItem(floatMenu, outputPanel);
-
         menu.add(floatMenu);
 
-        // --- Display (undocked → layout) ---
+        // --- Display ---
         JMenu displayMenu = new JMenu("Display (if not docked)");
-
         addDisplayItem(displayMenu, scrollablePanel);
         addDisplayItem(displayMenu, fixedPanel);
         addDisplayItem(displayMenu, vetoPanel);
         addDisplayItem(displayMenu, moreOptionsPanel);
         addDisplayItem(displayMenu, noTabGroupPanel);
-
         menu.add(displayMenu);
 
         menu.addSeparator();
 
         // --- Default display region (1.5.0) ---
         JMenu regionMenu = new JMenu("Default Display Region");
-
         ButtonGroup regionGroup = new ButtonGroup();
-
         for (DockingRegion region : DockingRegion.values()) {
             JRadioButtonMenuItem item = new JRadioButtonMenuItem(
                     region.name(), region == DockingRegion.NORTH);
@@ -380,7 +360,6 @@ public class ComprehensiveDemo extends JFrame {
 
         // --- Auto-hide shortcuts ---
         JMenu autoHideMenu = new JMenu("Auto-Hide to Toolbar");
-
         addAutoHideItem(autoHideMenu, editor1, ToolbarLocation.WEST);
         addAutoHideItem(autoHideMenu, outputPanel, ToolbarLocation.SOUTH);
         addAutoHideItem(autoHideMenu, propertiesPanel, ToolbarLocation.EAST);
@@ -390,22 +369,18 @@ public class ComprehensiveDemo extends JFrame {
 
         // --- bringToFront ---
         JMenu bringToFrontMenu = new JMenu("Bring to Front");
-
         addBringToFrontItem(bringToFrontMenu, editor1);
         addBringToFrontItem(bringToFrontMenu, editor2);
         addBringToFrontItem(bringToFrontMenu, editor3);
-
         menu.add(bringToFrontMenu);
 
         menu.addSeparator();
 
-        // --- Live tab text update ---
         JMenuItem changeTabText = new JMenuItem("Randomize Editor 1 Tab Text");
-
         changeTabText.addActionListener(e -> {
             String newText = "Editor " + (char) ('A' + (int) (Math.random() * 26));
             editor1.setTabText(newText);
-            Docking.updateTabInfo(editor1.getPersistentID());
+            docking.updateTabInfo(editor1.getPersistentID());
         });
         menu.add(changeTabText);
 
@@ -414,7 +389,7 @@ public class ComprehensiveDemo extends JFrame {
 
     private void addFocusedModeEnterItem(JMenu menu, Dockable d) {
         JMenuItem item = new JMenuItem(d.getTabText());
-        item.addActionListener(e -> Docking.enterFocusedMode(d));
+        item.addActionListener(e -> docking.enterFocusedMode(d));
         menu.add(item);
     }
 
@@ -422,8 +397,8 @@ public class ComprehensiveDemo extends JFrame {
         for (Dockable d : new Dockable[]{editor1, editor2, editor3,
                 projectTree, propertiesPanel, outputPanel, eventLogPanel,
                 scrollablePanel, fixedPanel, vetoPanel, moreOptionsPanel, noTabGroupPanel}) {
-            if (Docking.inFocusedMode(d)) {
-                Docking.exitFocusedMode(d);
+            if (docking.inFocusedMode(d)) {
+                docking.exitFocusedMode(d);
                 return;
             }
         }
@@ -432,10 +407,9 @@ public class ComprehensiveDemo extends JFrame {
 
     private void addFloatItem(JMenu menu, Dockable d) {
         JMenuItem item = new JMenuItem(d.getTabText());
-
         item.addActionListener(e -> {
-            if (Docking.isDocked(d)) {
-                Docking.newWindow(d);
+            if (docking.isDocked(d)) {
+                docking.newWindow(d);
             }
             else {
                 JOptionPane.showMessageDialog(this, d.getTabText() + " is not currently docked.");
@@ -446,16 +420,15 @@ public class ComprehensiveDemo extends JFrame {
 
     private void addDisplayItem(JMenu menu, Dockable d) {
         JMenuItem item = new JMenuItem(d.getTabText());
-        item.addActionListener(e -> Docking.display(d));
+        item.addActionListener(e -> docking.display(d));
         menu.add(item);
     }
 
     private void addAutoHideItem(JMenu menu, Dockable d, ToolbarLocation loc) {
-        JMenuItem item = new JMenuItem(d.getTabText() + " → " + loc.name());
-
+        JMenuItem item = new JMenuItem(d.getTabText() + " \u2192 " + loc.name());
         item.addActionListener(e -> {
-            if (Docking.isDocked(d)) {
-                Docking.autoHideDockable(d, loc, this);
+            if (docking.isDocked(d)) {
+                docking.autoHideDockable(d, loc, this);
             }
             else {
                 JOptionPane.showMessageDialog(this, d.getTabText() + " is not currently docked.");
@@ -466,7 +439,7 @@ public class ComprehensiveDemo extends JFrame {
 
     private void addBringToFrontItem(JMenu menu, Dockable d) {
         JMenuItem item = new JMenuItem(d.getTabText());
-        item.addActionListener(e -> Docking.bringToFront(d));
+        item.addActionListener(e -> docking.bringToFront(d));
         menu.add(item);
     }
 
@@ -495,7 +468,6 @@ public class ComprehensiveDemo extends JFrame {
 
         menu.addSeparator();
 
-        // Layered pane overlay — 1.5.0 (DockingSettings.setUseLayeredPaneOverlay is live)
         JCheckBoxMenuItem layeredOverlay = new JCheckBoxMenuItem("Use Layered Pane Overlay (FloatUtilsLayer)");
         layeredOverlay.addActionListener(e ->
                 DockingSettings.setUseLayeredPaneOverlay(layeredOverlay.isSelected()));
@@ -507,7 +479,9 @@ public class ComprehensiveDemo extends JFrame {
         lightTheme.addActionListener(e -> {
             FlatLightLaf.setup();
             DockingUI.initialize();
-            SwingUtilities.updateComponentTreeUI(this);
+            for (Frame f : Frame.getFrames()) {
+                SwingUtilities.updateComponentTreeUI(f);
+            }
         });
         menu.add(lightTheme);
 
@@ -515,7 +489,9 @@ public class ComprehensiveDemo extends JFrame {
         darkTheme.addActionListener(e -> {
             FlatDarkLaf.setup();
             DockingUI.initialize();
-            SwingUtilities.updateComponentTreeUI(this);
+            for (Frame f : Frame.getFrames()) {
+                SwingUtilities.updateComponentTreeUI(f);
+            }
         });
         menu.add(darkTheme);
 
@@ -524,35 +500,41 @@ public class ComprehensiveDemo extends JFrame {
 
     private JMenu buildWindowMenu() {
         JMenu menu = new JMenu("Window");
-        menu.add(new ApplicationLayoutMenuItem("default", "Restore Default Layout"));
+
+        String defaultLayoutName = "default";
+        JMenuItem restoreDefault = new JMenuItem("Restore Default Layout");
+        restoreDefault.addActionListener(e -> {
+            ApplicationLayout layout = DockingLayouts.getLayout(defaultLayoutName);
+            if (layout != null) {
+                docking.getDockingState().restoreApplicationLayout(layout);
+            }
+        });
+        menu.add(restoreDefault);
+
         menu.addSeparator();
-        menu.add(new LayoutsMenu());
+
+        JMenu layoutsMenu = new JMenu("Layouts");
+        layoutsMenu.addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent e) {
+                layoutsMenu.removeAll();
+                for (String name : DockingLayouts.getLayoutNames()) {
+                    JMenuItem item = new JMenuItem(name);
+                    item.addActionListener(ev -> {
+                        ApplicationLayout layout = DockingLayouts.getLayout(name);
+                        if (layout != null) {
+                            docking.getDockingState().restoreApplicationLayout(layout);
+                        }
+                    });
+                    layoutsMenu.add(item);
+                }
+            }
+
+            @Override public void menuDeselected(MenuEvent e) {}
+            @Override public void menuCanceled(MenuEvent e) {}
+        });
+        menu.add(layoutsMenu);
+
         return menu;
-    }
-
-    // =========================================================================
-    // Default layout
-    // =========================================================================
-
-    private ApplicationLayout buildDefaultLayout() {
-        WindowLayoutBuilderAPI builder = new WindowLayoutBuilder(editor1.getPersistentID())
-                .dock(editor2.getPersistentID(), editor1.getPersistentID(), DockingRegion.CENTER)
-                .dock(editor3.getPersistentID(), editor1.getPersistentID(), DockingRegion.CENTER)
-                .dockToRoot(projectTree.getPersistentID(), DockingRegion.WEST, 0.20)
-                .dockToRoot(outputPanel.getPersistentID(), DockingRegion.SOUTH, 0.25)
-                .dockToRoot(propertiesPanel.getPersistentID(), DockingRegion.EAST, 0.22)
-                .dock(eventLogPanel.getPersistentID(), propertiesPanel.getPersistentID(), DockingRegion.CENTER)
-                .display(editor1.getPersistentID());
-
-        return builder.buildApplicationLayout();
-    }
-
-    // =========================================================================
-    // Entry point
-    // =========================================================================
-
-    public static void main(String[] args) {
-        FlatDarkLaf.setup();
-        SwingUtilities.invokeLater(() -> new ComprehensiveDemo().setVisible(true));
     }
 }

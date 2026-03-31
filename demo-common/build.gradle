@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+sourceSets.main.java.srcDirs = ['src']
+sourceSets.main.resources.srcDirs = ['resources']
+
+dependencies {
+    implementation project(':docking-api')
+    implementation project(':docking-ui')
+
+    implementation 'com.formdev:flatlaf:' + flatLafVersion
+    implementation 'com.formdev:flatlaf-intellij-themes:' + flatLafVersion
+}
+
+tasks.withType(Javadoc).all { enabled = false }
