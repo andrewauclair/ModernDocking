@@ -32,6 +32,7 @@ jobs:
           SONAR_PR_BASE: ${{ github.event.pull_request.base.ref }}
         run: |
           ./gradlew build sonar \
+            -x :demo-common:build \
             -x :demo-single-app:build \
             -x :demo-multi-app:build \
             -Dsonar.pullrequest.key=$SONAR_PR_KEY \
