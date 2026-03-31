@@ -325,6 +325,12 @@ public class DockingInternal {
 		// TODO something about DockingStateAPI.restoreAnchor is causing a null here
 		Objects.requireNonNull(window);
 
+		// if this dockable is being closed while in focused mode, exit focused mode first
+		// to restore the previous state and allow another dockable to enter focused mode
+		if (!inFocusedModeTransition && docking.inFocusedMode(dockable)) {
+			docking.exitFocusedMode(dockable);
+		}
+
 		InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(docking, window);
 
 		Objects.requireNonNull(root);

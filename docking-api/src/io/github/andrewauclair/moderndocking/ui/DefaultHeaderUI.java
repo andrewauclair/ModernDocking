@@ -183,7 +183,7 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		gbc.gridx++;
 		gbc.weightx = 0.2;
 
-		maximizedIndicator.setVisible(false);
+		maximizedIndicator.setVisible(headerModel.isInFocusedMode());
 		maximizedIndicator.setFont(maximizedIndicator.getFont().deriveFont(Font.BOLD));
 
 		add(maximizedIndicator, gbc);
@@ -319,6 +319,7 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		super.setForeground(fg);
 
 		if (titleLabel != null) titleLabel.setForeground(fg);
+		if (maximizedIndicator != null) maximizedIndicator.setForeground(fg);
 
 		if (close != null) close.setForeground(fg);
 		if (settings != null) settings.setForeground(fg);
