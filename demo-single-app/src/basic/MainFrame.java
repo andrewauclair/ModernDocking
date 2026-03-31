@@ -96,9 +96,6 @@ public class MainFrame extends JFrame implements Callable<Integer> {
     @CommandLine.Option(names = "--tab-location", defaultValue = "NONE", description = "Location to display tabs. values: ${COMPLETION-CANDIDATES}")
     DockableTabPreference tabLocation;
 
-    @CommandLine.Option(names = "--create-docking-instance", defaultValue = "false", description = "create a separate instance of the framework for this MainFrame")
-    boolean createDockingInstance;
-
     @CommandLine.Option(names = "--use-layered-pane-overlay", defaultValue = "false", description = "force the JLayeredPane-based docking overlay instead of the transparent-window overlay")
     boolean useLayeredPaneOverlay;
 
