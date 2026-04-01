@@ -23,6 +23,7 @@ package demo;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.extras.FlatSVGUtils;
 import demo.MiscPanels.FixedPanel;
 import demo.MiscPanels.MoreOptionsPanel;
 import demo.MiscPanels.NoTabGroupPanel;
@@ -120,6 +121,7 @@ public abstract class CommonDemoFrame extends JFrame {
 
         setSize(1200, 800);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setIconImages(FlatSVGUtils.createWindowIconImages("/modern-docking-demo.svg"));
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {

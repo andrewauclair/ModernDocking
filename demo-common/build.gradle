@@ -16,6 +16,7 @@ dependencies {
     implementation project(':docking-ui')
 
     implementation 'com.formdev:flatlaf:' + flatLafVersion
+    implementation 'com.formdev:flatlaf-extras:' + flatLafVersion
     implementation 'com.formdev:flatlaf-intellij-themes:' + flatLafVersion
 
     implementation 'info.picocli:picocli:4.7.7'
