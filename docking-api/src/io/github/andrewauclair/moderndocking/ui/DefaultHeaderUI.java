@@ -34,7 +34,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -42,13 +41,11 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 
 /**
  * This can be replaced by the user or with the docking-ui FlatLaf header UI
  */
-public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, AncestorListener {
+public class DefaultHeaderUI extends JPanel implements DockingHeaderUI {
 	/**
 	 * Header controller which determines what menu options are enabled
 	 */
@@ -95,11 +92,6 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 	private final JCheckBoxMenuItem maximizeOption = new JCheckBoxMenuItem("Focused Mode");
 
 	/**
-	 * Used to ensure that the header UI is only initialized once when added to its parent
-	 */
-	protected boolean initialized = false;
-
-	/**
 	 * Override the background color of the header with a new color
 	 */
 	private Color backgroundOverride = null;
@@ -120,26 +112,6 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 
 		setOpaque(true);
 
-		// delay the actual init of the UI in case the dockable object is partially constructed
-		JComponent component = (JComponent) headerModel.dockable;
-		component.addAncestorListener(this);
-	}
-
-	@Override
-	public void displaySettingsMenu(JButton settings) {
-		SwingUtilities.updateComponentTreeUI(settingsMenu);
-		settingsMenu.show(settings, settings.getWidth(), settings.getHeight());
-	}
-
-	/**
-	 * Initialize the header UI components
-	 */
-	protected void init() {
-		if (initialized) {
-			return;
-		}
-		initialized = true;
-
 		try {
 			settings.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/api_icons/settings.png"))));
 			close.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/api_icons/close.png"))));
@@ -148,7 +120,6 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		}
 
 		settings.addActionListener(e -> displaySettingsMenu(settings));
-		settings.addActionListener(e -> this.settingsMenu.show(settings, settings.getWidth(), settings.getHeight()));
 		close.addActionListener(e -> headerController.close());
 
 		setupButton(settings);
@@ -183,7 +154,8 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		gbc.gridx++;
 		gbc.weightx = 0.2;
 
-		maximizedIndicator.setVisible(headerModel.isInFocusedMode());
+		// Default to hidden; update() will set the correct state once the dockable is registered
+		maximizedIndicator.setVisible(false);
 		maximizedIndicator.setFont(maximizedIndicator.getFont().deriveFont(Font.BOLD));
 
 		add(maximizedIndicator, gbc);
@@ -191,7 +163,9 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.weightx = 0;
 
-		if (headerModel.hasMoreOptions() || headerModel.isMaximizeAllowed() || headerModel.isAutoHideAllowed() || (headerModel.isFloatingAllowed() && !headerModel.isDockableAloneInWindow())) {
+		// Skip isDockableAloneInWindow() — the dockable has no window at construction time.
+		// The "Window" menu item is enabled/disabled by update() instead.
+		if (headerModel.hasMoreOptions() || headerModel.isMaximizeAllowed() || headerModel.isAutoHideAllowed() || headerModel.isFloatingAllowed()) {
 			addOptions();
 
 			add(settings, gbc);
@@ -201,6 +175,12 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 			add(close, gbc);
 			gbc.gridx++;
 		}
+	}
+
+	@Override
+	public void displaySettingsMenu(JButton settings) {
+		SwingUtilities.updateComponentTreeUI(settingsMenu);
+		settingsMenu.show(settings, settings.getWidth(), settings.getHeight());
 	}
 
 	/**
@@ -337,18 +317,5 @@ public class DefaultHeaderUI extends JPanel implements DockingHeaderUI, Ancestor
 		autoHide.setSelected(headerModel.isAutoHideEnabled());
 
 		window.setEnabled(headerModel.isFloatingAllowed() && !headerModel.isDockableAloneInWindow());
-	}
-
-	@Override
-	public void ancestorAdded(AncestorEvent event) {
-		init();
-	}
-
-	@Override
-	public void ancestorRemoved(AncestorEvent event) {
-	}
-
-	@Override
-	public void ancestorMoved(AncestorEvent event) {
 	}
 }

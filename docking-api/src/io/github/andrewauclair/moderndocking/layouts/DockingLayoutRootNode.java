@@ -57,6 +57,7 @@ public class DockingLayoutRootNode implements DockingLayoutNode {
             String className = DockingInternal.get(docking).getDockable(persistentID).getClass().getTypeName();
 
             node = new DockingAnchorPanelNode(docking, persistentID, className);
+            node.setParent(this);
         }
         else if (Settings.alwaysDisplayTabsMode()) {
             node = new DockingTabPanelNode(docking, persistentID, "", "", "", "");

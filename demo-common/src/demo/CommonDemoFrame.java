@@ -32,6 +32,7 @@ import demo.MiscPanels.VetoClosePanel;
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableTabPreference;
 import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.Property;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.api.WindowLayoutBuilderAPI;
@@ -50,6 +51,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
@@ -74,9 +76,7 @@ public abstract class CommonDemoFrame extends JFrame {
 
     private final DockingAPI docking;
 
-    private final EditorPanel editor1;
-    private final EditorPanel editor2;
-    private final EditorPanel editor3;
+    private final DocumentsAnchor documentsAnchor;
     private final ProjectPanel projectTree;
     private final PropertiesPanel propertiesPanel;
     private final OutputPanel outputPanel;
@@ -144,10 +144,8 @@ public abstract class CommonDemoFrame extends JFrame {
         DockingUI.initialize();
 
         // Create all panels now that the framework is ready
-        editor1 = new EditorPanel(docking, "editor-1", "Editor 1");
-        editor2 = new EditorPanel(docking, "editor-2", "Editor 2");
-        editor3 = new EditorPanel(docking, "editor-3", "Editor 3");
-        projectTree = new ProjectPanel(docking, "project-tree");
+        documentsAnchor = new DocumentsAnchor(docking);
+        projectTree = new ProjectPanel(docking, "project-tree", new File("docking-api"), DocumentsAnchor.PERSISTENT_ID);
         propertiesPanel = new PropertiesPanel(docking, "properties-panel");
         outputPanel = new OutputPanel(docking, "output-panel");
         eventLogPanel = new EventLogPanel(docking, "event-log");
@@ -158,9 +156,6 @@ public abstract class CommonDemoFrame extends JFrame {
         noTabGroupPanel = new NoTabGroupPanel(docking, "no-tab-group-panel");
 
         List<Dockable> allDockables = new ArrayList<>();
-        allDockables.add(editor1);
-        allDockables.add(editor2);
-        allDockables.add(editor3);
         allDockables.add(projectTree);
         allDockables.add(propertiesPanel);
         allDockables.add(outputPanel);
@@ -183,6 +178,18 @@ public abstract class CommonDemoFrame extends JFrame {
             public void newFrameCreated(JFrame frame, RootDockingPanelAPI root, Dockable dockable) {
                 frame.setTitle("Floating \u2014 " + dockable.getTitleText());
             }
+        });
+
+        // Restore dynamic editor panels (created when files are opened from the project tree)
+        docking.setUserDynamicDockableCreationListener((persistentID, className, titleText, tabText, properties) -> {
+            if (className.equals(EditorPanel.class.getName())) {
+                Property filePathProp = properties.get("file-path");
+                String filePath = (filePathProp instanceof Property.StringProperty)
+                        ? ((Property.StringProperty) filePathProp).getValue()
+                        : "";
+                return new EditorPanel(docking, persistentID, tabText, filePath);
+            }
+            return null;
         });
 
         // Root panel
@@ -221,14 +228,11 @@ public abstract class CommonDemoFrame extends JFrame {
     // =========================================================================
 
     private ApplicationLayout buildDefaultLayout() {
-        WindowLayoutBuilderAPI builder = createLayoutBuilder(docking, editor1.getPersistentID())
-                .dock(editor2.getPersistentID(), editor1.getPersistentID(), DockingRegion.CENTER)
-                .dock(editor3.getPersistentID(), editor1.getPersistentID(), DockingRegion.CENTER)
+        WindowLayoutBuilderAPI builder = createLayoutBuilder(docking, documentsAnchor.getPersistentID())
                 .dockToRoot(projectTree.getPersistentID(), DockingRegion.WEST, 0.20)
                 .dockToRoot(outputPanel.getPersistentID(), DockingRegion.SOUTH, 0.25)
                 .dockToRoot(propertiesPanel.getPersistentID(), DockingRegion.EAST, 0.22)
-                .dock(eventLogPanel.getPersistentID(), propertiesPanel.getPersistentID(), DockingRegion.CENTER)
-                .display(editor1.getPersistentID());
+                .dock(eventLogPanel.getPersistentID(), propertiesPanel.getPersistentID(), DockingRegion.CENTER);
 
         return builder.buildApplicationLayout();
     }
@@ -299,10 +303,6 @@ public abstract class CommonDemoFrame extends JFrame {
     private JMenu buildViewMenu() {
         JMenu menu = new JMenu("View");
 
-        addViewItem(menu, editor1);
-        addViewItem(menu, editor2);
-        addViewItem(menu, editor3);
-        menu.addSeparator();
         addViewItem(menu, projectTree);
         addViewItem(menu, propertiesPanel);
         addViewItem(menu, outputPanel);
@@ -329,26 +329,13 @@ public abstract class CommonDemoFrame extends JFrame {
         JMenu menu = new JMenu("Actions");
 
         // --- Focused mode ---
-        JMenu focusedMode = new JMenu("Focused Mode");
-
-        JMenu enterFocused = new JMenu("Enter");
-        addFocusedModeEnterItem(enterFocused, editor1);
-        addFocusedModeEnterItem(enterFocused, editor2);
-        addFocusedModeEnterItem(enterFocused, editor3);
-        focusedMode.add(enterFocused);
-
-        JMenuItem exitFocused = new JMenuItem("Exit (find active)");
+        JMenuItem exitFocused = new JMenuItem("Exit Focused Mode (find active)");
         exitFocused.addActionListener(e -> exitFocusedModeForAny());
-        focusedMode.add(exitFocused);
-
-        menu.add(focusedMode);
+        menu.add(exitFocused);
         menu.addSeparator();
 
         // --- Float in new window ---
         JMenu floatMenu = new JMenu("Float in New Window");
-        addFloatItem(floatMenu, editor1);
-        addFloatItem(floatMenu, editor2);
-        addFloatItem(floatMenu, editor3);
         addFloatItem(floatMenu, projectTree);
         addFloatItem(floatMenu, propertiesPanel);
         addFloatItem(floatMenu, outputPanel);
@@ -383,43 +370,15 @@ public abstract class CommonDemoFrame extends JFrame {
 
         // --- Auto-hide shortcuts ---
         JMenu autoHideMenu = new JMenu("Auto-Hide to Toolbar");
-        addAutoHideItem(autoHideMenu, editor1, ToolbarLocation.WEST);
         addAutoHideItem(autoHideMenu, outputPanel, ToolbarLocation.SOUTH);
         addAutoHideItem(autoHideMenu, propertiesPanel, ToolbarLocation.EAST);
         menu.add(autoHideMenu);
 
-        menu.addSeparator();
-
-        // --- bringToFront ---
-        JMenu bringToFrontMenu = new JMenu("Bring to Front");
-        addBringToFrontItem(bringToFrontMenu, editor1);
-        addBringToFrontItem(bringToFrontMenu, editor2);
-        addBringToFrontItem(bringToFrontMenu, editor3);
-        menu.add(bringToFrontMenu);
-
-        menu.addSeparator();
-
-        JMenuItem changeTabText = new JMenuItem("Randomize Editor 1 Tab Text");
-        changeTabText.addActionListener(e -> {
-            String newText = "Editor " + (char) ('A' + (int) (Math.random() * 26));
-            editor1.setTabText(newText);
-            docking.updateTabInfo(editor1.getPersistentID());
-        });
-        menu.add(changeTabText);
-
         return menu;
     }
 
-    private void addFocusedModeEnterItem(JMenu menu, Dockable d) {
-        JMenuItem item = new JMenuItem(d.getTabText());
-        item.addActionListener(e -> docking.enterFocusedMode(d));
-        menu.add(item);
-    }
-
     private void exitFocusedModeForAny() {
-        for (Dockable d : new Dockable[]{editor1, editor2, editor3,
-                projectTree, propertiesPanel, outputPanel, eventLogPanel,
-                scrollablePanel, fixedPanel, vetoPanel, moreOptionsPanel, noTabGroupPanel}) {
+        for (Dockable d : docking.getDockables()) {
             if (docking.inFocusedMode(d)) {
                 docking.exitFocusedMode(d);
                 return;
@@ -457,12 +416,6 @@ public abstract class CommonDemoFrame extends JFrame {
                 JOptionPane.showMessageDialog(this, d.getTabText() + " is not currently docked.");
             }
         });
-        menu.add(item);
-    }
-
-    private void addBringToFrontItem(JMenu menu, Dockable d) {
-        JMenuItem item = new JMenuItem(d.getTabText());
-        item.addActionListener(e -> docking.bringToFront(d));
         menu.add(item);
     }
 

@@ -22,9 +22,13 @@ SOFTWARE.
 package demo;
 
 import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.DockingProperty;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -33,24 +37,55 @@ import javax.swing.JTextArea;
 public class EditorPanel extends JPanel implements Dockable {
 
     private final String id;
-    private String tabText;
+    private final String tabText;
     private final DockingAPI docking;
 
-    public EditorPanel(DockingAPI docking, String id, String tabText) {
+    @DockingProperty(name = "file-path", required = true, defaultValue = "")
+    private String filePath;
+
+    private final JTextArea area = new JTextArea();
+
+    public EditorPanel(DockingAPI docking, String id, String tabText, String filePath) {
         this.docking = docking;
         this.id = id;
         this.tabText = tabText;
+        this.filePath = filePath;
         setLayout(new BorderLayout());
-        JTextArea area = new JTextArea("// " + tabText + "\n\npublic class Example {\n\n}");
         area.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
+        area.setEditable(false);
+        loadContent();
         JScrollPane scroll = new JScrollPane(area);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         add(scroll, BorderLayout.CENTER);
         docking.registerDockable(this);
     }
 
-    public void setTabText(String text) {
-        this.tabText = text;
+    private void loadContent() {
+        area.setText("");
+        if (filePath != null && !filePath.isEmpty()) {
+            File file = new File(filePath);
+            if (file.exists()) {
+                try {
+                    area.setText(new String(Files.readAllBytes(file.toPath())));
+                    area.setCaretPosition(0);
+                } catch (IOException e) {
+                    area.setText("// Could not read: " + filePath + "\n// " + e.getMessage());
+                }
+                return;
+            }
+        }
+        area.setText("// " + tabText + "\n\npublic class Example {\n\n}");
+    }
+
+    @Override
+    public void updateProperties() {
+        loadContent();
+    }
+
+    @Override
+    public boolean requestClose() {
+        docking.deregisterDockable(this);
+        return false;
     }
 
     @Override

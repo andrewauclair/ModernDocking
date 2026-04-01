@@ -33,36 +33,35 @@ import javax.swing.SwingUtilities;
 import picocli.CommandLine;
 
 @CommandLine.Command
-public class SingleAppDemo extends CommonDemoFrame implements Callable<Integer> {
+public class SingleAppDemo implements Callable<Integer> {
     @CommandLine.Mixin
     private DemoOptions options;
-
-    public SingleAppDemo() {
-        super("Modern Docking \u2014 Single App Demo",
-                new File("single_app_demo_layout.xml")
-        );
-    }
-
-    @Override
-    protected DockingAPI createDocking() {
-        Docking.initialize(this);
-        return Docking.getSingleInstance();
-    }
-
-    @Override
-    protected RootDockingPanelAPI createRoot(DockingAPI docking) {
-        return new RootDockingPanel(this);
-    }
-
-    @Override
-    protected WindowLayoutBuilderAPI createLayoutBuilder(DockingAPI docking, String firstId) {
-        return new WindowLayoutBuilder(firstId);
-    }
 
     @Override
     public Integer call() {
         options.apply();
-        setVisible(true);
+
+        CommonDemoFrame frame = new CommonDemoFrame(
+                "Modern Docking \u2014 Single App Demo",
+                new File("single_app_demo_layout.xml")) {
+            @Override
+            protected DockingAPI createDocking() {
+                Docking.initialize(this);
+                return Docking.getSingleInstance();
+            }
+
+            @Override
+            protected RootDockingPanelAPI createRoot(DockingAPI docking) {
+                return new RootDockingPanel(this);
+            }
+
+            @Override
+            protected WindowLayoutBuilderAPI createLayoutBuilder(DockingAPI docking, String firstId) {
+                return new WindowLayoutBuilder(firstId);
+            }
+        };
+
+        frame.setVisible(true);
         return 0;
     }
 

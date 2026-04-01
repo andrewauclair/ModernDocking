@@ -23,39 +23,119 @@ package demo;
 
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockableStyle;
+import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreePath;
 
 public class ProjectPanel extends JPanel implements Dockable {
 
+    private static final Set<String> EXCLUDED_NAMES = Set.of(
+            ".git", ".gradle", ".idea", "build", "out", ".DS_Store"
+    );
+
     private final String id;
     private final DockingAPI docking;
+    private final String anchorId;
 
-    public ProjectPanel(DockingAPI docking, String id) {
+    public ProjectPanel(DockingAPI docking, String id, File rootDir, String anchorId) {
         this.docking = docking;
         this.id = id;
+        this.anchorId = anchorId;
         setLayout(new BorderLayout());
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Project");
-        DefaultMutableTreeNode src = new DefaultMutableTreeNode("src/main/java");
-        src.add(new DefaultMutableTreeNode("Main.java"));
-        src.add(new DefaultMutableTreeNode("Utils.java"));
-        src.add(new DefaultMutableTreeNode("Config.java"));
-        DefaultMutableTreeNode test = new DefaultMutableTreeNode("src/test/java");
-        test.add(new DefaultMutableTreeNode("MainTest.java"));
-        root.add(src);
-        root.add(test);
-        root.add(new DefaultMutableTreeNode("build.gradle"));
+
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(rootDir);
+        buildTree(rootDir, root);
+
         JTree tree = new JTree(root);
         tree.setRootVisible(true);
+        tree.setShowsRootHandles(true);
+
+        tree.setCellRenderer(new DefaultTreeCellRenderer() {
+            @Override
+            public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
+                    boolean expanded, boolean leaf, int row, boolean hasFocus) {
+                super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+                if (value instanceof DefaultMutableTreeNode) {
+                    Object userObj = ((DefaultMutableTreeNode) value).getUserObject();
+                    if (userObj instanceof File) {
+                        setText(((File) userObj).getName());
+                    }
+                }
+                return this;
+            }
+        });
+
+        tree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+                    if (path != null) {
+                        DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+                        Object userObj = node.getUserObject();
+                        if (userObj instanceof File) {
+                            File file = (File) userObj;
+                            if (file.isFile()) {
+                                openFile(file);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
         JScrollPane scroll = new JScrollPane(tree);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         add(scroll, BorderLayout.CENTER);
         docking.registerDockable(this);
+    }
+
+    private void buildTree(File dir, DefaultMutableTreeNode node) {
+        File[] files = dir.listFiles();
+        if (files == null) {
+            return;
+        }
+        Arrays.sort(files, Comparator
+                .<File, Boolean>comparing(f -> !f.isDirectory())
+                .thenComparing(File::getName, String.CASE_INSENSITIVE_ORDER));
+
+        for (File file : files) {
+            if (EXCLUDED_NAMES.contains(file.getName())) {
+                continue;
+            }
+            if (file.getName().startsWith(".")) {
+                continue;
+            }
+            DefaultMutableTreeNode child = new DefaultMutableTreeNode(file);
+            node.add(child);
+            if (file.isDirectory()) {
+                buildTree(file, child);
+            }
+        }
+    }
+
+    private void openFile(File file) {
+        String editorId = "editor-" + file.getName();
+        if (docking.isDockableRegistered(editorId)) {
+            docking.bringToFront(editorId);
+        } else {
+            EditorPanel editor = new EditorPanel(docking, editorId, file.getName(), file.getAbsolutePath());
+            docking.dock(editor, anchorId, DockingRegion.CENTER);
+        }
     }
 
     @Override

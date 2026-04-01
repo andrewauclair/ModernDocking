@@ -65,12 +65,8 @@ public class FlatLafHeaderUI extends DefaultHeaderUI implements DockingHeaderUI 
 
 		settingsIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> foreground));
 		closeIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> foreground));
-	}
 
-	@Override
-	protected void init() {
-		super.init();
-
+		// Replace the PNG icons set by the parent constructor with sharper SVG icons
 		settings.setIcon(settingsIcon);
 		close.setIcon(closeIcon);
 	}
