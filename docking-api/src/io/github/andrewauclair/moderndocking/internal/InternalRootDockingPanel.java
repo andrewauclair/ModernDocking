@@ -22,7 +22,6 @@ SOFTWARE.
 package io.github.andrewauclair.moderndocking.internal;
 
 import io.github.andrewauclair.moderndocking.Dockable;
-import io.github.andrewauclair.moderndocking.DockableTabPreference;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
@@ -231,7 +230,7 @@ public class InternalRootDockingPanel extends DockingPanel implements DockableTo
         if (panel != null) {
             panel.dock(dockable, region, dividerProportion);
         }
-        else if (Settings.defaultTabPreference() == DockableTabPreference.TOP_ALWAYS) {
+        else if (Settings.alwaysDisplayTabsMode()) {
             setPanel(new DockedTabbedPanel(docking, wrapper, ""));
             wrapper.setWindow(rootPanel.getWindow());
         }

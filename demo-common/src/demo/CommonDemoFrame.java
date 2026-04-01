@@ -428,10 +428,13 @@ public abstract class CommonDemoFrame extends JFrame {
         JMenu menu = new JMenu("Settings");
 
         JCheckBoxMenuItem alwaysTabs = new JCheckBoxMenuItem("Always Display Tabs Mode");
-        alwaysTabs.addActionListener(e ->
-                Settings.setDefaultTabPreference(alwaysTabs.isSelected()
-                        ? DockableTabPreference.BOTTOM_ALWAYS
-                        : DockableTabPreference.BOTTOM));
+        alwaysTabs.addActionListener(e -> {
+            Settings.setDefaultTabPreference(alwaysTabs.isSelected()
+                    ? DockableTabPreference.TOP_ALWAYS
+                    : DockableTabPreference.BOTTOM);
+            ApplicationLayout layout = docking.getDockingState().getApplicationLayout();
+            docking.getDockingState().restoreApplicationLayout(layout);
+        });
         menu.add(alwaysTabs);
 
         JCheckBoxMenuItem highlighter = new JCheckBoxMenuItem(
