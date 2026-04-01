@@ -131,7 +131,11 @@ public class ProjectPanel extends JPanel implements Dockable {
     private void openFile(File file) {
         String editorId = "editor-" + file.getName();
         if (docking.isDockableRegistered(editorId)) {
-            docking.bringToFront(editorId);
+            if (docking.isDocked(editorId)) {
+                docking.bringToFront(editorId);
+            } else {
+                docking.dock(editorId, anchorId, DockingRegion.CENTER);
+            }
         } else {
             EditorPanel editor = new EditorPanel(docking, editorId, file.getName(), file.getAbsolutePath());
             docking.dock(editor, anchorId, DockingRegion.CENTER);
