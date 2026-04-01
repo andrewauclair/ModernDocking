@@ -79,4 +79,9 @@ public class OutputPanel extends JPanel implements Dockable {
     public boolean isAutoHideAllowed() {
         return true;
     }
+
+    @Override
+    public boolean isWrappableInScrollpane() {
+        return false;
+    }
 }

@@ -23,15 +23,13 @@ package demo;
 
 import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import javax.swing.BorderFactory;
+
+import java.awt.*;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
 
 public class MiscPanels {
 
@@ -42,15 +40,10 @@ public class MiscPanels {
         public ScrollablePanel(DockingAPI docking, String id) {
             this.docking = docking;
             this.id = id;
-            setLayout(new BorderLayout());
-            JPanel content = new JPanel(new GridLayout(0, 1, 0, 2));
+            setLayout(new GridLayout(0, 1, 0, 2));
             for (int i = 1; i <= 40; i++) {
-                content.add(new JLabel("  Item " + i + " — demonstrating wrappable scroll pane"));
+                add(new JLabel("  Item " + i + " — demonstrating wrappable scroll pane"));
             }
-            JScrollPane scroll = new JScrollPane(content);
-            scroll.setBorder(BorderFactory.createEmptyBorder());
-            scroll.setViewportBorder(null);
-            add(scroll, BorderLayout.CENTER);
             docking.registerDockable(this);
         }
 

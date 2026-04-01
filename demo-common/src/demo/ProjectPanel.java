@@ -156,4 +156,9 @@ public class ProjectPanel extends JPanel implements Dockable {
     public DockableStyle getStyle() {
         return DockableStyle.VERTICAL;
     }
+
+    @Override
+    public boolean isWrappableInScrollpane() {
+        return false;
+    }
 }

@@ -120,4 +120,9 @@ public class EventLogPanel extends JPanel implements Dockable, DockingListener {
     public String getTabText() {
         return "Event Log";
     }
+
+    @Override
+    public boolean isWrappableInScrollpane() {
+        return false;
+    }
 }
