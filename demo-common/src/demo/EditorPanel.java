@@ -36,6 +36,8 @@ import javax.swing.JTextArea;
 
 public class EditorPanel extends JPanel implements Dockable {
 
+    public static final int TYPE = 1;
+
     private final String id;
     private final String tabText;
     private final DockingAPI docking;
@@ -89,6 +91,11 @@ public class EditorPanel extends JPanel implements Dockable {
     }
 
     @Override
+    public int getType() {
+        return TYPE;
+    }
+
+    @Override
     public String getPersistentID() {
         return id;
     }
@@ -104,12 +111,12 @@ public class EditorPanel extends JPanel implements Dockable {
     }
 
     @Override
-    public boolean isMinMaxAllowed() {
-        return true;
+    public boolean isFloatingAllowed() {
+        return false;
     }
 
     @Override
-    public boolean isAutoHideAllowed() {
+    public boolean isMinMaxAllowed() {
         return true;
     }
 

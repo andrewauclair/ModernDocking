@@ -134,11 +134,22 @@ public class ProjectPanel extends JPanel implements Dockable {
             if (docking.isDocked(editorId)) {
                 docking.bringToFront(editorId);
             } else {
-                docking.dock(editorId, anchorId, DockingRegion.CENTER);
+                dockToEditorArea(editorId);
             }
         } else {
-            EditorPanel editor = new EditorPanel(docking, editorId, file.getName(), file.getAbsolutePath());
-            docking.dock(editor, anchorId, DockingRegion.CENTER);
+            new EditorPanel(docking, editorId, file.getName(), file.getAbsolutePath());
+            dockToEditorArea(editorId);
+        }
+    }
+
+    private void dockToEditorArea(String editorId) {
+        if (docking.isDocked(anchorId)) {
+            docking.dock(editorId, anchorId, DockingRegion.CENTER);
+        } else {
+            docking.getDockables().stream()
+                    .filter(d -> d.getType() == EditorPanel.TYPE && docking.isDocked(d))
+                    .findFirst()
+                    .ifPresent(sibling -> docking.dock(editorId, sibling.getPersistentID(), DockingRegion.CENTER));
         }
     }
 
