@@ -48,3 +48,9 @@ jar {
 }
 
 tasks.withType(Javadoc).all { enabled = false } // don't generate javadocs for the demo projects
+
+task run(type: JavaExec, dependsOn: classes) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'demo.SingleAppDemo'
+    workingDir = rootProject.projectDir
+}
