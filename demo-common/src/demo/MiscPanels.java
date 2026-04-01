@@ -32,13 +32,10 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
 public class MiscPanels {
-
     public static class ScrollablePanel extends JPanel implements Dockable {
         private final String id;
-        private final DockingAPI docking;
 
         public ScrollablePanel(DockingAPI docking, String id) {
-            this.docking = docking;
             this.id = id;
             setLayout(new GridLayout(0, 1, 0, 2));
             for (int i = 1; i <= 40; i++) {
@@ -56,24 +53,18 @@ public class MiscPanels {
         public String getTabText() {
             return "Scrollable";
         }
-
-        @Override
-        public boolean isWrappableInScrollpane() {
-            return true;
-        }
     }
 
     public static class FixedPanel extends JPanel implements Dockable {
         private final String id;
-        private final DockingAPI docking;
 
         public FixedPanel(DockingAPI docking, String id) {
-            this.docking = docking;
             this.id = id;
             setLayout(new BorderLayout());
             add(centered("<html><center><b>Non-closable Panel</b><br><br>" +
                             "isClosable() = false<br>No × button is rendered.</center></html>"),
                     BorderLayout.CENTER);
+
             docking.registerDockable(this);
         }
 
@@ -95,16 +86,15 @@ public class MiscPanels {
 
     public static class VetoClosePanel extends JPanel implements Dockable {
         private final String id;
-        private final DockingAPI docking;
 
         public VetoClosePanel(DockingAPI docking, String id) {
-            this.docking = docking;
             this.id = id;
             setLayout(new BorderLayout());
             add(centered("<html><center><b>Veto Close Panel</b><br><br>" +
                             "requestClose() shows a confirm dialog.<br>" +
                             "Click No to veto the close.</center></html>"),
                     BorderLayout.CENTER);
+
             docking.registerDockable(this);
         }
 
@@ -129,15 +119,14 @@ public class MiscPanels {
 
     public static class MoreOptionsPanel extends JPanel implements Dockable {
         private final String id;
-        private final DockingAPI docking;
 
         public MoreOptionsPanel(DockingAPI docking, String id) {
-            this.docking = docking;
             this.id = id;
             setLayout(new BorderLayout());
             add(centered("<html><center><b>More Options Panel</b><br><br>" +
                             "Open the header ⚙ menu to see<br>custom entries added via addMoreOptions().</center></html>"),
                     BorderLayout.CENTER);
+
             docking.registerDockable(this);
         }
 
@@ -165,10 +154,8 @@ public class MiscPanels {
 
     public static class NoTabGroupPanel extends JPanel implements Dockable {
         private final String id;
-        private final DockingAPI docking;
 
         public NoTabGroupPanel(DockingAPI docking, String id) {
-            this.docking = docking;
             this.id = id;
             setLayout(new BorderLayout());
             add(centered("<html><center><b>No Tab Group Panel</b><br><br>" +
@@ -176,6 +163,7 @@ public class MiscPanels {
                             "Drag another panel over this one — the<br>" +
                             "CENTER handle should not appear.</center></html>"),
                     BorderLayout.CENTER);
+
             docking.registerDockable(this);
         }
 
@@ -188,8 +176,6 @@ public class MiscPanels {
         public String getTabText() {
             return "No Tab Group";
         }
-        // TODO 1.5.0 — isTabGroupAllowed() not yet in Dockable interface
-        // @Override public boolean isTabGroupAllowed() { return false; }
     }
 
     private static JLabel centered(String html) {

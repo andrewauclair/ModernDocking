@@ -101,6 +101,13 @@ public abstract class CommonDemoFrame extends JFrame {
     /** Create the concrete WindowLayoutBuilder for this frame. */
     protected abstract WindowLayoutBuilderAPI createLayoutBuilder(DockingAPI docking, String firstId);
 
+    /** Create a DockableMenuItem for the given dockable, using the appropriate single- or multi-app implementation. */
+    protected abstract JMenuItem createViewMenuItem(Dockable dockable);
+
+    protected DockingAPI getDocking() {
+        return docking;
+    }
+
     // =========================================================================
     // Constructor
     // =========================================================================
@@ -176,7 +183,7 @@ public abstract class CommonDemoFrame extends JFrame {
 
             @Override
             public void newFrameCreated(JFrame frame, RootDockingPanelAPI root, Dockable dockable) {
-                frame.setTitle("Floating \u2014 " + dockable.getTitleText());
+                frame.setTitle("Floating — " + dockable.getTitleText());
             }
         });
 
@@ -320,9 +327,7 @@ public abstract class CommonDemoFrame extends JFrame {
     }
 
     private void addViewItem(JMenu menu, Dockable d) {
-        JMenuItem item = new JMenuItem(d.getTabText());
-        item.addActionListener(e -> docking.display(d));
-        menu.add(item);
+        menu.add(createViewMenuItem(d));
     }
 
     private JMenu buildActionsMenu() {

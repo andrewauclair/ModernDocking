@@ -21,12 +21,15 @@ SOFTWARE.
  */
 package demo;
 
+import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.api.WindowLayoutBuilderAPI;
+import io.github.andrewauclair.moderndocking.app.DockableMenuItem;
 import io.github.andrewauclair.moderndocking.app.Docking;
 import io.github.andrewauclair.moderndocking.app.RootDockingPanel;
 import io.github.andrewauclair.moderndocking.app.WindowLayoutBuilder;
+import javax.swing.JMenuItem;
 import java.io.File;
 import java.util.concurrent.Callable;
 import javax.swing.SwingUtilities;
@@ -72,6 +75,11 @@ public class MultiAppDemo implements Callable<Integer> {
         @Override
         protected WindowLayoutBuilderAPI createLayoutBuilder(DockingAPI docking, String firstId) {
             return new WindowLayoutBuilder(docking, firstId);
+        }
+
+        @Override
+        protected JMenuItem createViewMenuItem(Dockable dockable) {
+            return new DockableMenuItem(getDocking(), dockable);
         }
     }
 
