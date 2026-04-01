@@ -99,6 +99,7 @@ public class DockedAnchorPanel extends DockingPanel {
     @Override
     public void undock(Dockable dockable) {
         dockingParent.removeChild(this);
+        anchor.setParent(null);
     }
 
     @Override
