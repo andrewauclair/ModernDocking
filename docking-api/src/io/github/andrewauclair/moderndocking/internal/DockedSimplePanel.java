@@ -178,7 +178,9 @@ public class DockedSimplePanel extends DockingPanel {
 
 			anchor = "";
 
-			if (anchorWrapper == null || !DockingComponentUtils.isAnchorEmpty(docking, anchorWrapper.getDockable())) {
+			if (anchorWrapper == null
+					|| !DockingComponentUtils.isAnchorEmpty(docking, anchorWrapper.getDockable())
+					|| DockingInternal.get(docking).isInFocusedModeTransition()) {
 				dockedParent.removeChild(this);
 			}
 			else {
