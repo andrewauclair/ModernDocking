@@ -28,6 +28,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.IllegalComponentStateException;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.Window;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.JComponent;
 import javax.swing.JWindow;
@@ -76,6 +77,14 @@ class TransparencyProbe {
     }
 
     private static boolean probe() {
+        // Over SSH X11 forwarding every Robot.getPixelColor() call is a round-trip
+        // to the remote X server, making the empirical check extremely slow.
+        // Transparency is also unreliable in that environment, so return false
+        // immediately and let Floating fall back to the JLayeredPane overlay.
+        if (isRemoteX11Display()) {
+            return false;
+        }
+
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 
         // Fast path: platform declares per-pixel translucency unsupported
@@ -84,6 +93,18 @@ class TransparencyProbe {
         }
 
         return probeOffEDT(gd);
+    }
+
+    /**
+     * Returns true when running inside an SSH session with X11 forwarding.
+     * Detected by the presence of {@code SSH_CONNECTION} or {@code SSH_CLIENT}
+     * environment variables together with a non-null {@code DISPLAY}.
+     */
+    private static boolean isRemoteX11Display() {
+        if (System.getenv("DISPLAY") == null) {
+            return false;
+        }
+        return System.getenv("SSH_CONNECTION") != null || System.getenv("SSH_CLIENT") != null;
     }
 
     /**
@@ -110,6 +131,7 @@ class TransparencyProbe {
         try {
             SwingUtilities.invokeAndWait(() -> {
                 JWindow reference = new JWindow();
+                reference.setType(Window.Type.UTILITY);
                 reference.getContentPane().setBackground(PROBE_COLOR);
                 reference.setSize(8, 8);
                 reference.setLocation(screen.x, screen.y);
@@ -117,6 +139,7 @@ class TransparencyProbe {
                 holder[0] = reference;
 
                 JWindow probe = new JWindow();
+                probe.setType(Window.Type.UTILITY);
                 // Start opaque with sentinel color so we can confirm it is on screen
                 // before switching to transparent.
                 probe.getContentPane().setBackground(SENTINEL_COLOR);
