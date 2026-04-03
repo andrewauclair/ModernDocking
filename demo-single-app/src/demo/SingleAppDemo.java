@@ -45,7 +45,7 @@ public class SingleAppDemo implements Callable<Integer> {
         options.apply();
 
         CommonDemoFrame frame = new CommonDemoFrame(
-                "Modern Docking \u2014 Single App Demo",
+                "Modern Docking — Single App Demo",
                 new File("single_app_demo_layout.xml")) {
             @Override
             protected DockingAPI createDocking() {

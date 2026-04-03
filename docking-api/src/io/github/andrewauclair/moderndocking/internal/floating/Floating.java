@@ -52,21 +52,24 @@ public class Floating {
      * @param root The internal root in the window
      */
     public static void registerDockingWindow(DockingAPI docking, Window window, InternalRootDockingPanel root) {
-        // Trigger the probe on first registration so the result is cached before any drag starts.
-        // This is intentionally called before invokeLater: if the caller is on a background thread
-        // the full Robot-based check runs here; if on the EDT the fast exception-catch path runs.
-        TransparencyProbe.isTransparencySupported();
-        SwingUtilities.invokeLater(() -> {
-            FloatUtils utils;
-            if ((DockingSettings.isUseLayeredPaneOverlay() || !TransparencyProbe.isTransparencySupported())
-                    && window instanceof JFrame) {
-                utils = new FloatUtilsLayer(docking, (JFrame) window, root);
-            }
-            else {
-                utils = new FloatUtilsFrame(docking, window, root);
-            }
-            utilFrames.put(window, utils);
-        });
+        // Run the probe off the EDT so the full Robot-based empirical check is used,
+        // then post FloatUtils creation back to the EDT once the result is cached.
+        Thread probeThread = new Thread(() -> {
+            TransparencyProbe.isTransparencySupported();
+            SwingUtilities.invokeLater(() -> {
+                FloatUtils utils;
+                if ((DockingSettings.isUseLayeredPaneOverlay() || !TransparencyProbe.isTransparencySupported())
+                        && window instanceof JFrame) {
+                    utils = new FloatUtilsLayer(docking, (JFrame) window, root);
+                }
+                else {
+                    utils = new FloatUtilsFrame(docking, window, root);
+                }
+                utilFrames.put(window, utils);
+            });
+        }, "transparency-probe");
+        probeThread.setDaemon(true);
+        probeThread.start();
     }
 
     /**

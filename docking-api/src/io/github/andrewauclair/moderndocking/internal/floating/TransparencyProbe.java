@@ -77,40 +77,7 @@ class TransparencyProbe {
             return false;
         }
 
-        // Split on EDT vs off-EDT: we can't sleep or use invokeAndWait on the EDT,
-        // so callers on the EDT get a best-effort exception-catch check while callers
-        // on a background thread get the full Robot-based empirical verification.
-        if (SwingUtilities.isEventDispatchThread()) {
-            return probeOnEDT();
-        }
-        else {
-            return probeOffEDT(gd);
-        }
-    }
-
-    /**
-     * Best-effort check for when the probe runs on the EDT.
-     * Verifies that setting a transparent background and opaque=false on the content
-     * pane does not throw {@link IllegalComponentStateException}.
-     */
-    private static boolean probeOnEDT() {
-        JFrame f = new JFrame();
-        f.setUndecorated(true);
-        f.setType(Window.Type.UTILITY);
-        try {
-            f.setBackground(new Color(0, 0, 0, 0));
-            f.getRootPane().setBackground(new Color(0, 0, 0, 0));
-            if (f.getContentPane() instanceof JComponent) {
-                ((JComponent) f.getContentPane()).setOpaque(false);
-            }
-            return true;
-        }
-        catch (IllegalComponentStateException e) {
-            return false;
-        }
-        finally {
-            f.dispose();
-        }
+        return probeOffEDT(gd);
     }
 
     /**
