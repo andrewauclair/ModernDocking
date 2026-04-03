@@ -28,10 +28,9 @@ import java.awt.GraphicsEnvironment;
 import java.awt.IllegalComponentStateException;
 import java.awt.Rectangle;
 import java.awt.Robot;
-import java.awt.Window;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
+import javax.swing.JWindow;
 import javax.swing.SwingUtilities;
 
 /**
@@ -103,24 +102,21 @@ class TransparencyProbe {
         int sampleX = screen.x + 4;
         int sampleY = screen.y + 4;
 
-        // holder[0] = reference frame, holder[1] = probe frame (null if setup failed)
-        JFrame[] holder = { null, null };
+        // holder[0] = reference window, holder[1] = probe window (null if setup failed)
+        JWindow[] holder = { null, null };
 
         // --- Phase 1: create reference (magenta) + probe (opaque sentinel cyan) ---
+        // JWindow is used instead of JFrame so neither window appears in the taskbar.
         try {
             SwingUtilities.invokeAndWait(() -> {
-                JFrame reference = new JFrame();
-                reference.setUndecorated(true);
-                reference.setType(Window.Type.UTILITY);
+                JWindow reference = new JWindow();
                 reference.getContentPane().setBackground(PROBE_COLOR);
                 reference.setSize(8, 8);
                 reference.setLocation(screen.x, screen.y);
                 reference.setVisible(true);
                 holder[0] = reference;
 
-                JFrame probe = new JFrame();
-                probe.setUndecorated(true);
-                probe.setType(Window.Type.UTILITY);
+                JWindow probe = new JWindow();
                 // Start opaque with sentinel color so we can confirm it is on screen
                 // before switching to transparent.
                 probe.getContentPane().setBackground(SENTINEL_COLOR);
@@ -141,6 +137,9 @@ class TransparencyProbe {
         Robot robot;
         try {
             robot = new Robot(gd);
+            // Drain the event queue once after frame creation; subsequent polls use
+            // only Thread.sleep to avoid hammering the EDT every 20 ms.
+            robot.waitForIdle();
         }
         catch (AWTException e) {
             SwingUtilities.invokeLater(() -> {
@@ -166,7 +165,7 @@ class TransparencyProbe {
         // --- Phase 2: switch probe to transparent, then check for magenta reference ---
         try {
             SwingUtilities.invokeAndWait(() -> {
-                JFrame probe = holder[1];
+                JWindow probe = holder[1];
                 try {
                     probe.setBackground(new Color(0, 0, 0, 0));
                     probe.getRootPane().setBackground(new Color(0, 0, 0, 0));
@@ -202,14 +201,17 @@ class TransparencyProbe {
             return false;
         }
 
+        // Drain the EDT once after the transparency switch before polling.
+        robot.waitForIdle();
+
         // Poll for the magenta reference to become visible through the now-transparent probe
         boolean result;
         try {
             result = pollForColor(robot, sampleX, sampleY, PROBE_COLOR);
         }
         finally {
-            JFrame ref = holder[0];
-            JFrame prob = holder[1];
+            JWindow ref = holder[0];
+            JWindow prob = holder[1];
             SwingUtilities.invokeLater(() -> {
                 if (ref != null) ref.dispose();
                 if (prob != null) prob.dispose();
@@ -227,7 +229,6 @@ class TransparencyProbe {
     private static boolean pollForColor(Robot robot, int x, int y, Color target) {
         long deadline = System.currentTimeMillis() + POLL_TIMEOUT_MS;
         while (System.currentTimeMillis() < deadline) {
-            robot.waitForIdle();
             if (isCloseTo(robot.getPixelColor(x, y), target)) {
                 return true;
             }
