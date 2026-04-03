@@ -45,8 +45,15 @@ class TransparencyProbe {
     /** Reference background color used by the Robot-based check. Chosen to be visually
      *  distinctive (magenta) and unlikely to match typical desktop content. */
     private static final Color PROBE_COLOR = new Color(255, 0, 255);
+    /** Sentinel color painted on the probe frame before switching to transparent.
+     *  Allows Robot polling to confirm the probe frame is actually on screen. */
+    private static final Color SENTINEL_COLOR = new Color(0, 255, 255);
     /** Per-channel tolerance for the Robot color comparison. */
     private static final int COLOR_TOLERANCE = 30;
+    /** How long to poll for the sentinel/transparent frame to appear (ms). */
+    private static final int POLL_TIMEOUT_MS = 2000;
+    /** Polling interval while waiting for a frame to appear (ms). */
+    private static final int POLL_INTERVAL_MS = 20;
 
     private static volatile Boolean cachedResult = null;
 
@@ -82,8 +89,14 @@ class TransparencyProbe {
 
     /**
      * Full empirical check for when the probe runs off the EDT.
-     * Places a transparent probe window over a magenta reference window and uses
-     * {@link Robot} to verify that pixels show through rather than rendering opaque black.
+     * <p>
+     * Phase 1: shows the probe frame as an opaque sentinel color (cyan) and polls
+     * Robot until that color appears at the sample point, confirming the probe is
+     * composited on screen and on top of the magenta reference frame.
+     * <p>
+     * Phase 2: switches the probe frame to fully transparent and samples again.
+     * If the underlying magenta reference frame shows through, per-pixel translucency
+     * works. If the pixel stays black (or the sentinel color), it does not.
      */
     private static boolean probeOffEDT(GraphicsDevice gd) {
         Rectangle screen = gd.getDefaultConfiguration().getBounds();
@@ -93,6 +106,7 @@ class TransparencyProbe {
         // holder[0] = reference frame, holder[1] = probe frame (null if setup failed)
         JFrame[] holder = { null, null };
 
+        // --- Phase 1: create reference (magenta) + probe (opaque sentinel cyan) ---
         try {
             SwingUtilities.invokeAndWait(() -> {
                 JFrame reference = new JFrame();
@@ -107,17 +121,9 @@ class TransparencyProbe {
                 JFrame probe = new JFrame();
                 probe.setUndecorated(true);
                 probe.setType(Window.Type.UTILITY);
-                try {
-                    probe.setBackground(new Color(0, 0, 0, 0));
-                    probe.getRootPane().setBackground(new Color(0, 0, 0, 0));
-                    if (probe.getContentPane() instanceof JComponent) {
-                        ((JComponent) probe.getContentPane()).setOpaque(false);
-                    }
-                }
-                catch (IllegalComponentStateException e) {
-                    // Transparency setup failed — leave holder[1] null to signal failure
-                    return;
-                }
+                // Start opaque with sentinel color so we can confirm it is on screen
+                // before switching to transparent.
+                probe.getContentPane().setBackground(SENTINEL_COLOR);
                 probe.setSize(8, 8);
                 probe.setLocation(screen.x, screen.y);
                 probe.setVisible(true);
@@ -132,30 +138,74 @@ class TransparencyProbe {
             return false;
         }
 
-        if (holder[1] == null) {
-            // Probe frame setup threw — transparency not supported
-            if (holder[0] != null) {
-                SwingUtilities.invokeLater(holder[0]::dispose);
-            }
+        Robot robot;
+        try {
+            robot = new Robot(gd);
+        }
+        catch (AWTException e) {
+            SwingUtilities.invokeLater(() -> {
+                if (holder[0] != null) holder[0].dispose();
+                if (holder[1] != null) holder[1].dispose();
+            });
             return false;
         }
 
-        // Give the compositor time to finalize rendering before sampling
+        // Poll until the sentinel color is visible, confirming the probe frame is rendered
+        // and on top before we attempt the transparency switch.
+        boolean sentinelSeen = pollForColor(robot, sampleX, sampleY, SENTINEL_COLOR);
+
+        if (!sentinelSeen) {
+            // Can't confirm the probe frame appeared — conservative fallback
+            SwingUtilities.invokeLater(() -> {
+                if (holder[0] != null) holder[0].dispose();
+                if (holder[1] != null) holder[1].dispose();
+            });
+            return false;
+        }
+
+        // --- Phase 2: switch probe to transparent, then check for magenta reference ---
         try {
-            Thread.sleep(150);
+            SwingUtilities.invokeAndWait(() -> {
+                JFrame probe = holder[1];
+                try {
+                    probe.setBackground(new Color(0, 0, 0, 0));
+                    probe.getRootPane().setBackground(new Color(0, 0, 0, 0));
+                    if (probe.getContentPane() instanceof JComponent) {
+                        ((JComponent) probe.getContentPane()).setOpaque(false);
+                    }
+                    probe.repaint();
+                }
+                catch (IllegalComponentStateException e) {
+                    // Transparency setup failed — signal via null
+                    holder[1] = null;
+                }
+            });
         }
         catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            SwingUtilities.invokeLater(() -> {
+                if (holder[0] != null) holder[0].dispose();
+            });
+            return false;
+        }
+        catch (InvocationTargetException e) {
+            SwingUtilities.invokeLater(() -> {
+                if (holder[0] != null) holder[0].dispose();
+            });
+            return false;
         }
 
-        try {
-            Robot robot = new Robot(gd);
-            robot.waitForIdle();
-            Color sampled = robot.getPixelColor(sampleX, sampleY);
-            return isCloseToProbeColor(sampled);
-        }
-        catch (AWTException e) {
+        if (holder[1] == null) {
+            SwingUtilities.invokeLater(() -> {
+                if (holder[0] != null) holder[0].dispose();
+            });
             return false;
+        }
+
+        // Poll for the magenta reference to become visible through the now-transparent probe
+        boolean result;
+        try {
+            result = pollForColor(robot, sampleX, sampleY, PROBE_COLOR);
         }
         finally {
             JFrame ref = holder[0];
@@ -165,11 +215,36 @@ class TransparencyProbe {
                 if (prob != null) prob.dispose();
             });
         }
+        return result;
     }
 
-    private static boolean isCloseToProbeColor(Color c) {
-        return Math.abs(c.getRed()   - PROBE_COLOR.getRed())   < COLOR_TOLERANCE
-            && Math.abs(c.getGreen() - PROBE_COLOR.getGreen()) < COLOR_TOLERANCE
-            && Math.abs(c.getBlue()  - PROBE_COLOR.getBlue())  < COLOR_TOLERANCE;
+    /**
+     * Polls {@link Robot#getPixelColor} at (x, y) until the sampled color is within
+     * {@link #COLOR_TOLERANCE} of {@code target}, or {@link #POLL_TIMEOUT_MS} elapses.
+     *
+     * @return true if the target color was observed within the timeout
+     */
+    private static boolean pollForColor(Robot robot, int x, int y, Color target) {
+        long deadline = System.currentTimeMillis() + POLL_TIMEOUT_MS;
+        while (System.currentTimeMillis() < deadline) {
+            robot.waitForIdle();
+            if (isCloseTo(robot.getPixelColor(x, y), target)) {
+                return true;
+            }
+            try {
+                Thread.sleep(POLL_INTERVAL_MS);
+            }
+            catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isCloseTo(Color c, Color target) {
+        return Math.abs(c.getRed()   - target.getRed())   < COLOR_TOLERANCE
+            && Math.abs(c.getGreen() - target.getGreen()) < COLOR_TOLERANCE
+            && Math.abs(c.getBlue()  - target.getBlue())  < COLOR_TOLERANCE;
     }
 }
