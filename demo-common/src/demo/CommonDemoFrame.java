@@ -86,6 +86,7 @@ public abstract class CommonDemoFrame extends JFrame {
     private final VetoClosePanel vetoPanel;
     private final MoreOptionsPanel moreOptionsPanel;
     private final NoTabGroupPanel noTabGroupPanel;
+    private final DockableInspectorPanel inspectorPanel;
     private final TestHarnessPanel testHarnessPanel;
 
     // =========================================================================
@@ -161,6 +162,7 @@ public abstract class CommonDemoFrame extends JFrame {
         vetoPanel = new VetoClosePanel(docking, "veto-close-panel");
         moreOptionsPanel = new MoreOptionsPanel(docking, "more-options-panel");
         noTabGroupPanel = new NoTabGroupPanel(docking, "no-tab-group-panel");
+        inspectorPanel = new DockableInspectorPanel(docking, "dockable-inspector");
 
         List<Dockable> allDockables = new ArrayList<>();
         allDockables.add(projectTree);
@@ -172,6 +174,7 @@ public abstract class CommonDemoFrame extends JFrame {
         allDockables.add(vetoPanel);
         allDockables.add(moreOptionsPanel);
         allDockables.add(noTabGroupPanel);
+        allDockables.add(inspectorPanel);
 
         testHarnessPanel = new TestHarnessPanel(docking, "test-harness", allDockables);
 
@@ -239,7 +242,8 @@ public abstract class CommonDemoFrame extends JFrame {
                 .dockToRoot(projectTree.getPersistentID(), DockingRegion.WEST, 0.20)
                 .dockToRoot(outputPanel.getPersistentID(), DockingRegion.SOUTH, 0.25)
                 .dockToRoot(propertiesPanel.getPersistentID(), DockingRegion.EAST, 0.22)
-                .dock(eventLogPanel.getPersistentID(), propertiesPanel.getPersistentID(), DockingRegion.CENTER);
+                .dock(eventLogPanel.getPersistentID(), propertiesPanel.getPersistentID(), DockingRegion.CENTER)
+                .dock(inspectorPanel.getPersistentID(), propertiesPanel.getPersistentID(), DockingRegion.CENTER);
 
         return builder.buildApplicationLayout();
     }
@@ -320,6 +324,8 @@ public abstract class CommonDemoFrame extends JFrame {
         addViewItem(menu, vetoPanel);
         addViewItem(menu, moreOptionsPanel);
         addViewItem(menu, noTabGroupPanel);
+        menu.addSeparator();
+        addViewItem(menu, inspectorPanel);
         menu.addSeparator();
         addViewItem(menu, testHarnessPanel);
 
