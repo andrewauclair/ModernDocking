@@ -165,9 +165,12 @@ public class DockableInspectorPanel extends JPanel implements Dockable {
                         lastDockable = found;
                         refresh(lastDockable);
                     }
-                } else if (lastDockable != null && !docking.isDocked(lastDockable) && !docking.isHidden(lastDockable)) {
-                    lastDockable = null;
-                    clearTable();
+                } else if (lastDockable != null) {
+                    if (!docking.isDockableRegistered(lastDockable.getPersistentID())
+                            || (!docking.isDocked(lastDockable) && !docking.isHidden(lastDockable))) {
+                        lastDockable = null;
+                        clearTable();
+                    }
                 }
             }
         }, AWTEvent.MOUSE_MOTION_EVENT_MASK);
@@ -188,7 +191,10 @@ public class DockableInspectorPanel extends JPanel implements Dockable {
                     clearTable();
                 }
             } else {
-                if (docking.isDocked(lastDockable) || docking.isHidden(lastDockable)) {
+                if (!docking.isDockableRegistered(lastDockable.getPersistentID())) {
+                    lastDockable = null;
+                    clearTable();
+                } else if (docking.isDocked(lastDockable) || docking.isHidden(lastDockable)) {
                     refresh(lastDockable);
                 } else {
                     lastDockable = null;
@@ -329,6 +335,11 @@ public class DockableInspectorPanel extends JPanel implements Dockable {
     }
 
     private void refresh(Dockable d) {
+        if (!docking.isDockableRegistered(d.getPersistentID())) {
+            lastDockable = null;
+            clearTable();
+            return;
+        }
         tableModel.setRowCount(0);
         tableModel.addRow(new Object[]{"getPersistentID()", d.getPersistentID()});
         tableModel.addRow(new Object[]{"getTabText()", d.getTabText()});
