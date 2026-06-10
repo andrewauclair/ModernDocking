@@ -222,12 +222,16 @@ public class AppStateAPI {
 
 			ApplicationLayout layout = docking.getLayoutPersistence().loadApplicationLayoutFromFile(file);
 
+			lastPersistedLayout = layout;
+			
 			docking.getDockingState().restoreApplicationLayout(layout);
 
 			return true;
 		}
 		catch (Exception e) {
 			if (defaultAppLayout != null) {
+				lastPersistedLayout = defaultAppLayout;
+				
 				docking.getDockingState().restoreApplicationLayout(defaultAppLayout);
 			}
 
