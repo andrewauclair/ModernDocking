@@ -31,6 +31,7 @@ import io.github.andrewauclair.moderndocking.internal.DockingListeners;
 /**
  * Controller for the header of dockables. Responsible for controlling the state of all buttons on the header.
  */
+@SuppressWarnings("deprecation")
 public class HeaderController implements MaximizeListener, DockingListener {
 	/**
 	 * The dockable this header controller references
@@ -63,8 +64,8 @@ public class HeaderController implements MaximizeListener, DockingListener {
 		this.docking = docking;
 		this.model = model;
 
-		DockingListeners.addMaximizeListener(this);
-		DockingListeners.addDockingListener(this);
+		docking.getDockingListeners().addMaximizeListener(this);
+		docking.getDockingListeners().addDockingListener(this);
 	}
 
 	/**
@@ -80,8 +81,8 @@ public class HeaderController implements MaximizeListener, DockingListener {
 	 * Remove the docking listeners that we've added
 	 */
 	public void removeListeners() {
-		DockingListeners.removeMaximizeListener(this);
-		DockingListeners.removeDockingListener(this);
+		docking.getDockingListeners().removeMaximizeListener(this);
+		docking.getDockingListeners().removeDockingListener(this);
 	}
 
 	/**
@@ -104,17 +105,33 @@ public class HeaderController implements MaximizeListener, DockingListener {
 	}
 
 	/**
-	 * Minimize the dockable
+	 * Exit focused mode for the dockable
 	 */
-	public void minimize() {
-		docking.minimize(dockable);
+	public void exitFocusedMode() {
+		docking.exitFocusedMode(dockable);
 	}
 
 	/**
-	 * Maximize the dockable
+	 * Enter focused mode for the dockable
 	 */
+	public void enterFocusedMode() {
+		docking.enterFocusedMode(dockable);
+	}
+
+	/**
+	 * @deprecated Use {@link #exitFocusedMode()} instead. Will be removed in 2.0.
+	 */
+	@Deprecated(since = "1.5.0", forRemoval = true)
+	public void minimize() {
+		exitFocusedMode();
+	}
+
+	/**
+	 * @deprecated Use {@link #enterFocusedMode()} instead. Will be removed in 2.0.
+	 */
+	@Deprecated(since = "1.5.0", forRemoval = true)
 	public void maximize() {
-		docking.maximize(dockable);
+		enterFocusedMode();
 	}
 
 	/**
@@ -126,9 +143,16 @@ public class HeaderController implements MaximizeListener, DockingListener {
 		}
 	}
 
+	/**
+	 * @deprecated {@link MaximizeListener} is deprecated. Focused mode changes are now delivered via
+	 *             {@link #dockingChange(DockingEvent)} using {@link DockingEvent.ID#FOCUSED_MODE_ENTERED} /
+	 *             {@link DockingEvent.ID#FOCUSED_MODE_EXITED}. This override is retained for binary compatibility.
+	 *             Will be removed in 2.0.
+	 */
+	@Deprecated(since = "1.5.0", forRemoval = true)
 	@Override
 	public void maximized(Dockable dockable, boolean maximized) {
-		ui.update();
+		// handled via dockingChange — no-op here to avoid double update
 	}
 
 	@Override

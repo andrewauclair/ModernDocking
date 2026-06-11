@@ -31,7 +31,9 @@ import java.io.File;
  * Persist and restore Application and Window layouts to/from files
  */
 public class LayoutPersistence {
-    private static final LayoutPersistenceAPI instance = new LayoutPersistenceAPI(Docking.getSingleInstance()){};
+    private static LayoutPersistenceAPI instance() {
+        return Docking.getSingleInstance().getLayoutPersistence();
+    }
 
     private LayoutPersistence() {
     }
@@ -44,7 +46,7 @@ public class LayoutPersistence {
      * @throws DockingLayoutException Thrown if we failed to save the layout to the file
      */
     public static void saveLayoutToFile(File file, ApplicationLayout layout) throws DockingLayoutException {
-        instance.saveLayoutToFile(file, layout);
+        instance().saveLayoutToFile(file, layout);
     }
 
     /**
@@ -55,11 +57,11 @@ public class LayoutPersistence {
      * @throws DockingLayoutException Thrown if we failed to read from the file or something went wrong with loading the layout
      */
     public static ApplicationLayout loadApplicationLayoutFromFile(File file) throws DockingLayoutException {
-        return instance.loadApplicationLayoutFromFile(file);
+        return instance().loadApplicationLayoutFromFile(file);
     }
 
     public static boolean saveWindowLayoutToFile(File file, WindowLayout layout) {
-        return instance.saveWindowLayoutToFile(file, layout);
+        return instance().saveWindowLayoutToFile(file, layout);
     }
 
     /**
@@ -69,6 +71,6 @@ public class LayoutPersistence {
      * @return The loaded WindowLayout
      */
     public static WindowLayout loadWindowLayoutFromFile(File file) {
-        return instance.loadWindowLayoutFromFile(file);
+        return instance().loadWindowLayoutFromFile(file);
     }
 }

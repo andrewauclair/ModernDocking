@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.JSplitPane;
 
 /**
  * Manage storage, persistence and restoration of application layouts
@@ -217,17 +216,12 @@ public class DockingLayouts {
 	}
 
 	private static DockingLayoutNode splitPanelToNode(DockingAPI docking, DockedSplitPanel panel) {
-		JSplitPane splitPane = panel.getSplitPane();
-
-		int orientation = splitPane.getOrientation();
-		int height = splitPane.getHeight();
-		int dividerSize = splitPane.getDividerSize();
-		int dividerLocation = splitPane.getDividerLocation();
-		int width = splitPane.getWidth();
-		double dividerProportion = orientation == JSplitPane.VERTICAL_SPLIT ? dividerLocation / (float) (height - dividerSize) :
-				dividerLocation / (float) (width - dividerSize);
-
-		return new DockingSplitPanelNode(docking, panelToNode(docking, panel.getLeft()), panelToNode(docking, panel.getRight()), splitPane.getOrientation(), dividerProportion, panel.getAnchor());
+		List<DockingLayoutNode> childNodes = new ArrayList<>();
+		for (DockingPanel child : panel.getChildren()) {
+			childNodes.add(panelToNode(docking, child));
+		}
+		return new DockingSplitPanelNode(docking, childNodes, panel.getOrientation(),
+				panel.getDividerPositions(), panel.getAnchor());
 	}
 
 	private static DockingLayoutNode tabbedPanelToNode(DockingAPI docking, DockedTabbedPanel panel) {

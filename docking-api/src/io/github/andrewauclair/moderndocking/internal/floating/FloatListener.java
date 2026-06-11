@@ -64,7 +64,7 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 	private JFrame floatingFrame;
 
 	private Window currentUtilWindow;
-	private FloatUtilsFrame currentUtilFrame;
+	private FloatUtils currentUtils;
 	private DragGestureRecognizer alternateDragGesture;
 
 	/**
@@ -240,16 +240,16 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 		Window frame = DockingComponentUtils.findRootAtScreenPos(docking, mousePosOnScreen);
 
 		if (frame != currentUtilWindow) {
-			if (currentUtilFrame != null) {
-				currentUtilFrame.deactivate();
+			if (currentUtils != null) {
+				currentUtils.deactivate();
 			}
 
 			currentUtilWindow = frame;
 
-			currentUtilFrame = Floating.frameForWindow(currentUtilWindow);
+			currentUtils = Floating.frameForWindow(currentUtilWindow);
 
-			if (currentUtilFrame != null) {
-				currentUtilFrame.activate(this, floatingFrame, dragSource, mousePosOnScreen);
+			if (currentUtils != null) {
+				currentUtils.activate(this, floatingFrame, dragSource, mousePosOnScreen);
 			}
 		}
 	}
@@ -275,10 +275,10 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 			return;
 		}
 
-		boolean docked = dropPanel(currentUtilFrame, floatingFrame, mousePosOnScreen);
+		boolean docked = dropPanel(currentUtils, floatingFrame, mousePosOnScreen);
 
-		if (currentUtilFrame != null) {
-			currentUtilFrame.deactivate();
+		if (currentUtils != null) {
+			currentUtils.deactivate();
 		}
 
 		if (!docked) {
@@ -313,11 +313,11 @@ public abstract class FloatListener extends DragSourceAdapter implements DragSou
 	/**
 	 * Drop the floating panel
 	 *
-	 * @param utilsFrame The utils frame that provides the docking handles and overlay
+	 * @param utils The utils frame that provides the docking handles and overlay
 	 * @param floatingFrame The floating frame that contains the floating dockable
 	 * @param mousePosOnScreen The position of the mouse on screen
 	 *
 	 * @return Did we successfully dock the floating dockable?
 	 */
-	protected abstract boolean dropPanel(FloatUtilsFrame utilsFrame, JFrame floatingFrame, Point mousePosOnScreen);
+	protected abstract boolean dropPanel(FloatUtils utils, JFrame floatingFrame, Point mousePosOnScreen);
 }

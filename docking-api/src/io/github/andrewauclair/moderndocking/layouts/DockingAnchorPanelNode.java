@@ -21,11 +21,15 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.layouts;
 
+import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.Property;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
+import io.github.andrewauclair.moderndocking.internal.DockingInternal;
+import io.github.andrewauclair.moderndocking.settings.Settings;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.JSplitPane;
 
 /**
  * Layout node representing a docking anchor for Window and Application layouts
@@ -61,7 +65,42 @@ public class DockingAnchorPanelNode implements DockingLayoutNode {
 
     @Override
     public void dock(String persistentID, DockingRegion region, double dividerProportion) {
-        // TODO I think we need to handle something here
+        Dockable newDockable = DockingInternal.get(docking).getDockable(persistentID);
+        String newClassName = newDockable.getClass().getTypeName();
+        String newTitleText = newDockable.getTitleText();
+        String newTabText = newDockable.getTabText();
+
+        int orientation = (region == DockingRegion.EAST || region == DockingRegion.WEST)
+                ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
+
+        DockingLayoutNode left;
+        DockingLayoutNode right;
+
+        if (Settings.alwaysDisplayTabsMode()) {
+            if (orientation == JSplitPane.HORIZONTAL_SPLIT) {
+                left = region == DockingRegion.EAST ? this : new DockingTabPanelNode(docking, persistentID, "", "", newTitleText, newTabText);
+                right = region == DockingRegion.EAST ? new DockingTabPanelNode(docking, persistentID, "", "", newTitleText, newTabText) : this;
+            } else {
+                left = region == DockingRegion.SOUTH ? this : new DockingTabPanelNode(docking, persistentID, "", "", newTitleText, newTabText);
+                right = region == DockingRegion.SOUTH ? new DockingTabPanelNode(docking, persistentID, "", "", newTitleText, newTabText) : this;
+            }
+        } else {
+            if (orientation == JSplitPane.HORIZONTAL_SPLIT) {
+                left = region == DockingRegion.EAST ? this : new DockingSimplePanelNode(docking, persistentID, newClassName, "", newTitleText, newTabText);
+                right = region == DockingRegion.EAST ? new DockingSimplePanelNode(docking, persistentID, newClassName, "", newTitleText, newTabText) : this;
+            } else {
+                left = region == DockingRegion.SOUTH ? this : new DockingSimplePanelNode(docking, persistentID, newClassName, "", newTitleText, newTabText);
+                right = region == DockingRegion.SOUTH ? new DockingSimplePanelNode(docking, persistentID, newClassName, "", newTitleText, newTabText) : this;
+            }
+        }
+
+        if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
+            dividerProportion = 1.0 - dividerProportion;
+        }
+
+        DockingLayoutNode oldParent = parent;
+        DockingSplitPanelNode split = new DockingSplitPanelNode(docking, left, right, orientation, dividerProportion, "");
+        oldParent.replaceChild(this, split);
     }
 
     @Override

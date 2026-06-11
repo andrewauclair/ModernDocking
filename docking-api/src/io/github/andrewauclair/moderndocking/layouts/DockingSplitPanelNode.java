@@ -1,4 +1,4 @@
- /*
+/*
 Copyright (c) 2022-2023 Andrew Auclair
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,155 +21,177 @@ SOFTWARE.
  */
 package io.github.andrewauclair.moderndocking.layouts;
 
- import io.github.andrewauclair.moderndocking.Dockable;
- import io.github.andrewauclair.moderndocking.DockingRegion;
- import io.github.andrewauclair.moderndocking.api.DockingAPI;
- import io.github.andrewauclair.moderndocking.internal.DockingInternal;
- import io.github.andrewauclair.moderndocking.settings.Settings;
- import javax.swing.JSplitPane;
+import io.github.andrewauclair.moderndocking.Dockable;
+import io.github.andrewauclair.moderndocking.DockingRegion;
+import io.github.andrewauclair.moderndocking.api.DockingAPI;
+import io.github.andrewauclair.moderndocking.internal.DockingInternal;
+import io.github.andrewauclair.moderndocking.settings.Settings;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import javax.swing.JSplitPane;
 
- /**
-  * Layout node that represents a splitpane
-  */
- public class DockingSplitPanelNode implements DockingLayoutNode {
-	private final DockingAPI docking;
-	private DockingLayoutNode left;
-	private DockingLayoutNode right;
-	private final int orientation;
-	private final double dividerProportion;
-	 private String anchor;
+/**
+ * Layout node representing a flat N-ary split (N >= 2 children).
+ * Stores divider positions as fractions of this node's own rect so that
+ * each divider's absolute position is independent of its siblings.
+ */
+public class DockingSplitPanelNode implements DockingLayoutNode {
 
-	private DockingLayoutNode parent;
+    private final DockingAPI docking;
+    private final List<DockingLayoutNode> children;
+    private final int orientation;
+    /**
+     * Length is children.size() - 1.
+     * dividerPositions[i] is the fraction of this node's axis dimension where
+     * the divider between children[i] and children[i+1] sits.
+     */
+    private final double[] dividerPositions;
+    private String anchor;
+    private DockingLayoutNode parent;
 
-	 /**
-	  * Create a new DockingSplitPanelNode for a layout
-	  *
-	  * @param docking The docking instance this node belongs to
-	  * @param left The left component of the split
-	  * @param right The right component of the split
-	  * @param orientation The orientation of the split
-	  * @param dividerProportion The divider proportion of the split
-	  * @param anchor The anchor associated with this node
-	  */
-	public DockingSplitPanelNode(DockingAPI docking, DockingLayoutNode left, DockingLayoutNode right, int orientation, double dividerProportion, String anchor) {
-		this.docking = docking;
-		this.left = left;
-		this.right = right;
-		this.orientation = orientation;
-		this.dividerProportion = dividerProportion;
+    /**
+     * N-ary constructor.
+     */
+    public DockingSplitPanelNode(DockingAPI docking, List<DockingLayoutNode> children,
+                                  int orientation, double[] dividerPositions, String anchor) {
+        this.docking = docking;
+        this.children = new ArrayList<>(children);
+        this.orientation = orientation;
+        this.dividerPositions = dividerPositions.clone();
         this.anchor = anchor;
+        for (DockingLayoutNode child : this.children) {
+            if (child != null) {
+                child.setParent(this);
+            }
+        }
+    }
 
-        if (this.left != null) {
-			this.left.setParent(this);
-		}
-		if (this.right != null) {
-			this.right.setParent(this);
-		}
-	}
+    /**
+     * Binary constructor kept for callers that still create 2-child splits
+     * (e.g. the dock() helper below and XML loading of old layouts).
+     */
+    public DockingSplitPanelNode(DockingAPI docking, DockingLayoutNode left,
+                                  DockingLayoutNode right, int orientation,
+                                  double dividerProportion, String anchor) {
+        this(docking, Arrays.asList(left, right), orientation,
+                new double[]{dividerProportion}, anchor);
+    }
 
-	@Override
-	public DockingLayoutNode getParent() {
-		return parent;
-	}
+    // ----------------------------------------------------------------
+    // Accessors
+    // ----------------------------------------------------------------
 
-	@Override
-	public void setParent(DockingLayoutNode parent) {
-		this.parent = parent;
-	}
+    public List<DockingLayoutNode> getChildren() {
+        return Collections.unmodifiableList(children);
+    }
 
-	@Override
-	public DockingLayoutNode findNode(String persistentID) {
-		if (this.left != null) {
-			DockingLayoutNode left = this.left.findNode(persistentID);
+    public double[] getDividerPositions() {
+        return dividerPositions.clone();
+    }
 
-			if (left != null) {
-				return left;
-			}
-		}
+    /** Convenience for binary splits and XML serialisation. */
+    public DockingLayoutNode getLeft() {
+        return children.get(0);
+    }
 
-		if (this.right == null) {
-			return null;
-		}
-		return this.right.findNode(persistentID);
-	}
+    /** Convenience for binary splits and XML serialisation. */
+    public DockingLayoutNode getRight() {
+        return children.get(1);
+    }
 
-	@Override
-	public void dock(String persistentID, DockingRegion region, double dividerProportion) {
-		if (region != DockingRegion.CENTER) {
-			int orientation = region == DockingRegion.EAST || region == DockingRegion.WEST ? JSplitPane.HORIZONTAL_SPLIT : JSplitPane.VERTICAL_SPLIT;
+    public int getOrientation() {
+        return orientation;
+    }
 
-			DockingLayoutNode left;
-			DockingLayoutNode right;
+    /** Convenience for binary splits and XML serialisation. */
+    public double getDividerProportion() {
+        return dividerPositions[0];
+    }
 
-			Dockable dockable = DockingInternal.get(docking).getDockable(persistentID);
-			String className = dockable.getClass().getTypeName();
+    public String getAnchor() {
+        return anchor;
+    }
 
-			if (Settings.alwaysDisplayTabsMode()) {
-				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingTabPanelNode(docking, persistentID, className, anchor, dockable.getTitleText(), dockable.getTabText()) : this;
-				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingTabPanelNode(docking, persistentID, className, anchor, dockable.getTitleText(), dockable.getTabText());
-			}
-			else {
+    // ----------------------------------------------------------------
+    // DockingLayoutNode interface
+    // ----------------------------------------------------------------
 
+    @Override
+    public DockingLayoutNode getParent() {
+        return parent;
+    }
 
-				left = region == DockingRegion.NORTH || region == DockingRegion.WEST ? new DockingSimplePanelNode(docking, persistentID, className, anchor, dockable.getTitleText(), dockable.getTabText()) : this;
-				right = region == DockingRegion.NORTH || region == DockingRegion.WEST ? this : new DockingSimplePanelNode(docking, persistentID, className, anchor, dockable.getTitleText(), dockable.getTabText());
-			}
+    @Override
+    public void setParent(DockingLayoutNode parent) {
+        this.parent = parent;
+    }
 
-			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
-				dividerProportion = 1.0 - dividerProportion;
-			}
+    @Override
+    public DockingLayoutNode findNode(String persistentID) {
+        for (DockingLayoutNode child : children) {
+            if (child != null) {
+                DockingLayoutNode found = child.findNode(persistentID);
 
-			DockingLayoutNode oldParent = parent;
-			DockingSplitPanelNode split = new DockingSplitPanelNode(docking, left, right, orientation, dividerProportion, anchor);
-			oldParent.replaceChild(this, split);
-		}
-	}
+                if (found != null) {
+                    return found;
+                }
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public void replaceChild(DockingLayoutNode child, DockingLayoutNode newChild) {
-		if (left == child) {
-			left = newChild;
-			left.setParent(this);
-		}
-		else if (right == child) {
-			right = newChild;
-			right.setParent(this);
-		}
-	}
+    @Override
+    public void dock(String persistentID, DockingRegion region, double dividerProportion) {
+        if (region == DockingRegion.CENTER) {
+            return;
+        }
 
-	 /**
-	  * Get the left component of the split
-	  *
-	  * @return Left component
-	  */
-	public DockingLayoutNode getLeft() {
-		return left;
-	}
+        int newOrientation;
 
-	 /**
-	  * Get the right component of the split
-	  *
-	  * @return Right component
-	  */
-	public DockingLayoutNode getRight() {
-		return right;
-	}
+        if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
+            newOrientation = JSplitPane.HORIZONTAL_SPLIT;
+        }
+        else {
+            newOrientation = JSplitPane.VERTICAL_SPLIT;
+        }
 
-	 /**
-	  * Get the orientation
-	  *
-	  * @return The orientation of the JSplitPane
-	  */
-	public int getOrientation() {
-		return orientation;
-	}
+        Dockable dockable = DockingInternal.get(docking).getDockable(persistentID);
+        String className = dockable.getClass().getTypeName();
+        DockingLayoutNode newNode;
 
-	 /**
-	  * Get the divider proportion
-	  *
-	  * @return Proportion of the JSPlitPane Divider
-	  */
-	public double getDividerProportion() {
-		return dividerProportion;
-	}
+        if (Settings.alwaysDisplayTabsMode()) {
+            newNode = new DockingTabPanelNode(docking, persistentID, className, anchor, dockable.getTitleText(), dockable.getTabText());
+        }
+        else {
+            newNode = new DockingSimplePanelNode(docking, persistentID, className, anchor, dockable.getTitleText(), dockable.getTabText());
+        }
+
+        DockingLayoutNode left;
+        DockingLayoutNode right;
+
+        if (region == DockingRegion.NORTH || region == DockingRegion.WEST) {
+            left = newNode;
+            right = this;
+        }
+        else {
+            left = this;
+            right = newNode;
+            dividerProportion = 1.0 - dividerProportion;
+        }
+
+        DockingLayoutNode oldParent = parent;
+        DockingSplitPanelNode split = new DockingSplitPanelNode(docking, left, right, newOrientation, dividerProportion, anchor);
+        oldParent.replaceChild(this, split);
+    }
+
+    @Override
+    public void replaceChild(DockingLayoutNode child, DockingLayoutNode newChild) {
+        int idx = children.indexOf(child);
+        if (idx >= 0) {
+            children.set(idx, newChild);
+            newChild.setParent(this);
+        }
+    }
 }

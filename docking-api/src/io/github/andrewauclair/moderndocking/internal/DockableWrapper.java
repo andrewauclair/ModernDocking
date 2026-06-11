@@ -55,7 +55,7 @@ public class DockableWrapper {
 
 	private final FloatListener floatListener;
 
-	private boolean maximized = false;
+	private boolean inFocusedMode = false;
 	private boolean hidden = false;
 	private boolean isAnchor = false;
 	private InternalRootDockingPanel root;
@@ -149,21 +149,21 @@ public class DockableWrapper {
 	}
 
 	/**
-	 * Check if the dockable is maximized
+	 * Check if the dockable is in focused mode
 	 *
-	 * @return Whether the dockable is maximized
+	 * @return Whether the dockable is in focused mode
 	 */
-	public boolean isMaximized() {
-		return maximized;
+	public boolean isInFocusedMode() {
+		return inFocusedMode;
 	}
 
 	/**
-	 * Set the dockable to maximized
+	 * Set the dockable focused mode state
 	 *
-	 * @param maximized Maximized flag
+	 * @param inFocusedMode Focused mode flag
 	 */
-	public void setMaximized(boolean maximized) {
-		this.maximized = maximized;
+	public void setInFocusedMode(boolean inFocusedMode) {
+		this.inFocusedMode = inFocusedMode;
 	}
 
 	/**

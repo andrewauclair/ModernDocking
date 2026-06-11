@@ -23,16 +23,18 @@ package io.github.andrewauclair.moderndocking.internal.floating;
 
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.internal.InternalRootDockingPanel;
+import io.github.andrewauclair.moderndocking.ui.DockingSettings;
 import java.awt.Window;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 /**
  * Small utility class for floating feature
  */
 public class Floating {
-    private static final Map<Window, FloatUtilsFrame> utilFrames = new HashMap<>();
+    private static final Map<Window, FloatUtils> utilFrames = new HashMap<>();
     private static boolean isFloating = false;
     private static boolean isFloatingTabbedPane = false;
 
@@ -50,7 +52,24 @@ public class Floating {
      * @param root The internal root in the window
      */
     public static void registerDockingWindow(DockingAPI docking, Window window, InternalRootDockingPanel root) {
-        SwingUtilities.invokeLater(() -> utilFrames.put(window, new FloatUtilsFrame(docking, window, root)));
+        // Run the probe off the EDT so the full Robot-based empirical check is used,
+        // then post FloatUtils creation back to the EDT once the result is cached.
+        Thread probeThread = new Thread(() -> {
+            TransparencyProbe.isTransparencySupported();
+            SwingUtilities.invokeLater(() -> {
+                FloatUtils utils;
+                if ((DockingSettings.isUseLayeredPaneOverlay() || !TransparencyProbe.isTransparencySupported())
+                        && window instanceof JFrame) {
+                    utils = new FloatUtilsLayer(docking, (JFrame) window, root);
+                }
+                else {
+                    utils = new FloatUtilsFrame(docking, window, root);
+                }
+                utilFrames.put(window, utils);
+            });
+        }, "transparency-probe");
+        probeThread.setDaemon(true);
+        probeThread.start();
     }
 
     /**
@@ -59,9 +78,9 @@ public class Floating {
      * @param window The window to deregister
      */
     public static void deregisterDockingWindow(Window window) {
-        FloatUtilsFrame frame = utilFrames.remove(window);
-        if (frame != null) {
-            frame.dispose();
+        FloatUtils utils = utilFrames.remove(window);
+        if (utils != null) {
+            utils.dispose();
         }
     }
 
@@ -72,7 +91,7 @@ public class Floating {
      *
      * @return Utility frame or null
      */
-    public static FloatUtilsFrame frameForWindow(Window window) {
+    public static FloatUtils frameForWindow(Window window) {
         return utilFrames.get(window);
     }
 

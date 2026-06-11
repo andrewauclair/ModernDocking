@@ -56,7 +56,16 @@ public class DockingEvent {
         /**
          * Dockable has been removed from an Auto Hide toolbar
          */
-        AUTO_HIDE_DISABLED
+        AUTO_HIDE_DISABLED,
+
+        /**
+         * Dockable has entered focused mode (was maximized)
+         */
+        FOCUSED_MODE_ENTERED,
+        /**
+         * Dockable has exited focused mode (was minimized)
+         */
+        FOCUSED_MODE_EXITED
     }
 
     private final ID id;

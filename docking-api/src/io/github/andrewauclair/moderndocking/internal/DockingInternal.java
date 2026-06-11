@@ -65,6 +65,7 @@ public class DockingInternal {
 	private final AppStatePersister appStatePersister;
 
 	private boolean deregistering = false;
+	private boolean inFocusedModeTransition = false;
 
 	/**
 	 * Create a new instance of our internal helper for the docking instance
@@ -324,6 +325,12 @@ public class DockingInternal {
 		// TODO something about DockingStateAPI.restoreAnchor is causing a null here
 		Objects.requireNonNull(window);
 
+		// if this dockable is being closed while in focused mode, exit focused mode first
+		// to restore the previous state and allow another dockable to enter focused mode
+		if (!inFocusedModeTransition && docking.inFocusedMode(dockable)) {
+			docking.exitFocusedMode(dockable);
+		}
+
 		InternalRootDockingPanel root = DockingComponentUtils.rootForWindow(docking, window);
 
 		Objects.requireNonNull(root);
@@ -344,18 +351,20 @@ public class DockingInternal {
 		}
 		wrapper.setWindow(null);
 
-		DockingListeners.fireUndockedEvent(dockable, isTemporary);
+		docking.getDockingListeners().fireUndockedEvent(dockable, isTemporary);
 
 		// make sure that can dispose this window, and we're not floating the last dockable in it
 		if (docking.canDisposeWindow(window) && root.isEmpty() && !Floating.isFloating()) {
 			deregisterDockingPanel(window);
 			window.dispose();
+		} else {
+			DockingComponentUtils.updateWindowMinimumSize(docking, window);
 		}
 
 		docking.getAppState().persist();
 
-		// force this dockable to dock again if we're not floating it
-		if (!dockable.isClosable() && !Floating.isFloating() && !isDeregistering(docking)) {
+		// force this dockable to dock again if we're not floating it and not in a focused mode transition
+		if (!dockable.isClosable() && !Floating.isFloating() && !isDeregistering(docking) && !inFocusedModeTransition) {
 			docking.dock(dockable, docking.getMainWindow(), DockingRegion.SOUTH);
 		}
 	}
@@ -367,7 +376,7 @@ public class DockingInternal {
 				.collect(Collectors.toList());
 
 		for (DockableWrapper wrapper : wrappers) {
-			DockingListeners.fireDockedEvent(wrapper.getDockable());
+			docking.getDockingListeners().fireDockedEvent(wrapper.getDockable());
 		}
 	}
 
@@ -379,7 +388,7 @@ public class DockingInternal {
 	public static void fireDockedEventForAll(DockingAPI docking) {
 		for (Dockable dockable : DockingInternal.get(docking).getDockables()) {
 			if (docking.isDocked(dockable)) {
-				DockingListeners.fireDockedEvent(dockable);
+				docking.getDockingListeners().fireDockedEvent(dockable);
 			}
 		}
 	}
@@ -485,4 +494,12 @@ public class DockingInternal {
     public void setDeregistering(boolean deregistering) {
 		this.deregistering = deregistering;
     }
+
+	public boolean isInFocusedModeTransition() {
+		return inFocusedModeTransition;
+	}
+
+	public void setInFocusedModeTransition(boolean inFocusedModeTransition) {
+		this.inFocusedModeTransition = inFocusedModeTransition;
+	}
 }

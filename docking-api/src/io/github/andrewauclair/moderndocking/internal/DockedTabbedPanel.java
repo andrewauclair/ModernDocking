@@ -33,8 +33,10 @@ import io.github.andrewauclair.moderndocking.ui.DockingSettings;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.dnd.DragGestureListener;
@@ -51,7 +53,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -119,10 +120,10 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		boolean usingFlatLaf = tabs.getUI().getClass().getPackageName().startsWith("com.formdev.flatlaf");
 
 		if (Settings.alwaysDisplayTabsMode() && usingFlatLaf) {
-			tabs.setTabPlacement(JTabbedPane.TOP);
+			tabs.setTabPlacement(SwingConstants.TOP);
 		}
 		else {
-			tabs.setTabPlacement(JTabbedPane.BOTTOM);
+			tabs.setTabPlacement(SwingConstants.BOTTOM);
 		}
 
 		tabs.setTabLayoutPolicy(Settings.getTabLayoutPolicy());
@@ -215,6 +216,36 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 		floatListener = null;
 
 		super.removeNotify();
+	}
+
+	@Override
+	public Dimension getMinimumSize() {
+		Insets in = getInsets();
+		int w = 0, h = 0;
+
+		for (DockableWrapper wrapper : panels) {
+			Dimension dm = wrapper.getDisplayPanel().getMinimumSize();
+			w = Math.max(w, dm.width);
+			h = Math.max(h, dm.height);
+		}
+
+		// Add room for the tab strip itself
+		boolean topOrBottom = (tabs.getTabPlacement() == SwingConstants.TOP || tabs.getTabPlacement() == SwingConstants.BOTTOM);
+		Dimension tabsMin = tabs.getMinimumSize();
+
+		if (topOrBottom) {
+			w = Math.max(w, tabsMin.width);
+			h += tabsMin.height;
+		}
+		else {
+			w += tabsMin.width;
+			h = Math.max(h, tabsMin.height);
+		}
+
+		// Floor at a practical minimum so panels with scroll-pane content (min=0) can't be squished to nothing
+		w = Math.max(w, 50);
+		h = Math.max(h, 50);
+		return new Dimension(w + in.left + in.right, h + in.top + in.bottom);
 	}
 
 	/**
@@ -340,39 +371,8 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			addPanel(wrapper);
 		}
 		else {
-			DockedSplitPanel split = new DockedSplitPanel(docking, panels.get(0).getWindow(), anchor);
-			dockedParent.replaceChild(this, split);
-
-			DockingPanel newPanel;
-
-			if (wrapper.isAnchor()) {
-				newPanel = new DockedAnchorPanel(docking, wrapper);
-			}
-			else if (Settings.alwaysDisplayTabsMode()) {
-				newPanel = new DockedTabbedPanel(docking, wrapper, anchor);
-			}
-			else {
-				newPanel = new DockedSimplePanel(docking, wrapper, anchor);
-			}
-
-			if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
-				split.setLeft(this);
-				split.setRight(newPanel);
-				dividerProportion = 1.0 - dividerProportion;
-			}
-			else {
-				split.setLeft(newPanel);
-				split.setRight(this);
-			}
-
-			if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
-				split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-			}
-			else {
-				split.setOrientation(JSplitPane.VERTICAL_SPLIT);
-			}
-
-			split.setDividerLocation(dividerProportion);
+			DockingPanel newPanel = DockedSplitPanel.createLeafPanel(docking, wrapper, anchor);
+			DockedSplitPanel.dockPanelBeside(this, dockedParent, newPanel, region, dividerProportion, docking, panels.get(0).getWindow(), anchor);
 		}
 
 		revalidate();
@@ -414,7 +414,7 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 
 			if (remaining.isHidden()) {
 				remaining.setHidden(false);
-				DockingListeners.fireShownEvent(remaining.getDockable());
+				docking.getDockingListeners().fireShownEvent(remaining.getDockable());
 			}
 
 			dockedParent.replaceChild(this, new DockedSimplePanel(docking, remaining, anchor));
@@ -476,11 +476,11 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 					if (tabs.getSelectedIndex() != -1) {
 						DockableWrapper wrapper = panels.get(tabs.getSelectedIndex());
 						wrapper.setHidden(true);
-						DockingListeners.fireHiddenEvent(wrapper.getDockable());
+						docking.getDockingListeners().fireHiddenEvent(wrapper.getDockable());
 					}
 					DockableWrapper wrapper = panels.get(i);
 					wrapper.setHidden(false);
-					DockingListeners.fireShownEvent(wrapper.getDockable());
+					docking.getDockingListeners().fireShownEvent(wrapper.getDockable());
 				}
 				tabs.setSelectedIndex(i);
 			}
@@ -514,12 +514,12 @@ public class DockedTabbedPanel extends DockingPanel implements ChangeListener {
 			if (previousSelectedIndex != -1 && previousSelectedIndex < panels.size() && previousSelectedIndex != selectedTab) {
 				DockableWrapper previous = panels.get(previousSelectedIndex);
 				previous.setHidden(true);
-				DockingListeners.fireHiddenEvent(previous.getDockable());
+				docking.getDockingListeners().fireHiddenEvent(previous.getDockable());
 			}
 
 			DockableWrapper panel = panels.get(selectedTab);
 			panel.setHidden(false);
-			DockingListeners.fireShownEvent(panel.getDockable());
+			docking.getDockingListeners().fireShownEvent(panel.getDockable());
 		}
 
 		previousSelectedIndex = selectedTab;

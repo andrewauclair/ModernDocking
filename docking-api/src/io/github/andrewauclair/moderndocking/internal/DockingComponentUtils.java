@@ -44,8 +44,21 @@ public class DockingComponentUtils {
 	private DockingComponentUtils() {
 	}
 
-	//
-	//
+	/**
+	 * Recomputes and sets the minimum size of {@code window} by delegating to the
+	 * {@link InternalRootDockingPanel} for that window.  This bypasses the
+	 * intermediate GridBagLayout / RootPaneLayout chain and computes directly from
+	 * the docking panel hierarchy.
+	 */
+	public static void updateWindowMinimumSize(DockingAPI docking, Window window) {
+		try {
+			rootForWindow(docking, window).updateWindowMinimumSize();
+		}
+		catch (RootDockingPanelNotFoundException ignored) {
+			// Window has no root panel yet — nothing to update.
+		}
+	}
+
 	/**
 	 * used to clear all anchors before we undock components. This is done to prevent the anchor from being readded
 	 *
@@ -297,7 +310,7 @@ public class DockingComponentUtils {
 
 		if (docking.canDisposeWindow(window) && root != null) {
 			if (shouldUndock(root)) {
-				undockIllegalFloats(root);
+				undockIllegalFloats(docking, root);
 			}
 		}
 
@@ -323,7 +336,7 @@ public class DockingComponentUtils {
 		return true;
 	}
 
-	private static void undockIllegalFloats(Container container) {
+	private static void undockIllegalFloats(DockingAPI docking, Container container) {
 		for (Component component : container.getComponents()) {
 			if (component instanceof DisplayPanel) {
 				DisplayPanel panel = (DisplayPanel) component;
@@ -332,10 +345,10 @@ public class DockingComponentUtils {
 				Dockable dockable = wrapper.getDockable();
 				wrapper.getParent().undock(dockable);
 
-				DockingListeners.fireUndockedEvent(dockable, false);
+				docking.getDockingListeners().fireUndockedEvent(dockable, false);
 			}
 			else if (component instanceof Container) {
-				undockIllegalFloats((Container) component);
+				undockIllegalFloats(docking, (Container) component);
 			}
 		}
 	}

@@ -98,7 +98,7 @@ public class DockedTabbedPanelFloatListener extends FloatListener {
     }
 
     @Override
-    protected boolean dropPanel(FloatUtilsFrame utilsFrame, JFrame floatingFrame, Point mousePosOnScreen) {
+    protected boolean dropPanel(FloatUtils utilsFrame, JFrame floatingFrame, Point mousePosOnScreen) {
         if (!(floatingFrame instanceof TempFloatingFrame)) {
             return false;
         }
@@ -141,7 +141,7 @@ public class DockedTabbedPanelFloatListener extends FloatListener {
                 final FloatingFrame frame = newFrame;
 
                 SwingUtilities.invokeLater(() -> {
-                    DockingListeners.fireNewFloatingFrameEvent(frame, frame.getRoot());
+                    docking.getDockingListeners().fireNewFloatingFrameEvent(frame, frame.getRoot());
                 });
             }
 

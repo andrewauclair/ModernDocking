@@ -188,13 +188,13 @@ public class DockableToolbar extends JPanel implements ComponentListener {
 			boolean isSelected = buttonGroup.getSelection() == entry.button.getModel();
 
 			if (entry.panel.isVisible() && !isSelected) {
-				DockingListeners.fireHiddenEvent(entry.dockable.getDockable());
+				docking.getDockingListeners().fireHiddenEvent(entry.dockable.getDockable());
 			}
 			else if (!entry.panel.isVisible() && isSelected) {
-				DockingListeners.fireShownEvent(entry.dockable.getDockable());
+				docking.getDockingListeners().fireShownEvent(entry.dockable.getDockable());
 			}
 			else if (isSelected) {
-				DockingListeners.fireShownEvent(entry.dockable.getDockable());
+				docking.getDockingListeners().fireShownEvent(entry.dockable.getDockable());
 			}
 
 			// set only a single panel visible

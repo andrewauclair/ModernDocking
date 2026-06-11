@@ -54,10 +54,6 @@ import io.github.andrewauclair.moderndocking.settings.Settings;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
 
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -70,7 +66,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
-import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
 /**
@@ -147,6 +142,8 @@ public class DockingStateAPI {
      * @param layout Application layout to restore
      */
     public void restoreApplicationLayout(ApplicationLayout layout) {
+        docking.getAppState().setPaused(true);
+
         // get rid of all existing windows and undock all dockables
         Set<Window> windows = new HashSet<>(docking.getRootPanels().keySet());
         for (Window window : windows) {
@@ -160,8 +157,6 @@ public class DockingStateAPI {
             }
         }
 
-        docking.getAppState().setPaused(true);
-
         // setup main frame
         restoreWindowLayout(docking.getMainWindow(), layout.getMainFrameLayout());
 
@@ -172,7 +167,7 @@ public class DockingStateAPI {
             restoreWindowLayout(frame, frameLayout);
 
             SwingUtilities.invokeLater(() -> {
-                DockingListeners.fireNewFloatingFrameEvent(frame, frame.getRoot());
+                docking.getDockingListeners().fireNewFloatingFrameEvent(frame, frame.getRoot());
             });
         }
 
@@ -180,6 +175,10 @@ public class DockingStateAPI {
         docking.getAppState().persist();
 
         DockingInternal.fireDockedEventForAll(docking);
+
+        for (Window window : docking.getRootPanels().keySet()) {
+            DockingComponentUtils.updateWindowMinimumSize(docking, window);
+        }
 
         DockingLayouts.layoutRestored(layout);
     }
@@ -271,20 +270,8 @@ public class DockingStateAPI {
             root.setSlidePosition(wrapper.getDockable(), (int) (layout.slidePosition(id) * window.getHeight()));
         }
 
-        if (layout.getMaximizedDockable() != null) {
-            docking.maximize(getDockable(docking, layout.getMaximizedDockable()));
-        }
-    }
-
-    private void findSplitPanels(Container container, List<DockedSplitPanel> panels) {
-        for (Component component : container.getComponents()) {
-            if (component instanceof DockedSplitPanel) {
-                panels.add((DockedSplitPanel) component);
-            }
-
-            if (component instanceof Container) {
-                findSplitPanels((Container) component, panels);
-            }
+        if (layout.getFocusedModeDockable() != null) {
+            docking.enterFocusedMode(getDockable(docking, layout.getFocusedModeDockable()));
         }
     }
 
@@ -327,13 +314,14 @@ public class DockingStateAPI {
     }
 
     private DockedSplitPanel restoreSplit(DockingAPI docking, DockingSplitPanelNode node, Window window) {
-        DockedSplitPanel panel = new DockedSplitPanel(docking, window, "");
-
-        panel.setLeft(restoreLayout(docking, node.getLeft(), window));
-        panel.setRight(restoreLayout(docking, node.getRight(), window));
+        DockedSplitPanel panel = new DockedSplitPanel(docking, window, node.getAnchor() != null ? node.getAnchor() : "");
         panel.setOrientation(node.getOrientation());
-        panel.setDividerLocation(node.getDividerProportion());
 
+        for (DockingLayoutNode childNode : node.getChildren()) {
+            panel.addChildForRestore(restoreLayout(docking, childNode, window));
+        }
+
+        panel.setDividerPositions(node.getDividerPositions());
         return panel;
     }
 
@@ -514,96 +502,13 @@ public class DockingStateAPI {
     }
 
     private void restoreProperSplitLocations(RootDockingPanelAPI root) {
-        SwingUtilities.invokeLater(() -> {
-            // find all the splits and restore their divider locations from the bottom up
-            List<DockedSplitPanel> splitPanels = new ArrayList<>();
-
-            // find all the splits recursively. Pushing new splits onto the front of the deque. this forces the deepest
-            // splits to be adjusted last, keeping their position proper.
-            findSplitPanels(root, splitPanels);
-
-            List<JSplitPane> splits = new ArrayList<>();
-            List<Double> proportions = new ArrayList<>();
-
-            // loop through and restore split proportions, bottom up
-            for (DockedSplitPanel splitPanel : splitPanels) {
-                splits.add(splitPanel.getSplitPane());
-                proportions.add(splitPanel.getLastRequestedDividerProportion());
-            }
-            restoreSplits(splits, proportions);
-        });
-    }
-
-    private void restoreSplits(List<JSplitPane> splits, List<Double> proportions) {
-        if (splits.size() != proportions.size()) {
-            return;
-        }
-        if (splits.isEmpty()) {
-            return;
-        }
-
-        JSplitPane splitPane = splits.get(0);
-        double proportion = proportions.get(0);
-
-        splits.remove(0);
-        proportions.remove(0);
-
-        restoreSplit(splitPane, proportion, splits, proportions);
-    }
-
-	/**
-	 * Restore all splits in the window, starting with the outer most splits and working our way in. Only moving to the next when the previous
-	 * has been completely set.
-	 *
-	 * @param splitPane The current splitpane we're setting
-	 * @param proportion The proportion of the splitpane
-	 * @param splits The list of splitpanes left
-	 * @param proportions The list of proportions for the remaining splitpanes
-	 */
-    private void restoreSplit(JSplitPane splitPane, double proportion, List<JSplitPane> splits, List<Double> proportions) {
-        // calling setDividerLocation on a JSplitPane that isn't visible does nothing, so we need to check if it is showing first
-        if (splitPane.isShowing()) {
-            if (splitPane.getWidth() > 0 && splitPane.getHeight() > 0) {
-                splitPane.setDividerLocation(proportion);
-
-                if (!splits.isEmpty()) {
-                    SwingUtilities.invokeLater(() -> {
-                        JSplitPane nextSplit = splits.get(0);
-                        double nextProportion = proportions.get(0);
-
-                        splits.remove(0);
-                        proportions.remove(0);
-
-                        restoreSplit(nextSplit, nextProportion, splits, proportions);
-                    });
-                }
-            } else {
-                // split hasn't been completely calculated yet, wait until componentResize
-                splitPane.addComponentListener(new ComponentAdapter() {
-                    @Override
-                    public void componentResized(ComponentEvent e) {
-                        // remove this listener, it's a one off
-                        splitPane.removeComponentListener(this);
-                        // call the function again, this time it should actually set the divider location
-                        restoreSplit(splitPane, proportion, splits, proportions);
-                    }
-                });
-            }
-        } else {
-            // split hasn't been shown yet, wait until it's showing
-            splitPane.addHierarchyListener(new HierarchyListener() {
-                @Override
-                public void hierarchyChanged(HierarchyEvent e) {
-                    boolean isShowingChangeEvent = (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0;
-
-                    if (isShowingChangeEvent && splitPane.isShowing()) {
-                        // remove this listener, it's a one off
-                        splitPane.removeHierarchyListener(this);
-                        // call the function again, this time it might set the size or wait for componentResize
-                        restoreSplit(splitPane, proportion, splits, proportions);
-                    }
-                }
-            });
+        // Use validate() (synchronous) rather than revalidate() (deferred) so that
+        // the full layout tree is computed before the EDT task returns.  This ensures
+        // that when Swing processes the accumulated dirty regions it paints the final
+        // correct state instead of an intermediate blank/unsized state.
+        if (root instanceof Container) {
+            ((Container) root).validate();
+            ((Container) root).repaint();
         }
     }
 

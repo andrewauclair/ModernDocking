@@ -56,7 +56,14 @@ public class ActiveDockableHighlighter {
 	public ActiveDockableHighlighter(DockingAPI docking) {
 		// use an AWT event listener to set a border around the dockable that the mouse is currently over
 		awtEventListener = e -> {
-			if (Settings.isActiveHighlighterEnabled() && (e.getID() == MouseEvent.MOUSE_ENTERED || e.getID() == MouseEvent.MOUSE_EXITED)) {
+			if (!Settings.isActiveHighlighterEnabled()) {
+				if (activePanel != null) {
+					setNotSelectedBorder(activePanel);
+					activePanel = null;
+				}
+				return;
+			}
+			if (e.getID() == MouseEvent.MOUSE_ENTERED || e.getID() == MouseEvent.MOUSE_EXITED) {
 				DockingPanel dockable = DockingComponentUtils.findDockingPanelAtScreenPos(docking, ((MouseEvent) e).getLocationOnScreen());
 
 				if (activePanel != null && dockable == null) {

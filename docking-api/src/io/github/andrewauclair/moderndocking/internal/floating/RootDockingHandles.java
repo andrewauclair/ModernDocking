@@ -28,10 +28,10 @@ import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.internal.InternalRootDockingPanel;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
@@ -51,7 +51,7 @@ public class RootDockingHandles {
     private final DockingHandle pinEast = new DockingHandle(DockingRegion.EAST);
     private final DockingHandle pinSouth = new DockingHandle(DockingRegion.SOUTH);
 
-    private final JFrame frame;
+    private final Container coordinateRoot;
     private final InternalRootDockingPanel rootPanel;
 
     private DockingRegion mouseOverRegion = null;
@@ -60,21 +60,21 @@ public class RootDockingHandles {
     /**
      * Create a new instance of the root docking handles
      *
-     * @param frame The frame this root docking handle belongs to
-     * @param rootPanel The root panel for the frame
+     * @param coordinateRoot The container that handles are added to and coordinates are relative to
+     * @param rootPanel      The root panel for the window
      */
-    public RootDockingHandles(JFrame frame, InternalRootDockingPanel rootPanel) {
-        this.frame = frame;
+    public RootDockingHandles(Container coordinateRoot, InternalRootDockingPanel rootPanel) {
+        this.coordinateRoot = coordinateRoot;
         this.rootPanel = rootPanel;
-        setupHandle(frame, rootCenter);
-        setupHandle(frame, rootWest);
-        setupHandle(frame, rootNorth);
-        setupHandle(frame, rootEast);
-        setupHandle(frame, rootSouth);
+        setupHandle(coordinateRoot, rootCenter);
+        setupHandle(coordinateRoot, rootWest);
+        setupHandle(coordinateRoot, rootNorth);
+        setupHandle(coordinateRoot, rootEast);
+        setupHandle(coordinateRoot, rootSouth);
 
-        setupHandle(frame, pinWest);
-        setupHandle(frame, pinEast);
-        setupHandle(frame, pinSouth);
+        setupHandle(coordinateRoot, pinWest);
+        setupHandle(coordinateRoot, pinEast);
+        setupHandle(coordinateRoot, pinSouth);
     }
 
     /**
@@ -122,7 +122,7 @@ public class RootDockingHandles {
      */
     public void mouseMoved(Point mousePosOnScreen) {
         Point framePoint = new Point(mousePosOnScreen);
-        SwingUtilities.convertPointFromScreen(framePoint, frame);
+        SwingUtilities.convertPointFromScreen(framePoint, coordinateRoot);
 
         rootCenter.mouseMoved(framePoint);
         rootWest.mouseMoved(framePoint);
@@ -147,9 +147,9 @@ public class RootDockingHandles {
         if (pinSouth.isMouseOver()) mouseOverPin = DockingRegion.SOUTH;
     }
 
-    private void setupHandle(JFrame frame, DockingHandle label) {
+    private void setupHandle(Container coordinateRoot, DockingHandle label) {
         label.setVisible(true);
-        frame.add(label);
+        coordinateRoot.add(label);
     }
 
     private void setRootHandleLocations() {
@@ -159,7 +159,7 @@ public class RootDockingHandles {
         location.y += size.height / 2;
 
         SwingUtilities.convertPointToScreen(location, rootPanel.getRootPanel().getParent());
-        SwingUtilities.convertPointFromScreen(location, frame);
+        SwingUtilities.convertPointFromScreen(location, coordinateRoot);
 
         setLocation(rootCenter, location.x, location.y);
         setLocation(rootWest, location.x - (size.width / 2) + rootHandleSpacing(rootWest), location.y);

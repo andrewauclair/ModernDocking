@@ -56,6 +56,8 @@ public class DockedAnchorPanel extends DockingPanel {
     public DockedAnchorPanel(DockingAPI docking, DockableWrapper anchor) {
         setLayout(new BorderLayout());
 
+        ActiveDockableHighlighter.setNotSelectedBorder(this);
+
         anchor.setParent(this);
 
         this.docking = docking;
@@ -99,6 +101,7 @@ public class DockedAnchorPanel extends DockingPanel {
     @Override
     public void undock(Dockable dockable) {
         dockingParent.removeChild(this);
+        anchor.setParent(null);
     }
 
     @Override

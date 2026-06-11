@@ -14,6 +14,8 @@ sourceSets.test.java.srcDirs = ['test']
 sourceSets.main.resources.srcDirs = ['resources']
 
 dependencies {
+    implementation project(':demo-common')
+
     if (project.hasProperty("useMavenVersion")) {
         implementation 'io.github.andrewauclair:modern-docking-ui:' + version
         implementation 'io.github.andrewauclair:modern-docking-single-app:' + version
@@ -46,3 +48,9 @@ jar {
 }
 
 tasks.withType(Javadoc).all { enabled = false } // don't generate javadocs for the demo projects
+
+task run(type: JavaExec, dependsOn: classes) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'demo.SingleAppDemo'
+    workingDir = rootProject.projectDir
+}

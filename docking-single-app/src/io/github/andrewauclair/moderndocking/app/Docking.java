@@ -25,6 +25,7 @@ import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
+import io.github.andrewauclair.moderndocking.event.DockingEvent;
 import io.github.andrewauclair.moderndocking.event.DockingListener;
 import io.github.andrewauclair.moderndocking.event.MaximizeListener;
 import io.github.andrewauclair.moderndocking.event.NewFloatingFrameListener;
@@ -469,62 +470,86 @@ public class Docking {
     }
 
     /**
-     * checks if a dockable is currently maximized
+     * Checks if a dockable is currently in focused mode
      *
      * @param dockable The dockable to check
-     * @return Whether the dockable is maximized
+     * @return Whether the dockable is in focused mode
      */
+    public static boolean inFocusedMode(Dockable dockable) {
+        return instance.inFocusedMode(dockable);
+    }
+
+    /**
+     * Enter focused mode for a dockable, undocking all others in the same root
+     *
+     * @param dockable Dockable to enter focused mode
+     */
+    public static void enterFocusedMode(Dockable dockable) {
+        instance.enterFocusedMode(dockable);
+    }
+
+    /**
+     * Exit focused mode for a dockable, restoring the previous layout
+     *
+     * @param dockable Dockable to exit focused mode
+     */
+    public static void exitFocusedMode(Dockable dockable) {
+        instance.exitFocusedMode(dockable);
+    }
+
+    /**
+     * @deprecated Use {@link #inFocusedMode(Dockable)} instead. Will be removed in 2.0.
+     */
+    @Deprecated(since = "1.5.0", forRemoval = true)
     public static boolean isMaximized(Dockable dockable) {
-        return instance.isMaximized(dockable);
+        return instance.inFocusedMode(dockable);
     }
 
     /**
-     * maximizes a dockable
-     *
-     * @param dockable Dockable to maximize
+     * @deprecated Use {@link #enterFocusedMode(Dockable)} instead. Will be removed in 2.0.
      */
+    @Deprecated(since = "1.5.0", forRemoval = true)
     public static void maximize(Dockable dockable) {
-        instance.maximize(dockable);
+        instance.enterFocusedMode(dockable);
     }
 
     /**
-     * minimize a dockable if it is currently maximized
-     *
-     * @param dockable Dockable to minimize
+     * @deprecated Use {@link #exitFocusedMode(Dockable)} instead. Will be removed in 2.0.
      */
+    @Deprecated(since = "1.5.0", forRemoval = true)
     public static void minimize(Dockable dockable) {
-        instance.minimize(dockable);
+        instance.exitFocusedMode(dockable);
     }
 
-    public void autoShowDockable(Dockable dockable) {
+    public static void autoShowDockable(Dockable dockable) {
         instance.autoShowDockable(dockable);
     }
 
-    public void autoShowDockable(String persistentID) {
+    public static void autoShowDockable(String persistentID) {
         instance.autoShowDockable(persistentID);
     }
 
-    public void autoHideDockable(Dockable dockable) {
+    public static void autoHideDockable(Dockable dockable) {
         instance.autoHideDockable(dockable);
     }
 
-    public void autoHideDockable(String persistentID) {
+    public static void autoHideDockable(String persistentID) {
         instance.autoHideDockable(persistentID);
     }
 
-    public void autoHideDockable(Dockable dockable, ToolbarLocation location) {
+    public static void autoHideDockable(Dockable dockable, ToolbarLocation location) {
         instance.autoHideDockable(dockable, location);
     }
 
-    public void autoHideDockable(String persistentID, ToolbarLocation location) {
+    public static void autoHideDockable(String persistentID, ToolbarLocation location) {
         instance.autoHideDockable(persistentID, location);
     }
 
-    public void autoHideDockable(Dockable dockable, ToolbarLocation location, Window window) {
+    public static void autoHideDockable(Dockable dockable, ToolbarLocation location, Window window) {
         instance.autoHideDockable(dockable, location, window);
     }
 
-    public void autoHideDockable(String persistentID, ToolbarLocation location, Window window) {
+    public static void autoHideDockable(String persistentID, ToolbarLocation location, Window window) {
         instance.autoHideDockable(persistentID, location, window);
     }
 
@@ -568,19 +593,25 @@ public class Docking {
     }
 
     /**
-     * Add a new maximize listener. Will be called when a dockable is maximized
+     * Add a new maximize listener. Will be called when a dockable enters or exits focused mode.
      *
      * @param listener Listener to add
+     * @deprecated Use {@link #addDockingListener(DockingListener)} and handle
+     *             {@link DockingEvent.ID#FOCUSED_MODE_ENTERED} / {@link DockingEvent.ID#FOCUSED_MODE_EXITED} instead.
+     *             Will be removed in 2.0.
      */
+    @Deprecated(since = "1.5.0", forRemoval = true)
     public static void addMaximizeListener(MaximizeListener listener) {
         instance.addMaximizeListener(listener);
     }
 
     /**
-     * Remove a previously added maximize listener. No-op if the listener isn't in the list
+     * Remove a previously added maximize listener. No-op if the listener isn't in the list.
      *
      * @param listener Listener to remove
+     * @deprecated Will be removed in 2.0.
      */
+    @Deprecated(since = "1.5.0", forRemoval = true)
     public static void removeMaximizeListener(MaximizeListener listener) {
         instance.removeMaximizeListener(listener);
     }
@@ -609,7 +640,7 @@ public class Docking {
      * @param listener Listener to add
      */
     public static void addNewFloatingFrameListener(NewFloatingFrameListener listener) {
-        DockingListeners.addNewFloatingFrameListener(listener);
+        instance.getDockingListeners().addNewFloatingFrameListener(listener);
     }
 
     /**
@@ -618,7 +649,7 @@ public class Docking {
      * @param listener Listener to remove
      */
     public static void removeNewFloatingFrameListener(NewFloatingFrameListener listener) {
-        DockingListeners.removeNewFloatingFrameListener(listener);
+        instance.getDockingListeners().removeNewFloatingFrameListener(listener);
     }
 
     public static void setUserDynamicDockableCreationListener(DynamicDockableCreationListener listener) {

@@ -25,7 +25,11 @@ import io.github.andrewauclair.moderndocking.Dockable;
 
 /**
  * Interface for creating listeners for maximize events
+ *
+ * @deprecated Use {@link DockingListener} and handle {@link DockingEvent.ID#FOCUSED_MODE_ENTERED} and
+ *             {@link DockingEvent.ID#FOCUSED_MODE_EXITED} events instead. Will be removed in 2.0.
  */
+@Deprecated(since = "1.5.0", forRemoval = true)
 public interface MaximizeListener {
 	/**
 	 * Maximized state of dockable has changed

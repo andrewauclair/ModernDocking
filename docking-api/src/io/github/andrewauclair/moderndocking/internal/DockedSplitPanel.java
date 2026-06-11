@@ -25,389 +25,765 @@ import io.github.andrewauclair.moderndocking.Dockable;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.settings.Settings;
-import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Window;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.JSplitPane;
-import javax.swing.plaf.basic.BasicSplitPaneDivider;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
+import javax.swing.UIManager;
 
 /**
- * DockingPanel that has a split pane with 2 dockables, split can be vertical or horizontal
+ * Flat N-ary split container that replaces nested JSplitPane instances.
+ *
+ * <p>Each instance owns N child panels (N >= 2) and N-1 divider bars laid out
+ * in a single top-down pass.  Every divider position is stored as a fraction of
+ * <em>this panel's own rect</em>, so dragging one divider changes exactly one
+ * stored value and leaves all sibling dividers at their absolute pixel positions.
+ *
+ * <p>The old JSplitPane nesting problem is eliminated because there is no
+ * recursive proportion chain: every proportion is relative to the same rect.
  */
-public class DockedSplitPanel extends DockingPanel implements MouseListener, PropertyChangeListener {
-	/**
-	 * Panel in the left/top part of the split
-	 */
-	private DockingPanel left = null;
-	/**
-	 * Panel in the right/bottom part of the split
-	 */
-	private DockingPanel right = null;
+public class DockedSplitPanel extends DockingPanel {
 
-	/**
-	 * The split pane we're controlling
-	 */
-	private final JSplitPane splitPane = new JSplitPane();
-	/**
-	 * The parent panel of this split panel
-	 */
-	private DockingPanel dockedParent;
-	/**
-	 * The docking instance this panel belongs to
-	 */
-	private final DockingAPI docking;
-	/**
-	 * The window this panel is in
-	 */
-	private final Window window;
-	/**
-	 * The anchor this panel belongs to, if any
-	 */
-	private String anchor = "";
+    static final int DIVIDER_THICKNESS = 5;
 
-	/**
-	 * the last divider proportion that setDividerLocation was called with
-	 */
-	private double lastRequestedDividerProportion;
+    /**
+     * Ordered child panels.
+     */
+    private final List<DockingPanel> children = new ArrayList<>();
 
-	/**
-	 * Create a new DockedSplitPanel
-	 *
-	 * @param docking The docking instance
-	 * @param window The window this panel is in. Used to tell the child DockableWrappers what Window they are a part of
-	 * @param anchor The anchor associated with this docking panel
-	 */
-	public DockedSplitPanel(DockingAPI docking, Window window, String anchor) {
-		this.docking = docking;
-		this.window = window;
-		this.anchor = anchor;
+    /**
+     * dividerPositions[i] is the position of the divider between children[i] and
+     * children[i+1], as a fraction [0,1] of this panel's axis dimension.
+     * Used for persistence (save/restore). Length equals children.size() - 1.
+     */
+    private final List<Double> dividerPositions = new ArrayList<>();
 
-		setLayout(new BorderLayout());
+    /**
+     * dividerPixels[i] is the absolute pixel position of divider[i] along the
+     * split axis, measured from the leading edge of this panel.
+     * A value of -1 means "not yet initialised; compute from dividerPositions on
+     * the next layout pass".  Once set, this value is kept fixed across parent
+     * resizes so that only the last child absorbs the extra space.
+     */
+    private final List<Integer> dividerPixels = new ArrayList<>();
 
-		splitPane.setContinuousLayout(true);
-		splitPane.setResizeWeight(0.5);
-		splitPane.setBorder(null);
-		splitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, this);
+    /**
+     * One DividerBar per divider, parallel to dividerPositions.
+     */
+    private final List<DividerBar> dividerBars = new ArrayList<>();
 
-		setDividerLocation(splitPane.getResizeWeight());
+    /**
+     * JSplitPane.HORIZONTAL_SPLIT or VERTICAL_SPLIT.
+     */
+    private int orientation = JSplitPane.HORIZONTAL_SPLIT;
 
-		lastRequestedDividerProportion = splitPane.getResizeWeight();
+    private DockingPanel dockedParent;
+    private final DockingAPI docking;
+    private final Window window;
+    private String anchor;
 
-		if (splitPane.getUI() instanceof BasicSplitPaneUI) {
-			((BasicSplitPaneUI) splitPane.getUI()).getDivider().addMouseListener(this);
-		}
+    /**
+     * Guards against re-entrant layoutChildren calls triggered by validate().
+     */
+    private boolean inLayout = false;
 
-		add(splitPane, BorderLayout.CENTER);
-	}
+    /**
+     * Set to true while a divider drag is in progress.  During drag, layout uses
+     * absolute pixel positions so that only the two adjacent children resize and
+     * all other panels stay stationary.  Outside of a drag (e.g. window resize),
+     * layout uses stored fractions so that all children resize proportionally.
+     */
+    private static boolean isDragging = false;
 
-	/**
-	 * Retrieve the last double that we used to set the divider proportion with. This helps us properly
-	 * restore divider locations when restoring from a layout.
-	 *
-	 * @return Requested divider proportion
-	 */
-	public double getLastRequestedDividerProportion() {
-		return lastRequestedDividerProportion;
-	}
+    /**
+     * Create a new DockedSplitPanel.  Children and orientation must be
+     * configured before the panel is displayed.
+     */
+    public DockedSplitPanel(DockingAPI docking, Window window, String anchor) {
+        this.docking = docking;
+        this.window = window;
+        this.anchor = anchor;
+        setLayout(null);
+    }
 
-	/**
-	 * Set the divider location of the splitpane. Tricks are needed to properly set the position.
-	 * The position cannot be set until the JSplitPane is displayed on screen.
-	 *
-	 * @param proportion The new proportion of the splitpane
-	 */
-	public void setDividerLocation(final double proportion) {
-		lastRequestedDividerProportion = proportion;
+    @Override
+    public void doLayout() {
+        layoutChildren();
+    }
 
-		// calling setDividerLocation on a JSplitPane that isn't visible does nothing, so we need to check if it is showing first
-		if (splitPane.isShowing()) {
-			if (splitPane.getWidth() > 0 && splitPane.getHeight() > 0) {
-				splitPane.setDividerLocation(proportion);
-			}
-			else {
-				// split hasn't been completely calculated yet, wait until componentResize
-				splitPane.addComponentListener(new ComponentAdapter() {
-					@Override
-					public void componentResized(ComponentEvent e) {
-						// remove this listener, it's a one off
-						splitPane.removeComponentListener(this);
-						// call the function again, this time it should actually set the divider location
-						setDividerLocation(proportion);
-					}
-				});
-			}
-		}
-		else {
-			// split hasn't been shown yet, wait until it's showing
-			splitPane.addHierarchyListener(new HierarchyListener() {
-				@Override
-				public void hierarchyChanged(HierarchyEvent e) {
-					boolean isShowingChangeEvent = (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0;
+    @Override
+    public void setBounds(int x, int y, int width, int height) {
+        super.setBounds(x, y, width, height);
+        layoutChildren();
+    }
 
-					if (isShowingChangeEvent && splitPane.isShowing()) {
-						// remove this listener, it's a one off
-						splitPane.removeHierarchyListener(this);
-						// call the function again, this time it might set the size or wait for componentResize
-						setDividerLocation(proportion);
-					}
-				}
-			});
-		}
-	}
+    @Override
+    public Dimension getMinimumSize() {
+        boolean horiz = (orientation == JSplitPane.HORIZONTAL_SPLIT);
+        // Split axis: sum of children + dividers between them.
+        // Perpendicular axis: max of children (they all share the same cross-dimension).
+        int axisMin = DIVIDER_THICKNESS * Math.max(0, children.size() - 1);
+        int perpMin = 0;
 
-	/**
-	 * Used to set the real divider location, which is set as an int, not a double.
-	 *
-	 * @param location The new proportion of the splitpane
-	 */
-	public void setDividerLocation(final int location) {
-		if (splitPane.isShowing()) {
-			if ((splitPane.getWidth() > 0) && (splitPane.getHeight() > 0)) {
-				splitPane.setDividerLocation(location);
+        for (DockingPanel child : children) {
+            if (child == null) {
+                continue;
+            }
+            Dimension min = child.getMinimumSize();
+            axisMin += horiz ? min.width : min.height;
+            perpMin = Math.max(perpMin, horiz ? min.height : min.width);
+        }
+        return horiz ? new Dimension(axisMin, perpMin) : new Dimension(perpMin, axisMin);
+    }
 
-				docking.getAppState().persist();
-			}
-			else {
-				// split hasn't been completely calculated yet, wait until componentResize
-				splitPane.addComponentListener(new ComponentAdapter() {
-					@Override
-					public void componentResized(ComponentEvent e) {
-						// remove this listener, it's a one off
-						splitPane.removeComponentListener(this);
-						// call the function again, this time it should actually set the divider location
-						setDividerLocation(location);
-					}
-				});
-			}
-		}
-		else {
-			// split hasn't been shown yet, wait until it's showing
-			splitPane.addHierarchyListener(new HierarchyListener() {
-				@Override
-				public void hierarchyChanged(HierarchyEvent e) {
-					boolean isShowingChangeEvent = (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0;
+    /**
+     * Minimum pixels needed for children[0..divIndex] plus the dividers between them.
+     */
+    private int minPxBefore(int divIndex) {
+        boolean horiz = (orientation == JSplitPane.HORIZONTAL_SPLIT);
+        int px = 0;
 
-					if (isShowingChangeEvent && splitPane.isShowing()) {
-						// remove this listener, it's a one off
-						splitPane.removeHierarchyListener(this);
-						// call the function again, this time it might set the size or wait for componentResize
-						setDividerLocation(location);
-					}
-				}
-			});
-		}
-	}
+        for (int i = 0; i <= divIndex; i++) {
+            Dimension min = children.get(i).getMinimumSize();
+            px += horiz ? min.width : min.height;
 
-	/**
-	 * Access to the underlying JSplitPane. This is required so that we can pull a bunch of values for saving layouts.
-	 *
-	 * @return The JSplitPane used by this DockedSplitPanel
-	 */
-	public JSplitPane getSplitPane() {
-		return splitPane;
-	}
+            if (i < divIndex) {
+                px += DIVIDER_THICKNESS;
+            }
+        }
+        return px;
+    }
 
-	/**
-	 * Get the left/top component of the split
-	 *
-	 * @return Left/top component in the split
-	 */
-	public DockingPanel getLeft() {
-		return left;
-	}
+    /**
+     * Minimum pixels needed for children[divIndex+1..n-1] plus the dividers between them.
+     */
+    private int minPxAfter(int divIndex) {
+        boolean horiz = (orientation == JSplitPane.HORIZONTAL_SPLIT);
+        int px = 0;
 
-	/**
-	 * Set the panel in the left/top of split
-	 *
-	 * @param panel New left/top panel
-	 */
-	public void setLeft(DockingPanel panel) {
-		left = panel;
-		left.setParent(this);
-//		left.setAnchor(anchor);
+        for (int i = divIndex + 1; i < children.size(); i++) {
+            Dimension min = children.get(i).getMinimumSize();
+            px += horiz ? min.width : min.height;
 
-		// remember where the divider was and put it back
-		int dividerLocation = splitPane.getDividerLocation();
+            if (i < children.size() - 1) {
+                px += DIVIDER_THICKNESS;
+            }
+        }
+        return px;
+    }
 
-		splitPane.setLeftComponent(panel);
+    // ----------------------------------------------------------------
+    // Child management (called during construction and dock operations)
+    // ----------------------------------------------------------------
 
-		splitPane.setDividerLocation(dividerLocation);
-	}
+    /**
+     * Set the left/top child (index 0).
+     */
+    public void setLeft(DockingPanel panel) {
+        setChildAt(0, panel);
+    }
 
-	/**
-	 * Get the right/bottom component of the split
-	 *
-	 * @return Right/bottom component in the split
-	 */
-	public DockingPanel getRight() {
-		return right;
-	}
+    /**
+     * Set the right/bottom child (index 1).
+     */
+    public void setRight(DockingPanel panel) {
+        setChildAt(1, panel);
+    }
 
-	/**
-	 * Set the right panel of the split
-	 *
-	 * @param panel New right panel
-	 */
-	public void setRight(DockingPanel panel) {
-		right = panel;
-		right.setParent(this);
-//		right.setAnchor(anchor);
+    private void setChildAt(int index, DockingPanel panel) {
+        if (index < children.size()) {
+            remove(children.get(index));
+            children.set(index, panel);
+        }
+        else {
+            children.add(panel);
+        }
+        panel.setParent(this);
+        add(panel);
+        rebuildDividerBars();
+    }
 
-		// remember where the divider was and put it back
-		int dividerLocation = splitPane.getDividerLocation();
+    /**
+     * Insert {@code panel} beside {@code existingChild}.
+     *
+     * @param existingChild the child to split beside
+     * @param panel         the new child to insert
+     * @param after         true = new child goes after (EAST/SOUTH), false = before (WEST/NORTH)
+     * @param dividerPos    fraction of this panel's axis where the new divider sits
+     */
+    public void insertChildBeside(DockingPanel existingChild, DockingPanel panel,
+                                  boolean after, double dividerPos) {
+        int idx = children.indexOf(existingChild);
+        if (idx < 0) return;
 
-		splitPane.setRightComponent(panel);
+        if (after) {
+            children.add(idx + 1, panel);
+        }
+        else {
+            children.add(idx, panel);
+        }
+        // In both cases the new divider sits at the original index of existingChild.
+        dividerPositions.add(idx, dividerPos);
+        dividerPixels.add(idx, -1);
 
-		splitPane.setDividerLocation(dividerLocation);
-	}
+        panel.setParent(this);
+        add(panel);
+        rebuildDividerBars();
+        layoutChildren();
+    }
 
-	/**
-	 * Set the orientation of the split pane
-	 *
-	 * @param orientation New orientation of the split pane
-	 */
-	public void setOrientation(int orientation) {
-		splitPane.setOrientation(orientation);
+    /**
+     * Append a child without creating dividers — used only during layout
+     * restoration where divider positions are applied afterwards via
+     * {@link #setDividerPositions(double[])}.
+     */
+    public void addChildForRestore(DockingPanel child) {
+        child.setParent(this);
+        children.add(child);
+        add(child);
+    }
 
-		if (splitPane.getUI() instanceof BasicSplitPaneUI) {
-			// grab the divider from the UI and remove the border from it
-			BasicSplitPaneDivider divider = ((BasicSplitPaneUI) splitPane.getUI())
-					.getDivider();
+    public DockingPanel getLeft() {
+        return children.isEmpty() ? null : children.get(0);
+    }
 
-			if (divider != null && divider.getBorder() != null) {
-				divider.setBorder(null);
-			}
-		}
-	}
+    public DockingPanel getRight() {
+        return children.size() < 2 ? null : children.get(1);
+    }
 
-	@Override
-	public String getAnchor() {
-		return anchor;
-	}
+    public int getOrientation() {
+        return orientation;
+    }
 
-	@Override
-	public void setAnchor(String anchor) {
-		this.anchor = anchor;
-	}
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
+        for (DividerBar bar : dividerBars) {
+            bar.updateCursor();
+        }
+    }
 
-	@Override
-	public void setParent(DockingPanel parent) {
-		this.dockedParent = parent;
-	}
+    /**
+     * Return the index of {@code child} within this panel, or -1.
+     */
+    public int indexOfChild(DockingPanel child) {
+        return children.indexOf(child);
+    }
 
-	@Override
-	public void dock(Dockable dockable, DockingRegion region, double dividerProportion) {
-		DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+    // ----------------------------------------------------------------
+    // Divider position API
+    // ----------------------------------------------------------------
 
-		// docking to the center of a split isn't something we allow
-		// wouldn't be difficult to support, but isn't a complication we want in this framework
-		if (region == DockingRegion.CENTER) {
-			region = splitPane.getOrientation() == JSplitPane.HORIZONTAL_SPLIT ? DockingRegion.WEST : DockingRegion.NORTH;
-		}
+    /**
+     * Set the single divider proportion for a freshly constructed 2-child split.
+     * Also used by legacy restore code that still calls this method.
+     */
+    public void setDividerLocation(double proportion) {
+        if (dividerPositions.isEmpty()) {
+            dividerPositions.add(proportion);
+            dividerPixels.add(-1);
+        }
+        else {
+            dividerPositions.set(0, proportion);
+            dividerPixels.set(0, -1);
+        }
+        rebuildDividerBarsIfNeeded();
+        layoutChildren();
+    }
 
-		wrapper.setWindow(window);
+    /**
+     * Snapshot of all divider positions as a double array — used when
+     * persisting layouts.
+     */
+    public double[] getDividerPositions() {
+        double[] out = new double[dividerPositions.size()];
 
-		DockedSplitPanel split = new DockedSplitPanel(docking, window, anchor);
-		dockedParent.replaceChild(this, split);
+        for (int i = 0; i < out.length; i++) {
+            out[i] = dividerPositions.get(i);
+        }
+        return out;
+    }
 
-		DockingPanel newPanel;
+    /**
+     * Replace all divider positions at once — used when restoring N-ary
+     * layouts from disk.
+     */
+    public void setDividerPositions(double[] positions) {
+        dividerPositions.clear();
+        dividerPixels.clear();
+        for (double p : positions) {
+            dividerPositions.add(p);
+            dividerPixels.add(-1);
+        }
+        rebuildDividerBars();
+        layoutChildren();
+    }
 
-		if (Settings.alwaysDisplayTabsMode()) {
-			newPanel = new DockedTabbedPanel(docking, wrapper, anchor);
-		}
-		else {
-			newPanel = new DockedSimplePanel(docking, wrapper, anchor);
-		}
+    // ----------------------------------------------------------------
+    // Divider bar management
+    // ----------------------------------------------------------------
 
-		if (region == DockingRegion.EAST || region == DockingRegion.SOUTH) {
-			split.setLeft(this);
-			split.setRight(newPanel);
-			dividerProportion = 1.0 - dividerProportion;
-		}
-		else {
-			split.setLeft(newPanel);
-			split.setRight(this);
-		}
+    private void rebuildDividerBars() {
+        for (DividerBar bar : dividerBars) remove(bar);
+        dividerBars.clear();
+        int count = Math.max(0, children.size() - 1);
+        for (int i = 0; i < count; i++) {
+            DividerBar bar = new DividerBar(i);
+            dividerBars.add(bar);
+            add(bar);
+        }
+    }
 
-		if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
-			split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-		}
-		else {
-			split.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		}
+    private void rebuildDividerBarsIfNeeded() {
+        if (dividerBars.size() != Math.max(0, children.size() - 1)) {
+            rebuildDividerBars();
+        }
+    }
 
-		split.setDividerLocation(dividerProportion);
-	}
+    // ----------------------------------------------------------------
+    // Layout pass
+    // ----------------------------------------------------------------
 
-	@Override
-	public void undock(Dockable dockable) {
-	}
+    void layoutChildren() {
+        if (inLayout) {
+            return;
+        }
+        inLayout = true;
+        try {
+            layoutChildrenImpl();
+        }
+        finally {
+            inLayout = false;
+        }
+    }
 
-	@Override
-	public void replaceChild(DockingPanel child, DockingPanel newChild) {
-		if (left == child) {
-			setLeft(newChild);
-		}
-		else if (right == child) {
-			setRight(newChild);
-		}
-	}
+    private void layoutChildrenImpl() {
+        if (children.isEmpty()) {
+            return;
+        }
+        boolean horiz = (orientation == JSplitPane.HORIZONTAL_SPLIT);
+        int total = horiz ? getWidth() : getHeight();
 
-	@Override
-	public void removeChild(DockingPanel child) {
-		// safety against partially configured layout restorations
-		if (dockedParent == null) {
-			return;
-		}
+        if (total <= 0) {
+            return;
+        }
+        int prev = 0;
 
-		if (left == child) {
-			dockedParent.replaceChild(this, right);
-		}
-		else if (right == child) {
-			dockedParent.replaceChild(this, left);
-		}
-	}
+        for (int i = 0; i < children.size(); i++) {
+            DockingPanel child = children.get(i);
 
-	public List<DockingPanel> getChildren() {
-		return Arrays.asList(left, right);
-	}
+            if (child == null) {
+                continue;
+            }
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		if (e.getClickCount() >= 2) {
-			setDividerLocation(splitPane.getResizeWeight());
-		}
-	}
+            if (i < dividerPositions.size()) {
+                // During a drag: use stored pixels so that only the two children adjacent
+                // to the dragged divider resize; all others stay stationary.
+                // Outside a drag (window resize, restore, etc.): use fractions so that
+                // all children resize proportionally.
+                int px;
 
-	@Override
-	public void mousePressed(MouseEvent e) {
-	}
+                if (isDragging) {
+                    px = dividerPixels.get(i);
 
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		docking.getAppState().persist();
-	}
+                    if (px < 0) {
+                        px = (int) Math.round(dividerPositions.get(i) * total);
+                    }
+                }
+                else {
+                    px = (int) Math.round(dividerPositions.get(i) * total);
+                }
+                // Lower bound: leave at least children[i]'s minimum space before the divider.
+                // Upper bound: leave enough space for all children after the divider.
+                Dimension minI = children.get(i).getMinimumSize();
+                int lo = prev + (horiz ? minI.width : minI.height);
+                int divStart = clamp(px, lo, total - DIVIDER_THICKNESS - minPxAfter(i));
+                // Update pixel cache so drag has an accurate starting point.
+                // Fractions are only updated by onDrag / syncFractionsFromPixels.
+                dividerPixels.set(i, divStart);
 
-	@Override
-	public void mouseEntered(MouseEvent e) {
-	}
+                int childSize = divStart - prev;
+                if (horiz) {
+                    child.setBounds(prev, 0, Math.max(0, childSize), getHeight());
 
-	@Override
-	public void mouseExited(MouseEvent e) {
-	}
+                    if (i < dividerBars.size()) {
+                        dividerBars.get(i).setBounds(divStart, 0, DIVIDER_THICKNESS, getHeight());
+                    }
+                }
+                else {
+                    child.setBounds(0, prev, getWidth(), Math.max(0, childSize));
 
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		docking.getAppState().persist();
-	}
+                    if (i < dividerBars.size()) {
+                        dividerBars.get(i).setBounds(0, divStart, getWidth(), DIVIDER_THICKNESS);
+                    }
+                }
+                prev = divStart + DIVIDER_THICKNESS;
+            }
+            else {
+                int childSize = Math.max(0, total - prev);
+
+                if (horiz) {
+                    child.setBounds(prev, 0, childSize, getHeight());
+                }
+                else {
+                    child.setBounds(0, prev, getWidth(), childSize);
+                }
+            }
+        }
+        if (!docking.getAppState().isPaused()) {
+            // validate() is synchronous: it calls doLayout() on this (guarded by inLayout
+            // to prevent re-entry) then recursively validates all children, running their
+            // layout managers immediately rather than deferring to the EDT queue.
+            validate();
+            repaint();
+        }
+    }
+
+    /**
+     * Walk this split and all descendant splits, updating every stored fraction
+     * to match the current pixel position relative to the current panel size.
+     * Called after a drag ends so that subsequent window resizes proportion from
+     * the new post-drag layout rather than from stale pre-drag fractions.
+     */
+    private void syncFractionsFromPixels() {
+        boolean horiz = (orientation == JSplitPane.HORIZONTAL_SPLIT);
+        int total = horiz ? getWidth() : getHeight();
+
+        if (total > 0) {
+            for (int i = 0; i < dividerPixels.size() && i < dividerPositions.size(); i++) {
+                int px = dividerPixels.get(i);
+
+                if (px >= 0) {
+                    dividerPositions.set(i, (double) px / total);
+                }
+            }
+        }
+
+        for (DockingPanel child : children) {
+            if (child instanceof DockedSplitPanel) {
+                ((DockedSplitPanel) child).syncFractionsFromPixels();
+            }
+        }
+    }
+
+    private static int clamp(int v, int lo, int hi) {
+        return Math.max(lo, Math.min(hi, v));
+    }
+
+    // ----------------------------------------------------------------
+    // DockingPanel interface
+    // ----------------------------------------------------------------
+
+    @Override
+    public String getAnchor() {
+        return anchor;
+    }
+
+    @Override
+    public void setAnchor(String anchor) {
+        this.anchor = anchor;
+    }
+
+    @Override
+    public void setParent(DockingPanel parent) {
+        this.dockedParent = parent;
+    }
+
+    @Override
+    public void dock(Dockable dockable, DockingRegion region, double dividerProportion) {
+        DockableWrapper wrapper = DockingInternal.get(docking).getWrapper(dockable);
+        wrapper.setWindow(window);
+
+        // CENTER has no meaning for a split — redirect to the nearer edge
+        if (region == DockingRegion.CENTER) {
+            region = (orientation == JSplitPane.HORIZONTAL_SPLIT) ? DockingRegion.WEST : DockingRegion.NORTH;
+        }
+
+        boolean after = (region == DockingRegion.EAST || region == DockingRegion.SOUTH);
+        int newOrientation = orientationForRegion(region);
+        DockingPanel newPanel = createLeafPanel(docking, wrapper, anchor);
+
+        if (newOrientation == orientation) {
+            // Same axis: append to the near end of this split.
+            double newDivPos = appendDividerPosition(after, dividerProportion);
+            insertChildBeside(children.get(after ? children.size() - 1 : 0), newPanel, after, newDivPos);
+        }
+        else {
+            // Different axis: wrap this split in a new outer split.
+            dockPanelBeside(this, dockedParent, newPanel, region, dividerProportion, docking, window, anchor);
+        }
+    }
+
+    /**
+     * Computes the position for a new divider appended to the near end of this split.
+     * When docking after (EAST/SOUTH) the new divider sits inside the space after the
+     * last existing divider.  When docking before (NORTH/WEST) it sits inside the space
+     * before the first existing divider.
+     */
+    private double appendDividerPosition(boolean after, double proportion) {
+        if (after) {
+            double lastEnd = dividerPositions.isEmpty() ? 0.0 : dividerPositions.get(dividerPositions.size() - 1);
+            return lastEnd + (1.0 - lastEnd) * (1.0 - proportion);
+        }
+        double firstEnd = dividerPositions.isEmpty() ? 1.0 : dividerPositions.get(0);
+        return firstEnd * proportion;
+    }
+
+    @Override
+    public void undock(Dockable dockable) {
+        // Undocking is handled by the leaf panels; this split panel is only a container.
+    }
+
+    @Override
+    public void replaceChild(DockingPanel child, DockingPanel newChild) {
+        int idx = children.indexOf(child);
+
+        if (idx >= 0) {
+            remove(child);
+            children.set(idx, newChild);
+            newChild.setParent(this);
+            add(newChild);
+            layoutChildren();
+        }
+    }
+
+    @Override
+    public void removeChild(DockingPanel child) {
+        if (dockedParent == null) {
+            return;
+        }
+
+        int idx = children.indexOf(child);
+
+        if (idx < 0) {
+            return;
+        }
+
+        remove(child);
+
+        // Remove the divider that was adjacent to this child.
+        // Prefer the divider to the right (index idx); fall back to the left (idx-1).
+        int divIdx = (idx < dividerPositions.size()) ? idx : idx - 1;
+        if (divIdx >= 0 && divIdx < dividerBars.size()) {
+            remove(dividerBars.get(divIdx));
+        }
+        children.remove(idx);
+        if (divIdx >= 0 && divIdx < dividerPositions.size()) {
+            dividerPositions.remove(divIdx);
+            dividerPixels.remove(divIdx);
+        }
+
+        if (children.size() == 1) {
+            // Only one child left — collapse this split by promoting the survivor.
+            dockedParent.replaceChild(this, children.get(0));
+        }
+        else {
+            rebuildDividerBars();
+            layoutChildren();
+        }
+    }
+
+    @Override
+    public List<DockingPanel> getChildren() {
+        return Collections.unmodifiableList(children);
+    }
+
+    // ----------------------------------------------------------------
+    // DividerBar
+    // ----------------------------------------------------------------
+
+    final class DividerBar extends javax.swing.JComponent {
+
+        private final int index;
+        private int dragStartScreen;
+        private int dragStartPixel;
+
+        DividerBar(int index) {
+            this.index = index;
+            Color dividerColor = UIManager.getColor("SplitPane.dividerColor");
+            setBackground(dividerColor != null ? dividerColor : new Color(0xaaaaaa));
+            setOpaque(true);
+            updateCursor();
+
+            MouseAdapter ma = new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    isDragging = true;
+                    Point p = e.getLocationOnScreen();
+                    dragStartScreen = isHoriz() ? p.x : p.y;
+                    int px = dividerPixels.get(index);
+
+                    if (px < 0) {
+                        int total = isHoriz() ? DockedSplitPanel.this.getWidth() : DockedSplitPanel.this.getHeight();
+                        px = (int) Math.round(dividerPositions.get(index) * total);
+                        dividerPixels.set(index, px);
+                    }
+                    dragStartPixel = px;
+                }
+
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                    onDrag(e);
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    isDragging = false;
+                    // Sync all fractions from current pixel positions so that the next
+                    // window resize proportions from the new post-drag layout.
+                    syncFractionsFromPixels();
+                    docking.getAppState().persist();
+                }
+
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getClickCount() >= 2) {
+                        // Double-click: reset to equal split
+                        int total = isHoriz() ? DockedSplitPanel.this.getWidth() : DockedSplitPanel.this.getHeight();
+                        int n = children.size();
+                        int equalPx = (int) Math.round((double) (index + 1) / n * total);
+                        dividerPixels.set(index, equalPx);
+                        dividerPositions.set(index, (double) equalPx / total);
+                        layoutChildren();
+                        docking.getAppState().persist();
+                    }
+                }
+            };
+            addMouseListener(ma);
+            addMouseMotionListener(ma);
+        }
+
+        void updateCursor() {
+            setCursor(Cursor.getPredefinedCursor(
+                    isHoriz() ? Cursor.E_RESIZE_CURSOR : Cursor.N_RESIZE_CURSOR));
+        }
+
+        private boolean isHoriz() {
+            return orientation == JSplitPane.HORIZONTAL_SPLIT;
+        }
+
+        private void onDrag(MouseEvent e) {
+            Point p = e.getLocationOnScreen();
+            int current = isHoriz() ? p.x : p.y;
+            int delta = current - dragStartScreen;
+            int total = isHoriz() ? DockedSplitPanel.this.getWidth() : DockedSplitPanel.this.getHeight();
+            if (total <= 0) {
+                return;
+            }
+
+            int newPx = dragStartPixel + delta;
+
+            // Clamp to the range that keeps both adjacent children above their minimum
+            // size.  Neighbouring dividers' pixel positions (unchanged by this drag)
+            // define the outer boundaries; only child[index] and child[index+1] resize.
+            int prevEdge = (index > 0)
+                    ? (isHoriz() ? dividerBars.get(index - 1).getX() : dividerBars.get(index - 1).getY()) + DIVIDER_THICKNESS
+                    : 0;
+            Dimension minI = children.get(index).getMinimumSize();
+            int lo = prevEdge + (isHoriz() ? minI.width : minI.height);
+
+            int nextEdge = (index < dividerBars.size() - 1)
+                    ? (isHoriz() ? dividerBars.get(index + 1).getX() : dividerBars.get(index + 1).getY())
+                    : total;
+            Dimension minNext = children.get(index + 1).getMinimumSize();
+            int hi = nextEdge - DIVIDER_THICKNESS - (isHoriz() ? minNext.width : minNext.height);
+
+            int clampedPx = Math.max(lo, Math.min(hi, newPx));
+            dividerPixels.set(index, clampedPx);
+            dividerPositions.set(index, (double) clampedPx / total);
+            layoutChildren();
+        }
+    }
+
+    // ----------------------------------------------------------------
+    // Helpers shared with DockedSimplePanel / DockedTabbedPanel
+    // ----------------------------------------------------------------
+
+    /**
+     * Creates the appropriate leaf panel for {@code wrapper}: anchor, tabbed, or simple.
+     */
+    static DockingPanel createLeafPanel(DockingAPI docking, DockableWrapper wrapper, String anchor) {
+        if (wrapper.isAnchor()) {
+            return new DockedAnchorPanel(docking, wrapper);
+        }
+        if (Settings.alwaysDisplayTabsMode()) {
+            return new DockedTabbedPanel(docking, wrapper, anchor);
+        }
+        return new DockedSimplePanel(docking, wrapper, anchor);
+    }
+
+    /**
+     * Returns the JSplitPane orientation constant that corresponds to {@code region}.
+     */
+    static int orientationForRegion(DockingRegion region) {
+        if (region == DockingRegion.EAST || region == DockingRegion.WEST) {
+            return JSplitPane.HORIZONTAL_SPLIT;
+        }
+        return JSplitPane.VERTICAL_SPLIT;
+    }
+
+    /**
+     * Docks {@code newPanel} beside {@code thisPanel} in the direction indicated by
+     * {@code region}.  If the parent split already runs along the same axis the new
+     * panel is inserted inline (no extra nesting).  Otherwise a new 2-child split is
+     * created to wrap {@code thisPanel}.
+     */
+    static void dockPanelBeside(DockingPanel thisPanel, DockingPanel parentPanel,
+                                 DockingPanel newPanel, DockingRegion region,
+                                 double proportion, DockingAPI docking,
+                                 Window window, String anchor) {
+        boolean after = (region == DockingRegion.EAST || region == DockingRegion.SOUTH);
+        int newOrientation = orientationForRegion(region);
+
+        if (parentPanel instanceof DockedSplitPanel) {
+            DockedSplitPanel parentSplit = (DockedSplitPanel) parentPanel;
+
+            if (parentSplit.getOrientation() == newOrientation) {
+                // Insert inline — avoids nesting two splits of the same axis.
+                double newDivPos = inlineDividerPosition(parentSplit, thisPanel, after, proportion);
+                parentSplit.insertChildBeside(thisPanel, newPanel, after, newDivPos);
+                return;
+            }
+        }
+
+        // Wrap thisPanel in a new 2-child split.
+        DockedSplitPanel split = new DockedSplitPanel(docking, window, anchor);
+        split.setOrientation(newOrientation);
+        parentPanel.replaceChild(thisPanel, split);
+
+        if (after) {
+            split.setLeft(thisPanel);
+            split.setRight(newPanel);
+            split.setDividerLocation(1.0 - proportion);
+        }
+        else {
+            split.setLeft(newPanel);
+            split.setRight(thisPanel);
+            split.setDividerLocation(proportion);
+        }
+    }
+
+    /**
+     * Computes the fraction position for a new divider when inserting inline into
+     * {@code parentSplit} beside {@code child}.
+     */
+    private static double inlineDividerPosition(DockedSplitPanel parentSplit, DockingPanel child,
+                                                 boolean after, double proportion) {
+        int myIndex = parentSplit.indexOfChild(child);
+        double[] positions = parentSplit.getDividerPositions();
+        double childStart = (myIndex > 0) ? positions[myIndex - 1] : 0.0;
+        double childEnd = (myIndex < positions.length) ? positions[myIndex] : 1.0;
+        double childSpace = childEnd - childStart;
+
+        if (after) {
+            return childStart + childSpace * (1.0 - proportion);
+        }
+        return childStart + childSpace * proportion;
+    }
 }

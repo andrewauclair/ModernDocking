@@ -22,17 +22,20 @@ SOFTWARE.
 package io.github.andrewauclair.moderndocking.internal;
 
 import io.github.andrewauclair.moderndocking.Dockable;
-import io.github.andrewauclair.moderndocking.DockableTabPreference;
 import io.github.andrewauclair.moderndocking.DockingRegion;
 import io.github.andrewauclair.moderndocking.api.DockingAPI;
 import io.github.andrewauclair.moderndocking.api.RootDockingPanelAPI;
 import io.github.andrewauclair.moderndocking.settings.Settings;
 import io.github.andrewauclair.moderndocking.ui.ToolbarLocation;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Window;
 import java.util.Collections;
 import java.util.List;
+import javax.swing.JMenuBar;
+import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 
 /**
@@ -154,6 +157,49 @@ public class InternalRootDockingPanel extends DockingPanel implements DockableTo
         return false;
     }
 
+    /**
+     * Computes and sets the minimum size of the containing window directly from
+     * the docking panel hierarchy, bypassing the GridBagLayout intermediate containers
+     * that can silently return stale or zero values.
+     *
+     * Formula: panel minimum + menu bar height + native window insets (title bar / borders).
+     */
+    public void updateWindowMinimumSize() {
+        Window w = SwingUtilities.getWindowAncestor(this);
+
+        if (w == null || !w.isDisplayable() || !(w instanceof RootPaneContainer)) {
+            return;
+        }
+
+        Dimension panelMin = (panel != null) ? panel.getMinimumSize() : new Dimension(0, 0);
+
+        JMenuBar menuBar = ((RootPaneContainer) w).getRootPane().getJMenuBar();
+        int menuH = (menuBar != null && menuBar.isVisible()) ? menuBar.getPreferredSize().height : 0;
+
+        Insets wi = w.getInsets();
+        w.setMinimumSize(new Dimension(
+                panelMin.width + wi.left + wi.right,
+                panelMin.height + menuH + wi.top + wi.bottom
+        ));
+    }
+
+    @Override
+    public Dimension getMinimumSize() {
+        // Return the panel's minimum directly so that any caller (GridBagLayout,
+        // RootPaneLayout, …) gets an accurate value without going through extra layers.
+        if (panel == null) {
+            return new Dimension(0, 0);
+        }
+        return panel.getMinimumSize();
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        // Defer so the window's insets and decorations are fully established.
+        SwingUtilities.invokeLater(this::updateWindowMinimumSize);
+    }
+
     @Override
     public void removeNotify() {
         // this class has a default constructor which could be called and docking would be null
@@ -184,7 +230,7 @@ public class InternalRootDockingPanel extends DockingPanel implements DockableTo
         if (panel != null) {
             panel.dock(dockable, region, dividerProportion);
         }
-        else if (Settings.defaultTabPreference() == DockableTabPreference.TOP_ALWAYS) {
+        else if (Settings.alwaysDisplayTabsMode()) {
             setPanel(new DockedTabbedPanel(docking, wrapper, ""));
             wrapper.setWindow(rootPanel.getWindow());
         }

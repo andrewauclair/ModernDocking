@@ -47,7 +47,7 @@ sonar {
 		property "sonar.host.url", "https://sonarcloud.io"
 		property "sonar.sources", "src"
 		property "sonar.inclusions", "**/*.java"
-		property "sonar.exclusions", "**/demo-single-app/**,**/demo-multi-app/**"
+		property "sonar.exclusions", "**/demo-common/**,**/demo-single-app/**,**/demo-multi-app/**"
 		property "sonar.coverage.exclusions", "**/*"
 	}
 }

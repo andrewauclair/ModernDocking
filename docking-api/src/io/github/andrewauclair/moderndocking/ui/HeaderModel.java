@@ -88,21 +88,29 @@ public class HeaderModel {
 	}
 
 	/**
-	 * helper function to determine if the header min/max option should be enabled
+	 * helper function to determine if the header focused mode option should be enabled
 	 *
-	 * @return Is min/max allowed for this dockable
+	 * @return Is focused mode allowed for this dockable
 	 */
 	public boolean isMaximizeAllowed() {
 		return dockable.isMinMaxAllowed();
 	}
 
 	/**
-	 * Check if the dockable is currently maximized
+	 * Check if the dockable is currently in focused mode
 	 *
-	 * @return Is dockable maximized?
+	 * @return Is dockable in focused mode?
 	 */
+	public boolean isInFocusedMode() {
+		return docking.inFocusedMode(dockable);
+	}
+
+	/**
+	 * @deprecated Use {@link #isInFocusedMode()} instead. Will be removed in 2.0.
+	 */
+	@Deprecated(since = "1.5.0", forRemoval = true)
 	public boolean isMaximized() {
-		return docking.isMaximized(dockable);
+		return isInFocusedMode();
 	}
 
 	/**
